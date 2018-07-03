@@ -1,0 +1,30 @@
+{
+  "name": "freight-packer",
+  "version": "0.1.0",
+  "description": "Freight packing tool",
+  "main": "src/index.js",
+  "scripts": {
+    "compile": "webpack",
+    "build": "webpack -p",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "threejs",
+    "webpack",
+    "babel"
+  ],
+  "author": "Chady Karlitch",
+  "license": "0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/chadiik/freight-packer.git"
+  },
+  "dependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "express": "^4.16.2",
+    "webpack": "^3.9.1",
+    "webpack-dev-middleware": "^1.12.2"
+  }
+}
