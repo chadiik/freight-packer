@@ -11,6 +11,16 @@ class Signaler {
         this.signals[event].push(callback);
     }
 
+    Off(event, callback){
+        var callbacks = this.signals[event];
+        if(callbacks){
+            var index = callbacks.indexOf(callback);
+            if(index != -1){
+                callbacks.splice(index, 1);
+            }
+        }
+    }
+
     Dispatch(event, ...args){
         var callbacks = this.signals[event];
         if(callbacks){

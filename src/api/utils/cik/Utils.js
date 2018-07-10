@@ -1,5 +1,6 @@
 
-var _trimVariableRegex = new RegExp(/(?:\d|_|-)+$/);
+const trimVariableRegex = new RegExp(/(?:\d|_|-)+$/);
+const twopi = 2 * Math.PI;
 
 class Utils {
 
@@ -41,7 +42,7 @@ class Utils {
     }
 
     static TrimVariable(input){
-        return input.replace(_trimVariableRegex, '');
+        return input.replace(trimVariableRegex, '');
     }
 
     static LimitString(str, length){
@@ -57,7 +58,7 @@ class Utils {
 
     static FastCircleLoop(divisions, callback){
         // ref: http://iquilezles.org/www/articles/sincos/sincos.htm
-        var da = 2 * Math.PI / divisions;
+        var da = twopi / divisions;
         var a = Math.cos(da);
         var b = Math.sin(da);
         var cos = 1;
@@ -76,7 +77,6 @@ class Utils {
         // ref: http://iquilezles.org/www/articles/palettes/palettes.htm
         // return a + b * cos( 6.28318 * ( c * t + d ) );
         color = color || new THREE.Color();
-        var twopi = 2 * Math.PI;
         var r = a.x + b.x * Math.cos( twopi * (c.x * t + d.x) ), 
             g = a.y + b.y * Math.cos( twopi * (c.y * t + d.y) ),
             b = a.z + b.z * Math.cos( twopi * (c.z * t + d.z) );

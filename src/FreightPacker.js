@@ -1,8 +1,12 @@
-//const THREE = require('./lib/three-91');
 import Capabilities from './api/utils/Capabilities';
 import App from './api/App';
-import BoxInput from './api/components/BoxInput';
+import CargoInput from './api/components/CargoInput';
 import Logger from './api/utils/cik/Logger';
+import Utils from './api/utils/cik/Utils';
+
+const defaultOptions = {
+	debug: false
+};
 
 class FreightPacker {
 	/**
@@ -12,25 +16,25 @@ class FreightPacker {
 	 */
 	constructor( containerDiv, options ) {
 
-		options = options || {};
-		if(options.debug) {
-			Logger.active = true;
-			Logger.toConsole = true;
-			Logger.traceToConsole = true;
-		}
-		
-		this.boxInput = new BoxInput();
+		this.options = Utils.AssignUndefined(options, defaultOptions);
+		FreightPacker.DevSetup(this.options);
 
-		var components = {
-			boxInput: this.boxInput
-		};
-		this.app = new App(containerDiv, components);
+		/**
+		 * Handles input of: description fields (label, etc.), dimensions and constraints
+		 * @type {CargoInput}
+		 */
+		this.cargoInput = new CargoInput();
+
+		this.app = new App(containerDiv, {
+			boxInput: this.cargoInput
+		});
 	}
 
-	f(){}
-
+	/**
+	 * Will resolve if requirements are met, otherwise rejects with an error message
+	 * @return {Promise<Void>|Promise<string>} 
+	 */
 	static CheckRequirements () {
-		window.Capabilities = Capabilities;
 		var webgl = Capabilities.IsWebGLReady();
 
 		return new Promise((resolve, reject) => {
@@ -44,8 +48,12 @@ class FreightPacker {
 		});
 	}
 
-	static get Utils(){
-		return require('./api/utils/cik/Utils').default;
+	static DevSetup(options){
+		if(options.debug) {
+			Logger.active = true;
+			Logger.toConsole = true;
+			Logger.traceToConsole = true;
+		}
 	}
 
 }

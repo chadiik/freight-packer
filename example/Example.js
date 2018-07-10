@@ -1,37 +1,46 @@
 
-var Example = function(){
-    console.log('Freight Packer API Example');
+// enable vscode intellisense on FreightPacker
+if(false){ var FreightPacker = require('../src/FreightPacker').default; }
 
-    var containerDiv = document.getElementById('fp-view');
-    var options = {
-        debug: true
-    };
+class Example {
+    constructor(){
+        console.log('Freight Packer API Example');
 
-    var scope = this;
-    FreightPacker.CheckRequirements().then(
-        () => { // success
-            scope.api = new FreightPacker(containerDiv, options);
-            new ExampleUI(scope);
-        },
-        (errorMsg) => { // failure
-            console.warn('FreightPacker requirements not met', errorMsg);
-        }
-    );
-};
+        var containerDiv = document.getElementById('fp-view');
+        var options = {
+            debug: true
+        };
 
-Object.assign(Example.prototype, {
+        /**
+         * @type {FreightPacker}
+         */
+        this.api;
+
+        var scope = this;
+        FreightPacker.CheckRequirements().then(
+            () => { // success
+                scope.api = new FreightPacker(containerDiv, options);
+                new ExampleUI(scope);
+            },
+            (errorMsg) => { // failure
+                console.warn('FreightPacker requirements not met', errorMsg);
+            }
+        );
+    }
 
     // Box input
-    BoxInputUpdate: function(values){
-        this.api.boxInput.Update(values.width, values.length, values.height);
-    },
-
-    BoxInputComplete: function(){
-        var entry = this.api.boxInput.Complete();
-        this.BoxInputUpdate(entry); // Start new entry 'session' with same values
-    },
-
-    BoxInputAbort: function(){
-        this.api.boxInput.Abort();
+    BoxInputUpdate(dimensions){
+        this.api.cargoInput.Update(dimensions.width, dimensions.length, dimensions.height);
     }
-});
+
+    BoxInputComplete(){
+        var dimensions = this.api.cargoInput.currentEntry.dimensions.Clone(); // Get dimensions
+        this.api.cargoInput.Complete();
+
+        this.BoxInputUpdate(dimensions); // Start new entry 'session' with same values
+    }
+
+    BoxInputAbort(){
+        this.api.cargoInput.Abort();
+    }
+}

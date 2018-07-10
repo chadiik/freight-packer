@@ -24,20 +24,9 @@ class Controller {
         this.scene.add(this.defaults);
     }
 
-    Add(object){
-        /*if(object instanceof App.Scene.Item){
-            this.itemsContainer.add(object.view);
-        }
-        else if(object instanceof App.Library.Light){
-            this.ambientContainer.add(object.lightObject);
-        }
-        else if(object instanceof App.Library.CubeCameraController){
-            this.ambientContainer.add(object.cubeCamera);
-        }
-        else {
-            this.miscContainer.add(object);
-        }*/
-        this.miscContainer.add(object);
+    Add(object, container){
+        if(container === undefined) container = this.miscContainer;
+        container.add(object);
     }
 
     AddDefault(object){
