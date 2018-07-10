@@ -1,9 +1,75 @@
-<html>
-<head>
-  <script src="./lib/three-91.js"></script>
-  <script src="../build/FreightPacker.js" ></script>
-</head>
-<body>
-  <div id="fp-view"></div>
-</body>
+<!DOCTYPE HTML>
+<html class="no-js" lang="en" dir="ltr">
+	<head>
+		<meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="apple-mobile-web-app-capable" content="yes" /> 
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--link rel="stylesheet" href="css/UIDom.css"-->
+    
+    <title>Freight Packer API example</title>
+    
+    <style>
+      html {
+        height: 99%;  
+      }
+
+      body { 
+        margin: 2px;
+        background-color: #ffffff;
+        height: 60%;
+        font-family: Monospace;
+        font-size: small;
+      }
+
+      body.noScroll {
+        overflow: hidden;
+      }
+
+      /* Container div styling */
+      #fp-view {
+        width: calc(100% - 20px);
+        height: calc(100% - 20px);
+        margin: 10px;
+      }
+    </style>
+
+    <!-- API files, dependencies (3rd party code) and API -->
+    <script src="../../lib/build/FreightPackerDependencies.js" ></script>
+    <script src="../build/FreightPacker.js" ></script>
+
+    <!-- Example dependencies (not of interest) -->
+    <script src="./mockup/lib/dat.gui.js"></script>
+    <script src="./mockup/ExampleUI.js"></script>
+
+    <!-- Example/Reference -->
+    <script src="./Example.js"></script>
+
+    <script>
+      window.addEventListener("load", function() {
+        new Example();
+      });
+    </script>
+
+  </head>
+
+  <body>
+
+    <table style="display: table; width: 100%; height: 100%; ">
+      <tr>
+          <td style="width: 25%; padding: 10px; vertical-align: top; background-color:#aaa;">
+            <div id="fp-gui">
+              <h2>Mock ui</h2>
+            </div>
+          </td>
+          <td style="background-color:#ccc;">
+            <!-- Container div -->
+            <div id="fp-view"></div>
+          </td>
+      </tr>
+    </table>
+
+  </body>
+
 </html>
