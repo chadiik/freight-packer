@@ -1,0 +1,7 @@
+[
+    {
+        "key": "ctrl+e",
+        "command": "workbench.action.tasks.runTask",
+        "args": "editor"
+    }
+]

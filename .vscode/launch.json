@@ -1,0 +1,30 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "compounds": [
+
+    ],
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "attach",
+            "name": "Attach to Chrome",
+            "port": 9222,
+            "url": "http://localhost:2017/chadiik/FreightPacker/FreightPackerAPI/editor/",
+            "webRoot": "${workspaceFolder}/editor",
+            "sourceMaps": true,
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome",
+            "url": "http://localhost:2017/chadiik/FreightPacker/FreightPackerAPI/editor/",
+            "webRoot": "${workspaceFolder}/editor",
+            "sourceMaps": true,
+            "preLaunchTask": "npm: editor"
+        },
+        
+    ]
+}
