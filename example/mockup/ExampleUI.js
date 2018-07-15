@@ -21,7 +21,7 @@ Object.assign(ExampleUI.prototype, {
         
         var entry;
         var inputUpdate = function(){
-            app.BoxInputUpdate(boxInput);
+            app.BoxInputDimensionsUpdate(boxInput);
         };
         var complete = function(){
             app.BoxInputComplete();
@@ -30,11 +30,11 @@ Object.assign(ExampleUI.prototype, {
             app.BoxInputAbort();
         };
 
+        var p = 4;
         var randomInput = function(){
-            var p = 4;
-            controller.Width = Math.floor((boxRange.w[0] + Math.random() * (boxRange.w[1] - boxRange.w[0])) * p) / p;
-            controller.Length = Math.floor((boxRange.l[0] + Math.random() * (boxRange.l[1] - boxRange.l[0])) * p) / p;
-            controller.Height = Math.floor((boxRange.h[0] + Math.random() * (boxRange.h[1] - boxRange.h[0])) * p) / p;
+            controller.Width    = Math.floor((boxRange.w[0] + Math.random() * (boxRange.w[1] - boxRange.w[0])) * p) / p;
+            controller.Length   = Math.floor((boxRange.l[0] + Math.random() * (boxRange.l[1] - boxRange.l[0])) * p) / p;
+            controller.Height   = Math.floor((boxRange.h[0] + Math.random() * (boxRange.h[1] - boxRange.h[0])) * p) / p;
         };
         var controller = {
             Random: randomInput,
@@ -59,9 +59,9 @@ Object.assign(ExampleUI.prototype, {
         var inputFolder = this.gui.addFolder('Input');
         inputFolder.open();
         inputFolder.add(controller, 'Random');
-        inputFolder.add(controller, 'Width' , boxRange.w[0], boxRange.w[1]).listen();
-        inputFolder.add(controller, 'Length', boxRange.l[0], boxRange.l[1]).listen();
-        inputFolder.add(controller, 'Height', boxRange.h[0], boxRange.h[1]).listen();
+        inputFolder.add(controller, 'Width' , boxRange.w[0], boxRange.w[1]).step(1/p).listen();
+        inputFolder.add(controller, 'Length', boxRange.l[0], boxRange.l[1]).step(1/p).listen();
+        inputFolder.add(controller, 'Height', boxRange.h[0], boxRange.h[1]).step(1/p).listen();
         inputFolder.add(controller, 'Insert');
         inputFolder.add(controller, 'Abort');
 

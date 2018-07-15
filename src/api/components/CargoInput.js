@@ -7,6 +7,9 @@ var updated = 'updated',
     aborted = 'aborted',
     completed = 'completed';
 
+/**
+ * Cubic volumes entry
+ */
 class CargoInput extends Signaler {
 
     constructor(){
@@ -15,8 +18,12 @@ class CargoInput extends Signaler {
         this.entry = new BoxEntry();
     }
 
-    Update(width, length, height){
-        this.entry.dimensions.Set(width, length, height);
+    /**
+     * Starts a new entry 'session', or, updates the current entry
+     * @param {Object} params 
+     */
+    Update(params){
+        this.entry.dimensions.Set(params.width, params.length, params.height);
         Logger.Trace('entry updated', this.entry);
         this.entry.active = true;
         this.Dispatch(updated, this.entry);

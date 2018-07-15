@@ -41,8 +41,8 @@ class Renderer {
         };
 
         this.ResizeDomElement = function(screen){
-            this.renderer.domElement.style.width = screen.width + 'px';
-            this.renderer.domElement.style.height = screen.height + 'px';
+            this.renderer.domElement.style.width = Math.floor(screen.width) + 'px';
+            this.renderer.domElement.style.height = Math.floor(screen.height) + 'px';
         };
 
         this.ReconfigureViewport = function(screen){

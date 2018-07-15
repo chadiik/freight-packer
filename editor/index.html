@@ -6,9 +6,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes" /> 
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--link rel="stylesheet" href="css/UIDom.css"-->
+    <link rel="stylesheet" href="UIDom.css">
     
-    <title>Freight Packer API example</title>
+    <title>Freight Packer API editor</title>
     
     <style>
       /* Container div styling */
@@ -19,7 +19,7 @@
         margin: 10px;
         /*line-height: 0px;*/
       }
-  
+
       body { 
         margin: 2px;
         background-color: #ffffff;
@@ -27,11 +27,11 @@
         font-family: Monospace;
         font-size: small;
       }
-  
+
       body.noScroll {
         overflow: hidden;
       }
-  
+
       .columns {
         height: 600px;
         overflow: hidden;
@@ -43,7 +43,7 @@
           background: #aaa;
           height: 100%;
       }
-  
+
       .right {
           float: none;
           background: #ccc;
@@ -51,7 +51,7 @@
           height: 100%;
           overflow: hidden;
       }
-  
+
       #fp-gui {
         padding: 4px;
       }
@@ -59,18 +59,22 @@
 
     <!-- API files, dependencies (3rd party code) and API -->
     <script src="../build/FreightPackerDependencies.js" ></script>
-    <script src="../build/FreightPacker.js" ></script>
 
-    <!-- Example dependencies (not of interest) -->
-    <script src="./mockup/lib/dat.gui.js"></script>
-    <script src="./mockup/ExampleUI.js"></script>
+    <!-- Editor dependencies -->
+    <script src="./lib/FBXLoader.js"></script>
+    <script src="./lib/BufferGeometryUtils.js"></script>
+    <script src="../example/mockup/lib/crel.js"></script>
+    <script src="../example/mockup/lib/dat.gui.js"></script>
+    <script src="../example/mockup/lib/FileSaver.js"></script>
 
-    <!-- Example/Reference -->
-    <script src="./Example.js"></script>
+    <!-- Editor -->
+    <script src="./FPEditor.js" ></script>
 
     <script>
       window.addEventListener("load", function() {
-        new Example();
+        var guiElement = document.getElementById('fp-gui');
+        var viewElement = document.getElementById('fp-view');
+        new FPEditor(guiElement, viewElement);
       });
     </script>
 
@@ -81,15 +85,36 @@
     <div class="columns">
       <div class="left">
         <div id="fp-gui">
-          <h2>Mockup UI</h2>
+          <h2>Editor</h2>
         </div>
       </div>
       <div class="right">
-        <!-- Container div () -->
+        <!-- Container div -->
         <div id="fp-view"></div>
       </div>
     </div>
 
   </body>
+
+  <div id="wizard-elements" style="display: block; background-color: grey; border-top:1px solid #000;">
+    <div id="loadRef" style="color: #ffffff;">
+      <p>Load reference 3D model:</p>
+      <button id="loadBtn">Load file (ascii FBX)</button>
+    </div>
+    <div id="configureSpace" style="color: #ffffff;">
+      <p>Configure packing space:</p>
+      <wizard-action id="surface" label="Set platform surface"></wizard-action>
+      </br>
+      <wizard-action id="input" disabled="true" label="Input loadable dimensions"></wizard-action>
+      </br>
+      <wizard-action id="side" disabled="true" label="Pick loading side"></wizard-action>
+      </br>
+      <button id="nextBtn" disabled="true">Next</button>
+    </div>
+    <div id="export" style="color: #ffffff;">
+      <p>Save configuration:</p>
+      <button id="exportBtn">Save file</button>
+    </div> 
+  </div>
 
 </html>

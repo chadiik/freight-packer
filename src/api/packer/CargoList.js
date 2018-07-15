@@ -3,12 +3,9 @@ import Signaler from "../utils/cik/Signaler";
 import CargoEntry from "../components/common/CargoEntry";
 import Logger from "../utils/cik/Logger";
 
-const cargoAdded = 'cargoAdded',
-    cargoRemoved = 'cargoRemoved';
-
 const signals = {
-    cargoAdded: cargoAdded,
-    cargoRemoved: cargoRemoved
+    cargoAdded: 'cargoAdded',
+    cargoRemoved: 'cargoRemoved'
 };
 
 class CargoList extends Signaler{
@@ -29,14 +26,14 @@ class CargoList extends Signaler{
         }
 
         this.cargoes.push(cargo);
-        this.Dispatch(cargoAdded, cargo);
+        this.Dispatch(signals.cargoAdded, cargo);
     }
 
     Remove(cargo){
         var index = this.cargoes.indexOf(cargo);
         if(index != -1){
             var removedCargoes = this.cargoes.splice(index, 1);
-            this.Dispatch(cargoRemoved, removedCargoes[0]);
+            this.Dispatch(signals.cargoRemoved, removedCargoes[0]);
         }
     }
 

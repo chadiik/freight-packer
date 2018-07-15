@@ -32,6 +32,10 @@ class Utils {
         return target;
     }
 
+    static Snapshot(obj){
+        return JSON.parse(JSON.stringify(obj));
+    }
+
     static GetRectOffset(element){
         var style = window.getComputedStyle(element),
             marginLeft = parseFloat(style.marginLeft),

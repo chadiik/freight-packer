@@ -1,13 +1,39 @@
 
+/**
+ * RaycastCallback
+ * 
+ * @callback RaycastCallback
+ * @param {Object} obj
+ * @param {THREE.Intersection} intersection
+ */
+
+ /**
+  * Mapping function
+  * 
+  * @callback RaycastMapping
+  * @param {Object} obj
+  */
+
 class RaycastGroup {
-    constructor (items, callback, collectionQuery, updateProperty, recursive, continuous){
+
+    /**
+     * 
+     * @param {Array<THREE.Object3D>} items 
+     * @param {RaycastCallback} callback 
+     * @param {RaycastMapping} collectionQuery 
+     * @param {Boolean} updateProperty 
+     * @param {Boolean} recursive 
+     */
+    constructor (items, callback, collectionQuery, updateProperty, recursive){
+        /**
+         * @type {Boolean}
+         */
         this.enabled = true;
 
         this.items = items;
         this.callback = callback;
         this.updateProperty = updateProperty !== undefined ? updateProperty : false;
         this.recursive = recursive !== undefined ? recursive : false;
-        this.continuous = continuous !== undefined ? continuous : false;
 
         if(collectionQuery === undefined){
             this.raycastItems = this.items;
@@ -60,11 +86,13 @@ class RaycastGroup {
         // if ( object.visible === false || object.parent === null) return; in THREE.Raycaster.intersectObject()
         var intersects = raycaster.intersectObjects(raycastItems, this.recursive);
         if (intersects.length > 0) {
-            var raycastItemIndex = this.BubbleUpForIndex(intersects[0].object, raycastItems);
-            if(raycastItemIndex !== -1) this.callback(this.items[raycastItemIndex], intersects[0]);
-        }
-        else if(this.continuous) {
-            this.callback(false);
+            if(this.collectionQuery){
+                var raycastItemIndex = this.BubbleUpForIndex(intersects[0].object, raycastItems);
+                if(raycastItemIndex !== -1) this.callback(this.items[raycastItemIndex], intersects[0]);
+            }
+            else{
+                this.callback(intersects[0].object, intersects[0]);
+            }
         }
     }
 

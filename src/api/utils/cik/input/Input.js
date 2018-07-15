@@ -4,6 +4,10 @@ import Utils from '../Utils';
 
 class Input {
 
+    /**
+     * 
+     * @param {HTMLElement} domContainer 
+     */
     constructor (domContainer){
         this.enabled = true;
         
@@ -71,6 +75,7 @@ class Input {
 
         this.keyboard = new window.keypress.Listener();
         this.keyboard.on = this.keyboard.simple_combo;
+        this.keyboard.unregister = this.keyboard.unregister_combo;
         this.keys = {};
 
         //
@@ -125,11 +130,13 @@ class Input {
         this.screen.bottom = screen.bottom;
         this.screen.top = screen.top;
         
+        /*
         var rectOffset = Utils.GetRectOffset(this.domContainer);
         this.screen.x += rectOffset.x;
         this.screen.left += rectOffset.x;
         this.screen.y += rectOffset.y;
         this.screen.top += rectOffset.y;
+        */
     }
 
     OnMouseDown(mouseEvent){
@@ -383,7 +390,9 @@ class Input {
         var raycastGroupsKeys = Object.keys(this._raycastGroups[event]);
         var numRaycastGroups = raycastGroupsKeys.length;
         if(numRaycastGroups > 0){
-            raycastGroupsKeys.sort().reverse();
+            if(numRaycastGroups > 1)
+                raycastGroupsKeys.sort().reverse();
+            
             for(var iGroup = 0; iGroup < numRaycastGroups; iGroup++){
                 var key = raycastGroupsKeys[iGroup];
                 this._raycastGroups[event][key].Raycast(this.raycaster);

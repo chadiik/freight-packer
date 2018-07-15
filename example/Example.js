@@ -2,6 +2,15 @@
 // enable vscode intellisense on FreightPacker
 if(false){ var FreightPacker = require('../src/FreightPacker').default; }
 
+var cargoInputParams = {
+    width: 0,
+    length: 0,
+    height: 0,
+    fields: {
+        label: '-'
+    }
+};
+
 class Example {
     constructor(){
         console.log('Freight Packer API Example');
@@ -29,15 +38,16 @@ class Example {
     }
 
     // Box input
-    BoxInputUpdate(dimensions){
-        this.api.cargoInput.Update(dimensions.width, dimensions.length, dimensions.height);
+    BoxInputDimensionsUpdate(dimensions){
+        Object.assign(cargoInputParams, dimensions);
+        this.api.cargoInput.Update(cargoInputParams);
     }
 
     BoxInputComplete(){
         var dimensions = this.api.cargoInput.currentEntry.dimensions.Clone(); // Get dimensions
         this.api.cargoInput.Complete();
 
-        this.BoxInputUpdate(dimensions); // Start new entry 'session' with same values
+        this.BoxInputDimensionsUpdate(dimensions); // Start new entry 'session' with same values
     }
 
     BoxInputAbort(){

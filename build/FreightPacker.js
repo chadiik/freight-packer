@@ -407,12 +407,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
-var cargoAdded = 'cargoAdded',
-    cargoRemoved = 'cargoRemoved';
-
 var signals = {
-    cargoAdded: cargoAdded,
-    cargoRemoved: cargoRemoved
+    cargoAdded: 'cargoAdded',
+    cargoRemoved: 'cargoRemoved'
 };
 
 var CargoList = function (_Signaler) {
@@ -439,7 +436,7 @@ var CargoList = function (_Signaler) {
             }
 
             this.cargoes.push(cargo);
-            this.Dispatch(cargoAdded, cargo);
+            this.Dispatch(signals.cargoAdded, cargo);
         }
     }, {
         key: "Remove",
@@ -447,7 +444,7 @@ var CargoList = function (_Signaler) {
             var index = this.cargoes.indexOf(cargo);
             if (index != -1) {
                 var removedCargoes = this.cargoes.splice(index, 1);
-                this.Dispatch(cargoRemoved, removedCargoes[0]);
+                this.Dispatch(signals.cargoRemoved, removedCargoes[0]);
             }
         }
     }], [{
@@ -1356,7 +1353,8 @@ var Input = function () {
             var raycastGroupsKeys = Object.keys(this._raycastGroups[event]);
             var numRaycastGroups = raycastGroupsKeys.length;
             if (numRaycastGroups > 0) {
-                raycastGroupsKeys.sort().reverse();
+                if (numRaycastGroups > 1) raycastGroupsKeys.sort().reverse();
+
                 for (var iGroup = 0; iGroup < numRaycastGroups; iGroup++) {
                     var key = raycastGroupsKeys[iGroup];
                     this._raycastGroups[event][key].Raycast(this.raycaster);
@@ -1879,15 +1877,31 @@ var Camera = function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__container_Container__ = __webpack_require__(22);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 
 
-var PackingSpace = function PackingSpace() {
-    _classCallCheck(this, PackingSpace);
+var PackingSpace = function () {
+    function PackingSpace() {
+        _classCallCheck(this, PackingSpace);
 
-    this.container = new __WEBPACK_IMPORTED_MODULE_0__container_Container__["a" /* default */]();
-};
+        this._current = -1;
+        this.containers = [];
+    }
+
+    _createClass(PackingSpace, [{
+        key: "current",
+        get: function get() {
+            if (this._current != -1) {
+                return this.containers[this._current];
+            }
+        }
+    }]);
+
+    return PackingSpace;
+}();
 
 /* harmony default export */ __webpack_exports__["a"] = (PackingSpace);
 
@@ -1911,7 +1925,7 @@ var Container = function Container() {
     this.volumes = [];
 };
 
-/* harmony default export */ __webpack_exports__["a"] = (Container);
+/* unused harmony default export */ var _unused_webpack_default_export = (Container);
 
 /***/ }),
 /* 23 */
@@ -1987,12 +2001,12 @@ var View = function () {
 
         this.sceneSetup = sceneSetup;
 
-        this.cargoList = new __WEBPACK_IMPORTED_MODULE_0__CargoListView__["a" /* default */]();
-        this.Display(this.cargoList);
+        this.cargoListView = new __WEBPACK_IMPORTED_MODULE_0__CargoListView__["a" /* default */]();
+        this.Display(this.cargoListView);
 
-        var onCargoAdded = this.cargoList.Add.bind(this.cargoList);
+        var onCargoAdded = this.cargoListView.Add.bind(this.cargoListView);
         packer.cargoList.On(__WEBPACK_IMPORTED_MODULE_2__packer_CargoList__["a" /* default */].signals.cargoAdded, onCargoAdded);
-        var onCargoRemoved = this.cargoList.Remove.bind(this.cargoList);
+        var onCargoRemoved = this.cargoListView.Remove.bind(this.cargoListView);
         packer.cargoList.On(__WEBPACK_IMPORTED_MODULE_2__packer_CargoList__["a" /* default */].signals.cargoRemoved, onCargoRemoved);
     }
 
@@ -2083,6 +2097,10 @@ var updated = 'updated',
     aborted = 'aborted',
     completed = 'completed';
 
+/**
+ * Cubic volumes entry
+ */
+
 var CargoInput = function (_Signaler) {
     _inherits(CargoInput, _Signaler);
 
@@ -2095,10 +2113,16 @@ var CargoInput = function (_Signaler) {
         return _this;
     }
 
+    /**
+     * Starts a new entry 'session', or, updates the current entry
+     * @param {Object} params 
+     */
+
+
     _createClass(CargoInput, [{
         key: 'Update',
-        value: function Update(width, length, height) {
-            this.entry.dimensions.Set(width, length, height);
+        value: function Update(params) {
+            this.entry.dimensions.Set(params.width, params.length, params.height);
             __WEBPACK_IMPORTED_MODULE_0__utils_cik_Logger__["a" /* default */].Trace('entry updated', this.entry);
             this.entry.active = true;
             this.Dispatch(updated, this.entry);
