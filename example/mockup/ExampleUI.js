@@ -1,25 +1,47 @@
 
+if(false){ var FreightPacker = require('../src/FreightPacker').default; }
+const namespace = FPEditor.namespace;
+
 ExampleUI = function(app){
     this.app = app;
 
-    this.gui = new dat.GUI({
+    this.gui = new (window.dat || FreightPacker.Utils.dat).GUI({
         autoPlace: false
     });
 
     this.domElement = document.getElementById('fp-gui');
     this.domElement.appendChild(this.gui.domElement);
 
+    this.CreateSpaceController();
     this.CreateInputController();
 };
 
 Object.assign(ExampleUI.prototype, {
+    CreateSpaceController: function(){
+        var app = this.app;
+
+        var loadConfig = function(){
+            namespace.IO.GetFile(function(file){
+                var data = JSON.parse(file);
+                app.SetPackingSpace(data);
+            }, false);
+        };
+
+        var controller = {
+            LoadPSConfig: loadConfig
+        };
+
+        var spaceFolder = this.gui.addFolder('Packing space');
+        spaceFolder.open();
+        spaceFolder.add(controller, 'LoadPSConfig');
+    },
+
     CreateInputController: function(){
         var app = this.app;
         
-        var boxRange = {w:[1, 12], l:[1, 12], h:[1, 12]};
+        var boxRange = {w:[4, 20], l:[4, 20], h:[2, 16]};
         var boxInput = {width:0, length:0, height:0};
         
-        var entry;
         var inputUpdate = function(){
             app.BoxInputDimensionsUpdate(boxInput);
         };

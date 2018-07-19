@@ -6,7 +6,7 @@
   "scripts": {
     "compile": "webpack",
     "build": "SET NODE_ENV=production && webpack -p --config webpack/prod.config.js",
-    "test": "SET NODE_ENV=development && webpack --config webpack/dev.config.js",
+    "example": "SET NODE_ENV=development && webpack --config webpack/dev.config.js",
     "editor": "SET NODE_ENV=development && webpack --config webpack/editor.config.js"
   },
   "keywords": [

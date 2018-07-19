@@ -1,3 +1,6 @@
+
+const type = 'Dimensions';
+
 class Dimensions {
     constructor(width, length, height){
         if(width === undefined) width = 0;
@@ -16,7 +19,7 @@ class Dimensions {
 
     /**
      * Returns a THREE.Vector3 representation of the dimensions
-     * Beware of ordering: y=height, z=length and x=width
+     * Beware of ordering: x=width, y=height and z=length
      */
     get vec3(){
         return this._vec3.set(this.width, this.height, this.length);
@@ -37,11 +40,18 @@ class Dimensions {
 
     toJSON(){
         return {
-            type: 'Dimensions',
+            type: type,
             width: this.width,
             length: this.length,
             height: this.height
         };
+    }
+
+    static FromJSON(data){
+        if(data.type !== type) console.warn('Data supplied is not: ' + type);
+
+        var dimensions = new Dimensions(data.width, data.length, data.height);
+        return dimensions;
     }
 }
 

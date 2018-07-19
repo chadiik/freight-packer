@@ -37,7 +37,7 @@ class ConfigureSpaceStep extends WizardStep {
         
         var volume = new ContainingVolume();
         var container = new Container();
-        container.volumes.push(volume);
+        container.Add(volume);
         this.data.container = container;
         
     }

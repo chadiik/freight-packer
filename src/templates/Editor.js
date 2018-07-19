@@ -51,6 +51,10 @@ class Editor {
     static get instance(){
         return instance;
     }
+
+    static get namespace(){
+        return require('./Namespace');
+    }
 }
 
 global.FPEditor = Editor;

@@ -1,6 +1,8 @@
 
 const trimVariableRegex = new RegExp(/(?:\d|_|-)+$/);
 const twopi = 2 * Math.PI;
+const goldenRatio = (1 + Math.sqrt(5)) / 2;
+const goldenRatioConjugate = goldenRatio - 1;
 
 class Utils {
 
@@ -18,6 +20,12 @@ class Utils {
         return def;
     }
 
+    /**
+     * @template T
+     * @param {T} target 
+     * @param {Object} source 
+     * @returns {T}
+     */
     static AssignUndefined(target, source){
         if(target === undefined){
             target = {};
@@ -85,6 +93,19 @@ class Utils {
             g = a.y + b.y * Math.cos( twopi * (c.y * t + d.y) ),
             b = a.z + b.z * Math.cos( twopi * (c.z * t + d.z) );
         return color.set(r, g, b);
+    }
+
+    /**
+     * Returns the next value [0, 1] in the golden series
+     * @param {Number} base 
+     */
+    static GoldenSeries(base){
+		return (base + goldenRatioConjugate) % 1;
+    }
+
+    static VecToString(vector, fixed){
+        fixed = fixed || 8;
+        return vector.x.toFixed(fixed) + ', ' + vector.y.toFixed(fixed) + (vector.z !== undefined ? ', ' + vector.z.toFixed(fixed) + (vector.w !== undefined ? ', ' + vector.w.toFixed(fixed) : '') : '');
     }
 }
 

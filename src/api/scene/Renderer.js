@@ -22,18 +22,14 @@ class Renderer {
         this.renderer.setPixelRatio(this.pixelRatio);
         this.renderer.setClearColor(new THREE.Color(this.params.clearColor), 1);
 
-        this.UseCamera = function(camera){
-            this.camera = camera;
-        };
-
         this.ResizeRenderer = function(screen){
             var newWidth = screen.width * this.params.renderSizeMul;
             var newHeight = screen.height * this.params.renderSizeMul;
             this.renderer.setSize(newWidth, newHeight);
         };
 
-        this.Render = function(scene){
-            this.renderer.render(scene, this.camera);
+        this.Render = function(scene, camera){
+            this.renderer.render(scene, camera);
         };
         
         this.UpdateShadowMaps = function(){
@@ -45,9 +41,9 @@ class Renderer {
             this.renderer.domElement.style.height = Math.floor(screen.height) + 'px';
         };
 
-        this.ReconfigureViewport = function(screen){
-            this.camera.aspect = screen.width / screen.height;
-            this.camera.updateProjectionMatrix();
+        this.ReconfigureViewport = function(screen, camera){
+            camera.aspect = screen.width / screen.height;
+            camera.updateProjectionMatrix();
 
             this.ResizeRenderer(screen);
             this.ResizeDomElement(screen);

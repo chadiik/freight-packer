@@ -10,10 +10,6 @@ const buttonStyle = "\
     display: inline-block;\
 ";
 
-const docHandler = document.registerElement('wizard-action', {
-    prototype: Object.assign(Object.create(HTMLDivElement.prototype))
-});
-
 /**
  * @typedef {HTMLDivElement} WizardActionElement
  */

@@ -1,6 +1,11 @@
 
-import RaycastGroup from './RaycastGroup';
-import Utils from '../Utils';
+ /** keyboard api (http://dmauro.github.io/Keypress/)
+ * @typedef keyboard
+ * @property {function} on
+ * @property {function} unregister
+ */
+
+const defaultKeysListen = 'abcdefghijklmnopqrtsuvwxyz'.split('').concat(['ctlr', 'shift', 'alt']);
 
 class Input {
 
@@ -73,6 +78,9 @@ class Input {
         this.onResize = [];
         window.addEventListener('resize', this.OnResize.bind(this));
 
+        /**
+         * @type {keyboard}
+         */
         this.keyboard = new window.keypress.Listener();
         this.keyboard.on = this.keyboard.simple_combo;
         this.keyboard.unregister = this.keyboard.unregister_combo;
@@ -86,21 +94,9 @@ class Input {
         // remove listeners
     }
 
-    static get defaultKeysListen(){
-        if(Input._defaultKeysListen === undefined){
-            Input._defaultKeysListen = 'abcdefghijklmnopqrtsuvwxyz'.split('').concat(['ctlr', 'shift', 'alt']);
-        }
-        return Input._defaultKeysListen;
-    }
-
     ListenKeys(keys){
         if(keys === undefined) {
-            keys = this.defaultKeysListen;
-        }
-        else{
-            /*this.defaultKeysListen.forEach(key => {
-                if(keys.indexOf(key) === -1) keys.push(key);
-            });*/
+            keys = defaultKeysListen;
         }
 
         var scope = this;

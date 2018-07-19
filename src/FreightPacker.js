@@ -3,21 +3,44 @@ import App from './api/App';
 import CargoInput from './api/components/CargoInput';
 import Logger from './api/utils/cik/Logger';
 import Utils from './api/utils/cik/Utils';
+import PackingSpaceInput from './api/components/PackingSpaceInput';
+import UX from './api/UX';
 
-const defaultOptions = {
-	debug: false
+/**
+ * @typedef InitializationParams
+ * @property {Boolean} debug
+ * @property {import('./api/UX').UXParams} ux
+ */
+
+/**
+ * @type {InitializationParams}
+ */
+const defaultParams = {
+	debug: false,
+	ux: { // defaults from './api/UX'
+	}
 };
+
+const utils = {
+	dat: (window.dat || require("./api/utils/cik/config/datGUIConsole").default)
+};
+
+var instance;
 
 class FreightPacker {
 	/**
-	 * Constructor
-	 * @param {HTMLElement} containerDiv
-	 * @param {Object} options
+	 * Freight Packer API instance
+	 * @param {HTMLDivElement} containerDiv
+	 * @param {InitializationParams} params
 	 */
-	constructor( containerDiv, options ) {
+	constructor( containerDiv, params ) {
 
-		this.options = Utils.AssignUndefined(options, defaultOptions);
-		FreightPacker.DevSetup(this.options);
+		instance = this;
+
+		this.params = Utils.AssignUndefined(params, defaultParams);
+		FreightPacker.DevSetup(this.params);
+
+		this.ux = new UX(this.params.ux);
 
 		/**
 		 * Handles input of: description fields (label, etc.), dimensions and constraints
@@ -25,8 +48,15 @@ class FreightPacker {
 		 */
 		this.cargoInput = new CargoInput();
 
-		this.app = new App(containerDiv, {
-			boxInput: this.cargoInput
+		/**
+		 * Handles input of: packing spaces configurations and assets
+		 * @type {PackingSpaceInput}
+		 */
+		this.packingSpaceInput = new PackingSpaceInput();
+
+		new App(containerDiv, this.ux, {
+			cargoInput: this.cargoInput,
+			packingSpaceInput: this.packingSpaceInput
 		});
 	}
 
@@ -48,12 +78,25 @@ class FreightPacker {
 		});
 	}
 
-	static DevSetup(options){
-		if(options.debug) {
+	/**
+	 * @returns {FreightPacker}
+	 */
+	static get instance(){
+		return instance;
+	}
+
+	static DevSetup(params){
+		if(params.debug) {
 			Logger.active = true;
 			Logger.toConsole = true;
 			Logger.traceToConsole = true;
+
+			//require('./api/debug/Tester').testConfig();
 		}
+	}
+
+	static get Utils(){
+		return utils;
 	}
 
 }

@@ -10,6 +10,7 @@ class CargoEntry {
     Clone(entry){
         if( entry === undefined) entry = new CargoEntry();
         entry.active = this.active;
+        
         entry.properties = {};
         entry.descriptions = [];
         return entry;

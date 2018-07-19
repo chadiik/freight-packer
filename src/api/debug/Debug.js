@@ -1,6 +1,7 @@
-import FreightPacker from './FreightPacker';
 
 class Debug {
 
     
 }
+
+export default Debug;

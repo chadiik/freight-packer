@@ -3,9 +3,11 @@ import Logger from '../utils/cik/Logger';
 import Signaler from '../utils/cik/Signaler';
 import BoxEntry from './box/BoxEntry';
 
-var updated = 'updated',
-    aborted = 'aborted',
-    completed = 'completed';
+const signals = {
+    updated: 'updated',
+    aborted: 'aborted',
+    completed: 'completed'
+};
 
 /**
  * Cubic volumes entry
@@ -26,19 +28,19 @@ class CargoInput extends Signaler {
         this.entry.dimensions.Set(params.width, params.length, params.height);
         Logger.Trace('entry updated', this.entry);
         this.entry.active = true;
-        this.Dispatch(updated, this.entry);
+        this.Dispatch(signals.updated, this.entry);
     }
 
     Abort(){
         this.entry.active = false;
         this.entry.Reset();
         Logger.Trace('entry deleted');
-        this.Dispatch(aborted);
+        this.Dispatch(signals.aborted);
     }
 
     Complete(){
         if( this.entry.active ){
-            this.Dispatch(completed, this.entry);
+            this.Dispatch(signals.completed, this.entry);
             this.entry.Reset();
         }
         return this.entry;
@@ -46,6 +48,10 @@ class CargoInput extends Signaler {
 
     get currentEntry(){
         return this.entry;
+    }
+
+    static get signals(){
+        return signals;
     }
 }
 

@@ -2,6 +2,13 @@
 // enable vscode intellisense on FreightPacker
 if(false){ var FreightPacker = require('../src/FreightPacker').default; }
 
+/**
+ * @typedef Dimensions
+ * @property {Number} width
+ * @property {Number} length
+ * @property {Number} height
+ */
+
 var cargoInputParams = {
     width: 0,
     length: 0,
@@ -16,8 +23,15 @@ class Example {
         console.log('Freight Packer API Example');
 
         var containerDiv = document.getElementById('fp-view');
-        var options = {
-            debug: true
+
+        /**
+         * @type {import('../src/FreightPacker').InitializationParams}
+         */
+        var params = {
+            debug: true,
+            ux: {
+                configure: true
+            }
         };
 
         /**
@@ -28,7 +42,7 @@ class Example {
         var scope = this;
         FreightPacker.CheckRequirements().then(
             () => { // success
-                scope.api = new FreightPacker(containerDiv, options);
+                scope.api = new FreightPacker(containerDiv, params);
                 new ExampleUI(scope);
             },
             (errorMsg) => { // failure
@@ -37,7 +51,15 @@ class Example {
         );
     }
 
+    // Packing space
+    SetPackingSpace(jsonObject){
+        this.api.packingSpaceInput.Load(jsonObject);
+    }
+
     // Box input
+    /**
+     * @param {Dimensions} dimensions 
+     */
     BoxInputDimensionsUpdate(dimensions){
         Object.assign(cargoInputParams, dimensions);
         this.api.cargoInput.Update(cargoInputParams);

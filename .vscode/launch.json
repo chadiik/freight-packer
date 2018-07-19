@@ -12,18 +12,19 @@
             "request": "attach",
             "name": "Attach to Chrome",
             "port": 9222,
-            "url": "http://localhost:2017/chadiik/FreightPacker/FreightPackerAPI/editor/",
-            "webRoot": "${workspaceFolder}/editor",
+            "url": "http://localhost:${config:debug.attachPort}/chadiik/FreightPacker/FreightPackerAPI/${config:debug.target}/",
+            "webRoot": "${workspaceFolder}/${config:debug.target}",
             "sourceMaps": true,
+            "preLaunchTask": "npm: ${config:debug.target}"
         },
         {
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome",
-            "url": "http://localhost:2017/chadiik/FreightPacker/FreightPackerAPI/editor/",
-            "webRoot": "${workspaceFolder}/editor",
+            "url": "http://localhost:2017/chadiik/FreightPacker/FreightPackerAPI/${config:debug.target}/",
+            "webRoot": "${workspaceFolder}/${config:debug.target}",
             "sourceMaps": true,
-            "preLaunchTask": "npm: editor"
+            "preLaunchTask": "npm: ${config:debug.target}"
         },
         
     ]

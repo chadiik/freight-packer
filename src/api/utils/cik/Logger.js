@@ -1,7 +1,16 @@
+import Utils from "./Utils";
 
-var tracing = 0,
-    standard = 1,
-    warning = 2;
+const logType = {
+    tracing: 0,
+    standard: 1,
+    warning: 2
+};
+
+const defaultPrintFilter = {
+    0: true,
+    1: true,
+    2: true
+};
 
 var messages = [];
 
@@ -50,7 +59,7 @@ class Logger {
 
     static Trace(...args){
         if(this._active){
-            var message = new Message(tracing, ...args);
+            var message = new Message(logType.tracing, ...args);
             this.AddLog(message);
             if(this._toConsole || this._traceToConsole){
                 console.groupCollapsed(...args);
@@ -62,29 +71,24 @@ class Logger {
 
     static Log(...args){
         if(this._active){
-            var message = new Message(standard, ...args);
+            var message = new Message(logType.standard, ...args);
             this.AddLog(message);
             if(this._toConsole){
-                console.groupCollapsed(...args);
-                console.trace('stack');
-                console.groupEnd();
+                console.log(...args);
             }
         }
     }
 
     static Warn(...args){
         if(this._active){
-            var message = new Message(warning, ...args);
+            var message = new Message(logType.warning, ...args);
             this.AddLog(message);
             if(this._toConsole) console.warn(...args);
         }
     }
 
     static Print(filter){
-        if(filter === undefined){
-            filter = {};
-            filter[tracing] = filter[standard] = filter[warning] = true;
-        }
+        Utils.AssignUndefined(filter, defaultPrintFilter);
 
         var output = 'Log:\n';
         messages.forEach(message => {

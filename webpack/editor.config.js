@@ -3,12 +3,8 @@ const merge = require('webpack-merge');
 const baseConfig = require('./base.config.js');
 //const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 
-module.exports = merge(baseConfig, {
-    devtool: 'source-map',
-
-    entry: [
-        './src/templates/Editor.js',
-    ],
+var config = merge(baseConfig, {
+    devtool: 'cheap-source-map',
   
     output: {
         path: path.resolve(__dirname, '../editor'),
@@ -16,3 +12,9 @@ module.exports = merge(baseConfig, {
     }
 
 });
+
+config.entry = [
+    './src/templates/Editor.js',
+];
+
+module.exports = config;
