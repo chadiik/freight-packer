@@ -22,7 +22,8 @@ const defaultParams = {
 };
 
 const utils = {
-	dat: (window.dat || require("./api/utils/cik/config/datGUIConsole").default)
+	dat: (window.dat || require("./api/utils/cik/config/datGUIConsole").default),
+	Signaler: require("./api/utils/cik/Signaler").default
 };
 
 var instance;

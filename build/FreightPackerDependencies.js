@@ -3322,6 +3322,9 @@ THREE.OrbitControls = function (object, domElement) {
 		// Set to false to disable this control
 		this.enabled = true;
 
+		// Rect areas that are ignored
+		this.ignoredAreas = [];
+
 		// "target" sets the location of focus, where the object orbits around
 		this.target = new THREE.Vector3();
 
@@ -3909,9 +3912,22 @@ THREE.OrbitControls = function (object, domElement) {
 				scope.update();
 		}
 
-		function handleTouchEnd(event) {}
+		function handleTouchEnd(event) {
 
-		//console.log( 'handleTouchEnd' );
+				//console.log( 'handleTouchEnd' );
+
+		}
+
+		function checkIgnoredAreas(event) {
+
+				var rects = scope.ignoredAreas;
+				for (var i = 0; i < rects.length; i++) {
+
+						if (rects[i].ContainsPoint(event.clientX, event.clientY)) return true;
+				}
+
+				return false;
+		}
 
 		//
 		// event handlers - FSM: listen for events and reset state
@@ -3919,7 +3935,7 @@ THREE.OrbitControls = function (object, domElement) {
 
 		function onMouseDown(event) {
 
-				if (scope.enabled === false) return;
+				if (scope.enabled === false || checkIgnoredAreas(event)) return;
 
 				event.preventDefault();
 
@@ -4038,7 +4054,7 @@ THREE.OrbitControls = function (object, domElement) {
 
 		function onTouchStart(event) {
 
-				if (scope.enabled === false) return;
+				if (scope.enabled === false || checkIgnoredAreas(event)) return;
 
 				switch (event.touches.length) {
 

@@ -10,7 +10,7 @@ const brightnessRange = [.4, .6];
 var hueBase = Math.random();
 function nextColor(){
     let color = new THREE.Color();
-    color.setHSL(hueBase, .8, brightnessRange[0] + Math.random() * (brightnessRange[1] - brightnessRange[0]));
+    color.setHSL(hueBase, 1, brightnessRange[0] + Math.random() * (brightnessRange[1] - brightnessRange[0]));
     hueBase = Utils.GoldenSeries(hueBase);
     return color;
 }

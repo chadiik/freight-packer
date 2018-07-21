@@ -32,7 +32,7 @@ class SceneSetup {
         this.sceneRenderer = new Renderer(rendererParams);
         this.domElement.appendChild(this.sceneRenderer.renderer.domElement);
 
-        var cameraParams = {fov: 30, aspect: 1, near: 0.01 * units, far: 1000 * units, id: 'app'};
+        var cameraParams = {fov: 30, aspect: 1, near: 0.01 * units, far: 4000 * units, id: 'app'};
         this.cameraController = new Camera(cameraParams);
         this.cameraController.OrbitControls(this.sceneRenderer.renderer.domElement);
 
@@ -47,14 +47,14 @@ class SceneSetup {
 
         // hud
         var hudParams = Object.assign({}, controllerParams);
-        var hudCameraParams = Object.assign({}, cameraParams);
-        hudCameraParams.id = 'hud';
+        var hudCameraParams = Utils.AssignUndefined({fov: 15, id: 'hud'}, cameraParams);
         this.hud = new HUDView(hudParams, hudCameraParams);
-        this.sceneRenderer.renderer.autoClear = false;
         var hudCameraRef = this.hud.cameraController.camera;
         this.input.onResize.push(function(screen){
-            sceneRendererRef.ReconfigureViewport(screen, hudCameraRef);
+            sceneRendererRef.AdjustCamera(screen, hudCameraRef);
         });
+
+        this.sceneRenderer.renderer.autoClear = false;
 
         // /hud
 
@@ -105,6 +105,7 @@ class SceneSetup {
 
                 scope.input.Update();
                 scope.cameraController.Update();
+                scope.hud.cameraController.Update();
 
                 sceneRenderer.renderer.clear();
                 sceneRenderer.Render(scene1, camera1);
@@ -114,6 +115,8 @@ class SceneSetup {
         }
 
         this.Update();
+        this.input.screenNeedsUpdate = true;
+        this.input.cameraNeedsUpdate = true;
     }
 
     Pause(){
@@ -164,11 +167,11 @@ class SceneSetup {
         var control = {
             toggleOrbitOwner: function(){
                 if(toggle){
-                    scope.cameraController.Hold();
-                    hud.cameraController.Release();
                     if(!hud.cameraController.orbitControls){
                         hud.cameraController.OrbitControls(scope.sceneRenderer.renderer.domElement);
                     }
+                    scope.cameraController.Hold();
+                    hud.cameraController.Release();
                 }
                 else{
                     scope.cameraController.Release();
@@ -181,7 +184,7 @@ class SceneSetup {
                 smart.config.Update();
                 console.group('hudCam properties');
                 console.log('position', Utils.VecToString(hud.cameraController.position, 1));
-                console.log('rotation', Utils.VecToString(hud.cameraController.rotation, 1));
+                console.log('rotation', Utils.VecToString(hud.cameraController.rotation, 3));
                 console.groupEnd();
             }
         };
@@ -198,7 +201,6 @@ class SceneSetup {
             ...Config.Unroll('#hudCam.position', 'x', 'y', 'z'), 
             ...rotationControllers
         );
-        smart.Show();
 
         this.input.keyboard.on('s', function(){
             smart.Show();

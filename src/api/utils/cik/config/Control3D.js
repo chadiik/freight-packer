@@ -30,15 +30,18 @@ class Control3D {
             child.renderOrder = 2;
         });
 
-        this.Hide();
+        this.visible = false;
     }
 
-    Hide(){
-        this.control.visible = false;
+    get visible(){
+        return this.control.visible;
     }
 
-    Show(){
-        this.control.visible = true;
+    set visible(value){
+        this.control.visible = value;
+        if(value === false){
+            this.Detach();
+        }
     }
 
     Attach(target){
@@ -47,6 +50,15 @@ class Control3D {
 
     Detach(){
         this.control.detach();
+    }
+
+    Toggle(target){
+        if(this.control.object){
+            this.control.detach();
+        }
+        else{
+            this.control.attach(target);
+        }
     }
 
     Update(){

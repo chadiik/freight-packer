@@ -1,29 +1,30 @@
 
-// enable vscode intellisense on FreightPacker
+// enable vscode intellisense
 if(false){ var FreightPacker = require('../src/FreightPacker').default; }
 
 /**
- * @typedef Dimensions
+ * @typedef IDimensions
  * @property {Number} width
  * @property {Number} length
  * @property {Number} height
  */
 
-var cargoInputParams = {
-    width: 0,
-    length: 0,
-    height: 0,
-    fields: {
-        label: '-'
-    }
-};
-
 class Example {
     constructor(){
         console.log('Freight Packer API Example');
 
-        var containerDiv = document.getElementById('fp-view');
+        var scope = this;
+        FreightPacker.CheckRequirements().then(
+            () => { // success
+                scope.Start();
+            },
+            (errorMsg) => { // failure
+                console.warn('FreightPacker requirements not met, error:', errorMsg);
+            }
+        );
+    }
 
+    Start(){
         /**
          * @type {import('../src/FreightPacker').InitializationParams}
          */
@@ -33,22 +34,17 @@ class Example {
                 configure: true
             }
         };
+        var containerDiv = document.getElementById('fp-view');
+        
+        this.api = new FreightPacker(containerDiv, params);
+        this.boxEntry = this.api.cargoInput.CreateBoxEntry();
 
-        /**
-         * @type {FreightPacker}
-         */
-        this.api;
-
-        var scope = this;
-        FreightPacker.CheckRequirements().then(
-            () => { // success
-                scope.api = new FreightPacker(containerDiv, params);
-                new ExampleUI(scope);
-            },
-            (errorMsg) => { // failure
-                console.warn('FreightPacker requirements not met', errorMsg);
-            }
-        );
+        var ui = new ExampleUI();
+        var signals = ExampleUI.signals;
+        ui.On(signals.loadPSConfig, this.SetPackingSpace.bind(this));
+        ui.On(signals.boxInputDimensionsUpdate, this.BoxInputDimensionsUpdate.bind(this));
+        ui.On(signals.boxInputComplete, this.BoxInputComplete.bind(this));
+        ui.On(signals.boxInputAbort, this.BoxInputAbort.bind(this));
     }
 
     // Packing space
@@ -58,16 +54,16 @@ class Example {
 
     // Box input
     /**
-     * @param {Dimensions} dimensions 
+     * @param {IDimensions} dimensions 
      */
     BoxInputDimensionsUpdate(dimensions){
-        Object.assign(cargoInputParams, dimensions);
-        this.api.cargoInput.Update(cargoInputParams);
+        this.boxEntry.dimensions.Set(dimensions.width, dimensions.length, dimensions.height);
+        this.api.cargoInput.Update(this.boxEntry);
     }
 
     BoxInputComplete(){
-        var dimensions = this.api.cargoInput.currentEntry.dimensions.Clone(); // Get dimensions
-        this.api.cargoInput.Complete();
+        var dimensions = this.boxEntry.dimensions.Clone(); // Get dimensions
+        this.api.cargoInput.Complete(this.boxEntry);
 
         this.BoxInputDimensionsUpdate(dimensions); // Start new entry 'session' with same values
     }

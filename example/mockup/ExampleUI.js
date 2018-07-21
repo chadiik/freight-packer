@@ -1,29 +1,40 @@
 
-if(false){ var FreightPacker = require('../src/FreightPacker').default; }
+// enable vscode intellisense on FreightPacker
+if(false){ var FreightPacker = require('../../src/FreightPacker').default; }
+
 const namespace = FPEditor.namespace;
 
-ExampleUI = function(app){
-    this.app = app;
-
-    this.gui = new (window.dat || FreightPacker.Utils.dat).GUI({
-        autoPlace: false
-    });
-
-    this.domElement = document.getElementById('fp-gui');
-    this.domElement.appendChild(this.gui.domElement);
-
-    this.CreateSpaceController();
-    this.CreateInputController();
+const signals = {
+    loadPSConfig: 'loadPSConfig',
+    boxInputDimensionsUpdate: 'boxInputDimensionsUpdate',
+    boxInputComplete: 'boxInputComplete',
+    boxInputAbort: 'boxInputAbort'
 };
 
-Object.assign(ExampleUI.prototype, {
-    CreateSpaceController: function(){
-        var app = this.app;
+console.log(FreightPacker.Utils);
+
+class ExampleUI extends FreightPacker.Utils.Signaler {
+    constructor(){
+        super();
+
+        this.gui = new (window.dat || FreightPacker.Utils.dat).GUI({
+            autoPlace: false
+        });
+
+        this.domElement = document.getElementById('fp-gui');
+        this.domElement.appendChild(this.gui.domElement);
+
+        this.CreateSpaceController();
+        this.CreateInputController();
+    }
+
+    CreateSpaceController(){
+        var scope = this;
 
         var loadConfig = function(){
             namespace.IO.GetFile(function(file){
                 var data = JSON.parse(file);
-                app.SetPackingSpace(data);
+                scope.Dispatch(ExampleUI.signals.loadPSConfig, data);
             }, false);
         };
 
@@ -34,22 +45,22 @@ Object.assign(ExampleUI.prototype, {
         var spaceFolder = this.gui.addFolder('Packing space');
         spaceFolder.open();
         spaceFolder.add(controller, 'LoadPSConfig');
-    },
+    }
 
-    CreateInputController: function(){
-        var app = this.app;
+    CreateInputController(){
+        var scope = this;
         
         var boxRange = {w:[4, 20], l:[4, 20], h:[2, 16]};
         var boxInput = {width:0, length:0, height:0};
         
         var inputUpdate = function(){
-            app.BoxInputDimensionsUpdate(boxInput);
+            scope.Dispatch(ExampleUI.signals.boxInputDimensionsUpdate, boxInput);
         };
         var complete = function(){
-            app.BoxInputComplete();
+            scope.Dispatch(ExampleUI.signals.boxInputComplete);
         };
         var abort = function(){
-            app.BoxInputAbort();
+            scope.Dispatch(ExampleUI.signals.boxInputAbort);
         };
 
         var p = 4;
@@ -57,6 +68,7 @@ Object.assign(ExampleUI.prototype, {
             controller.Width    = Math.floor((boxRange.w[0] + Math.random() * (boxRange.w[1] - boxRange.w[0])) * p) / p;
             controller.Length   = Math.floor((boxRange.l[0] + Math.random() * (boxRange.l[1] - boxRange.l[0])) * p) / p;
             controller.Height   = Math.floor((boxRange.h[0] + Math.random() * (boxRange.h[1] - boxRange.h[0])) * p) / p;
+            complete();
         };
         var controller = {
             Random: randomInput,
@@ -90,4 +102,8 @@ Object.assign(ExampleUI.prototype, {
         controller.Random();
         
     }
-});
+
+    static get signals(){
+        return signals;
+    }
+}

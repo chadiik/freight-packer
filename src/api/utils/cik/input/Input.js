@@ -1,10 +1,36 @@
 
+/**
+ * @typedef {Object} IScreen
+ * @property {Number} x
+ * @property {Number} y
+ * @property {Number} width
+ * @property {Number} height
+ * @property {Number} left
+ * @property {Number} right
+ * @property {Number} bottom
+ * @property {Number} top
+ */
+
+/**
+ * @typedef {Object} DragEvent
+ * @property {MouseEvent} mouseEvent
+ * @property {Number} sx - Start screen x
+ * @property {Number} sy - Start screen y
+ * @property {Number} x - Current screen x
+ * @property {Number} y - Current screen y
+ * @property {Number} dx - Delta x
+ * @property {Number} dy - Delta y
+ * @property {Number} distance - Distance (current - start)
+ * @property {Number} minDist - Minimum distance to raise onDrag
+ */
+
  /** keyboard api (http://dmauro.github.io/Keypress/)
  * @typedef keyboard
  * @property {function} on
  * @property {function} unregister
  */
 
+const epsilon = Math.pow(2, -52);
 const defaultKeysListen = 'abcdefghijklmnopqrtsuvwxyz'.split('').concat(['ctlr', 'shift', 'alt']);
 
 class Input {
@@ -34,6 +60,9 @@ class Input {
         this.mouseViewport = new THREE.Vector2();
         this.mouseDelta = new THREE.Vector2();
         this.lastMouseDownTime = 0;
+        /**
+         * @type {IScreen}
+         */
         this.screen = {};
         this.ComputeScreen();
 
@@ -55,6 +84,30 @@ class Input {
         this.onRightClick = [];
         this.onDoubleClick = [];
         this.onClick = [];
+        this.onDrag = [];
+
+        /**
+         * @type {DragEvent}
+         */
+        this.onDragEvent = {
+            mouseEvent: undefined,
+            sx: undefined, sy: undefined,
+            x: 0, y: 0,
+            dx: 0, dy: 0,
+            distance: 0,
+            minDist: 4 // pixels 
+        };
+        var onDragStatus = false;
+        Object.defineProperty(this.onDragEvent, '_status', {
+            get: function(){
+                return onDragStatus;
+            },
+            set: function(value){
+                onDragStatus = value;
+                this.sx = this.sy = undefined;
+                this.dx = this.dy = 0;
+            }
+        })
 
         this.doubleClickTime = .2;
         
@@ -149,6 +202,7 @@ class Input {
             }
 
             this.lastMouseDownTime = now;
+            this.onDragEvent._status = true;
 
             var scope = this;
             this._dridMouseDown = this.DelayedAction(
@@ -199,6 +253,34 @@ class Input {
             if(noMouseDrag){
                 this.OnClick(mouseEvent);
             }
+
+            this.onDragEvent._status = false;
+        }
+    }
+
+    OnMouseDrag(){
+        var p = this.onDragEvent;
+        if(p._status){
+            let m = this.mouseScreen;
+            if(p.sx === undefined) p.sx = p.x = m.x;
+            if(p.sy === undefined) p.sy = p.y = m.y;
+
+            let vx = p.x - p.sx,
+                vy = p.y - p.sy;
+            p.distance = Math.sqrt(vx * vx + vy * vy);
+            if(p.distance > p.minDist && 
+                (Math.abs(p.dx) > epsilon || Math.abs(p.dy) > epsilon)
+            ){
+                for(var i = 0; i < this.onDrag.length; i++){
+                    this.onDrag[i](p);
+                }
+            }
+
+            p.dx = p.x - m.x;
+            p.dy = p.y - m.y;
+
+            p.x = m.x;
+            p.y = m.y;
         }
     }
 
@@ -223,6 +305,7 @@ class Input {
     OnMouseMove(mouseEvent){
         this._mouse.x = THREE.Math.clamp(mouseEvent.clientX - this.screen.left, 0, this.screen.width);
         this._mouse.y = THREE.Math.clamp(mouseEvent.clientY - this.screen.top, 0, this.screen.height);
+        this.onDragEvent.mouseEvent = mouseEvent;
         this.ExecuteDelayedMD(mouseEvent);
     }
 
@@ -280,6 +363,8 @@ class Input {
                 update.last = now;
             }
         }
+
+        this.OnMouseDrag();
     }
 
     Update25(){

@@ -1,4 +1,6 @@
 
+
+
 const defaultGeometry = new THREE.CubeGeometry(1, 1, 1);
 const defaultMeshMaterial = new THREE.MeshStandardMaterial({color: 0xaaaaaa});
 

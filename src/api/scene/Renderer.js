@@ -41,9 +41,13 @@ class Renderer {
             this.renderer.domElement.style.height = Math.floor(screen.height) + 'px';
         };
 
-        this.ReconfigureViewport = function(screen, camera){
+        this.AdjustCamera = function(screen, camera){
             camera.aspect = screen.width / screen.height;
             camera.updateProjectionMatrix();
+        };
+
+        this.ReconfigureViewport = function(screen, camera){
+            this.AdjustCamera(screen, camera);
 
             this.ResizeRenderer(screen);
             this.ResizeDomElement(screen);

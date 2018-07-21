@@ -17,16 +17,22 @@ class CargoInput extends Signaler {
     constructor(){
         super();
         
+        /** Do not modify directly, use CargoInput.Update instead
+         * @ignore
+         */
         this.entry = new BoxEntry();
     }
 
+    CreateBoxEntry(){
+        return new BoxEntry();
+    }
+
     /**
-     * Starts a new entry 'session', or, updates the current entry
-     * @param {Object} params 
+     * Updates the current entry
+     * @param {BoxEntry} entry 
      */
-    Update(params){
-        this.entry.dimensions.Set(params.width, params.length, params.height);
-        Logger.Trace('entry updated', this.entry);
+    Update(entry){
+        this.entry.Copy(entry);
         this.entry.active = true;
         this.Dispatch(signals.updated, this.entry);
     }
@@ -34,19 +40,17 @@ class CargoInput extends Signaler {
     Abort(){
         this.entry.active = false;
         this.entry.Reset();
-        Logger.Trace('entry deleted');
         this.Dispatch(signals.aborted);
     }
 
-    Complete(){
-        if( this.entry.active ){
-            this.Dispatch(signals.completed, this.entry);
-            this.entry.Reset();
-        }
-        return this.entry;
-    }
-
-    get currentEntry(){
+    /**
+     * Add entry
+     * @param {BoxEntry} entry 
+     */
+    Complete(entry){
+        this.entry.Copy(entry);
+        this.Dispatch(signals.completed, this.entry);
+        this.entry.Reset();
         return this.entry;
     }
 

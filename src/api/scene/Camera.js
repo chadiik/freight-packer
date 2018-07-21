@@ -133,6 +133,13 @@ class Camera {
             this.controls.Release();
         }
     }
+
+    /**
+     * @returns {Boolean}
+     */
+    get enabled(){
+        return this.controls.enabled;
+    }
 }
 
 export default Camera;

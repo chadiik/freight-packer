@@ -1,7 +1,13 @@
 
 const type = 'Dimensions';
+const epsilon = Math.pow(2, -52);
 
 class Dimensions {
+    /**
+     * @param {Number} width 
+     * @param {Number} length 
+     * @param {Number} height 
+     */
     constructor(width, length, height){
         if(width === undefined) width = 0;
         if(length === undefined) length = 0;
@@ -11,6 +17,11 @@ class Dimensions {
         this._vec3 = new THREE.Vector3();
     }
 
+    /**
+     * @param {Number} width 
+     * @param {Number} length 
+     * @param {Number} height 
+     */
     Set(width, length, height){
         this.width = width;
         this.length = length;
@@ -27,6 +38,17 @@ class Dimensions {
 
     get volume(){
         return this.width * this.height * this.length;
+    }
+
+    Compare(dimensions){
+        var d = this.volume - dimensions.volume;
+        if(d < -epsilon) return -1;
+        if(d > epsilon) return 1;
+        return 0;
+    }
+
+    Copy(dimensions){
+        this.Set(dimensions.width, dimensions.length, dimensions.height);
     }
 
     Clone(){

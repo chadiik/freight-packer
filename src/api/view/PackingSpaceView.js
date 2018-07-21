@@ -18,7 +18,7 @@ class PackingSpaceView{
      * @param {Container} container 
      */
     Add(container){
-        Logger.Trace('Adding container: ' + container.ToString() + ' to view', container);
+        Logger.Log('Adding container: ' + container.ToString() + ' to view', container);
         var containerView = ContainerView.Request(container);
         this.view.add(containerView.view);
         this.containers.push(containerView);
