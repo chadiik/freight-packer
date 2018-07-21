@@ -1,9 +1,15 @@
 import Utils from "./Utils";
 
 const logType = {
-    tracing: 0,
-    standard: 1,
-    warning: 2
+    trace: 0,
+    normal: 1,
+    warn: 2
+};
+
+const logTypeLabel = {
+    0: 'Trace',
+    1: 'Log',
+    2: 'Warn'
 };
 
 const defaultPrintFilter = {
@@ -12,30 +18,32 @@ const defaultPrintFilter = {
     2: true
 };
 
+var programStartTime = Date.now();
 var messages = [];
 
 class Message {
     constructor(type, ...args){
         this.type = type;
-        var content = [];
+        this.timestamp = Date.now();
+        this.content = [];
         args.forEach(arg => {
             if(typeof arg === 'string'){
-                content.push(arg);
+                this.content.push(arg);
             }
             else{
                 try{
-                    var json = JSON.parse(JSON.stringify(arg));
-                    content.push(json);
+                    var json = JSON.stringify(arg).substr(0, 2000);
+                    this.content.push(json);
                 }
                 catch(err){
-                    content.push(err);
+                    this.content.push('  parse error: ' + err);
                 }
             }
         });
     }
 
     ToString(){
-
+        return ((this.timestamp - programStartTime) / 1000).toFixed(2) + ' ' + logTypeLabel[this.type];
     }
 }
 
@@ -59,7 +67,7 @@ class Logger {
 
     static Trace(...args){
         if(this._active){
-            var message = new Message(logType.tracing, ...args);
+            var message = new Message(logType.trace, ...args);
             this.AddLog(message);
             if(this._toConsole || this._traceToConsole){
                 console.groupCollapsed(...args);
@@ -71,7 +79,7 @@ class Logger {
 
     static Log(...args){
         if(this._active){
-            var message = new Message(logType.standard, ...args);
+            var message = new Message(logType.normal, ...args);
             this.AddLog(message);
             if(this._toConsole){
                 console.log(...args);
@@ -81,7 +89,7 @@ class Logger {
 
     static Warn(...args){
         if(this._active){
-            var message = new Message(logType.warning, ...args);
+            var message = new Message(logType.warn, ...args);
             this.AddLog(message);
             if(this._toConsole) console.warn(...args);
         }

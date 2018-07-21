@@ -23,35 +23,59 @@ class CargoInput extends Signaler {
         this.entry = new BoxEntry();
     }
 
+    /** Creates a new BoxEntry, required for inputs */
     CreateBoxEntry(){
         return new BoxEntry();
     }
 
-    /**
-     * Updates the current entry
+    /** Shows/updates entry 3D display
      * @param {BoxEntry} entry 
+     * @returns {Boolean}
      */
-    Update(entry){
-        this.entry.Copy(entry);
-        this.entry.active = true;
-        this.Dispatch(signals.updated, this.entry);
+    Show(entry){
+        if(BoxEntry.Assert(entry)){
+            try{
+                this.Dispatch(signals.updated, entry);
+                return true;
+            }
+            catch(error){
+                Logger.Warn('Error in Cargo.Input.Show, error/entry:', error, entry);
+            }
+
+            return false;
+        }
+
+        Logger.Warn('BoxEntry.Assert failed in Cargo.Input.Show, entry:', entry);
+        return false;
     }
 
-    Abort(){
-        this.entry.active = false;
-        this.entry.Reset();
+    /** Hides entry 3D display */
+    Hide(){
         this.Dispatch(signals.aborted);
     }
 
-    /**
-     * Add entry
-     * @param {BoxEntry} entry 
+    /** Adds a new entry and obtain its uid
+     * @param {BoxEntry} entry
+     * @returns {Number|Boolean} uid or false if error
      */
-    Complete(entry){
-        this.entry.Copy(entry);
-        this.Dispatch(signals.completed, this.entry);
-        this.entry.Reset();
-        return this.entry;
+    Add(entry){
+        if(BoxEntry.Assert(entry)){
+            try{
+                var commitedEntry = entry.Clone();
+                var uid = commitedEntry.SetUID();
+
+                this.Dispatch(signals.completed, commitedEntry);
+                return uid;
+            }
+            catch(error){
+                Logger.Warn('Error in Cargo.Input.Add, error/entry:', error, entry);
+            }
+
+            return false;
+        }
+
+        Logger.Warn('BoxEntry.Assert failed in Cargo.Input.Add, entry:', entry);
+        return false;
     }
 
     static get signals(){

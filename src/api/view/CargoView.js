@@ -1,16 +1,16 @@
-import Cargo from "../packer/Cargo";
+import CargoEntry from "../components/common/CargoEntry";
+
 
 const dummyGeometry = new THREE.SphereBufferGeometry(1, 4, 4);
 const dummyMaterial = new THREE.MeshStandardMaterial({color: 0xff0000, transparent: true, opacity: .5});
 
 class CargoView {
     /**
-     * 
-     * @param {Cargo} cargo 
+     * @param {CargoEntry} entry 
      */
-    constructor(cargo){
+    constructor(entry){
 
-        this.cargo = cargo;
+        this.entry = entry;
 
         /**
          * @type {THREE.Object3D}
@@ -26,8 +26,11 @@ class CargoView {
         this.view.position.copy(value);
     }
 
-    static Dummy(cargo){
-        var cargoView = new CargoView(cargo);
+    /**
+     * @param {CargoEntry} entry 
+     */
+    static Dummy(entry){
+        var cargoView = new CargoView(entry);
         cargoView.view = new THREE.Mesh(dummyGeometry, dummyMaterial);
         return cargoView;
     }

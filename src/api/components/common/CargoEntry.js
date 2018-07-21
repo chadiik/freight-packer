@@ -5,13 +5,22 @@ class CargoEntry {
     constructor(){
         this.type = 'CargoEntry';
 
-        this.active = false;
+        this.quantity = 0;
         this.properties = {};
+        this.uid = '';
 
         /**
          * @type {Map<string, TextField>}
          */
         this.descriptions = new Map();
+    }
+
+    /**
+     * @param {string} [uid] - You'll rarely need to provide this
+     */
+    SetUID(uid){
+        this.uid = uid || THREE.Math.generateUUID();
+        return this.uid;
     }
 
     Copy(entry){

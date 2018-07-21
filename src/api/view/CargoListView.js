@@ -1,11 +1,9 @@
-import Cargo from "../packer/Cargo";
 import Logger from "../utils/cik/Logger";
-import BoxEntry from "../components/box/BoxEntry";
 import CargoBoxView from "./CargoBoxView";
 import CargoView from "./CargoView";
 import FreightPacker from "../../FreightPacker";
-import Debug from "../debug/Debug";
 import Signaler from "../utils/cik/Signaler";
+import CargoGroup from "../packer/CargoGroup";
 
 /**
  * @typedef SortResult
@@ -25,60 +23,57 @@ class CargoListView extends Signaler {
     constructor(){
         super();
 
-        this.view = new THREE.Object3D();
+        this.view;
+        this.templatesView = new THREE.Object3D();
 
         /**
-         * @type {Map<Cargo, CargoView>}
+         * @type {Map<CargoGroup, CargoView>}
          */
-        this.cargoViews = new Map();
+        this.cargoTemplateViews = new Map();
     }
 
     /**
      * 
-     * @param {Cargo} cargo 
+     * @param {CargoGroup} group 
      */
-    Add(cargo){
-        Logger.Log('Adding cargo #' + this.cargoViews.size + ': ' + cargo.ToString() + ' to view', cargo);
-        var cargoView;
-        switch(cargo.entry.type){
+    Add(group){
+        Logger.Log('Adding cargo group #' + this.cargoTemplateViews.size + ': ' + group.ToString() + ' to view', group);
+        var templateCargoView;
+        switch(group.entry.type){
             case 'BoxEntry': {
-                /**
-                 * @type {BoxEntry}
-                 */
-                let boxEntry = cargo.entry;
-                cargoView = new CargoBoxView(cargo);
+                templateCargoView = new CargoBoxView(group.entry);
                 
                 break;
             }
 
             default :
-                cargoView = CargoView.Dummy(cargo);
-                Logger.Warn('cargo.entry.type not supported by viewer,', cargo);
+                templateCargoView = CargoView.Dummy(group.entry);
+                Logger.Warn('group.entry.type not supported by viewer,', group);
                 break;
         }
 
-        this.cargoViews.set(cargo, cargoView);
-        this.view.add(cargoView.view);
+        this.cargoTemplateViews.set(group, templateCargoView);
+        this.templatesView.add(templateCargoView.view);
 
         this.Sort();
     }
 
     /**
      * 
-     * @param {Cargo} cargo 
+     * @param {CargoGroup} group 
      */
-    Remove(cargo){
-        var cargoView = this.cargoViews.get(cargo);
-        if(cargoView){
-            this.cargoViews.delete(cargo);
-            this.view.remove(cargoView.view);
+    Remove(group){
+        var templateCargoView = this.cargoTemplateViews.get(group);
+        if(templateCargoView){
+            this.cargoTemplateViews.delete(group);
+            this.templatesView.remove(templateCargoView.view);
 
             this.Sort();
         }
     }
 
     /**
-     * @param {Map<Cargo, CargoView>} cargoViews 
+     * @param {Map<CargoGroup, CargoView>} cargoViews 
      * @returns {Number}
      */
     Sort(){
@@ -87,9 +82,9 @@ class CargoListView extends Signaler {
 
         var units = FreightPacker.instance.params.ux.units;
 
-        this.view.scale.set(1, 1, 1);
-        this.view.updateMatrixWorld(true);
-        const worldToLocal = new THREE.Matrix4().getInverse(this.view.matrixWorld);
+        this.templatesView.scale.set(1, 1, 1);
+        this.templatesView.updateMatrixWorld(true);
+        const worldToLocal = new THREE.Matrix4().getInverse(this.templatesView.matrixWorld);
         const padding = 3 * units,
             start = 0;
 
@@ -101,7 +96,7 @@ class CargoListView extends Signaler {
          */
         var result = {min: start, max: start, cargoes: 0};
         
-        var list = this.cargoViews.values(),
+        var list = this.cargoTemplateViews.values(),
             cargoView;
         while( ( cargoView = list.next() ).done === false ){
 
@@ -135,21 +130,21 @@ class CargoListView extends Signaler {
     SortMapBySize(){
         /**
          * 
-         * @param {[Cargo, CargoListView]} a 
-         * @param {[Cargo, CargoListView]} b 
+         * @param {[CargoGroup, CargoListView]} a 
+         * @param {[CargoGroup, CargoListView]} b 
          */
         function sort(a, b){
             return -a[0].entry.dimensions.Compare(b[0].entry.dimensions);
         }
 
-        var list = [...this.cargoViews.entries()];
+        var list = [...this.cargoTemplateViews.entries()];
         list.sort(sort);
-        this.cargoViews = new Map(list);
+        this.cargoTemplateViews = new Map(list);
         return;
 
-        this.cargoViews.clear();
+        this.cargoTemplateViews.clear();
         list.forEach(entry => {
-            this.cargoViews.set(entry[0], entry[1]);
+            this.cargoTemplateViews.set(entry[0], entry[1]);
         });
     }
 

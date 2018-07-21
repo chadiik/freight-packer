@@ -35,14 +35,14 @@ class View {
         packer.packingSpace.On(PackingSpace.signals.containerAdded, onContainerAdded);
 
         this.cargoListView = new CargoListView();
-        this.sceneSetup.hud.Add(this.cargoListView.view);
+        this.sceneSetup.hud.Add(this.cargoListView.templatesView);
 
         this.HUDSetup();
 
-        var onCargoAdded = this.cargoListView.Add.bind(this.cargoListView);
-        packer.cargoList.On(CargoList.signals.cargoAdded, onCargoAdded);
+        var onCargoGroupAdded = this.cargoListView.Add.bind(this.cargoListView);
+        packer.cargoList.On(CargoList.signals.groupAdded, onCargoGroupAdded);
         var onCargoRemoved = this.cargoListView.Remove.bind(this.cargoListView);
-        packer.cargoList.On(CargoList.signals.cargoRemoved, onCargoRemoved);
+        packer.cargoList.On(CargoList.signals.groupRemoved, onCargoRemoved);
 
         if(FreightPacker.instance.ux.params.configure){
             this.Configure();
@@ -78,13 +78,13 @@ class View {
                 
                 var distance = viewportPointA.sub(viewportPointB).length();
                 var ratio = .8 / distance;
-                var s = Math.max(.6, Math.pow(Math.min(1, clv.view.scale.length() * ratio), .9));
-                clv.view.scale.set(s, s, s);
-                clv.view.updateMatrixWorld();
+                var s = Math.max(.6, Math.pow(Math.min(1, clv.templatesView.scale.length() * ratio), .9));
+                clv.templatesView.scale.set(s, s, s);
+                clv.templatesView.updateMatrixWorld();
             }
 
-            min = v.set(0, sortResult.min, 0).applyMatrix4(clv.view.matrixWorld).y;
-            max = v.set(0, sortResult.max, 0).applyMatrix4(clv.view.matrixWorld).y;
+            min = v.set(0, sortResult.min, 0).applyMatrix4(clv.templatesView.matrixWorld).y;
+            max = v.set(0, sortResult.max, 0).applyMatrix4(clv.templatesView.matrixWorld).y;
         }
         this.cargoListView.On(CargoListView.signals.sort, onSort);
 
@@ -108,7 +108,7 @@ class View {
                     dragOffset += offset;
                     min += offset;
                     max += offset;
-                    clv.view.position.y += offset;
+                    clv.templatesView.position.y += offset;
                 }
             }
         }
@@ -133,9 +133,9 @@ class View {
             Utils3D.ToNDC(tempVec, screen); // NDC point
             Utils3D.Unproject(tempVec, hud.cameraController.camera, tempVec, 'z'); // worldPos on z plane
             tempVec.y += dragOffset;
-            clv.view.position.copy(tempVec); // set view position
+            clv.templatesView.position.copy(tempVec); // set view position
 
-            clv.view.updateMatrixWorld(true);
+            clv.templatesView.updateMatrixWorld(true);
 
             clv.Sort();
         }
@@ -155,7 +155,7 @@ class View {
         var scope = this;
         var input = this.sceneSetup.input;
         input.keyboard.on('s', function(){
-            hudControl3D.Toggle(scope.cargoListView.view);
+            hudControl3D.Toggle(scope.cargoListView.templatesView);
         });
     }
 }

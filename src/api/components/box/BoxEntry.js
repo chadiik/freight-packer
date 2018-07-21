@@ -15,6 +15,9 @@ function getDefaultLabel(){
     return 'Box ' + numEntries.toString();
 }
 
+const epsilon = Math.pow(2, -52);
+const numberType = 'number';
+
 class BoxEntry extends CargoEntry {
     constructor(){
         numEntries++;
@@ -40,8 +43,6 @@ class BoxEntry extends CargoEntry {
     }
 
     Reset(){
-        this.active = false;
-
         this.weight = 0;
         this.quantity = 1;
 
@@ -59,7 +60,6 @@ class BoxEntry extends CargoEntry {
      * @param {BoxEntry} entry 
      */
     Copy(entry){
-        this.active = entry.active;
         this.dimensions.Copy(entry.dimensions);
         this.weight = entry.weight;
         this.quantity = entry.quantity;
@@ -79,7 +79,6 @@ class BoxEntry extends CargoEntry {
 
     Clone(){
         var entry = new BoxEntry();
-        entry.active = this.active;
         
         entry.dimensions = this.dimensions.Clone();
 
@@ -115,6 +114,24 @@ class BoxEntry extends CargoEntry {
 
     ToString(){
         return '\'' + this.descriptions.get('label').content + '\': ' + this.dimensions.ToString();
+    }
+
+    /**
+     * @param {BoxEntry} entry 
+     */
+    static Assert(entry){
+        return entry instanceof BoxEntry
+            && Dimensions.Assert(entry.dimensions)
+            && entry.properties
+            && entry.descriptions
+            && entry.weight !== undefined
+            && entry.quantity !== undefined
+                && typeof entry.weight === numberType
+                && typeof entry.quantity === numberType
+                && SupportsStacking.Assert(entry.properties.stacking)
+                && RotationConstraint.Assert(entry.properties.rotation)
+                && TranslationConstraint.Assert(entry.properties.translation)
+        ;
     }
 }
 

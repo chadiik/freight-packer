@@ -38,7 +38,7 @@ class App {
 
         this.components.cargoInput.On(CargoInput.signals.completed, function(boxEntry){
             Logger.Log('insert box');
-            packer.cargoList.Add(boxEntry.Clone());
+            packer.cargoList.Add(boxEntry);
         });
 
         this.components.packingSpaceInput.On(PackingSpaceInput.signals.containerLoaded, function(container){

@@ -1,5 +1,4 @@
 import CargoView from "./CargoView";
-import Cargo from "../packer/Cargo";
 import Utils from "../utils/cik/Utils";
 import BoxEntry from "../components/box/BoxEntry";
 
@@ -18,15 +17,10 @@ function nextColor(){
 class CargoBoxView extends CargoView {
     /**
      * 
-     * @param {Cargo} cargo 
+     * @param {BoxEntry} boxEntry 
      */
-    constructor(cargo){
-        super(cargo);
-
-        /**
-         * @type {BoxEntry}
-         */
-        var boxEntry = cargo.entry;
+    constructor(boxEntry){
+        super(boxEntry);
 
         var material = materialTemplate.clone();
         material.color = nextColor();

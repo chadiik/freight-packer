@@ -25,9 +25,7 @@ class Example {
     }
 
     Start(){
-        /**
-         * @type {import('../src/FreightPacker').InitializationParams}
-         */
+        /** @type {import('../src/FreightPacker').InitializationParams} */
         var params = {
             debug: true,
             ux: {
@@ -38,6 +36,9 @@ class Example {
         
         this.api = new FreightPacker(containerDiv, params);
         this.boxEntry = this.api.cargoInput.CreateBoxEntry();
+
+        /** @type {Map<Object, string>} */
+        this.boxEntries = new Map();
 
         var ui = new ExampleUI();
         var signals = ExampleUI.signals;
@@ -53,22 +54,29 @@ class Example {
     }
 
     // Box input
-    /**
-     * @param {IDimensions} dimensions 
-     */
+    /** @param {IDimensions} dimensions */
     BoxInputDimensionsUpdate(dimensions){
+        // Copy values into entry's dimensions object
         this.boxEntry.dimensions.Set(dimensions.width, dimensions.length, dimensions.height);
-        this.api.cargoInput.Update(this.boxEntry);
+        // Shows/updates input in viewer
+        var success = this.api.cargoInput.Show(this.boxEntry);
     }
 
     BoxInputComplete(){
-        var dimensions = this.boxEntry.dimensions.Clone(); // Get dimensions
-        this.api.cargoInput.Complete(this.boxEntry);
+        // Add entry, get an uid for later changes (or false on error)
+        var uid = this.api.cargoInput.Add(this.boxEntry);
+        if(uid){
+            // Saves a copy of that entry (should be treated as read-only)
+            var snapshot = this.boxEntry.Clone();
+            this.boxEntries.set(snapshot, uid);
+        }
 
-        this.BoxInputDimensionsUpdate(dimensions); // Start new entry 'session' with same values
+        // Start new entry 'session' with same values
+        this.BoxInputDimensionsUpdate(snapshot.dimensions);
     }
 
     BoxInputAbort(){
-        this.api.cargoInput.Abort();
+        // Hides input in viewer
+        this.api.cargoInput.Hide();
     }
 }

@@ -1,39 +1,40 @@
-import Cargo from "./Cargo";
 import Signaler from "../utils/cik/Signaler";
 import CargoEntry from "../components/common/CargoEntry";
-import Logger from "../utils/cik/Logger";
+import CargoGroup from "./CargoGroup";
+
+const stringType = 'string';
 
 const signals = {
-    cargoAdded: 'cargoAdded',
-    cargoRemoved: 'cargoRemoved'
+    groupAdded: 'groupAdded',
+    groupRemoved: 'groupRemoved'
 };
 
 class CargoList extends Signaler{
     constructor(){
         super();
 
-        this.cargoes = [];
+        /** @type {Map<string, CargoGroup>} */
+        this.groups = new Map();
     }
 
+    /** Adds a new CargoGroup
+     * @param {CargoEntry} entry 
+     */
     Add(entry){
-        var cargo;
-        if(entry instanceof CargoEntry){
-            cargo = Cargo.FromEntry(entry);
-        }
-        else{
-            cargo = entry;
-            Logger.Log(entry, 'used as Cargo');
-        }
+        var group = new CargoGroup(entry);
 
-        this.cargoes.push(cargo);
-        this.Dispatch(signals.cargoAdded, cargo);
+        this.groups.set(entry.uid, group);
+        this.Dispatch(signals.groupAdded, group);
     }
 
-    Remove(cargo){
-        var index = this.cargoes.indexOf(cargo);
-        if(index != -1){
-            var removedCargoes = this.cargoes.splice(index, 1);
-            this.Dispatch(signals.cargoRemoved, removedCargoes[0]);
+    /** Removes the CargoGroup using its uid
+     * @param {string} uid 
+     */
+    Remove(uid){
+        var group = this.groups.get(uid);
+        if(group){
+            this.groups.delete(uid);
+            this.Dispatch(signals.groupRemoved, group);
         }
     }
 

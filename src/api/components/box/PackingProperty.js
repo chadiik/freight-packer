@@ -14,6 +14,10 @@ class PackingProperty {
     Clone(){
         Logger.Warn('PackingProperty.Clone is not implemented');
     }
+
+    static Assert(prop){
+        return prop instanceof PackingProperty;
+    }
 }
 
 class SupportsStacking extends PackingProperty {

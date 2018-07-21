@@ -1,6 +1,7 @@
 
 const type = 'Dimensions';
 const epsilon = Math.pow(2, -52);
+const numberType = 'number';
 
 class Dimensions {
     /**
@@ -74,6 +75,14 @@ class Dimensions {
 
         var dimensions = new Dimensions(data.width, data.length, data.height);
         return dimensions;
+    }
+
+    static Assert(dimensions){
+        return dimensions instanceof Dimensions
+            && typeof dimensions.width === numberType
+            && typeof dimensions.length === numberType
+            && typeof dimensions.height === numberType
+        ;
     }
 }
 
