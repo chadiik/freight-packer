@@ -1,0 +1,8 @@
+{
+    "code-runner.clearPreviousOutput": true,
+    
+    "debug": {
+        "target": "example",
+        "attachPort": "2017"
+    }
+}
