@@ -1,6 +1,15 @@
+
+const _enabled = Symbol('enabled');
+
 class PackingProperty {
     constructor(){
-        this.enabled = false;
+        this[_enabled] = false;
+    }
+
+    /** @returns {Boolean} Is property enabled */
+    get enabled(){ return this[_enabled]; }
+    set enabled(value){
+        this[_enabled] = value;
     }
 
     Reset(){
@@ -23,6 +32,8 @@ class PackingProperty {
 class SupportsStacking extends PackingProperty {
     constructor(){
         super();
+
+        
     }
 
     /**

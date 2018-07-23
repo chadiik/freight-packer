@@ -1,5 +1,7 @@
 
 const type = 'Dimensions';
+const _vec3 = Symbol('vec3');
+
 const epsilon = Math.pow(2, -52);
 const numberType = 'number';
 
@@ -15,7 +17,7 @@ class Dimensions {
         if(height === undefined) height = 0;
         
         this.Set(width, length, height);
-        this._vec3 = new THREE.Vector3();
+        this[_vec3] = new THREE.Vector3();
     }
 
     /**
@@ -34,7 +36,7 @@ class Dimensions {
      * Beware of ordering: x=width, y=height and z=length
      */
     get vec3(){
-        return this._vec3.set(this.width, this.height, this.length);
+        return this[_vec3].set(this.width, this.height, this.length);
     }
 
     get volume(){

@@ -3,7 +3,10 @@
 if(false){ var FreightPacker = require('../src/FreightPacker').default; }
 
 /**
- * @typedef IDimensions
+ * @typedef UIEntry
+ * @property {string} label
+ * @property {Number} weight
+ * @property {Number} quantity
  * @property {Number} width
  * @property {Number} length
  * @property {Number} height
@@ -40,10 +43,16 @@ class Example {
         /** @type {Map<Object, string>} */
         this.boxEntries = new Map();
 
-        var ui = new ExampleUI();
+        var b = this.boxEntry;
+        var initEntryData = {
+            label: b.label, weight: b.weight, quantity: b.quantity, 
+            width: b.dimensions.width, length: b.dimensions.length, height: b.dimensions.height
+        };
+        var ui = new ExampleUI(initEntryData);
         var signals = ExampleUI.signals;
         ui.On(signals.loadPSConfig, this.SetPackingSpace.bind(this));
-        ui.On(signals.boxInputDimensionsUpdate, this.BoxInputDimensionsUpdate.bind(this));
+
+        ui.On(signals.boxInputUpdate, this.BoxInputUpdate.bind(this));
         ui.On(signals.boxInputComplete, this.BoxInputComplete.bind(this));
         ui.On(signals.boxInputAbort, this.BoxInputAbort.bind(this));
     }
@@ -54,10 +63,17 @@ class Example {
     }
 
     // Box input
-    /** @param {IDimensions} dimensions */
-    BoxInputDimensionsUpdate(dimensions){
-        // Copy values into entry's dimensions object
-        this.boxEntry.dimensions.Set(dimensions.width, dimensions.length, dimensions.height);
+    /** @param {UIEntry} uiEntry */
+    BoxInputUpdate(uiEntry){
+
+        // Copy values into entry
+        if(uiEntry){
+            this.boxEntry.label = uiEntry.label;
+            this.boxEntry.weight = uiEntry.weight;
+            this.boxEntry.quantity = uiEntry.quantity;
+            this.boxEntry.dimensions.Set(uiEntry.width, uiEntry.length, uiEntry.height);
+        }
+
         // Shows/updates input in viewer
         var success = this.api.cargoInput.Show(this.boxEntry);
     }
@@ -72,7 +88,7 @@ class Example {
         }
 
         // Start new entry 'session' with same values
-        this.BoxInputDimensionsUpdate(snapshot.dimensions);
+        this.BoxInputUpdate(undefined);
     }
 
     BoxInputAbort(){

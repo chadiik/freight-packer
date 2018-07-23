@@ -1,4 +1,5 @@
-import Config from "../utils/cik/Config";
+import Config from "../utils/cik/config/Config";
+import AFitTest from "../packer/afit/AFitTest";
 
 function testConfig(){
     var obj;
@@ -24,6 +25,17 @@ function testConfig(){
     console.log(config.gui.list);
 }
 
+function testAFit(){
+    var test = new AFitTest();
+    var data = AFitTest.GenerateDataRandom1();
+    var result = test.T1(data.container, data.items);
+    console.group('AFit packing', data);
+    console.log(result);
+    console.groupEnd();
+
+}
+
 export {
-    testConfig
+    testConfig,
+    testAFit
 };

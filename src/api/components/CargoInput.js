@@ -20,10 +20,10 @@ class CargoInput extends Signaler {
         /** Do not modify directly, use CargoInput.Update instead
          * @ignore
          */
-        this.entry = new BoxEntry();
+        //this.entry = new BoxEntry();
     }
 
-    /** Creates a new BoxEntry, required for inputs */
+    /** Creates a new BoxEntry, required for inputs. (Can be reused) */
     CreateBoxEntry(){
         return new BoxEntry();
     }

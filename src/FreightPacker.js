@@ -23,7 +23,8 @@ const defaultParams = {
 
 const utils = {
 	dat: (window.dat || require("./api/utils/cik/config/datGUIConsole").default),
-	Signaler: require("./api/utils/cik/Signaler").default
+	Signaler: require("./api/utils/cik/Signaler").default,
+	Utils: require("./api/utils/cik/Utils").default
 };
 
 var instance;
@@ -92,11 +93,11 @@ class FreightPacker {
 			Logger.toConsole = true;
 			Logger.traceToConsole = true;
 
-			//require('./api/debug/Tester').testConfig();
+			require('./api/debug/Tester').testAFit();
 		}
 	}
 
-	static get Utils(){
+	static get utils(){
 		return utils;
 	}
 

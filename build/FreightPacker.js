@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 28);
+/******/ 	return __webpack_require__(__webpack_require__.s = 30);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -142,7 +142,7 @@ var dat = {
         this.__controllers = [];
         this.__folders = [];
 
-        params = __WEBPACK_IMPORTED_MODULE_0__Utils__["a" /* default */].AssignUndefined(params, defaultGUIParams);
+        params = __WEBPACK_IMPORTED_MODULE_0__Utils__["default"].AssignUndefined(params, defaultGUIParams);
 
         this.label = params.label;
 
@@ -223,6 +223,7 @@ Object.defineProperties(dat, {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -358,7 +359,7 @@ var Utils = function () {
     return Utils;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (Utils);
+/* harmony default export */ __webpack_exports__["default"] = (Utils);
 
 /***/ }),
 /* 2 */
@@ -495,7 +496,7 @@ var Logger = function () {
     }, {
         key: 'Print',
         value: function Print(filter) {
-            __WEBPACK_IMPORTED_MODULE_0__Utils__["a" /* default */].AssignUndefined(filter, defaultPrintFilter);
+            __WEBPACK_IMPORTED_MODULE_0__Utils__["default"].AssignUndefined(filter, defaultPrintFilter);
 
             var output = 'Log:\n';
             messages.forEach(function (message) {
@@ -589,306 +590,6 @@ var Signaler = function () {
 
 /***/ }),
 /* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TextField__ = __webpack_require__(20);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__ = __webpack_require__(2);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-
-var CargoEntry = function () {
-    function CargoEntry() {
-        _classCallCheck(this, CargoEntry);
-
-        this.type = 'CargoEntry';
-
-        this.quantity = 0;
-        this.properties = {};
-        this.uid = '';
-
-        /**
-         * @type {Map<string, TextField>}
-         */
-        this.descriptions = new Map();
-    }
-
-    /**
-     * @param {string} [uid] - You'll rarely need to provide this
-     */
-
-
-    _createClass(CargoEntry, [{
-        key: "SetUID",
-        value: function SetUID(uid) {
-            this.uid = uid || THREE.Math.generateUUID();
-            return this.uid;
-        }
-    }, {
-        key: "Copy",
-        value: function Copy(entry) {
-            __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__["a" /* default */].Warn('CargoEntry.Copy is not implemented');
-        }
-    }, {
-        key: "Clone",
-        value: function Clone() {
-            __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__["a" /* default */].Warn('CargoEntry.Clone is not implemented');
-        }
-    }, {
-        key: "ToString",
-        value: function ToString() {}
-    }]);
-
-    return CargoEntry;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (CargoEntry);
-
-/***/ }),
-/* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ContainingVolume__ = __webpack_require__(39);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-var type = 'Container';
-
-var Container = function () {
-    function Container() {
-        _classCallCheck(this, Container);
-
-        /**
-         * Containing volumes array
-         * @type {Array<ContainingVolume>}
-         */
-        this.volumes = [];
-    }
-
-    _createClass(Container, [{
-        key: 'Add',
-        value: function Add(volume) {
-            this.volumes.push(volume);
-        }
-    }, {
-        key: 'toJSON',
-        value: function toJSON() {
-            return {
-                type: type,
-                volumes: this.volumes
-            };
-        }
-    }, {
-        key: 'ToString',
-        value: function ToString() {
-            var result = type + '[';
-            for (var i = 0, numVolumes = this.volumes.length; i < numVolumes; i++) {
-                result += this.volumes[i].ToString() + (i < numVolumes - 1 ? ', ' : ']');
-            }
-            return result;
-        }
-    }, {
-        key: 'volume',
-        get: function get() {
-            var index = this.volumes.length - 1;
-            return this.volumes[index];
-        }
-    }], [{
-        key: 'FromJSON',
-        value: function FromJSON(data) {
-            if (data.type !== type) console.warn('Data supplied is not: ' + type);
-
-            var container = new Container();
-            for (var i = 0, numVolumes = data.volumes.length; i < numVolumes; i++) {
-                var containingVolume = __WEBPACK_IMPORTED_MODULE_0__ContainingVolume__["a" /* default */].FromJSON(data.volumes[i]);
-                container.Add(containingVolume);
-            }
-
-            return container;
-        }
-    }]);
-
-    return Container;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (Container);
-
-/***/ }),
-/* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api_utils_Capabilities__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__api_App__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api_components_CargoInput__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__api_utils_cik_Logger__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__api_utils_cik_Utils__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__api_components_PackingSpaceInput__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__api_UX__ = __webpack_require__(7);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-
-
-
-
-
-
-/**
- * @typedef InitializationParams
- * @property {Boolean} debug
- * @property {import('./api/UX').UXParams} ux
- */
-
-/**
- * @type {InitializationParams}
- */
-var defaultParams = {
-	debug: false,
-	ux: {// defaults from './api/UX'
-	}
-};
-
-var utils = {
-	dat: window.dat || __webpack_require__(0).default,
-	Signaler: __webpack_require__(3).default
-};
-
-var instance;
-
-var FreightPacker = function () {
-	/**
-  * Freight Packer API instance
-  * @param {HTMLDivElement} containerDiv
-  * @param {InitializationParams} params
-  */
-	function FreightPacker(containerDiv, params) {
-		_classCallCheck(this, FreightPacker);
-
-		instance = this;
-
-		this.params = __WEBPACK_IMPORTED_MODULE_4__api_utils_cik_Utils__["a" /* default */].AssignUndefined(params, defaultParams);
-		FreightPacker.DevSetup(this.params);
-
-		this.ux = new __WEBPACK_IMPORTED_MODULE_6__api_UX__["a" /* default */](this.params.ux);
-
-		/**
-   * Handles input of: description fields (label, etc.), dimensions and constraints
-   * @type {CargoInput}
-   */
-		this.cargoInput = new __WEBPACK_IMPORTED_MODULE_2__api_components_CargoInput__["a" /* default */]();
-
-		/**
-   * Handles input of: packing spaces configurations and assets
-   * @type {PackingSpaceInput}
-   */
-		this.packingSpaceInput = new __WEBPACK_IMPORTED_MODULE_5__api_components_PackingSpaceInput__["a" /* default */]();
-
-		new __WEBPACK_IMPORTED_MODULE_1__api_App__["a" /* default */](containerDiv, this.ux, {
-			cargoInput: this.cargoInput,
-			packingSpaceInput: this.packingSpaceInput
-		});
-	}
-
-	/**
-  * Will resolve if requirements are met, otherwise rejects with an error message
-  * @return {Promise<Void>|Promise<string>} 
-  */
-
-
-	_createClass(FreightPacker, null, [{
-		key: 'CheckRequirements',
-		value: function CheckRequirements() {
-			var webgl = __WEBPACK_IMPORTED_MODULE_0__api_utils_Capabilities__["a" /* default */].IsWebGLReady();
-
-			return new Promise(function (resolve, reject) {
-				if (webgl) {
-					resolve();
-				} else {
-					var message = 'WebGL not supported.';
-					reject(message);
-				}
-			});
-		}
-
-		/**
-   * @returns {FreightPacker}
-   */
-
-	}, {
-		key: 'DevSetup',
-		value: function DevSetup(params) {
-			if (params.debug) {
-				__WEBPACK_IMPORTED_MODULE_3__api_utils_cik_Logger__["a" /* default */].active = true;
-				__WEBPACK_IMPORTED_MODULE_3__api_utils_cik_Logger__["a" /* default */].toConsole = true;
-				__WEBPACK_IMPORTED_MODULE_3__api_utils_cik_Logger__["a" /* default */].traceToConsole = true;
-
-				//require('./api/debug/Tester').testConfig();
-			}
-		}
-	}, {
-		key: 'instance',
-		get: function get() {
-			return instance;
-		}
-	}, {
-		key: 'Utils',
-		get: function get() {
-			return utils;
-		}
-	}]);
-
-	return FreightPacker;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (FreightPacker);
-
-/***/ }),
-/* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_Utils__ = __webpack_require__(1);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-/**
- * @typedef UXParams
- * @property {Boolean} configure - Execute helpers that allow configuration
- * @property {Number} units - Conversion to unit employed, default=1 for inches, for meters: units=0.0254
- */
-var defaultParams = {
-    configure: false,
-    units: 1
-};
-
-var UX =
-/**
- * 
- * @param {UXParams} params 
- */
-function UX(params) {
-    _classCallCheck(this, UX);
-
-    this.params = __WEBPACK_IMPORTED_MODULE_0__utils_cik_Utils__["a" /* default */].AssignUndefined(params, defaultParams);
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (UX);
-
-/***/ }),
-/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1044,7 +745,7 @@ var Config = function () {
         value: function Edit(guiChanged, label, gui, params) {
             var _this = this;
 
-            params = __WEBPACK_IMPORTED_MODULE_0__Utils__["a" /* default */].AssignUndefined(params, defaultEditParams);
+            params = __WEBPACK_IMPORTED_MODULE_0__Utils__["default"].AssignUndefined(params, defaultEditParams);
 
             var controllers = [];
             var target = this.target;
@@ -1158,12 +859,313 @@ Config.Controller = Controller;
 /* harmony default export */ __webpack_exports__["default"] = (Config);
 
 /***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TextField__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__ = __webpack_require__(2);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+
+
+
+var CargoEntry = function () {
+    function CargoEntry() {
+        _classCallCheck(this, CargoEntry);
+
+        this.type = 'CargoEntry';
+
+        this.quantity = 0;
+        this.properties = {};
+        this.uid = '';
+
+        /**
+         * @type {Map<string, TextField>}
+         */
+        this.descriptions = new Map();
+    }
+
+    /**
+     * @param {string} [uid] - You'll rarely need to provide this
+     */
+
+
+    _createClass(CargoEntry, [{
+        key: "SetUID",
+        value: function SetUID(uid) {
+            this.uid = uid || THREE.Math.generateUUID();
+            return this.uid;
+        }
+    }, {
+        key: "Copy",
+        value: function Copy(entry) {
+            __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__["a" /* default */].Warn('CargoEntry.Copy is not implemented');
+        }
+    }, {
+        key: "Clone",
+        value: function Clone() {
+            __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__["a" /* default */].Warn('CargoEntry.Clone is not implemented');
+        }
+    }, {
+        key: "ToString",
+        value: function ToString() {}
+    }]);
+
+    return CargoEntry;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (CargoEntry);
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ContainingVolume__ = __webpack_require__(41);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+
+
+var type = 'Container';
+
+var Container = function () {
+    function Container() {
+        _classCallCheck(this, Container);
+
+        /**
+         * Containing volumes array
+         * @type {Array<ContainingVolume>}
+         */
+        this.volumes = [];
+    }
+
+    _createClass(Container, [{
+        key: 'Add',
+        value: function Add(volume) {
+            this.volumes.push(volume);
+        }
+    }, {
+        key: 'toJSON',
+        value: function toJSON() {
+            return {
+                type: type,
+                volumes: this.volumes
+            };
+        }
+    }, {
+        key: 'ToString',
+        value: function ToString() {
+            var result = type + '[';
+            for (var i = 0, numVolumes = this.volumes.length; i < numVolumes; i++) {
+                result += this.volumes[i].ToString() + (i < numVolumes - 1 ? ', ' : ']');
+            }
+            return result;
+        }
+    }, {
+        key: 'volume',
+        get: function get() {
+            var index = this.volumes.length - 1;
+            return this.volumes[index];
+        }
+    }], [{
+        key: 'FromJSON',
+        value: function FromJSON(data) {
+            if (data.type !== type) console.warn('Data supplied is not: ' + type);
+
+            var container = new Container();
+            for (var i = 0, numVolumes = data.volumes.length; i < numVolumes; i++) {
+                var containingVolume = __WEBPACK_IMPORTED_MODULE_0__ContainingVolume__["a" /* default */].FromJSON(data.volumes[i]);
+                container.Add(containingVolume);
+            }
+
+            return container;
+        }
+    }]);
+
+    return Container;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (Container);
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api_utils_Capabilities__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__api_App__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api_components_CargoInput__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__api_utils_cik_Logger__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__api_utils_cik_Utils__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__api_components_PackingSpaceInput__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__api_UX__ = __webpack_require__(8);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+
+
+
+
+
+
+
+
+/**
+ * @typedef InitializationParams
+ * @property {Boolean} debug
+ * @property {import('./api/UX').UXParams} ux
+ */
+
+/**
+ * @type {InitializationParams}
+ */
+var defaultParams = {
+	debug: false,
+	ux: {// defaults from './api/UX'
+	}
+};
+
+var utils = {
+	dat: window.dat || __webpack_require__(0).default,
+	Signaler: __webpack_require__(3).default,
+	Utils: __webpack_require__(1).default
+};
+
+var instance;
+
+var FreightPacker = function () {
+	/**
+  * Freight Packer API instance
+  * @param {HTMLDivElement} containerDiv
+  * @param {InitializationParams} params
+  */
+	function FreightPacker(containerDiv, params) {
+		_classCallCheck(this, FreightPacker);
+
+		instance = this;
+
+		this.params = __WEBPACK_IMPORTED_MODULE_4__api_utils_cik_Utils__["default"].AssignUndefined(params, defaultParams);
+		FreightPacker.DevSetup(this.params);
+
+		this.ux = new __WEBPACK_IMPORTED_MODULE_6__api_UX__["a" /* default */](this.params.ux);
+
+		/**
+   * Handles input of: description fields (label, etc.), dimensions and constraints
+   * @type {CargoInput}
+   */
+		this.cargoInput = new __WEBPACK_IMPORTED_MODULE_2__api_components_CargoInput__["a" /* default */]();
+
+		/**
+   * Handles input of: packing spaces configurations and assets
+   * @type {PackingSpaceInput}
+   */
+		this.packingSpaceInput = new __WEBPACK_IMPORTED_MODULE_5__api_components_PackingSpaceInput__["a" /* default */]();
+
+		new __WEBPACK_IMPORTED_MODULE_1__api_App__["a" /* default */](containerDiv, this.ux, {
+			cargoInput: this.cargoInput,
+			packingSpaceInput: this.packingSpaceInput
+		});
+	}
+
+	/**
+  * Will resolve if requirements are met, otherwise rejects with an error message
+  * @return {Promise<Void>|Promise<string>} 
+  */
+
+
+	_createClass(FreightPacker, null, [{
+		key: 'CheckRequirements',
+		value: function CheckRequirements() {
+			var webgl = __WEBPACK_IMPORTED_MODULE_0__api_utils_Capabilities__["a" /* default */].IsWebGLReady();
+
+			return new Promise(function (resolve, reject) {
+				if (webgl) {
+					resolve();
+				} else {
+					var message = 'WebGL not supported.';
+					reject(message);
+				}
+			});
+		}
+
+		/**
+   * @returns {FreightPacker}
+   */
+
+	}, {
+		key: 'DevSetup',
+		value: function DevSetup(params) {
+			if (params.debug) {
+				__WEBPACK_IMPORTED_MODULE_3__api_utils_cik_Logger__["a" /* default */].active = true;
+				__WEBPACK_IMPORTED_MODULE_3__api_utils_cik_Logger__["a" /* default */].toConsole = true;
+				__WEBPACK_IMPORTED_MODULE_3__api_utils_cik_Logger__["a" /* default */].traceToConsole = true;
+
+				__webpack_require__(50).testAFit();
+			}
+		}
+	}, {
+		key: 'instance',
+		get: function get() {
+			return instance;
+		}
+	}, {
+		key: 'utils',
+		get: function get() {
+			return utils;
+		}
+	}]);
+
+	return FreightPacker;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (FreightPacker);
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_Utils__ = __webpack_require__(1);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+
+
+/**
+ * @typedef UXParams
+ * @property {Boolean} configure - Execute helpers that allow configuration
+ * @property {Number} units - Conversion to unit employed, default=1 for inches, for meters: units=0.0254
+ */
+var defaultParams = {
+    configure: false,
+    units: 1
+};
+
+var UX =
+/**
+ * 
+ * @param {UXParams} params 
+ */
+function UX(params) {
+    _classCallCheck(this, UX);
+
+    this.params = __WEBPACK_IMPORTED_MODULE_0__utils_cik_Utils__["default"].AssignUndefined(params, defaultParams);
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (UX);
+
+/***/ }),
 /* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_common_CargoEntry__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Cargo__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_common_CargoEntry__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Cargo__ = __webpack_require__(40);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1221,7 +1223,7 @@ var CargoGroup = function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__container_Container__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__container_Container__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Signaler__ = __webpack_require__(3);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -1291,13 +1293,13 @@ var PackingSpace = function (_Signaler) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_input_Input__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Quality__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_input_Input__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Quality__ = __webpack_require__(36);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Controller__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Renderer__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Renderer__ = __webpack_require__(37);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Camera__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__view_HUDView__ = __webpack_require__(36);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__UX__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__view_HUDView__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__UX__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__ = __webpack_require__(1);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -1357,7 +1359,7 @@ var SceneSetup = function () {
 
             // hud
             var hudParams = Object.assign({}, controllerParams);
-            var hudCameraParams = __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__["a" /* default */].AssignUndefined({ fov: 15, id: 'hud' }, cameraParams);
+            var hudCameraParams = __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__["default"].AssignUndefined({ fov: 15, id: 'hud' }, cameraParams);
             this.hud = new __WEBPACK_IMPORTED_MODULE_5__view_HUDView__["a" /* default */](hudParams, hudCameraParams);
             var hudCameraRef = this.hud.cameraController.camera;
             this.input.onResize.push(function (screen) {
@@ -1463,7 +1465,7 @@ var SceneSetup = function () {
         value: function Configure() {
 
             var Smart = __webpack_require__(14).default;
-            var Config = __webpack_require__(8).default;
+            var Config = __webpack_require__(4).default;
             var Control3D = __webpack_require__(17).default;
 
             var appControl3D = Control3D.Configure('app', this.cameraController.camera, this.sceneRenderer.renderer.domElement);
@@ -1496,8 +1498,8 @@ var SceneSetup = function () {
                 print: function print() {
                     smart.config.Update();
                     console.group('hudCam properties');
-                    console.log('position', __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__["a" /* default */].VecToString(hud.cameraController.position, 1));
-                    console.log('rotation', __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__["a" /* default */].VecToString(hud.cameraController.rotation, 3));
+                    console.log('position', __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__["default"].VecToString(hud.cameraController.position, 1));
+                    console.log('rotation', __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__["default"].VecToString(hud.cameraController.rotation, 3));
                     console.groupEnd();
                 }
             };
@@ -1772,7 +1774,7 @@ var Camera = function () {
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__UIUtils__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Config__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Config__ = __webpack_require__(4);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2521,7 +2523,7 @@ var Packer = function Packer() {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_Signaler__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_common_CargoEntry__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_common_CargoEntry__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CargoGroup__ = __webpack_require__(9);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -2662,6 +2664,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var type = 'Dimensions';
+var _vec3 = Symbol('vec3');
+
 var epsilon = Math.pow(2, -52);
 var numberType = 'number';
 
@@ -2679,7 +2683,7 @@ var Dimensions = function () {
         if (height === undefined) height = 0;
 
         this.Set(width, length, height);
-        this._vec3 = new THREE.Vector3();
+        this[_vec3] = new THREE.Vector3();
     }
 
     /**
@@ -2739,7 +2743,7 @@ var Dimensions = function () {
     }, {
         key: 'vec3',
         get: function get() {
-            return this._vec3.set(this.width, this.height, this.length);
+            return this[_vec3].set(this.width, this.height, this.length);
         }
     }, {
         key: 'volume',
@@ -2771,7 +2775,7 @@ var Dimensions = function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_common_CargoEntry__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_common_CargoEntry__ = __webpack_require__(5);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2828,10 +2832,10 @@ var CargoView = function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__PackingProperty__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__PackingProperty__ = __webpack_require__(46);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Dimensions__ = __webpack_require__(21);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_TextField__ = __webpack_require__(20);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_CargoEntry__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_CargoEntry__ = __webpack_require__(5);
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
@@ -3044,7 +3048,7 @@ var BoxEntry = function (_CargoEntry) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__packer_container_Container__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__packer_container_Container__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_assets_Asset__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_cik_Logger__ = __webpack_require__(2);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -3195,16 +3199,15 @@ var CargoInput = function (_Signaler) {
     function CargoInput() {
         _classCallCheck(this, CargoInput);
 
+        return _possibleConstructorReturn(this, (CargoInput.__proto__ || Object.getPrototypeOf(CargoInput)).call(this));
+
         /** Do not modify directly, use CargoInput.Update instead
          * @ignore
          */
-        var _this = _possibleConstructorReturn(this, (CargoInput.__proto__ || Object.getPrototypeOf(CargoInput)).call(this));
-
-        _this.entry = new __WEBPACK_IMPORTED_MODULE_2__box_BoxEntry__["a" /* default */]();
-        return _this;
+        //this.entry = new BoxEntry();
     }
 
-    /** Creates a new BoxEntry, required for inputs */
+    /** Creates a new BoxEntry, required for inputs. (Can be reused) */
 
 
     _createClass(CargoInput, [{
@@ -3287,7 +3290,7 @@ var CargoInput = function (_Signaler) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_Signaler__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__packer_container_Container__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__packer_container_Container__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__packer_PackingSpace__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__view_ContainerView__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__assets_Asset__ = __webpack_require__(25);
@@ -3367,24 +3370,70 @@ var PackingSpaceInput = function (_Signaler) {
 
 /***/ }),
 /* 28 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-module.exports = __webpack_require__(29);
+"use strict";
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var Item = function Item(ID, Dim1, Dim2, Dim3, Quantity) {
+    _classCallCheck(this, Item);
+
+    this.ID = ID;
+    this.IsPacked = false;
+    this.Dim1 = Dim1;
+    this.Dim2 = Dim2;
+    this.Dim3 = Dim3;
+    this.CoordX = 0;
+    this.CoordY = 0;
+    this.CoordZ = 0;
+    this.Quantity = Quantity;
+    this.PackDimX = 0;
+    this.PackDimY = 0;
+    this.PackDimZ = 0;
+    this.Volume = this.Dim1 * this.Dim2 * this.Dim3;
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (Item);
 
 /***/ }),
 /* 29 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* WEBPACK VAR INJECTION */(function(global) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__FreightPacker__ = __webpack_require__(6);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-global.FreightPacker = __WEBPACK_IMPORTED_MODULE_0__FreightPacker__["a" /* default */];
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(30)))
+var Container = function Container() {
+    _classCallCheck(this, Container);
+
+    this.ID = 0;
+    this.Width = 0;
+    this.Length = 0;
+    this.Height = 0;
+    this.Volume = 0;
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (Container);
 
 /***/ }),
 /* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(31);
+
+
+/***/ }),
+/* 31 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* WEBPACK VAR INJECTION */(function(global) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__FreightPacker__ = __webpack_require__(7);
+
+global.FreightPacker = __WEBPACK_IMPORTED_MODULE_0__FreightPacker__["a" /* default */];
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(32)))
+
+/***/ }),
+/* 32 */
 /***/ (function(module, exports) {
 
 var g;
@@ -3411,7 +3460,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 31 */
+/* 33 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3439,17 +3488,17 @@ var Capabilities = function () {
 /* harmony default export */ __webpack_exports__["a"] = (Capabilities);
 
 /***/ }),
-/* 32 */
+/* 34 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scene_SceneSetup__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__packer_Packer__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__view_View__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__view_View__ = __webpack_require__(43);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_CargoInput__ = __webpack_require__(26);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_PackingSpaceInput__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__UX__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__UX__ = __webpack_require__(8);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3513,7 +3562,7 @@ var App = function () {
 /* harmony default export */ __webpack_exports__["a"] = (App);
 
 /***/ }),
-/* 33 */
+/* 35 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4030,7 +4079,7 @@ var Input = function () {
 /* harmony default export */ __webpack_exports__["a"] = (Input);
 
 /***/ }),
-/* 34 */
+/* 36 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4083,7 +4132,7 @@ var Quality = function () {
 /* harmony default export */ __webpack_exports__["a"] = (Quality);
 
 /***/ }),
-/* 35 */
+/* 37 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4193,13 +4242,13 @@ var Renderer = function () {
 /* harmony default export */ __webpack_exports__["a"] = (Renderer);
 
 /***/ }),
-/* 36 */
+/* 38 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scene_Controller__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__scene_Camera__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scene_Transform__ = __webpack_require__(37);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scene_Transform__ = __webpack_require__(39);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -4241,7 +4290,7 @@ var HUDView = function (_Controller) {
 /* harmony default export */ __webpack_exports__["a"] = (HUDView);
 
 /***/ }),
-/* 37 */
+/* 39 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4317,7 +4366,7 @@ var Transform = function () {
 /* harmony default export */ __webpack_exports__["a"] = (Transform);
 
 /***/ }),
-/* 38 */
+/* 40 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4412,11 +4461,11 @@ var Cargo = function (_PackingItem) {
 /* harmony default export */ __webpack_exports__["a"] = (Cargo);
 
 /***/ }),
-/* 39 */
+/* 41 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Volume__ = __webpack_require__(40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Volume__ = __webpack_require__(42);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
@@ -4470,7 +4519,7 @@ var ContainingVolume = function (_Volume) {
 /* harmony default export */ __webpack_exports__["a"] = (ContainingVolume);
 
 /***/ }),
-/* 40 */
+/* 42 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4534,20 +4583,20 @@ var Volume = function () {
 /* harmony default export */ __webpack_exports__["a"] = (Volume);
 
 /***/ }),
-/* 41 */
+/* 43 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CargoListView__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CargoListView__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__packer_Packer__ = __webpack_require__(18);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__packer_CargoList__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__PackingSpaceView__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__PackingSpaceView__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__packer_PackingSpace__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__scene_SceneSetup__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__ = __webpack_require__(48);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__debug_Debug__ = __webpack_require__(47);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__FreightPacker__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__debug_Debug__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__FreightPacker__ = __webpack_require__(7);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -4582,7 +4631,7 @@ var View = function () {
         _classCallCheck(this, View);
 
         this.sceneSetup = sceneSetup;
-        this.params = __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__["a" /* default */].AssignUndefined(params, defaultParams);
+        this.params = __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__["default"].AssignUndefined(params, defaultParams);
 
         this.packingSpaceView = new __WEBPACK_IMPORTED_MODULE_3__PackingSpaceView__["a" /* default */]();
         this.sceneSetup.sceneController.AddDefault(this.packingSpaceView.view);
@@ -4702,7 +4751,7 @@ var View = function () {
         value: function Configure() {
 
             var Smart = __webpack_require__(14).default;
-            var Config = __webpack_require__(8).default;
+            var Config = __webpack_require__(4).default;
             var Control3D = __webpack_require__(17).default;
 
             var hudControl3D = Control3D.Request('hud');
@@ -4721,14 +4770,14 @@ var View = function () {
 /* harmony default export */ __webpack_exports__["a"] = (View);
 
 /***/ }),
-/* 42 */
+/* 44 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_Logger__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__CargoBoxView__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__CargoBoxView__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CargoView__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__FreightPacker__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__FreightPacker__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__utils_cik_Signaler__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__packer_CargoGroup__ = __webpack_require__(9);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -4921,7 +4970,7 @@ var CargoListView = function (_Signaler) {
 /* harmony default export */ __webpack_exports__["a"] = (CargoListView);
 
 /***/ }),
-/* 43 */
+/* 45 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4946,7 +4995,7 @@ var hueBase = Math.random();
 function nextColor() {
     var color = new THREE.Color();
     color.setHSL(hueBase, 1, brightnessRange[0] + Math.random() * (brightnessRange[1] - brightnessRange[0]));
-    hueBase = __WEBPACK_IMPORTED_MODULE_1__utils_cik_Utils__["a" /* default */].GoldenSeries(hueBase);
+    hueBase = __WEBPACK_IMPORTED_MODULE_1__utils_cik_Utils__["default"].GoldenSeries(hueBase);
     return color;
 }
 
@@ -4978,7 +5027,7 @@ var CargoBoxView = function (_CargoView) {
 /* harmony default export */ __webpack_exports__["a"] = (CargoBoxView);
 
 /***/ }),
-/* 44 */
+/* 46 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4994,12 +5043,17 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var _enabled = Symbol('enabled');
+
 var PackingProperty = function () {
     function PackingProperty() {
         _classCallCheck(this, PackingProperty);
 
-        this.enabled = false;
+        this[_enabled] = false;
     }
+
+    /** @returns {Boolean} Is property enabled */
+
 
     _createClass(PackingProperty, [{
         key: 'Reset',
@@ -5015,6 +5069,14 @@ var PackingProperty = function () {
         key: 'Clone',
         value: function Clone() {
             Logger.Warn('PackingProperty.Clone is not implemented');
+        }
+    }, {
+        key: 'enabled',
+        get: function get() {
+            return this[_enabled];
+        },
+        set: function set(value) {
+            this[_enabled] = value;
         }
     }], [{
         key: 'Assert',
@@ -5146,11 +5208,11 @@ var TranslationConstraint = function (_Constraint2) {
 
 
 /***/ }),
-/* 45 */
+/* 47 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__packer_container_Container__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__packer_container_Container__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ContainerView__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_cik_Logger__ = __webpack_require__(2);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -5205,7 +5267,7 @@ var PackingSpaceView = function () {
 /* harmony default export */ __webpack_exports__["a"] = (PackingSpaceView);
 
 /***/ }),
-/* 46 */
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5395,7 +5457,7 @@ Utils3D.Rect = Rect;
 /* harmony default export */ __webpack_exports__["a"] = (Utils3D);
 
 /***/ }),
-/* 47 */
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5459,6 +5521,2403 @@ var Debug = function Debug() {
 Debug.Box = DebugBox;
 
 /* unused harmony default export */ var _unused_webpack_default_export = (Debug);
+
+/***/ }),
+/* 50 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "testConfig", function() { return testConfig; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "testAFit", function() { return testAFit; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_config_Config__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__packer_afit_AFitTest__ = __webpack_require__(51);
+
+
+
+function testConfig() {
+    var obj;
+    obj = {
+        prop1: '1',
+        prop2: '2',
+        child: {
+            prop: 'child object'
+        },
+        fn: function fn() {
+            console.log('prop1:' + obj.prop1 + ', prop2:' + obj.prop2);
+        }
+    };
+
+    var config = new __WEBPACK_IMPORTED_MODULE_0__utils_cik_config_Config__["default"](obj);
+    config.Track('prop1', 'prop2', 'fn', 'child.prop');
+
+    var onGUIChanged = function onGUIChanged() {
+        console.log(obj, 'changed');
+    };
+    config.Edit(onGUIChanged, 'obj', undefined);
+
+    console.log(config.gui.list);
+}
+
+function testAFit() {
+    var test = new __WEBPACK_IMPORTED_MODULE_1__packer_afit_AFitTest__["a" /* default */]();
+    var data = __WEBPACK_IMPORTED_MODULE_1__packer_afit_AFitTest__["a" /* default */].GenerateDataRandom1();
+    var result = test.T1(data.container, data.items);
+    console.group('AFit packing', data);
+    console.log(result);
+    console.groupEnd();
+}
+
+
+
+/***/ }),
+/* 51 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_Item__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__AFit__ = __webpack_require__(52);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Container__ = __webpack_require__(29);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+
+
+
+
+/** @param {Array<Item>} items */
+function sumOfVolumes(items) {
+    var sum = 0;
+    for (var i = 0, len = items.length; i < len; i++) {
+        sum += items[i].Volume;
+    }return sum;
+}
+
+/**
+ * @param {Array<Object>} objects 
+ * @param {Array<string>} m - mapping to Item.constructor, ie: [ID, Length, ...]
+ */
+function toItems(objects, m) {
+    var items = [];
+    objects.forEach(function (o) {
+        items.push(new __WEBPACK_IMPORTED_MODULE_0__components_Item__["a" /* default */](o[m[0]], o[m[1]], o[m[2]], o[m[3]], o[m[4]]));
+    });
+    return items;
+}
+
+var TestData =
+/**
+ * @param {Container} container 
+ * @param {Array<Item>} items 
+ */
+function TestData(container, items) {
+    _classCallCheck(this, TestData);
+
+    this.container = container;
+    this.items = items;
+};
+
+var AFitTest = function () {
+    function AFitTest() {
+        _classCallCheck(this, AFitTest);
+
+        this.aFitPacker = new __WEBPACK_IMPORTED_MODULE_1__AFit__["a" /* default */]();
+    }
+
+    /**
+     * @param {Container} container 
+     * @param {Array<Item>} items 
+     */
+
+
+    _createClass(AFitTest, [{
+        key: "T1",
+        value: function T1(container, items) {
+
+            var now = performance.now();
+            var result = this.aFitPacker.Solve(container, items);
+            result.PackTimeInMilliseconds = now - performance.now();
+
+            var containerVolume = container.Length * container.Width * container.Height;
+            var itemVolumePacked = sumOfVolumes(result.PackedItems);
+            var itemVolumeUnpacked = sumOfVolumes(result.UnpackedItems);
+
+            result.PercentContainerVolumePacked = Math.floor(itemVolumePacked / containerVolume * 100 * 100) / 100;
+            result.PercentItemVolumePacked = Math.floor(itemVolumePacked / (itemVolumePacked + itemVolumeUnpacked) * 100 * 100) / 100;
+
+            return result;
+        }
+    }], [{
+        key: "GenerateDataRandom1",
+        value: function GenerateDataRandom1() {
+            var containerData = { ID: 1000, Name: 'Box1', Length: 15, Width: 13, Height: 9 };
+            var itemsData = [{ ID: 1000, Name: 'Item1', Length: 5, Width: 4, Height: 2, Quantity: 1 }, { ID: 1001, Name: 'Item2', Length: 2, Width: 1, Height: 1, Quantity: 3 }, { ID: 1002, Name: 'Item3', Length: 9, Width: 7, Height: 3, Quantity: 4 }, { ID: 1003, Name: 'Item4', Length: 13, Width: 6, Height: 3, Quantity: 8 }, { ID: 1004, Name: 'Item5', Length: 17, Width: 8, Height: 6, Quantity: 1 }, { ID: 1005, Name: 'Item6', Length: 3, Width: 3, Height: 2, Quantity: 2 }];
+
+            var container = Object.assign(new __WEBPACK_IMPORTED_MODULE_2__components_Container__["a" /* default */](), containerData);
+            var items = toItems(itemsData, ['ID', 'Length', 'Width', 'Height', 'Quantity']);
+
+            var data = new TestData(container, items);
+            return data;
+        }
+    }]);
+
+    return AFitTest;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (AFitTest);
+
+/***/ }),
+/* 52 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_Container__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Item__ = __webpack_require__(28);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+
+
+
+var epsilon = Math.pow(2, -52);;
+
+/*c# using CromulentBisgetti.ContainerPacking.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace CromulentBisgetti.ContainerPacking.Algorithms
+{
+	/// <summary>
+	/// A 3D bin packing algorithm originally ported from https://github.com/keremdemirer/3dbinpackingjs,
+	/// which itself was a JavaScript port of https://github.com/wknechtel/3d-bin-pack/, which is a C reconstruction 
+	/// of a novel algorithm developed in a U.S. Air Force master's thesis by Erhan Baltacioglu in 2001.
+	/// </summary>
+	public class EB_AFIT : IPackingAlgorithm
+	{
+c#*/
+
+/*c# ScrapPad
+/// <summary>
+		/// From the master's thesis:
+		/// "The double linked list we use keeps the topology of the edge of the 
+		/// current layer under construction. We keep the x and z coordinates of 
+		/// each gap's right corner. The program looks at those gaps and tries to 
+		/// fill them with boxes one at a time while trying to keep the edge of the
+		/// layer even" (p. 3-7).
+		/// </summary>
+		private class ScrapPad
+		{
+			/// <summary>
+			/// Gets or sets the x coordinate of the gap's right corner.
+			/// </summary>
+			/// <value>
+			/// The x coordinate of the gap's right corner.
+			/// </value>
+			public decimal CumX { get; set; }
+
+			/// <summary>
+			/// Gets or sets the z coordinate of the gap's right corner.
+			/// </summary>
+			/// <value>
+			/// The z coordinate of the gap's right corner.
+			/// </value>
+			public decimal CumZ { get; set; }
+
+			/// <summary>
+			/// Gets or sets the following entry.
+			/// </summary>
+			/// <value>
+			/// The following entry.
+			/// </value>
+			public ScrapPad Post { get; set; }
+
+			/// <summary>
+			/// Gets or sets the previous entry.
+			/// </summary>
+			/// <value>
+			/// The previous entry.
+			/// </value>
+			public ScrapPad Pre { get; set; }
+        }
+c#*/
+
+/**
+ * From the master's thesis:
+ * "The double linked list we use keeps the topology of the edge of the 
+ * current layer under construction. We keep the x and z coordinates of 
+ * each gap's right corner. The program looks at those gaps and tries to 
+ * fill them with boxes one at a time while trying to keep the edge of the
+ * layer even" (p. 3-7).
+ */
+
+var ScrapPad = function ScrapPad() {
+	_classCallCheck(this, ScrapPad);
+
+	/** The x coordinate of the gap's right corner. */
+	this.CumX = 0;
+	/** The z coordinate of the gap's right corner. */
+	this.CumZ = 0;
+
+	/** The following entry.
+  * @type {ScrapPad}
+  */
+	this.Post;
+
+	/** The previous entry.
+  * @type {ScrapPad}
+  */
+	this.Pre;
+};
+
+/*c#
+/// <summary>
+	/// A list that stores all the different lengths of all item dimensions.
+	/// From the master's thesis:
+	/// "Each Layerdim value in this array represents a different layer thickness
+	/// value with which each iteration can start packing. Before starting iterations,
+	/// all different lengths of all box dimensions along with evaluation values are
+	/// stored in this array" (p. 3-6).
+	/// </summary>
+	private class Layer
+	{
+		/// <summary>
+		/// Gets or sets the layer dimension value, representing a layer thickness.
+		/// </summary>
+		/// <value>
+		/// The layer dimension value.
+		/// </value>
+		public decimal LayerDim { get; set; }
+
+		/// <summary>
+		/// Gets or sets the layer eval value, representing an evaluation weight
+		/// value for the corresponding LayerDim value.
+		/// </summary>
+		/// <value>
+		/// The layer eval value.
+		/// </value>
+		public decimal LayerEval { get; set; }
+    }
+    c#*/
+
+/**
+ * A list that stores all the different lengths of all item dimensions.
+ * From the master's thesis:
+ * "Each Layerdim value in this array represents a different layer thickness
+ * value with which each iteration can start packing. Before starting iterations,
+ * all different lengths of all box dimensions along with evaluation values are
+ * stored in this array" (p. 3-6).
+ */
+
+
+var Layer = function () {
+	function Layer(layerEval) {
+		_classCallCheck(this, Layer);
+
+		this.LayerDim = 0;
+		this.LayerEval = layerEval !== undefined ? layerEval : 0;
+	}
+
+	/**
+  * @param {Layer} l1 
+  * @param {Layer} l2 
+  */
+
+
+	_createClass(Layer, null, [{
+		key: "SortByEval",
+		value: function SortByEval(l1, l2) {
+			return l1.LayerEval - l2.LayerEval;
+		}
+	}]);
+
+	return Layer;
+}();
+
+var PackingResult = function PackingResult() {
+	_classCallCheck(this, PackingResult);
+
+	this.IsCompletePack = false;
+	/** @type {Array<Item>} */
+	this.PackedItems = [];
+	this.PercentContainerVolumePacked = 0;
+	this.PercentItemVolumePacked = 0;
+	/** @type {Array<Item>} */
+	this.UnpackedItems = [];
+	this.PackTimeInMilliseconds = Number.MAX_SAFE_INTEGER;
+};
+
+/** @type {Array<Item>} */
+
+
+var itemsToPack = [];
+/** @type {Array<Item>} */
+var itemsPackedInOrder;
+/** @type {Array<Layer>} */
+var layers;
+
+/** @type {ScrapPad} */
+var scrapfirst;
+/** @type {ScrapPad} */
+var smallestZ;
+/** @type {ScrapPad} */
+var trash;
+
+var evened = false;
+var hundredPercentPacked = false;
+var layerDone = false;
+var packing = false;
+var packingBest = false;
+var quit = false;
+
+var bboxi = 0;
+var bestIteration = 0;
+var bestVariant = 0;
+var boxi = 0;
+var cboxi = 0;
+var layerListLen = 0;
+var packedItemCount = 0;
+var x = 0;
+
+var bbfx = 0;
+var bbfy = 0;
+var bbfz = 0;
+var bboxx = 0;
+var bboxy = 0;
+var bboxz = 0;
+var bfx = 0;
+var bfy = 0;
+var bfz = 0;
+var boxx = 0;
+var boxy = 0;
+var boxz = 0;
+var cboxx = 0;
+var cboxy = 0;
+var cboxz = 0;
+var layerinlayer = 0;
+var layerThickness = 0;
+var lilz = 0;
+var packedVolume = 0;
+var packedy = 0;
+var prelayer = 0;
+var prepackedy = 0;
+var preremainpy = 0;
+var px = 0;
+var py = 0;
+var pz = 0;
+var remainpy = 0;
+var remainpz = 0;
+var itemsToPackCount = 0;
+var totalItemVolume = 0;
+var totalContainerVolume = 0;
+
+/**
+ * Current port by chadiik (2018)
+ * A 3D bin packing algorithm originally ported from https://github.com/davidmchapman/3DContainerPacking
+ * which itself was ported from https://github.com/keremdemirer/3dbinpackingjs,
+ * which itself was a JavaScript port of https://github.com/wknechtel/3d-bin-pack/, which is a C reconstruction 
+ * of a novel algorithm developed in a U.S. Air Force master's thesis by Erhan Baltacioglu in 2001.
+ */
+
+var AFit = function () {
+	/*c# #region Private Variables
+ private List<Item> itemsToPack;
+ private List<Item> itemsPackedInOrder;
+ private List<Layer> layers;
+ private ContainerPackingResult result;
+ private ScrapPad scrapfirst;
+ private ScrapPad smallestZ;
+ private ScrapPad trash;
+ private bool evened;
+ private bool hundredPercentPacked = false;
+ private bool layerDone;
+ private bool packing;
+ private bool packingBest = false;
+ private bool quit = false;
+ private int bboxi;
+ private int bestIteration;
+ private int bestVariant;
+ private int boxi;
+ private int cboxi;
+ private int layerListLen;
+ private int packedItemCount;
+ private int x;
+ private decimal bbfx;
+ private decimal bbfy;
+ private decimal bbfz;
+ private decimal bboxx;
+ private decimal bboxy;
+ private decimal bboxz;
+ private decimal bfx;
+ private decimal bfy;
+ private decimal bfz;
+ private decimal boxx;
+ private decimal boxy;
+ private decimal boxz;
+ private decimal cboxx;
+ private decimal cboxy;
+ private decimal cboxz;
+ private decimal layerinlayer;
+ private decimal layerThickness;
+ private decimal lilz;
+ private decimal packedVolume;
+ private decimal packedy;
+ private decimal prelayer;
+ private decimal prepackedy;
+ private decimal preremainpy;
+ private decimal px;
+ private decimal py;
+ private decimal pz;
+ private decimal remainpy;
+ private decimal remainpz;
+ private decimal itemsToPackCount;
+ private decimal totalItemVolume;
+ private decimal totalContainerVolume;
+ #endregion Private Variables
+ c#*/
+	function AFit() {
+		_classCallCheck(this, AFit);
+	}
+
+	/*c# #region Public Methods
+ /// <summary>
+ /// Runs the packing algorithm.
+ /// </summary>
+ /// <param name="container">The container to pack items into.</param>
+ /// <param name="items">The items to pack.</param>
+ /// <returns>The bin packing result.</returns>
+ public AlgorithmPackingResult Run(Container container, List<Item> items)
+ {
+ Initialize(container, items);
+ ExecuteIterations(container);
+ Report(container);
+ 	AlgorithmPackingResult result = new AlgorithmPackingResult();
+ result.AlgorithmID = (int)AlgorithmType.EB_AFIT;
+ result.AlgorithmName = "EB-AFIT";
+ 	for (int i = 1; i <= itemsToPackCount; i++)
+ {
+ itemsToPack[i].Quantity = 1;
+ 		if (!itemsToPack[i].IsPacked)
+ {
+ 	result.UnpackedItems.Add(itemsToPack[i]);
+ }
+ }
+ 	result.PackedItems = itemsPackedInOrder;
+ 
+ 			if (result.UnpackedItems.Count == 0)
+ {
+ result.IsCompletePack = true;
+ }
+ 	return result;
+ }
+       #endregion Public Methods
+     c#*/
+
+	/**
+  * Runs the algorithm
+  * @param {Container} container 
+  * @param {Array<Item>} items 
+  * @returns {PackingResult}
+  */
+
+
+	_createClass(AFit, [{
+		key: "Solve",
+		value: function Solve(container, items) {
+			this.Initialize(container, items);
+			this.ExecuteIterations(container);
+			this.Report(container);
+
+			var result = new PackingResult();
+
+			for (var i = 1; i <= itemsToPackCount; i++) {
+				itemsToPack[i].Quantity = 1;
+
+				if (!itemsToPack[i].IsPacked) {
+					result.UnpackedItems.push(itemsToPack[i]);
+				}
+			}
+
+			result.PackedItems = itemsPackedInOrder;
+
+			if (result.UnpackedItems.length == 0) {
+				result.IsCompletePack = true;
+			}
+
+			return result;
+		}
+
+		/*c# AnalyzeBox
+  #region Private Methods
+  /// <summary>
+  /// Analyzes each unpacked box to find the best fitting one to the empty space given.
+  /// </summary>
+  private void AnalyzeBox(decimal hmx, decimal hy, decimal hmy, decimal hz, decimal hmz, decimal dim1, decimal dim2, decimal dim3)
+  {
+  if (dim1 <= hmx && dim2 <= hmy && dim3 <= hmz)
+  {
+  if (dim2 <= hy)
+  {
+  	if (hy - dim2 < bfy)
+  	{
+  		boxx = dim1;
+  		boxy = dim2;
+  		boxz = dim3;
+  		bfx = hmx - dim1;
+  		bfy = hy - dim2;
+  		bfz = Math.Abs(hz - dim3);
+  		boxi = x;
+  	}
+  	else if (hy - dim2 == bfy && hmx - dim1 < bfx)
+  	{
+  		boxx = dim1;
+  		boxy = dim2;
+  		boxz = dim3;
+  		bfx = hmx - dim1;
+  		bfy = hy - dim2;
+  		bfz = Math.Abs(hz - dim3);
+  		boxi = x;
+  	}
+  	else if (hy - dim2 == bfy && hmx - dim1 == bfx && Math.Abs(hz - dim3) < bfz)
+  	{
+  		boxx = dim1;
+  		boxy = dim2;
+  		boxz = dim3;
+  		bfx = hmx - dim1;
+  		bfy = hy - dim2;
+  		bfz = Math.Abs(hz - dim3);
+  		boxi = x;
+  	}
+  }
+  else
+  {
+  	if (dim2 - hy < bbfy)
+  	{
+  		bboxx = dim1;
+  		bboxy = dim2;
+  		bboxz = dim3;
+  		bbfx = hmx - dim1;
+  		bbfy = dim2 - hy;
+  		bbfz = Math.Abs(hz - dim3);
+  		bboxi = x;
+  	}
+  	else if (dim2 - hy == bbfy && hmx - dim1 < bbfx)
+  	{
+  		bboxx = dim1;
+  		bboxy = dim2;
+  		bboxz = dim3;
+  		bbfx = hmx - dim1;
+  		bbfy = dim2 - hy;
+  		bbfz = Math.Abs(hz - dim3);
+  		bboxi = x;
+  	}
+  	else if (dim2 - hy == bbfy && hmx - dim1 == bbfx && Math.Abs(hz - dim3) < bbfz)
+  	{
+  		bboxx = dim1;
+  		bboxy = dim2;
+  		bboxz = dim3;
+  		bbfx = hmx - dim1;
+  		bbfy = dim2 - hy;
+  		bbfz = Math.Abs(hz - dim3);
+  		bboxi = x;
+  	}
+  }
+  }
+      }
+  c#*/
+
+		/**
+   * Analyzes each unpacked box to find the best fitting one to the empty space given.
+   * @param {Number} hmx 
+   * @param {Number} hy 
+   * @param {Number} hmy 
+   * @param {Number} hz 
+   * @param {Number} hmz 
+   * @param {Number} dim1 
+   * @param {Number} dim2 
+   * @param {Number} dim3 
+   */
+
+	}, {
+		key: "AnalyzeBox",
+		value: function AnalyzeBox(hmx, hy, hmy, hz, hmz, dim1, dim2, dim3) {
+			if (dim1 <= hmx && dim2 <= hmy && dim3 <= hmz) {
+				if (dim2 <= hy) {
+					if (hy - dim2 < bfy) {
+						boxx = dim1;
+						boxy = dim2;
+						boxz = dim3;
+						bfx = hmx - dim1;
+						bfy = hy - dim2;
+						bfz = Math.abs(hz - dim3);
+						boxi = x;
+					} else if (hy - dim2 == bfy && hmx - dim1 < bfx) {
+						boxx = dim1;
+						boxy = dim2;
+						boxz = dim3;
+						bfx = hmx - dim1;
+						bfy = hy - dim2;
+						bfz = Math.abs(hz - dim3);
+						boxi = x;
+					} else if (hy - dim2 == bfy && hmx - dim1 == bfx && Math.abs(hz - dim3) < bfz) {
+						boxx = dim1;
+						boxy = dim2;
+						boxz = dim3;
+						bfx = hmx - dim1;
+						bfy = hy - dim2;
+						bfz = Math.abs(hz - dim3);
+						boxi = x;
+					}
+				} else {
+					if (dim2 - hy < bbfy) {
+						bboxx = dim1;
+						bboxy = dim2;
+						bboxz = dim3;
+						bbfx = hmx - dim1;
+						bbfy = dim2 - hy;
+						bbfz = Math.abs(hz - dim3);
+						bboxi = x;
+					} else if (dim2 - hy == bbfy && hmx - dim1 < bbfx) {
+						bboxx = dim1;
+						bboxy = dim2;
+						bboxz = dim3;
+						bbfx = hmx - dim1;
+						bbfy = dim2 - hy;
+						bbfz = Math.abs(hz - dim3);
+						bboxi = x;
+					} else if (dim2 - hy == bbfy && hmx - dim1 == bbfx && Math.abs(hz - dim3) < bbfz) {
+						bboxx = dim1;
+						bboxy = dim2;
+						bboxz = dim3;
+						bbfx = hmx - dim1;
+						bbfy = dim2 - hy;
+						bbfz = Math.abs(hz - dim3);
+						bboxi = x;
+					}
+				}
+			}
+		}
+
+		/*c# CheckFound
+  /// <summary>
+  /// After finding each box, the candidate boxes and the condition of the layer are examined.
+  /// </summary>
+  private void CheckFound()
+  {
+  evened = false;
+  if (boxi != 0)
+  {
+  cboxi = boxi;
+  cboxx = boxx;
+  cboxy = boxy;
+  cboxz = boxz;
+  }
+  else
+  {
+  if ((bboxi > 0) && (layerinlayer != 0 || (smallestZ.Pre == null && smallestZ.Post == null)))
+  {
+  if (layerinlayer == 0)
+  {
+  	prelayer = layerThickness;
+  	lilz = smallestZ.CumZ;
+  }
+  		cboxi = bboxi;
+  cboxx = bboxx;
+  cboxy = bboxy;
+  cboxz = bboxz;
+  layerinlayer = layerinlayer + bboxy - layerThickness;
+  layerThickness = bboxy;
+  }
+  else
+  {
+  if (smallestZ.Pre == null && smallestZ.Post == null)
+  {
+  	layerDone = true;
+  }
+  else
+  {
+  	evened = true;
+  			if (smallestZ.Pre == null)
+  	{
+  		trash = smallestZ.Post;
+  		smallestZ.CumX = smallestZ.Post.CumX;
+  		smallestZ.CumZ = smallestZ.Post.CumZ;
+  		smallestZ.Post = smallestZ.Post.Post;
+  		if (smallestZ.Post != null)
+  		{
+  			smallestZ.Post.Pre = smallestZ;
+  		}
+  	}
+  	else if (smallestZ.Post == null)
+  	{
+  		smallestZ.Pre.Post = null;
+  		smallestZ.Pre.CumX = smallestZ.CumX;
+  	}
+  	else
+  	{
+  		if (smallestZ.Pre.CumZ == smallestZ.Post.CumZ)
+  		{
+  			smallestZ.Pre.Post = smallestZ.Post.Post;
+  					if (smallestZ.Post.Post != null)
+  			{
+  				smallestZ.Post.Post.Pre = smallestZ.Pre;
+  			}
+  					smallestZ.Pre.CumX = smallestZ.Post.CumX;
+  		}
+  		else
+  		{
+  			smallestZ.Pre.Post = smallestZ.Post;
+  			smallestZ.Post.Pre = smallestZ.Pre;
+  					if (smallestZ.Pre.CumZ < smallestZ.Post.CumZ)
+  			{
+  				smallestZ.Pre.CumX = smallestZ.CumX;
+  			}
+  		}
+  	}
+  }
+  }
+  }
+     }
+     c#*/
+
+		/**
+   * After finding each box, the candidate boxes and the condition of the layer are examined.
+   */
+
+	}, {
+		key: "CheckFound",
+		value: function CheckFound() {
+			evened = false;
+
+			if (boxi != 0) {
+				cboxi = boxi;
+				cboxx = boxx;
+				cboxy = boxy;
+				cboxz = boxz;
+			} else {
+				if (bboxi > 0 && (layerinlayer != 0 || !smallestZ.Pre && !smallestZ.Post)) {
+					if (layerinlayer == 0) {
+						prelayer = layerThickness;
+						lilz = smallestZ.CumZ;
+					}
+
+					cboxi = bboxi;
+					cboxx = bboxx;
+					cboxy = bboxy;
+					cboxz = bboxz;
+					layerinlayer = layerinlayer + bboxy - layerThickness;
+					layerThickness = bboxy;
+				} else {
+					if (!smallestZ.Pre && !smallestZ.Post) {
+						layerDone = true;
+					} else {
+						evened = true;
+
+						if (!smallestZ.Pre) {
+							trash = smallestZ.Post;
+							smallestZ.CumX = smallestZ.Post.CumX;
+							smallestZ.CumZ = smallestZ.Post.CumZ;
+							smallestZ.Post = smallestZ.Post.Post;
+							if (smallestZ.Post) {
+								smallestZ.Post.Pre = smallestZ;
+							}
+						} else if (!smallestZ.Post) {
+							smallestZ.Pre.Post = undefined;
+							smallestZ.Pre.CumX = smallestZ.CumX;
+						} else {
+							if (smallestZ.Pre.CumZ == smallestZ.Post.CumZ) {
+								smallestZ.Pre.Post = smallestZ.Post.Post;
+
+								if (smallestZ.Post.Post) {
+									smallestZ.Post.Post.Pre = smallestZ.Pre;
+								}
+
+								smallestZ.Pre.CumX = smallestZ.Post.CumX;
+							} else {
+								smallestZ.Pre.Post = smallestZ.Post;
+								smallestZ.Post.Pre = smallestZ.Pre;
+
+								if (smallestZ.Pre.CumZ < smallestZ.Post.CumZ) {
+									smallestZ.Pre.CumX = smallestZ.CumX;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		/*c# ExecuteIterations
+  /// <summary>
+  /// Executes the packing algorithm variants.
+  /// </summary>
+  private void ExecuteIterations(Container container)
+  {
+  int itelayer;
+  int layersIndex;
+  decimal bestVolume = 0.0M;
+  for (int containerOrientationVariant = 1; (containerOrientationVariant <= 6) && !quit; containerOrientationVariant++)
+  {
+  switch (containerOrientationVariant)
+  {
+  case 1:
+  	px = container.Length; py = container.Height; pz = container.Width;
+  	break;
+  		case 2:
+  	px = container.Width; py = container.Height; pz = container.Length;
+  	break;
+  		case 3:
+  	px = container.Width; py = container.Length; pz = container.Height;
+  	break;
+  		case 4:
+  	px = container.Height; py = container.Length; pz = container.Width;
+  	break;
+  		case 5:
+  	px = container.Length; py = container.Width; pz = container.Height;
+  	break;
+  		case 6:
+  	px = container.Height; py = container.Width; pz = container.Length;
+  	break;
+  }
+  	layers.Add(new Layer { LayerEval = -1 });
+  ListCanditLayers();
+  layers = layers.OrderBy(l => l.LayerEval).ToList();
+  	for (layersIndex = 1; (layersIndex <= layerListLen) && !quit; layersIndex++)
+  {
+  packedVolume = 0.0M;
+  packedy = 0;
+  packing = true;
+  layerThickness = layers[layersIndex].LayerDim;
+  itelayer = layersIndex;
+  remainpy = py;
+  remainpz = pz;
+  packedItemCount = 0;
+  		for (x = 1; x <= itemsToPackCount; x++)
+  {
+  	itemsToPack[x].IsPacked = false;
+  }
+  		do
+  {
+  	layerinlayer = 0;
+  	layerDone = false;
+  			PackLayer();
+  			packedy = packedy + layerThickness;
+  	remainpy = py - packedy;
+  			if (layerinlayer != 0 && !quit)
+  	{
+  		prepackedy = packedy;
+  		preremainpy = remainpy;
+  		remainpy = layerThickness - prelayer;
+  		packedy = packedy - layerThickness + prelayer;
+  		remainpz = lilz;
+  		layerThickness = layerinlayer;
+  		layerDone = false;
+  				PackLayer();
+  				packedy = prepackedy;
+  		remainpy = preremainpy;
+  		remainpz = pz;
+  	}
+  			FindLayer(remainpy);
+  } while (packing && !quit);
+  		if ((packedVolume > bestVolume) && !quit)
+  {
+  	bestVolume = packedVolume;
+  	bestVariant = containerOrientationVariant;
+  	bestIteration = itelayer;
+  }
+  		if (hundredPercentPacked) break;
+  }
+  	if (hundredPercentPacked) break;
+  	if ((container.Length == container.Height) && (container.Height == container.Width)) containerOrientationVariant = 6;
+  	layers = new List<Layer>();
+  }
+  }
+  c#*/
+
+		/**
+   * Executes the packing algorithm variants.
+   * @param {Container} container 
+   */
+
+	}, {
+		key: "ExecuteIterations",
+		value: function ExecuteIterations(container) {
+			var itelayer = 0;
+			var layersIndex = 0;
+			var bestVolume = 0;
+
+			for (var containerOrientationVariant = 1; containerOrientationVariant <= 6 && !quit; containerOrientationVariant++) {
+				switch (containerOrientationVariant) {
+					case 1:
+						px = container.Length;py = container.Height;pz = container.Width;
+						break;
+
+					case 2:
+						px = container.Width;py = container.Height;pz = container.Length;
+						break;
+
+					case 3:
+						px = container.Width;py = container.Length;pz = container.Height;
+						break;
+
+					case 4:
+						px = container.Height;py = container.Length;pz = container.Width;
+						break;
+
+					case 5:
+						px = container.Length;py = container.Width;pz = container.Height;
+						break;
+
+					case 6:
+						px = container.Height;py = container.Width;pz = container.Length;
+						break;
+				}
+
+				layers.push(new Layer(-1));
+				this.ListCanditLayers();
+				//layers = layers.OrderBy(l => l.LayerEval).ToList();
+				layers.sort(Layer.SortByEval);
+
+				for (layersIndex = 1; layersIndex <= layerListLen && !quit; layersIndex++) {
+					packedVolume = 0;
+					packedy = 0;
+					packing = true;
+					layerThickness = layers[layersIndex].LayerDim;
+					itelayer = layersIndex;
+					remainpy = py;
+					remainpz = pz;
+					packedItemCount = 0;
+
+					for (x = 1; x <= itemsToPackCount; x++) {
+						itemsToPack[x].IsPacked = false;
+					}
+
+					do {
+						layerinlayer = 0;
+						layerDone = false;
+
+						this.PackLayer();
+
+						packedy = packedy + layerThickness;
+						remainpy = py - packedy;
+
+						if (layerinlayer != 0 && !quit) {
+							prepackedy = packedy;
+							preremainpy = remainpy;
+							remainpy = layerThickness - prelayer;
+							packedy = packedy - layerThickness + prelayer;
+							remainpz = lilz;
+							layerThickness = layerinlayer;
+							layerDone = false;
+
+							this.PackLayer();
+
+							packedy = prepackedy;
+							remainpy = preremainpy;
+							remainpz = pz;
+						}
+
+						this.FindLayer(remainpy);
+					} while (packing && !quit);
+
+					if (packedVolume > bestVolume && !quit) {
+						bestVolume = packedVolume;
+						bestVariant = containerOrientationVariant;
+						bestIteration = itelayer;
+					}
+
+					if (hundredPercentPacked) break;
+				}
+
+				if (hundredPercentPacked) break;
+
+				if (container.Length == container.Height && container.Height == container.Width) containerOrientationVariant = 6;
+
+				layers = [];
+			}
+		}
+
+		/*c# FindBox
+  /// <summary>
+  /// Finds the most proper boxes by looking at all six possible orientations,
+  /// empty space given, adjacent boxes, and pallet limits.
+  /// </summary>
+  private void FindBox(decimal hmx, decimal hy, decimal hmy, decimal hz, decimal hmz)
+  {
+  int y;
+  bfx = 32767;
+  bfy = 32767;
+  bfz = 32767;
+  bbfx = 32767;
+  bbfy = 32767;
+  bbfz = 32767;
+  boxi = 0;
+  bboxi = 0;
+  for (y = 1; y <= itemsToPackCount; y = y + itemsToPack[y].Quantity)
+  {
+  for (x = y; x < x + itemsToPack[y].Quantity - 1; x++)
+  {
+  if (!itemsToPack[x].IsPacked) break;
+  }
+  	if (itemsToPack[x].IsPacked) continue;
+  	if (x > itemsToPackCount) return;
+  	AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim1, itemsToPack[x].Dim2, itemsToPack[x].Dim3);
+  	if ((itemsToPack[x].Dim1 == itemsToPack[x].Dim3) && (itemsToPack[x].Dim3 == itemsToPack[x].Dim2)) continue;
+  	AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim1, itemsToPack[x].Dim3, itemsToPack[x].Dim2);
+  AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim2, itemsToPack[x].Dim1, itemsToPack[x].Dim3);
+  AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim2, itemsToPack[x].Dim3, itemsToPack[x].Dim1);
+  AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim3, itemsToPack[x].Dim1, itemsToPack[x].Dim2);
+  AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim3, itemsToPack[x].Dim2, itemsToPack[x].Dim1);
+  }
+  }
+  c#*/
+
+		/**
+   * Finds the most proper boxes by looking at all six possible orientations,
+  * empty space given, adjacent boxes, and pallet limits.
+   * @param {Number} hmx 
+   * @param {Number} hy 
+   * @param {Number} hmy 
+   * @param {Number} hz 
+   * @param {Number} hmz 
+   */
+
+	}, {
+		key: "FindBox",
+		value: function FindBox(hmx, hy, hmy, hz, hmz) {
+			var y = 0;
+
+			bfx = Number.MAX_VALUE;
+			bfy = Number.MAX_VALUE;
+			bfz = Number.MAX_VALUE;
+			bbfx = Number.MAX_VALUE;
+			bbfy = Number.MAX_VALUE;
+			bbfz = Number.MAX_VALUE;
+			boxi = 0;
+			bboxi = 0;
+
+			for (y = 1; y <= itemsToPackCount; y = y + itemsToPack[y].Quantity) {
+				for (x = y; x < x + itemsToPack[y].Quantity - 1; x++) {
+					if (!itemsToPack[x].IsPacked) break;
+				}
+
+				if (itemsToPack[x].IsPacked) continue;
+
+				if (x > itemsToPackCount) return;
+
+				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim1, itemsToPack[x].Dim2, itemsToPack[x].Dim3);
+
+				if (itemsToPack[x].Dim1 == itemsToPack[x].Dim3 && itemsToPack[x].Dim3 == itemsToPack[x].Dim2) continue;
+
+				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim1, itemsToPack[x].Dim3, itemsToPack[x].Dim2);
+				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim2, itemsToPack[x].Dim1, itemsToPack[x].Dim3);
+				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim2, itemsToPack[x].Dim3, itemsToPack[x].Dim1);
+				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim3, itemsToPack[x].Dim1, itemsToPack[x].Dim2);
+				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim3, itemsToPack[x].Dim2, itemsToPack[x].Dim1);
+			}
+		}
+
+		/*c# FindLayer
+  /// <summary>
+  /// Finds the most proper layer height by looking at the unpacked boxes and the remaining empty space available.
+  /// </summary>
+  private void FindLayer(decimal thickness)
+  {
+  decimal exdim = 0;
+  decimal dimdif;
+  decimal dimen2 = 0;
+  decimal dimen3 = 0;
+  int y;
+  int z;
+  decimal layereval;
+  decimal eval;
+  layerThickness = 0;
+  eval = 1000000;
+  for (x = 1; x <= itemsToPackCount; x++)
+  {
+  if (itemsToPack[x].IsPacked) continue;
+  	for (y = 1; y <= 3; y++)
+  {
+  switch (y)
+  {
+  	case 1:
+  		exdim = itemsToPack[x].Dim1;
+  		dimen2 = itemsToPack[x].Dim2;
+  		dimen3 = itemsToPack[x].Dim3;
+  		break;
+  			case 2:
+  		exdim = itemsToPack[x].Dim2;
+  		dimen2 = itemsToPack[x].Dim1;
+  		dimen3 = itemsToPack[x].Dim3;
+  		break;
+  			case 3:
+  		exdim = itemsToPack[x].Dim3;
+  		dimen2 = itemsToPack[x].Dim1;
+  		dimen3 = itemsToPack[x].Dim2;
+  		break;
+  }
+  		layereval = 0;
+  		if ((exdim <= thickness) && (((dimen2 <= px) && (dimen3 <= pz)) || ((dimen3 <= px) && (dimen2 <= pz))))
+  {
+  	for (z = 1; z <= itemsToPackCount; z++)
+  	{
+  		if (!(x == z) && !(itemsToPack[z].IsPacked))
+  		{
+  			dimdif = Math.Abs(exdim - itemsToPack[z].Dim1);
+  					if (Math.Abs(exdim - itemsToPack[z].Dim2) < dimdif)
+  			{
+  				dimdif = Math.Abs(exdim - itemsToPack[z].Dim2);
+  			}
+  					if (Math.Abs(exdim - itemsToPack[z].Dim3) < dimdif)
+  			{
+  				dimdif = Math.Abs(exdim - itemsToPack[z].Dim3);
+  			}
+  					layereval = layereval + dimdif;
+  		}
+  	}
+  			if (layereval < eval)
+  	{
+  		eval = layereval;
+  		layerThickness = exdim;
+  	}
+  }
+  }
+  }
+  if (layerThickness == 0 || layerThickness > remainpy) packing = false;
+  }
+  c#*/
+
+		/**
+   * Finds the most proper layer height by looking at the unpacked boxes and the remaining empty space available.
+   * @param {Number} thickness 
+   */
+
+	}, {
+		key: "FindLayer",
+		value: function FindLayer(thickness) {
+			var exdim = 0;
+			var dimdif = 0;
+			var dimen2 = 0;
+			var dimen3 = 0;
+			var y = 0;
+			var z = 0;
+			var layereval = 0;
+			var maxEvaluations = 1000000;
+
+			layerThickness = 0;
+
+			for (x = 1; x <= itemsToPackCount; x++) {
+				if (itemsToPack[x].IsPacked) continue;
+
+				for (y = 1; y <= 3; y++) {
+					switch (y) {
+						case 1:
+							exdim = itemsToPack[x].Dim1;
+							dimen2 = itemsToPack[x].Dim2;
+							dimen3 = itemsToPack[x].Dim3;
+							break;
+
+						case 2:
+							exdim = itemsToPack[x].Dim2;
+							dimen2 = itemsToPack[x].Dim1;
+							dimen3 = itemsToPack[x].Dim3;
+							break;
+
+						case 3:
+							exdim = itemsToPack[x].Dim3;
+							dimen2 = itemsToPack[x].Dim1;
+							dimen3 = itemsToPack[x].Dim2;
+							break;
+					}
+
+					layereval = 0;
+
+					if (exdim <= thickness && (dimen2 <= px && dimen3 <= pz || dimen3 <= px && dimen2 <= pz)) {
+						for (z = 1; z <= itemsToPackCount; z++) {
+							if (!(x == z) && !itemsToPack[z].IsPacked) {
+								dimdif = Math.abs(exdim - itemsToPack[z].Dim1);
+
+								if (Math.abs(exdim - itemsToPack[z].Dim2) < dimdif) {
+									dimdif = Math.abs(exdim - itemsToPack[z].Dim2);
+								}
+
+								if (Math.abs(exdim - itemsToPack[z].Dim3) < dimdif) {
+									dimdif = Math.abs(exdim - itemsToPack[z].Dim3);
+								}
+
+								layereval = layereval + dimdif;
+							}
+						}
+
+						if (layereval < maxEvaluations) {
+							maxEvaluations = layereval;
+							layerThickness = exdim;
+						}
+					}
+				}
+			}
+
+			if (layerThickness == 0 || layerThickness > remainpy) packing = false;
+		}
+
+		/*c# FindSmallestZ
+  /// <summary>
+  /// Finds the first to be packed gap in the layer edge.
+  /// </summary>
+  private void FindSmallestZ()
+  {
+  ScrapPad scrapmemb = scrapfirst;
+  smallestZ = scrapmemb;
+  while (scrapmemb.Post != null)
+  {
+  if (scrapmemb.Post.CumZ < smallestZ.CumZ)
+  {
+  smallestZ = scrapmemb.Post;
+  }
+  	scrapmemb = scrapmemb.Post;
+  }
+  }
+  c#*/
+
+		/**
+   * Finds the first to be packed gap in the layer edge.
+   */
+
+	}, {
+		key: "FindSmallestZ",
+		value: function FindSmallestZ() {
+			var scrapmemb = scrapfirst;
+			smallestZ = scrapmemb;
+
+			while (scrapmemb.Post) {
+				if (scrapmemb.Post.CumZ < smallestZ.CumZ) {
+					smallestZ = scrapmemb.Post;
+				}
+
+				scrapmemb = scrapmemb.Post;
+			}
+		}
+
+		/*c# Initialize
+  /// <summary>
+  /// Initializes everything.
+  /// </summary>
+  private void Initialize(Container container, List<Item> items)
+  {
+  itemsToPack = new List<Item>();
+  itemsPackedInOrder = new List<Item>();
+  result = new ContainerPackingResult();
+  // The original code uses 1-based indexing everywhere. This fake entry is added to the beginning
+  // of the list to make that possible.
+  itemsToPack.Add(new Item(0, 0, 0, 0, 0));
+  layers = new List<Layer>();
+  itemsToPackCount = 0;
+  foreach (Item item in items)
+  {
+  for (int i = 1; i <= item.Quantity; i++)
+  {
+  Item newItem = new Item(item.ID, item.Dim1, item.Dim2, item.Dim3, item.Quantity);
+  itemsToPack.Add(newItem);
+  }
+  	itemsToPackCount += item.Quantity;
+  }
+  itemsToPack.Add(new Item(0, 0, 0, 0, 0));
+  totalContainerVolume = container.Length * container.Height * container.Width;
+  totalItemVolume = 0.0M;
+  for (x = 1; x <= itemsToPackCount; x++)
+  {
+  totalItemVolume = totalItemVolume + itemsToPack[x].Volume;
+  }
+  scrapfirst = new ScrapPad();
+  scrapfirst.Pre = null;
+  scrapfirst.Post = null;
+  packingBest = false;
+  hundredPercentPacked = false;
+  quit = false;
+  }
+  c#*/
+
+		/**
+   * Initializes everything.
+   * @param {Container} container 
+   * @param {Array<Item>} items 
+   */
+
+	}, {
+		key: "Initialize",
+		value: function Initialize(container, items) {
+			itemsToPack = [];
+			itemsPackedInOrder = [];
+
+			// The original code uses 1-based indexing everywhere. This fake entry is added to the beginning
+			// of the list to make that possible.
+			itemsToPack.push(new __WEBPACK_IMPORTED_MODULE_1__components_Item__["a" /* default */](0, 0, 0, 0, 0));
+
+			layers = [];
+			itemsToPackCount = 0;
+
+			for (var iItems = 0, numItems = items.length; iItems < numItems; iItems++) {
+				var item = items[iItems];
+				for (var i = 1; i <= item.Quantity; i++) {
+					var newItem = new __WEBPACK_IMPORTED_MODULE_1__components_Item__["a" /* default */](item.ID, item.Dim1, item.Dim2, item.Dim3, item.Quantity);
+					itemsToPack.push(newItem);
+				}
+
+				itemsToPackCount += item.Quantity;
+			}
+
+			itemsToPack.push(new __WEBPACK_IMPORTED_MODULE_1__components_Item__["a" /* default */](0, 0, 0, 0, 0));
+
+			totalContainerVolume = container.Length * container.Height * container.Width;
+			totalItemVolume = 0;
+
+			for (x = 1; x <= itemsToPackCount; x++) {
+				totalItemVolume = totalItemVolume + itemsToPack[x].Volume;
+			}
+
+			scrapfirst = new ScrapPad();
+
+			scrapfirst.Pre = undefined;
+			scrapfirst.Post = undefined;
+			packingBest = false;
+			hundredPercentPacked = false;
+			quit = false;
+		}
+
+		/*c# ListCanditLayers
+  /// <summary>
+  /// Lists all possible layer heights by giving a weight value to each of them.
+  /// </summary>
+  private void ListCanditLayers()
+  {
+  bool same;
+  decimal exdim = 0;
+  decimal dimdif;
+  decimal dimen2 = 0;
+  decimal dimen3 = 0;
+  int y;
+  int z;
+  int k;
+  decimal layereval;
+  layerListLen = 0;
+  for (x = 1; x <= itemsToPackCount; x++)
+  {
+  for (y = 1; y <= 3; y++)
+  {
+  switch (y)
+  {
+  	case 1:
+  		exdim = itemsToPack[x].Dim1;
+  		dimen2 = itemsToPack[x].Dim2;
+  		dimen3 = itemsToPack[x].Dim3;
+  		break;
+  			case 2:
+  		exdim = itemsToPack[x].Dim2;
+  		dimen2 = itemsToPack[x].Dim1;
+  		dimen3 = itemsToPack[x].Dim3;
+  		break;
+  			case 3:
+  		exdim = itemsToPack[x].Dim3;
+  		dimen2 = itemsToPack[x].Dim1;
+  		dimen3 = itemsToPack[x].Dim2;
+  		break;
+  }
+  		if ((exdim > py) || (((dimen2 > px) || (dimen3 > pz)) && ((dimen3 > px) || (dimen2 > pz)))) continue;
+  		same = false;
+  		for (k = 1; k <= layerListLen; k++)
+  {
+  	if (exdim == layers[k].LayerDim)
+  	{
+  		same = true;
+  		continue;
+  	}
+  }
+  		if (same) continue;
+  		layereval = 0;
+  		for (z = 1; z <= itemsToPackCount; z++)
+  {
+  	if (!(x == z))
+  	{
+  		dimdif = Math.Abs(exdim - itemsToPack[z].Dim1);
+  				if (Math.Abs(exdim - itemsToPack[z].Dim2) < dimdif)
+  		{
+  			dimdif = Math.Abs(exdim - itemsToPack[z].Dim2);
+  		}
+  		if (Math.Abs(exdim - itemsToPack[z].Dim3) < dimdif)
+  		{
+  			dimdif = Math.Abs(exdim - itemsToPack[z].Dim3);
+  		}
+  		layereval = layereval + dimdif;
+  	}
+  }
+  		layerListLen++;
+  		layers.Add(new Layer());
+  layers[layerListLen].LayerEval = layereval;
+  layers[layerListLen].LayerDim = exdim;
+  }
+  }
+  }
+  c#*/
+
+		/**
+   * Lists all possible layer heights by giving a weight value to each of them.
+   */
+
+	}, {
+		key: "ListCanditLayers",
+		value: function ListCanditLayers() {
+			var same = false;
+			var exdim = 0;
+			var dimdif = 0;
+			var dimen2 = 0;
+			var dimen3 = 0;
+			var y = 0;
+			var z = 0;
+			var k = 0;
+			var layereval = 0;
+
+			layerListLen = 0;
+
+			for (x = 1; x <= itemsToPackCount; x++) {
+				for (y = 1; y <= 3; y++) {
+					switch (y) {
+						case 1:
+							exdim = itemsToPack[x].Dim1;
+							dimen2 = itemsToPack[x].Dim2;
+							dimen3 = itemsToPack[x].Dim3;
+							break;
+
+						case 2:
+							exdim = itemsToPack[x].Dim2;
+							dimen2 = itemsToPack[x].Dim1;
+							dimen3 = itemsToPack[x].Dim3;
+							break;
+
+						case 3:
+							exdim = itemsToPack[x].Dim3;
+							dimen2 = itemsToPack[x].Dim1;
+							dimen3 = itemsToPack[x].Dim2;
+							break;
+					}
+
+					if (exdim > py || (dimen2 > px || dimen3 > pz) && (dimen3 > px || dimen2 > pz)) continue;
+
+					same = false;
+
+					for (k = 1; k <= layerListLen; k++) {
+						if (exdim == layers[k].LayerDim) {
+							same = true;
+							continue;
+						}
+					}
+
+					if (same) continue;
+
+					layereval = 0;
+
+					for (z = 1; z <= itemsToPackCount; z++) {
+						if (!(x == z)) {
+							dimdif = Math.abs(exdim - itemsToPack[z].Dim1);
+
+							if (Math.abs(exdim - itemsToPack[z].Dim2) < dimdif) {
+								dimdif = Math.abs(exdim - itemsToPack[z].Dim2);
+							}
+							if (Math.abs(exdim - itemsToPack[z].Dim3) < dimdif) {
+								dimdif = Math.abs(exdim - itemsToPack[z].Dim3);
+							}
+							layereval = layereval + dimdif;
+						}
+					}
+
+					layerListLen++;
+
+					layers.push(new Layer());
+					layers[layerListLen].LayerEval = layereval;
+					layers[layerListLen].LayerDim = exdim;
+				}
+			}
+		}
+
+		/*c# OutputBoxList
+  /// <summary>
+  /// Transforms the found coordinate system to the one entered by the user and writes them
+  /// to the report file.
+  /// </summary>
+  private void OutputBoxList()
+  {
+  decimal packCoordX = 0;
+  decimal packCoordY = 0;
+  decimal packCoordZ = 0;
+  dynamic packDimX = 0;
+  dynamic packDimY = 0;
+  dynamic packDimZ = 0;
+  switch (bestVariant)
+  {
+  case 1:
+  packCoordX = itemsToPack[cboxi].CoordX;
+  packCoordY = itemsToPack[cboxi].CoordY;
+  packCoordZ = itemsToPack[cboxi].CoordZ;
+  packDimX = itemsToPack[cboxi].PackDimX;
+  packDimY = itemsToPack[cboxi].PackDimY;
+  packDimZ = itemsToPack[cboxi].PackDimZ;
+  break;
+  	case 2:
+  packCoordX = itemsToPack[cboxi].CoordZ;
+  packCoordY = itemsToPack[cboxi].CoordY;
+  packCoordZ = itemsToPack[cboxi].CoordX;
+  packDimX = itemsToPack[cboxi].PackDimZ;
+  packDimY = itemsToPack[cboxi].PackDimY;
+  packDimZ = itemsToPack[cboxi].PackDimX;
+  break;
+  	case 3:
+  packCoordX = itemsToPack[cboxi].CoordY;
+  packCoordY = itemsToPack[cboxi].CoordZ;
+  packCoordZ = itemsToPack[cboxi].CoordX;
+  packDimX = itemsToPack[cboxi].PackDimY;
+  packDimY = itemsToPack[cboxi].PackDimZ;
+  packDimZ = itemsToPack[cboxi].PackDimX;
+  break;
+  	case 4:
+  packCoordX = itemsToPack[cboxi].CoordY;
+  packCoordY = itemsToPack[cboxi].CoordX;
+  packCoordZ = itemsToPack[cboxi].CoordZ;
+  packDimX = itemsToPack[cboxi].PackDimY;
+  packDimY = itemsToPack[cboxi].PackDimX;
+  packDimZ = itemsToPack[cboxi].PackDimZ;
+  break;
+  	case 5:
+  packCoordX = itemsToPack[cboxi].CoordX;
+  packCoordY = itemsToPack[cboxi].CoordZ;
+  packCoordZ = itemsToPack[cboxi].CoordY;
+  packDimX = itemsToPack[cboxi].PackDimX;
+  packDimY = itemsToPack[cboxi].PackDimZ;
+  packDimZ = itemsToPack[cboxi].PackDimY;
+  break;
+  	case 6:
+  packCoordX = itemsToPack[cboxi].CoordZ;
+  packCoordY = itemsToPack[cboxi].CoordX;
+  packCoordZ = itemsToPack[cboxi].CoordY;
+  packDimX = itemsToPack[cboxi].PackDimZ;
+  packDimY = itemsToPack[cboxi].PackDimX;
+  packDimZ = itemsToPack[cboxi].PackDimY;
+  break;
+  }
+  itemsToPack[cboxi].CoordX = packCoordX;
+  itemsToPack[cboxi].CoordY = packCoordY;
+  itemsToPack[cboxi].CoordZ = packCoordZ;
+  itemsToPack[cboxi].PackDimX = packDimX;
+  itemsToPack[cboxi].PackDimY = packDimY;
+  itemsToPack[cboxi].PackDimZ = packDimZ;
+  itemsPackedInOrder.Add(itemsToPack[cboxi]);
+  }
+  c#*/
+
+		/**
+   * Transforms the found coordinate system to the one entered by the user and writes them to the report file.
+   */
+
+	}, {
+		key: "OutputBoxList",
+		value: function OutputBoxList() {
+			var packCoordX = 0;
+			var packCoordY = 0;
+			var packCoordZ = 0;
+			var packDimX = 0;
+			var packDimY = 0;
+			var packDimZ = 0;
+
+			switch (bestVariant) {
+				case 1:
+					packCoordX = itemsToPack[cboxi].CoordX;
+					packCoordY = itemsToPack[cboxi].CoordY;
+					packCoordZ = itemsToPack[cboxi].CoordZ;
+					packDimX = itemsToPack[cboxi].PackDimX;
+					packDimY = itemsToPack[cboxi].PackDimY;
+					packDimZ = itemsToPack[cboxi].PackDimZ;
+					break;
+
+				case 2:
+					packCoordX = itemsToPack[cboxi].CoordZ;
+					packCoordY = itemsToPack[cboxi].CoordY;
+					packCoordZ = itemsToPack[cboxi].CoordX;
+					packDimX = itemsToPack[cboxi].PackDimZ;
+					packDimY = itemsToPack[cboxi].PackDimY;
+					packDimZ = itemsToPack[cboxi].PackDimX;
+					break;
+
+				case 3:
+					packCoordX = itemsToPack[cboxi].CoordY;
+					packCoordY = itemsToPack[cboxi].CoordZ;
+					packCoordZ = itemsToPack[cboxi].CoordX;
+					packDimX = itemsToPack[cboxi].PackDimY;
+					packDimY = itemsToPack[cboxi].PackDimZ;
+					packDimZ = itemsToPack[cboxi].PackDimX;
+					break;
+
+				case 4:
+					packCoordX = itemsToPack[cboxi].CoordY;
+					packCoordY = itemsToPack[cboxi].CoordX;
+					packCoordZ = itemsToPack[cboxi].CoordZ;
+					packDimX = itemsToPack[cboxi].PackDimY;
+					packDimY = itemsToPack[cboxi].PackDimX;
+					packDimZ = itemsToPack[cboxi].PackDimZ;
+					break;
+
+				case 5:
+					packCoordX = itemsToPack[cboxi].CoordX;
+					packCoordY = itemsToPack[cboxi].CoordZ;
+					packCoordZ = itemsToPack[cboxi].CoordY;
+					packDimX = itemsToPack[cboxi].PackDimX;
+					packDimY = itemsToPack[cboxi].PackDimZ;
+					packDimZ = itemsToPack[cboxi].PackDimY;
+					break;
+
+				case 6:
+					packCoordX = itemsToPack[cboxi].CoordZ;
+					packCoordY = itemsToPack[cboxi].CoordX;
+					packCoordZ = itemsToPack[cboxi].CoordY;
+					packDimX = itemsToPack[cboxi].PackDimZ;
+					packDimY = itemsToPack[cboxi].PackDimX;
+					packDimZ = itemsToPack[cboxi].PackDimY;
+					break;
+			}
+
+			itemsToPack[cboxi].CoordX = packCoordX;
+			itemsToPack[cboxi].CoordY = packCoordY;
+			itemsToPack[cboxi].CoordZ = packCoordZ;
+			itemsToPack[cboxi].PackDimX = packDimX;
+			itemsToPack[cboxi].PackDimY = packDimY;
+			itemsToPack[cboxi].PackDimZ = packDimZ;
+
+			itemsPackedInOrder.push(itemsToPack[cboxi]);
+		}
+
+		/*c# PackLayer
+  /// <summary>
+  /// Packs the boxes found and arranges all variables and records properly.
+  /// </summary>
+  private void PackLayer()
+  {
+  decimal lenx;
+  decimal lenz;
+  decimal lpz;
+  if (layerThickness == 0)
+  {
+  packing = false;
+  return;
+  }
+  scrapfirst.CumX = px;
+  scrapfirst.CumZ = 0;
+  for (; !quit;)
+  {
+  FindSmallestZ();
+  	if ((smallestZ.Pre == null) && (smallestZ.Post == null))
+  {
+  //*** SITUATION-1: NO BOXES ON THE RIGHT AND LEFT SIDES ***
+  		lenx = smallestZ.CumX;
+  lpz = remainpz - smallestZ.CumZ;
+  FindBox(lenx, layerThickness, remainpy, lpz, lpz);
+  CheckFound();
+  		if (layerDone) break;
+  if (evened) continue;
+  		itemsToPack[cboxi].CoordX = 0;
+  itemsToPack[cboxi].CoordY = packedy;
+  itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
+  if (cboxx == smallestZ.CumX)
+  {
+  	smallestZ.CumZ = smallestZ.CumZ + cboxz;
+  }
+  else
+  {
+  	smallestZ.Post = new ScrapPad();
+  			smallestZ.Post.Post = null;
+  	smallestZ.Post.Pre = smallestZ;
+  	smallestZ.Post.CumX = smallestZ.CumX;
+  	smallestZ.Post.CumZ = smallestZ.CumZ;
+  	smallestZ.CumX = cboxx;
+  	smallestZ.CumZ = smallestZ.CumZ + cboxz;
+  }
+  }
+  else if (smallestZ.Pre == null)
+  {
+  //*** SITUATION-2: NO BOXES ON THE LEFT SIDE ***
+  		lenx = smallestZ.CumX;
+  lenz = smallestZ.Post.CumZ - smallestZ.CumZ;
+  lpz = remainpz - smallestZ.CumZ;
+  FindBox(lenx, layerThickness, remainpy, lenz, lpz);
+  CheckFound();
+  		if (layerDone) break;
+  if (evened) continue;
+  		itemsToPack[cboxi].CoordY = packedy;
+  itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
+  if (cboxx == smallestZ.CumX)
+  {
+  	itemsToPack[cboxi].CoordX = 0;
+  			if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ)
+  	{
+  		smallestZ.CumZ = smallestZ.Post.CumZ;
+  		smallestZ.CumX = smallestZ.Post.CumX;
+  		trash = smallestZ.Post;
+  		smallestZ.Post = smallestZ.Post.Post;
+  				if (smallestZ.Post != null)
+  		{
+  			smallestZ.Post.Pre = smallestZ;
+  		}
+  	}
+  	else
+  	{
+  		smallestZ.CumZ = smallestZ.CumZ + cboxz;
+  	}
+  }
+  else
+  {
+  	itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
+  			if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ)
+  	{
+  		smallestZ.CumX = smallestZ.CumX - cboxx;
+  	}
+  	else
+  	{
+  		smallestZ.Post.Pre = new ScrapPad();
+  				smallestZ.Post.Pre.Post = smallestZ.Post;
+  		smallestZ.Post.Pre.Pre = smallestZ;
+  		smallestZ.Post = smallestZ.Post.Pre;
+  		smallestZ.Post.CumX = smallestZ.CumX;
+  		smallestZ.CumX = smallestZ.CumX - cboxx;
+  		smallestZ.Post.CumZ = smallestZ.CumZ + cboxz;
+  	}
+  }
+  }
+  else if (smallestZ.Post == null)
+  {
+  //*** SITUATION-3: NO BOXES ON THE RIGHT SIDE ***
+  		lenx = smallestZ.CumX - smallestZ.Pre.CumX;
+  lenz = smallestZ.Pre.CumZ - smallestZ.CumZ;
+  lpz = remainpz - smallestZ.CumZ;
+  FindBox(lenx, layerThickness, remainpy, lenz, lpz);
+  CheckFound();
+  		if (layerDone) break;
+  if (evened) continue;
+  		itemsToPack[cboxi].CoordY = packedy;
+  itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
+  itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
+  		if (cboxx == smallestZ.CumX - smallestZ.Pre.CumX)
+  {
+  	if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ)
+  	{
+  		smallestZ.Pre.CumX = smallestZ.CumX;
+  		smallestZ.Pre.Post = null;
+  	}
+  	else
+  	{
+  		smallestZ.CumZ = smallestZ.CumZ + cboxz;
+  	}
+  }
+  else
+  {
+  	if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ)
+  	{
+  		smallestZ.Pre.CumX = smallestZ.Pre.CumX + cboxx;
+  	}
+  	else
+  	{
+  		smallestZ.Pre.Post = new ScrapPad();
+  				smallestZ.Pre.Post.Pre = smallestZ.Pre;
+  		smallestZ.Pre.Post.Post = smallestZ;
+  		smallestZ.Pre = smallestZ.Pre.Post;
+  		smallestZ.Pre.CumX = smallestZ.Pre.Pre.CumX + cboxx;
+  		smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
+  	}
+  }
+  }
+  else if (smallestZ.Pre.CumZ == smallestZ.Post.CumZ)
+  {
+  //*** SITUATION-4: THERE ARE BOXES ON BOTH OF THE SIDES ***
+  		//*** SUBSITUATION-4A: SIDES ARE EQUAL TO EACH OTHER ***
+  		lenx = smallestZ.CumX - smallestZ.Pre.CumX;
+  lenz = smallestZ.Pre.CumZ - smallestZ.CumZ;
+  lpz = remainpz - smallestZ.CumZ;
+  		FindBox(lenx, layerThickness, remainpy, lenz, lpz);
+  CheckFound();
+  		if (layerDone) break;
+  if (evened) continue;
+  		itemsToPack[cboxi].CoordY = packedy;
+  itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
+  		if (cboxx == smallestZ.CumX - smallestZ.Pre.CumX)
+  {
+  	itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
+  			if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ)
+  	{
+  		smallestZ.Pre.CumX = smallestZ.Post.CumX;
+  				if (smallestZ.Post.Post != null)
+  		{
+  			smallestZ.Pre.Post = smallestZ.Post.Post;
+  			smallestZ.Post.Post.Pre = smallestZ.Pre;
+  		}
+  		else
+  		{
+  			smallestZ.Pre.Post = null;
+  		}
+  	}
+  	else
+  	{
+  		smallestZ.CumZ = smallestZ.CumZ + cboxz;
+  	}
+  }
+  else if (smallestZ.Pre.CumX < px - smallestZ.CumX)
+  {
+  	if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ)
+  	{
+  		smallestZ.CumX = smallestZ.CumX - cboxx;
+  		itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
+  	}
+  	else
+  	{
+  		itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
+  		smallestZ.Pre.Post = new ScrapPad();
+  				smallestZ.Pre.Post.Pre = smallestZ.Pre;
+  		smallestZ.Pre.Post.Post = smallestZ;
+  		smallestZ.Pre = smallestZ.Pre.Post;
+  		smallestZ.Pre.CumX = smallestZ.Pre.Pre.CumX + cboxx;
+  		smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
+  	}
+  }
+  else
+  {
+  	if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ)
+  	{
+  		smallestZ.Pre.CumX = smallestZ.Pre.CumX + cboxx;
+  		itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
+  	}
+  	else
+  	{
+  		itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
+  		smallestZ.Post.Pre = new ScrapPad();
+  				smallestZ.Post.Pre.Post = smallestZ.Post;
+  		smallestZ.Post.Pre.Pre = smallestZ;
+  		smallestZ.Post = smallestZ.Post.Pre;
+  		smallestZ.Post.CumX = smallestZ.CumX;
+  		smallestZ.Post.CumZ = smallestZ.CumZ + cboxz;
+  		smallestZ.CumX = smallestZ.CumX - cboxx;
+  	}
+  }
+  }
+  else
+  {
+  //*** SUBSITUATION-4B: SIDES ARE NOT EQUAL TO EACH OTHER ***
+  		lenx = smallestZ.CumX - smallestZ.Pre.CumX;
+  lenz = smallestZ.Pre.CumZ - smallestZ.CumZ;
+  lpz = remainpz - smallestZ.CumZ;
+  FindBox(lenx, layerThickness, remainpy, lenz, lpz);
+  CheckFound();
+  		if (layerDone) break;
+  if (evened) continue;
+  		itemsToPack[cboxi].CoordY = packedy;
+  itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
+  itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
+  		if (cboxx == (smallestZ.CumX - smallestZ.Pre.CumX))
+  {
+  	if ((smallestZ.CumZ + cboxz) == smallestZ.Pre.CumZ)
+  	{
+  		smallestZ.Pre.CumX = smallestZ.CumX;
+  		smallestZ.Pre.Post = smallestZ.Post;
+  		smallestZ.Post.Pre = smallestZ.Pre;
+  	}
+  	else
+  	{
+  		smallestZ.CumZ = smallestZ.CumZ + cboxz;
+  	}
+  }
+  else
+  {
+  	if ((smallestZ.CumZ + cboxz) == smallestZ.Pre.CumZ)
+  	{
+  		smallestZ.Pre.CumX = smallestZ.Pre.CumX + cboxx;
+  	}
+  	else if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ)
+  	{
+  		itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
+  		smallestZ.CumX = smallestZ.CumX - cboxx;
+  	}
+  	else
+  	{
+  		smallestZ.Pre.Post = new ScrapPad();
+  				smallestZ.Pre.Post.Pre = smallestZ.Pre;
+  		smallestZ.Pre.Post.Post = smallestZ;
+  		smallestZ.Pre = smallestZ.Pre.Post;
+  		smallestZ.Pre.CumX = smallestZ.Pre.Pre.CumX + cboxx;
+  		smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
+  	}
+  }
+  }
+  	VolumeCheck();
+  }
+  }
+  c#*/
+
+		/**
+   * Packs the boxes found and arranges all variables and records properly.
+   */
+
+	}, {
+		key: "PackLayer",
+		value: function PackLayer() {
+			var lenx = 0;
+			var lenz = 0;
+			var lpz = 0;
+
+			if (layerThickness == 0) {
+				packing = false;
+				return;
+			}
+
+			scrapfirst.CumX = px;
+			scrapfirst.CumZ = 0;
+
+			//for (; !quit;)
+			while (!quit) {
+				this.FindSmallestZ();
+
+				if (!smallestZ.Pre && !smallestZ.Post) {
+					//*** SITUATION-1: NO BOXES ON THE RIGHT AND LEFT SIDES ***
+
+					lenx = smallestZ.CumX;
+					lpz = remainpz - smallestZ.CumZ;
+					this.FindBox(lenx, layerThickness, remainpy, lpz, lpz);
+					this.CheckFound();
+
+					if (layerDone) break;
+					if (evened) continue;
+
+					itemsToPack[cboxi].CoordX = 0;
+					itemsToPack[cboxi].CoordY = packedy;
+					itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
+					if (cboxx == smallestZ.CumX) {
+						smallestZ.CumZ = smallestZ.CumZ + cboxz;
+					} else {
+						smallestZ.Post = new ScrapPad();
+
+						smallestZ.Post.Post = undefined;
+						smallestZ.Post.Pre = smallestZ;
+						smallestZ.Post.CumX = smallestZ.CumX;
+						smallestZ.Post.CumZ = smallestZ.CumZ;
+						smallestZ.CumX = cboxx;
+						smallestZ.CumZ = smallestZ.CumZ + cboxz;
+					}
+				} else if (!smallestZ.Pre) {
+					//*** SITUATION-2: NO BOXES ON THE LEFT SIDE ***
+
+					lenx = smallestZ.CumX;
+					lenz = smallestZ.Post.CumZ - smallestZ.CumZ;
+					lpz = remainpz - smallestZ.CumZ;
+					this.FindBox(lenx, layerThickness, remainpy, lenz, lpz);
+					this.CheckFound();
+
+					if (layerDone) break;
+					if (evened) continue;
+
+					itemsToPack[cboxi].CoordY = packedy;
+					itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
+					if (cboxx == smallestZ.CumX) {
+						itemsToPack[cboxi].CoordX = 0;
+
+						if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ) {
+							smallestZ.CumZ = smallestZ.Post.CumZ;
+							smallestZ.CumX = smallestZ.Post.CumX;
+							trash = smallestZ.Post;
+							smallestZ.Post = smallestZ.Post.Post;
+
+							if (smallestZ.Post) {
+								smallestZ.Post.Pre = smallestZ;
+							}
+						} else {
+							smallestZ.CumZ = smallestZ.CumZ + cboxz;
+						}
+					} else {
+						itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
+
+						if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ) {
+							smallestZ.CumX = smallestZ.CumX - cboxx;
+						} else {
+							smallestZ.Post.Pre = new ScrapPad();
+
+							smallestZ.Post.Pre.Post = smallestZ.Post;
+							smallestZ.Post.Pre.Pre = smallestZ;
+							smallestZ.Post = smallestZ.Post.Pre;
+							smallestZ.Post.CumX = smallestZ.CumX;
+							smallestZ.CumX = smallestZ.CumX - cboxx;
+							smallestZ.Post.CumZ = smallestZ.CumZ + cboxz;
+						}
+					}
+				} else if (!smallestZ.Post) {
+					//*** SITUATION-3: NO BOXES ON THE RIGHT SIDE ***
+
+					lenx = smallestZ.CumX - smallestZ.Pre.CumX;
+					lenz = smallestZ.Pre.CumZ - smallestZ.CumZ;
+					lpz = remainpz - smallestZ.CumZ;
+					this.FindBox(lenx, layerThickness, remainpy, lenz, lpz);
+					this.CheckFound();
+
+					if (layerDone) break;
+					if (evened) continue;
+
+					itemsToPack[cboxi].CoordY = packedy;
+					itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
+					itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
+
+					if (cboxx == smallestZ.CumX - smallestZ.Pre.CumX) {
+						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
+							smallestZ.Pre.CumX = smallestZ.CumX;
+							smallestZ.Pre.Post = undefined;
+						} else {
+							smallestZ.CumZ = smallestZ.CumZ + cboxz;
+						}
+					} else {
+						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
+							smallestZ.Pre.CumX = smallestZ.Pre.CumX + cboxx;
+						} else {
+							smallestZ.Pre.Post = new ScrapPad();
+
+							smallestZ.Pre.Post.Pre = smallestZ.Pre;
+							smallestZ.Pre.Post.Post = smallestZ;
+							smallestZ.Pre = smallestZ.Pre.Post;
+							smallestZ.Pre.CumX = smallestZ.Pre.Pre.CumX + cboxx;
+							smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
+						}
+					}
+				} else if (smallestZ.Pre.CumZ == smallestZ.Post.CumZ) {
+					//*** SITUATION-4: THERE ARE BOXES ON BOTH OF THE SIDES ***
+
+					//*** SUBSITUATION-4A: SIDES ARE EQUAL TO EACH OTHER ***
+
+					lenx = smallestZ.CumX - smallestZ.Pre.CumX;
+					lenz = smallestZ.Pre.CumZ - smallestZ.CumZ;
+					lpz = remainpz - smallestZ.CumZ;
+
+					this.FindBox(lenx, layerThickness, remainpy, lenz, lpz);
+					this.CheckFound();
+
+					if (layerDone) break;
+					if (evened) continue;
+
+					itemsToPack[cboxi].CoordY = packedy;
+					itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
+
+					if (cboxx == smallestZ.CumX - smallestZ.Pre.CumX) {
+						itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
+
+						if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ) {
+							smallestZ.Pre.CumX = smallestZ.Post.CumX;
+
+							if (smallestZ.Post.Post) {
+								smallestZ.Pre.Post = smallestZ.Post.Post;
+								smallestZ.Post.Post.Pre = smallestZ.Pre;
+							} else {
+								smallestZ.Pre.Post = undefined;
+							}
+						} else {
+							smallestZ.CumZ = smallestZ.CumZ + cboxz;
+						}
+					} else if (smallestZ.Pre.CumX < px - smallestZ.CumX) {
+						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
+							smallestZ.CumX = smallestZ.CumX - cboxx;
+							itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
+						} else {
+							itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
+							smallestZ.Pre.Post = new ScrapPad();
+
+							smallestZ.Pre.Post.Pre = smallestZ.Pre;
+							smallestZ.Pre.Post.Post = smallestZ;
+							smallestZ.Pre = smallestZ.Pre.Post;
+							smallestZ.Pre.CumX = smallestZ.Pre.Pre.CumX + cboxx;
+							smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
+						}
+					} else {
+						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
+							smallestZ.Pre.CumX = smallestZ.Pre.CumX + cboxx;
+							itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
+						} else {
+							itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
+							smallestZ.Post.Pre = new ScrapPad();
+
+							smallestZ.Post.Pre.Post = smallestZ.Post;
+							smallestZ.Post.Pre.Pre = smallestZ;
+							smallestZ.Post = smallestZ.Post.Pre;
+							smallestZ.Post.CumX = smallestZ.CumX;
+							smallestZ.Post.CumZ = smallestZ.CumZ + cboxz;
+							smallestZ.CumX = smallestZ.CumX - cboxx;
+						}
+					}
+				} else {
+					//*** SUBSITUATION-4B: SIDES ARE NOT EQUAL TO EACH OTHER ***
+
+					lenx = smallestZ.CumX - smallestZ.Pre.CumX;
+					lenz = smallestZ.Pre.CumZ - smallestZ.CumZ;
+					lpz = remainpz - smallestZ.CumZ;
+					this.FindBox(lenx, layerThickness, remainpy, lenz, lpz);
+					this.CheckFound();
+
+					if (layerDone) break;
+					if (evened) continue;
+
+					itemsToPack[cboxi].CoordY = packedy;
+					itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
+					itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
+
+					if (cboxx == smallestZ.CumX - smallestZ.Pre.CumX) {
+						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
+							smallestZ.Pre.CumX = smallestZ.CumX;
+							smallestZ.Pre.Post = smallestZ.Post;
+							smallestZ.Post.Pre = smallestZ.Pre;
+						} else {
+							smallestZ.CumZ = smallestZ.CumZ + cboxz;
+						}
+					} else {
+						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
+							smallestZ.Pre.CumX = smallestZ.Pre.CumX + cboxx;
+						} else if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ) {
+							itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
+							smallestZ.CumX = smallestZ.CumX - cboxx;
+						} else {
+							smallestZ.Pre.Post = new ScrapPad();
+
+							smallestZ.Pre.Post.Pre = smallestZ.Pre;
+							smallestZ.Pre.Post.Post = smallestZ;
+							smallestZ.Pre = smallestZ.Pre.Post;
+							smallestZ.Pre.CumX = smallestZ.Pre.Pre.CumX + cboxx;
+							smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
+						}
+					}
+				}
+
+				this.VolumeCheck();
+			}
+		}
+
+		/*c# Report
+  /// <summary>
+  /// Using the parameters found, packs the best solution found and
+  /// reports to the console.
+  /// </summary>
+  private void Report(Container container)
+  {
+  quit = false;
+  switch (bestVariant)
+  {
+  case 1:
+  px = container.Length; py = container.Height; pz = container.Width;
+  break;
+  	case 2:
+  px = container.Width; py = container.Height; pz = container.Length;
+  break;
+  	case 3:
+  px = container.Width; py = container.Length; pz = container.Height;
+  break;
+  	case 4:
+  px = container.Height; py = container.Length; pz = container.Width;
+  break;
+  	case 5:
+  px = container.Length; py = container.Width; pz = container.Height;
+  break;
+  	case 6:
+  px = container.Height; py = container.Width; pz = container.Length;
+  break;
+  }
+  packingBest = true;
+  //Print("BEST SOLUTION FOUND AT ITERATION                      :", bestIteration, "OF VARIANT", bestVariant);
+  //Print("TOTAL ITEMS TO PACK                                   :", itemsToPackCount);
+  //Print("TOTAL VOLUME OF ALL ITEMS                             :", totalItemVolume);
+  //Print("WHILE CONTAINER ORIENTATION X - Y - Z                 :", px, py, pz);
+  layers.Clear();
+  layers.Add(new Layer { LayerEval = -1 });
+  ListCanditLayers();
+  layers = layers.OrderBy(l => l.LayerEval).ToList();
+  packedVolume = 0;
+  packedy = 0;
+  packing = true;
+  layerThickness = layers[bestIteration].LayerDim;
+  remainpy = py;
+  remainpz = pz;
+  for (x = 1; x <= itemsToPackCount; x++)
+  {
+  itemsToPack[x].IsPacked = false;
+  }
+  do
+  {
+  layerinlayer = 0;
+  layerDone = false;
+  PackLayer();
+  packedy = packedy + layerThickness;
+  remainpy = py - packedy;
+  	if (layerinlayer > 0.0001M)
+  {
+  prepackedy = packedy;
+  preremainpy = remainpy;
+  remainpy = layerThickness - prelayer;
+  packedy = packedy - layerThickness + prelayer;
+  remainpz = lilz;
+  layerThickness = layerinlayer;
+  layerDone = false;
+  PackLayer();
+  packedy = prepackedy;
+  remainpy = preremainpy;
+  remainpz = pz;
+  }
+  	if (!quit)
+  {
+  FindLayer(remainpy);
+  }
+  } while (packing && !quit);
+  }
+  c#*/
+
+		/**
+   * Using the parameters found, packs the best solution found and reports to the console.
+   * @param {Container} container 
+   */
+
+	}, {
+		key: "Report",
+		value: function Report(container) {
+			quit = false;
+
+			switch (bestVariant) {
+				case 1:
+					px = container.Length;py = container.Height;pz = container.Width;
+					break;
+
+				case 2:
+					px = container.Width;py = container.Height;pz = container.Length;
+					break;
+
+				case 3:
+					px = container.Width;py = container.Length;pz = container.Height;
+					break;
+
+				case 4:
+					px = container.Height;py = container.Length;pz = container.Width;
+					break;
+
+				case 5:
+					px = container.Length;py = container.Width;pz = container.Height;
+					break;
+
+				case 6:
+					px = container.Height;py = container.Width;pz = container.Length;
+					break;
+			}
+
+			packingBest = true;
+
+			//Print("BEST SOLUTION FOUND AT ITERATION                      :", bestIteration, "OF VARIANT", bestVariant);
+			//Print("TOTAL ITEMS TO PACK                                   :", itemsToPackCount);
+			//Print("TOTAL VOLUME OF ALL ITEMS                             :", totalItemVolume);
+			//Print("WHILE CONTAINER ORIENTATION X - Y - Z                 :", px, py, pz);
+
+			layers.length = 0;
+			layers[0] = new Layer(-1);
+			this.ListCanditLayers();
+			//layers = layers.OrderBy(l => l.LayerEval).ToList();
+			layers.sort(Layer.SortByEval);
+			packedVolume = 0;
+			packedy = 0;
+			packing = true;
+			layerThickness = layers[bestIteration].LayerDim;
+			remainpy = py;
+			remainpz = pz;
+
+			for (x = 1; x <= itemsToPackCount; x++) {
+				itemsToPack[x].IsPacked = false;
+			}
+
+			do {
+				layerinlayer = 0;
+				layerDone = false;
+				this.PackLayer();
+				packedy = packedy + layerThickness;
+				remainpy = py - packedy;
+
+				if (layerinlayer > epsilon) {
+					prepackedy = packedy;
+					preremainpy = remainpy;
+					remainpy = layerThickness - prelayer;
+					packedy = packedy - layerThickness + prelayer;
+					remainpz = lilz;
+					layerThickness = layerinlayer;
+					layerDone = false;
+					this.PackLayer();
+					packedy = prepackedy;
+					remainpy = preremainpy;
+					remainpz = pz;
+				}
+
+				if (!quit) {
+					this.FindLayer(remainpy);
+				}
+			} while (packing && !quit);
+		}
+
+		/*c# VolumeCheck
+  /// <summary>
+  /// After packing of each item, the 100% packing condition is checked.
+  /// </summary>
+  private void VolumeCheck()
+  {
+  itemsToPack[cboxi].IsPacked = true;
+  itemsToPack[cboxi].PackDimX = cboxx;
+  itemsToPack[cboxi].PackDimY = cboxy;
+  itemsToPack[cboxi].PackDimZ = cboxz;
+  packedVolume = packedVolume + itemsToPack[cboxi].Volume;
+  packedItemCount++;
+  if (packingBest)
+  {
+  OutputBoxList();
+  }
+  else if (packedVolume == totalContainerVolume || packedVolume == totalItemVolume)
+  {
+  packing = false;
+  hundredPercentPacked = true;
+  }
+  }
+  c#*/
+
+		/**
+   * After packing of each item, the 100% packing condition is checked.
+   */
+
+	}, {
+		key: "VolumeCheck",
+		value: function VolumeCheck() {
+			itemsToPack[cboxi].IsPacked = true;
+			itemsToPack[cboxi].PackDimX = cboxx;
+			itemsToPack[cboxi].PackDimY = cboxy;
+			itemsToPack[cboxi].PackDimZ = cboxz;
+			packedVolume = packedVolume + itemsToPack[cboxi].Volume;
+			packedItemCount++;
+
+			if (packingBest) {
+				this.OutputBoxList();
+			} else if (packedVolume == totalContainerVolume || packedVolume == totalItemVolume) {
+				packing = false;
+				hundredPercentPacked = true;
+			}
+		}
+
+		/*c#
+  #endregion Private Methods
+  #region Private Classes
+  #endregion Private Classes
+  }
+  c#*/
+
+	}]);
+
+	return AFit;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (AFit);
 
 /***/ })
 /******/ ]);

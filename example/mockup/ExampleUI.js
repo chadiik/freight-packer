@@ -6,18 +6,18 @@ const namespace = FPEditor.namespace;
 
 const signals = {
     loadPSConfig: 'loadPSConfig',
-    boxInputDimensionsUpdate: 'boxInputDimensionsUpdate',
+    boxInputUpdate: 'boxInputUpdate',
     boxInputComplete: 'boxInputComplete',
     boxInputAbort: 'boxInputAbort'
 };
 
-console.log(FreightPacker.Utils);
+console.log(FreightPacker.utils);
 
-class ExampleUI extends FreightPacker.Utils.Signaler {
-    constructor(){
+class ExampleUI extends FreightPacker.utils.Signaler {
+    constructor(inputData){
         super();
 
-        this.gui = new (window.dat || FreightPacker.Utils.dat).GUI({
+        this.gui = new (window.dat || FreightPacker.utils.dat).GUI({
             autoPlace: false
         });
 
@@ -25,7 +25,7 @@ class ExampleUI extends FreightPacker.Utils.Signaler {
         this.domElement.appendChild(this.gui.domElement);
 
         this.CreateSpaceController();
-        this.CreateInputController();
+        this.CreateInputController(inputData);
     }
 
     CreateSpaceController(){
@@ -47,14 +47,14 @@ class ExampleUI extends FreightPacker.Utils.Signaler {
         spaceFolder.add(controller, 'LoadPSConfig');
     }
 
-    CreateInputController(){
+    CreateInputController(data){
         var scope = this;
         
         var boxRange = {w:[4, 20], l:[4, 20], h:[2, 16]};
-        var boxInput = {width:0, length:0, height:0};
+        var boxInput = FreightPacker.utils.Utils.AssignUndefined(data || {}, {width:0, length:0, height:0, label: '', weight: 0, quantity: 1});
         
         var inputUpdate = function(){
-            scope.Dispatch(ExampleUI.signals.boxInputDimensionsUpdate, boxInput);
+            scope.Dispatch(ExampleUI.signals.boxInputUpdate, boxInput);
         };
         var complete = function(){
             scope.Dispatch(ExampleUI.signals.boxInputComplete);
@@ -87,15 +87,37 @@ class ExampleUI extends FreightPacker.Utils.Signaler {
             Height: {
                 get: function(){ return boxInput.height;},
                 set: function(value){ boxInput.height = value; inputUpdate();}
+            },
+            Label: {
+                get: function(){ return boxInput.label;},
+                set: function(value){ boxInput.label = value; inputUpdate();}
+            },
+            Weight: {
+                get: function(){ return boxInput.weight;},
+                set: function(value){ boxInput.weight = value; inputUpdate();}
+            },
+            Quantity: {
+                get: function(){ return boxInput.quantity;},
+                set: function(value){ boxInput.quantity = value; inputUpdate();}
             }
         });
 
-        var inputFolder = this.gui.addFolder('Input');
+        var inputFolder = this.gui.addFolder('Cargo input');
         inputFolder.open();
         inputFolder.add(controller, 'Random');
-        inputFolder.add(controller, 'Width' , boxRange.w[0], boxRange.w[1]).step(1/p).listen();
-        inputFolder.add(controller, 'Length', boxRange.l[0], boxRange.l[1]).step(1/p).listen();
-        inputFolder.add(controller, 'Height', boxRange.h[0], boxRange.h[1]).step(1/p).listen();
+
+        var infoFolder = inputFolder.addFolder('Info');
+        infoFolder.open();
+        infoFolder.add(controller, 'Label');
+        infoFolder.add(controller, 'Weight');
+        infoFolder.add(controller, 'Quantity');
+
+        var dimensionsFolder = inputFolder.addFolder('Dimensions');
+        dimensionsFolder.open();
+        dimensionsFolder.add(controller, 'Width' , boxRange.w[0], boxRange.w[1]).step(1/p).listen();
+        dimensionsFolder.add(controller, 'Length', boxRange.l[0], boxRange.l[1]).step(1/p).listen();
+        dimensionsFolder.add(controller, 'Height', boxRange.h[0], boxRange.h[1]).step(1/p).listen();
+
         inputFolder.add(controller, 'Insert');
         inputFolder.add(controller, 'Abort');
 
