@@ -2,6 +2,10 @@
 import Logger from '../utils/cik/Logger';
 import Signaler from '../utils/cik/Signaler';
 import BoxEntry from './box/BoxEntry';
+import Dimensions from './box/Dimensions';
+
+const epsilon = Math.pow(2, -52);
+const numberType = 'number';
 
 const signals = {
     updated: 'updated',
@@ -60,6 +64,12 @@ class CargoInput extends Signaler {
      */
     Add(entry){
         if(BoxEntry.Assert(entry)){
+
+            if( Dimensions.IsVolume(entry.dimensions.Abs()) === false ){
+                Logger.Warn('Cargo.Input.Add, entry rejected, dimensions != Volume:', entry);
+                return false;
+            }
+
             try{
                 var commitedEntry = entry.Clone();
                 var uid = commitedEntry.SetUID();

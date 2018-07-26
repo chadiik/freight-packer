@@ -1,5 +1,16 @@
 
+/**
+ * @typedef {Object} CameraParams
+ * @property {Number} fov
+ * @property {Number} aspect
+ * @property {Number} near
+ * @property {Number} far
+ */
+
 class Camera {
+    /**
+     * @param {CameraParams} params 
+     */
     constructor(params){
         this.params = params;
 

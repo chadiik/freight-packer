@@ -31,11 +31,10 @@ class PackingSpaceInput extends Signaler {
         if(data.container){
             var container = Container.FromJSON(data.container);
             
-            if(data.geometry){
-                var geometry = Asset.FromGeometryJSON(data.geometry).geometry;
-                var model = Asset.CreateMesh(geometry);
+            if(data.view){
+                var model = Asset.FromJSON(data.view);
+                //var model = Asset.CreateMesh(geometry);
                 var containerView = new ContainerView(container, model);
-                console.log(containerView);
             }
 
             this.packingSpace.AddContainer(container);

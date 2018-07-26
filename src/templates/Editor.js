@@ -1,12 +1,22 @@
-import SceneSetup from "../api/scene/SceneSetup";
+import SceneSetup from "../api/view/SceneSetup";
 import ContainersEditor from "./editors/containersEditor/ContainersEditor";
 import WizardTest from "./editors/wizard/WizardTest";
 import Dom from "./ui/Dom";
+import UX from "../api/UX";
 
 /**
  * @type {Editor}
  */
 var instance;
+
+/** @type {import('../src/FreightPacker').InitializationParams} */
+var params = {
+    debug: true,
+    ux: {
+        hud: false,
+        configure: true
+    }
+};
 
 class Editor {
     /**
@@ -23,11 +33,13 @@ class Editor {
         this.domElement = guiElement;
         this.GUI();
 
-        this.sceneSetup = new SceneSetup(viewElement);
+		var ux = new UX(params.ux);
+
+        this.sceneSetup = new SceneSetup(viewElement, ux);
         this.sceneSetup.Init().then(this.Start.bind(this));
 
         this.dom = new Dom();
-        viewElement.appendChild(this.dom.element);
+        //viewElement.appendChild(this.dom.element);
     }
 
     GUI(){

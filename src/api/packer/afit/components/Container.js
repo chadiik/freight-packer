@@ -1,13 +1,17 @@
 
 class Container{
-    constructor(){
+    /**
+     * @param {Object} id 
+     * @param {Number} width 
+     * @param {Number} length 
+     * @param {Number} height 
+     */
+    constructor(id, width, length, height){
+        this.ID = id;
 
-        this.ID = 0;
-        this.Width = 0;
-        this.Length = 0;
-        this.Height = 0;
-        this.Volume = 0;
-
+        this.Width = length || 0;
+        this.Length = width || 0;
+        this.Height = height || 0;
     }
 }
 

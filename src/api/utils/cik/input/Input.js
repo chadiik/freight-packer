@@ -1,3 +1,4 @@
+import UpdateComponent from "./UpdateComponent";
 
 /**
  * @typedef {Object} IScreen
@@ -72,9 +73,9 @@ class Input {
         this.clock.start();
 
         this._raycastGroups = {Update:{}, Update25:{}, Update10:{}, OnMouseDown:{}, OnDoubleClick:{}, OnMouseUp:{}, OnRightClick:{}, OnClick:{}};
-        this.update = [
-            {interval:(1/25), last:0, callback: this.Update25.bind(this)},
-            {interval:(1/10), last:0, callback: this.Update10.bind(this)}
+        this.updateComponents = [
+            new UpdateComponent(true, 1/25, this.Update25.bind(this)),
+            new UpdateComponent(true, 1/10, this.Update10.bind(this))
         ];
 
         this.fireOnce = [];
@@ -353,14 +354,12 @@ class Input {
         this.UpdateRaycast('Update');
 
         var now = this.clock.getElapsedTime();
-        for(var iUpdate = 0; iUpdate < this.update.length; iUpdate++){
-            var update = this.update[iUpdate];
-            if(update.callback === undefined){
-                update();
-            }
-            else if(now - update.last > update.interval){
-                update.callback();
-                update.last = now;
+        for(var iUpdate = 0; iUpdate < this.updateComponents.length; iUpdate++){
+            var updateComponent = this.updateComponents[iUpdate];
+            if(updateComponent.active
+                && (now - updateComponent.lastUpdateTime > updateComponent.interval)
+            ){
+                updateComponent.Update(now);
             }
         }
 

@@ -1,4 +1,22 @@
 
+function download(data, filename, type) {
+    // https://stackoverflow.com/a/30832210/1712403
+    var file = new Blob([data], {type: (type || 'text/plain')});
+    if (window.navigator.msSaveOrOpenBlob) // IE10+
+        window.navigator.msSaveOrOpenBlob(file, filename);
+    else { // Others
+        var a = document.createElement("a"),
+                url = URL.createObjectURL(file);
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function() {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);  
+        }, 0); 
+    }
+}
 
 const IO = {
 
@@ -21,7 +39,7 @@ const IO = {
     },
 
     SaveUTF: function(text, filename){
-        download(filename, text);
+        download(text, filename, 'text/plain');
     },
     
     JSON: function(object, filename){

@@ -1,3 +1,4 @@
+import AFitTest from "../packer/afit/AFitTest";
 
 const debugGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 1, 1, 1);
 const debugMaterial = new THREE.MeshStandardMaterial({color: 0xff7f00, transparent: true, opacity: .35});
@@ -40,7 +41,9 @@ class DebugBox {
 
 class Debug {
 
-    
+    static get AFitTest(){
+        return AFitTest;
+    }
 }
 
 Debug.Box = DebugBox;

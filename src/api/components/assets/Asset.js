@@ -37,6 +37,14 @@ class Asset {
     static FromGeometryJSON(json, texturePath){
         return jsonLoader.parse(json, texturePath);
     }
+
+    /**
+     * @param {Object} json 
+     * @param {THREE.Object3D} texturePath 
+     */
+    static FromJSON(json, texturePath){
+        return objectLoader.parse(json, texturePath);
+    }
 }
 
 export default Asset;

@@ -3,16 +3,31 @@ import Packer from "../packer/Packer";
 import CargoList from "../packer/CargoList";
 import PackingSpaceView from "./PackingSpaceView";
 import PackingSpace from "../packer/PackingSpace";
-import SceneSetup from "../scene/SceneSetup";
+import SceneSetup from "../view/SceneSetup";
 import Utils3D from "../utils/cik/Utils3D";
 import Utils from "../utils/cik/Utils";
-import Debug from "../debug/Debug";
-import FreightPacker from "../../FreightPacker";
+import PackResultView from "./PackResultView";
+import UpdateComponent from "../utils/cik/input/UpdateComponent";
 
+/**
+ * @typedef {Object} ViewParams
+ * @property {import('../UX').default} ux
+ * @property {Object} cargoListView
+ * @property {import('../utils/cik/Utils3D').IPoint} cargoListView.bottomLeft
+ * @property {import('./CargoListView').CargoListViewParams} cargoListView.params
+ * @property {Object} packResultView
+ * @property {import('./PackResultView').PackResultViewParams} packResultView.params
+ */
+
+ /** @type {ViewParams} */
 const defaultParams = {
-
+    ux: undefined,
     cargoListView: {
-        bottomLeft: { x: 100, y: 100 }
+        bottomLeft: { x: 100, y: 100 },
+        params: {}
+    },
+    packResultView: {
+        params: {}
     }
 };
 
@@ -23,34 +38,55 @@ class View {
      * Constructor
      * @param {Packer} packer 
      * @param {SceneSetup} sceneSetup 
+     * @param {ViewParams} params 
      */
     constructor(packer, sceneSetup, params){
         this.sceneSetup = sceneSetup;
         this.params = Utils.AssignUndefined(params, defaultParams);
 
+        // Packing space
         this.packingSpaceView = new PackingSpaceView();
         this.sceneSetup.sceneController.AddDefault(this.packingSpaceView.view);
-
         var onContainerAdded = this.packingSpaceView.Add.bind(this.packingSpaceView);
         packer.packingSpace.On(PackingSpace.signals.containerAdded, onContainerAdded);
 
-        this.cargoListView = new CargoListView();
-        this.sceneSetup.hud.Add(this.cargoListView.templatesView);
-
-        this.HUDSetup();
-
+        // Cargo list
+        this.params.cargoListView.params.ux = this.params.ux;
+        this.cargoListView = new CargoListView(this.params.cargoListView.params);
         var onCargoGroupAdded = this.cargoListView.Add.bind(this.cargoListView);
         packer.cargoList.On(CargoList.signals.groupAdded, onCargoGroupAdded);
         var onCargoRemoved = this.cargoListView.Remove.bind(this.cargoListView);
         packer.cargoList.On(CargoList.signals.groupRemoved, onCargoRemoved);
 
-        if(FreightPacker.instance.ux.params.configure){
+        // Cargo list display
+        if(this.params.ux.params.hud){    
+            this.sceneSetup.hud.Add(this.cargoListView.templatesView);
+            this.HUDSetup();
+        }
+
+        // Packing result
+        this.params.packResultView.params.ux = this.params.ux;
+        this.packResultView = new PackResultView(this.cargoListView, this.packingSpaceView, this.params.packResultView.params);
+        this.sceneSetup.sceneController.AddDefault(this.packResultView.view);
+
+        var onPackUpdate = this.packResultView.DisplayPackingResult.bind(this.packResultView);
+        packer.On(Packer.signals.packUpdate, onPackUpdate);
+
+        var updateComponent = new UpdateComponent(true, 1/30, this.Update.bind(this));
+        this.sceneSetup.input.updateComponents.push(updateComponent);
+
+        if(this.params.ux.params.configure){
             this.Configure();
         }
     }
 
+    /** @param {Number} now */
+    Update(now){
+        this.packResultView.Update();
+    }
+
     HUDSetup(){
-        var units = FreightPacker.instance.ux.params.units;
+        var units = this.params.ux.params.units;
         var input = this.sceneSetup.input;
         var hud = this.sceneSetup.hud;
         var clv = this.cargoListView;
@@ -150,13 +186,16 @@ class View {
         var Config = require('../utils/cik/config/Config').default;
         var Control3D = require('../utils/cik/config/Control3D').default;
 
-        var hudControl3D = Control3D.Request('hud');
-
         var scope = this;
         var input = this.sceneSetup.input;
-        input.keyboard.on('s', function(){
-            hudControl3D.Toggle(scope.cargoListView.templatesView);
-        });
+
+        if(this.params.ux.params.hud){
+            var hudControl3D = Control3D.Request('hud');
+
+            input.keyboard.on('s', function(){
+                hudControl3D.Toggle(scope.cargoListView.templatesView);
+            });
+        }
     }
 }
 

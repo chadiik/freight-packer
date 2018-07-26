@@ -1,5 +1,6 @@
 import Config from "../utils/cik/config/Config";
 import AFitTest from "../packer/afit/AFitTest";
+import Pool from "../utils/cik/Pool";
 
 function testConfig(){
     var obj;
@@ -27,7 +28,7 @@ function testConfig(){
 
 function testAFit(){
     var test = new AFitTest();
-    var data = AFitTest.GenerateDataRandom1();
+    var data = AFitTest.GenerateDataSample1();
     var result = test.T1(data.container, data.items);
     console.group('AFit packing', data);
     console.log(result);
@@ -35,7 +36,48 @@ function testAFit(){
 
 }
 
+function testPool(){
+
+    function newFN(){
+        var obj = {life: 0};
+        return obj;
+    }
+    /**
+     * @typedef Living
+     * @property {Number} life
+     * @param {Living} obj
+     */
+    function resetFN(obj){
+        obj.life++;
+        return obj;
+    }
+    
+    var pool = new Pool(newFN, resetFN);
+
+    var obj = pool.Request();
+    console.group('Pool test');
+    console.group('var obj = pool.Request();');
+    console.log('pool', pool);
+    console.log('obj', obj);
+    console.groupEnd();
+
+    pool.Return(obj);
+    console.group('pool.Return(obj);');
+    console.log('pool', pool);
+    console.log('obj', obj);
+    console.groupEnd();
+
+    obj = pool.Request();
+    console.group('obj = pool.Request();');
+    console.log('pool', pool);
+    console.log('obj', obj);
+    console.groupEnd();
+
+    console.groupEnd();
+}
+
 export {
     testConfig,
-    testAFit
+    testAFit,
+    testPool
 };

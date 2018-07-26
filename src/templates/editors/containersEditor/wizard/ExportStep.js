@@ -30,16 +30,27 @@ class ExportStep extends WizardStep {
     }
 
     toJSON(){
-        var geometry = this.data.geometry;
+        var view = this.data.ref;
         var container = this.data.container;
+        console.log('exporting', view, container);
         return {
-            geometry: geometry,
+            view: view,
             container: container
         };
     }
 
     Export(){
-        IO.SaveUTF(JSON.stringify(this), 'PackingSpace-config.json');
+        
+        var decimals = 3;
+        IO.SaveUTF(JSON.stringify(this, 
+            function(key, value) {
+                // limit precision of floats
+                if (typeof value === 'number') {
+                    return parseFloat(value.toFixed(decimals));
+                }
+                return value;
+            }),
+            'PackingSpace-config.json');
         this.Complete();
     }
 

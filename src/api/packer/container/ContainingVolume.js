@@ -5,6 +5,16 @@ const type = 'ContainingVolume';
 class ContainingVolume extends Volume {
     constructor(){
         super();
+
+        this.SetUID();
+    }
+
+    /**
+     * @param {string} [uid] - You'll rarely need to provide this
+     */
+    SetUID(uid){
+        this.uid = uid || THREE.Math.generateUUID();
+        return this.uid;
     }
 
     toJSON(){

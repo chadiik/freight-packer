@@ -5,6 +5,7 @@ import Logger from './api/utils/cik/Logger';
 import Utils from './api/utils/cik/Utils';
 import PackingSpaceInput from './api/components/PackingSpaceInput';
 import UX from './api/UX';
+import PackerInterface from './api/components/PackerInterface';
 
 /**
  * @typedef InitializationParams
@@ -16,18 +17,16 @@ import UX from './api/UX';
  * @type {InitializationParams}
  */
 const defaultParams = {
-	debug: false,
-	ux: { // defaults from './api/UX'
-	}
+	debug: false
 };
 
 const utils = {
-	dat: (window.dat || require("./api/utils/cik/config/datGUIConsole").default),
-	Signaler: require("./api/utils/cik/Signaler").default,
-	Utils: require("./api/utils/cik/Utils").default
+	THREE: THREE,
+	dat: (window.dat || require('./api/utils/cik/config/datGUIConsole').default),
+	Signaler: require('./api/utils/cik/Signaler').default,
+	Utils: require('./api/utils/cik/Utils').default,
+	Debug: require('./api/debug/Debug').default
 };
-
-var instance;
 
 class FreightPacker {
 	/**
@@ -37,10 +36,8 @@ class FreightPacker {
 	 */
 	constructor( containerDiv, params ) {
 
-		instance = this;
-
 		this.params = Utils.AssignUndefined(params, defaultParams);
-		FreightPacker.DevSetup(this.params);
+		FreightPacker.DevSetup(this);
 
 		this.ux = new UX(this.params.ux);
 
@@ -56,10 +53,20 @@ class FreightPacker {
 		 */
 		this.packingSpaceInput = new PackingSpaceInput();
 
-		new App(containerDiv, this.ux, {
+		var app = new App(containerDiv, this.ux, {
 			cargoInput: this.cargoInput,
 			packingSpaceInput: this.packingSpaceInput
 		});
+
+		/**
+		 * Manual solving and notification
+		 * @type {PackerInterface}
+		 */
+		this.packer = new PackerInterface(app);
+
+		if(this.params.debug){
+			FreightPacker.Auto(this);
+		}
 	}
 
 	/**
@@ -80,25 +87,26 @@ class FreightPacker {
 		});
 	}
 
-	/**
-	 * @returns {FreightPacker}
-	 */
-	static get instance(){
-		return instance;
+	static get utils(){
+		return utils;
 	}
 
-	static DevSetup(params){
+	/** @param {FreightPacker} fp */
+	static DevSetup(fp){
+		global.fp = fp;
+		var params = fp.params;
 		if(params.debug) {
 			Logger.active = true;
 			Logger.toConsole = true;
 			Logger.traceToConsole = true;
-
-			require('./api/debug/Tester').testAFit();
 		}
+
+		//require('./api/debug/Tester').testPool();
 	}
 
-	static get utils(){
-		return utils;
+	/** @param {FreightPacker} fp */
+	static Auto(fp){
+		
 	}
 
 }

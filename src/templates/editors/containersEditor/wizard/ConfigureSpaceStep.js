@@ -45,10 +45,12 @@ class ConfigureSpaceStep extends WizardStep {
     Start(dataPass){
         super.Start();
 
+        Object.assign(this.data, dataPass);
+
         /**
          * @type {THREE.Object3D}
          */
-        this.obj = dataPass.ref;
+        this.obj = this.data.ref;
 
         var scope = this;
 
@@ -147,9 +149,11 @@ class ConfigureSpaceStep extends WizardStep {
     }
 
     OnClickPickSurface(obj, intersection){
-        var coplanar = SurfaceUtils.GetCoplanar(2, intersection.object.geometry, intersection.face, true);
+        console.log(intersection);
+        var geometry = intersection.object.geometry;
+        var coplanar = SurfaceUtils.GetCoplanar(2, geometry, intersection.face, true);
 
-        var gVertices = this.obj.geometry.vertices;
+        var gVertices = geometry.vertices;
         var vertices = [];
         for(var f in coplanar){
             var face = coplanar[f];
@@ -166,9 +170,9 @@ class ConfigureSpaceStep extends WizardStep {
             return;
         }
 
-        this.data.platform = platform;
+        this.platform = platform;
         var volume = this.data.container.volume;
-        volume.position.copy(this.data.platform.center);
+        volume.position.copy(this.platform.center);
 
         vertices = SurfaceUtils.Clone(vertices);
         var surfaceGeometry = SurfaceUtils.FromVertices(vertices);
@@ -206,7 +210,7 @@ class ConfigureSpaceStep extends WizardStep {
 
         var scope = this;
 
-        var platform = this.data.platform;
+        var platform = this.platform;
         var platformDimensions = this.platformDimensions = {width: platform.width, length: platform.length};
 
         var obj = this.obj;
@@ -251,7 +255,7 @@ class ConfigureSpaceStep extends WizardStep {
         
         var dimensions = this.data.container.volume.dimensions;
         if(dimensions.volume < 1){
-            let platform = this.data.platform;
+            let platform = this.platform;
             dimensions.Set(platform.width, platform.length, platform.width);
         }
         var onChange = function(){
@@ -277,7 +281,7 @@ class ConfigureSpaceStep extends WizardStep {
     }
 
     DisplayVolume(){
-        var platform = this.data.platform;
+        var platform = this.platform;
 
         if(this.displayVolume === undefined){
             this.displayVolume = new THREE.Mesh(
@@ -337,8 +341,6 @@ class ConfigureSpaceStep extends WizardStep {
      */
     OnClickPickSide(obj, intersection){
 
-        var scope = this;
-
         /**
          * @type {Array<THREE.Vector3>}
          */
@@ -357,7 +359,7 @@ class ConfigureSpaceStep extends WizardStep {
         var center = this.displayVolume.position;
         var direction = new THREE.Vector3().subVectors(side, center);
 
-        var platform = this.data.platform;
+        var platform = this.platform;
         platform.direction = DirectedRect.AxisDirection(direction);
 
         if(platform.direction.z < .99){
@@ -384,7 +386,7 @@ class ConfigureSpaceStep extends WizardStep {
     }
 
     Complete(){
-        this.obj.geometry = this.data.geometry = SurfaceUtils.MergeObject(this.obj);
+        SurfaceUtils.BakeObject(this.obj);
         this.obj.position.set(0, 0, 0);
         this.obj.rotation.set(0, 0, 0);
         this.obj.scale.set(1, 1, 1);

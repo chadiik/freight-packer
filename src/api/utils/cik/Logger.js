@@ -20,6 +20,7 @@ const defaultPrintFilter = {
 
 var programStartTime = Date.now();
 var messages = [];
+var warnOnce = {};
 
 class Message {
     constructor(type, ...args){
@@ -92,6 +93,20 @@ class Logger {
             var message = new Message(logType.warn, ...args);
             this.AddLog(message);
             if(this._toConsole) console.warn(...args);
+        }
+    }
+
+    static LogOnce(id, ...args){
+        if(this._active && !warnOnce[id]){
+            warnOnce[id] = true;
+            Logger.Log(...args);
+        }
+    }
+
+    static WarnOnce(id, ...args){
+        if(this._active && !warnOnce[id]){
+            warnOnce[id] = true;
+            Logger.Warn(...args);
         }
     }
 

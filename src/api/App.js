@@ -1,11 +1,11 @@
 
-import SceneSetup from './scene/SceneSetup';
-import Logger from './utils/cik/Logger';
+import SceneSetup from './view/SceneSetup';
 import Packer from './packer/Packer';
 import View from './view/View';
 import CargoInput from './components/CargoInput';
 import PackingSpaceInput from './components/PackingSpaceInput';
 import UX from './UX';
+import Logger from './utils/cik/Logger';
 
 /**
  * @typedef AppComponents
@@ -25,7 +25,9 @@ class App {
         this.ux = ux;
         this.components = components;
 
-        this.packer = new Packer();
+        /** @type {import('./packer/Packer').PackerParams} */
+        var packerParams = {ux: this.ux};
+        this.packer = new Packer(packerParams);
 
         this.sceneSetup = new SceneSetup(containerDiv, this.ux);
         this.sceneSetup.Init().then(this.Start.bind(this));
@@ -33,18 +35,26 @@ class App {
 
     Start(){
         var packer = this.packer;
-        this.view = new View(packer, this.sceneSetup);
+
+        /** @type {import('./view/View').ViewParams} */
+        var viewParams = { ux: this.ux };
+        this.view = new View(packer, this.sceneSetup, viewParams);
         this.sceneSetup.Start();
 
         this.components.cargoInput.On(CargoInput.signals.completed, function(boxEntry){
-            Logger.Log('insert box');
             packer.cargoList.Add(boxEntry);
         });
 
         this.components.packingSpaceInput.On(PackingSpaceInput.signals.containerLoaded, function(container){
-            Logger.Log('insert container');
             packer.packingSpace.AddContainer(container);
         });
+
+        /** @param {import('./packer/Packer').PackingResult} packingResult */
+        function onPackUpdate(packingResult){
+            Logger.Log('Packing result', packingResult);
+        }
+
+        packer.On(Packer.signals.packUpdate, onPackUpdate);
     }
   
 }

@@ -34,6 +34,7 @@ class Dimensions {
     /**
      * Returns a THREE.Vector3 representation of the dimensions
      * Beware of ordering: x=width, y=height and z=length
+     * @returns {THREE.Vector3}
      */
     get vec3(){
         return this[_vec3].set(this.width, this.height, this.length);
@@ -41,6 +42,13 @@ class Dimensions {
 
     get volume(){
         return this.width * this.height * this.length;
+    }
+
+    Abs(){
+        if(this.width < 0) this.width = -this.width;
+        if(this.length < 0) this.length = -this.length;
+        if(this.height < 0) this.height = -this.height;
+        return this;
     }
 
     Compare(dimensions){
@@ -70,6 +78,14 @@ class Dimensions {
             length: this.length,
             height: this.height
         };
+    }
+
+    static IsVolume(dimensions){
+        return Dimensions.Assert(dimensions) 
+            && dimensions.width > epsilon
+            && dimensions.length > epsilon
+            && dimensions.height > epsilon
+        ;
     }
 
     static FromJSON(data){

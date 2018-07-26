@@ -1,4 +1,5 @@
 import ContainingVolume from "./ContainingVolume";
+import Logger from "../../utils/cik/Logger";
 
 const type = 'Container';
 
@@ -9,6 +10,8 @@ class Container {
          * @type {Array<ContainingVolume>}
          */
         this.volumes = [];
+
+        Logger.WarnOnce('Container.constructor', 'weight, label not implemented');
     }
 
     Add(volume){

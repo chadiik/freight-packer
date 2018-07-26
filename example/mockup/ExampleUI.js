@@ -2,16 +2,29 @@
 // enable vscode intellisense on FreightPacker
 if(false){ var FreightPacker = require('../../src/FreightPacker').default; }
 
+var fileLoader = new FreightPacker.utils.THREE.FileLoader();
+function loadFile(url){
+    return new Promise((resolve, reject) => {
+        fileLoader.load(url, resolve, undefined, reject);
+    });
+}
+
 const namespace = FPEditor.namespace;
 
 const signals = {
+    // automate
+
+    // packer
+    packRequest: 'packRequest',
+
+    // packing space
     loadPSConfig: 'loadPSConfig',
+
+    // box input
     boxInputUpdate: 'boxInputUpdate',
     boxInputComplete: 'boxInputComplete',
     boxInputAbort: 'boxInputAbort'
 };
-
-console.log(FreightPacker.utils);
 
 class ExampleUI extends FreightPacker.utils.Signaler {
     constructor(inputData){
@@ -24,27 +37,174 @@ class ExampleUI extends FreightPacker.utils.Signaler {
         this.domElement = document.getElementById('fp-gui');
         this.domElement.appendChild(this.gui.domElement);
 
-        this.CreateSpaceController();
-        this.CreateInputController(inputData);
+        var autoFolder = this.CreateAutoController();
+        autoFolder.open();
+
+        var packerFolder = this.CreatePackerController();
+
+        var spaceFolder = this.CreateSpaceController();
+        //spaceFolder.open();
+        
+        var inputFolder = this.CreateInputController(inputData);
+        //inputFolder.open();
+    }
+
+    CreateAutoController(){
+        var scope = this;
+
+        var testData1 = FreightPacker.utils.Debug.AFitTest.GenerateDataSample1();
+        var testData2 = FreightPacker.utils.Debug.AFitTest.GenerateDataSample2();
+        var testDataFlatdeck = FreightPacker.utils.Debug.AFitTest.GenerateDataSampleFlatdeck();
+        var testData;
+
+        function testDataPSLoad(){
+            return new Promise((resolve, reject) => {
+                var container = testData.container;
+                var data = {
+                    container: {
+                        type: 'Container',
+                        volumes: [{
+                            type: 'ContainingVolume',
+                            position: {x: 0, y: 0, z: 0},
+                            dimensions: {
+                                type:'Dimensions',
+                                width: container.Width,
+                                length: container.Length,
+                                height: container.Height
+                            }
+                        }]
+                    }
+                };
+
+                scope.Dispatch(ExampleUI.signals.loadPSConfig, data);
+                resolve();
+            });
+        }
+
+        function testDataCargoAdd(){
+            var items = testData.items;
+            return new Promise((resolve, reject) => {
+                var iid = setInterval(roll, 100);
+                function roll(){
+                    var item = items.pop();
+                    if(item){
+                        let boxInput = {
+                            label: item.ID,
+                            width: item.Dim1,
+                            length: item.Dim2,
+                            height: item.Dim3,
+                            quantity: item.Quantity
+                        };
+                        scope.Dispatch(ExampleUI.signals.boxInputUpdate, boxInput);
+                        scope.Dispatch(ExampleUI.signals.boxInputComplete);
+                    }
+                    else{
+                        clearInterval(iid);
+                        resolve();
+                    }
+                }
+            });
+        }
+
+        function pack(){
+            scope.Dispatch(signals.packRequest);
+        }
+
+        function packingTest1(){
+            testData = testData1;
+
+            testDataPSLoad()
+            .then(testDataCargoAdd)
+            .then(pack);
+        }
+
+        function packingTest2(){
+            testData = testData2;
+            
+            testDataPSLoad()
+            .then(testDataCargoAdd)
+            .then(pack);
+        }
+
+        function packingTestFlatdeck48(){
+            testData = testDataFlatdeck;
+            
+            samplePackingSpace()
+            .then(testDataCargoAdd)
+            .then(pack);
+        }
+
+        function samplePackingSpace(){
+            let psConfigs = [
+                '../resources/config/flatdeck48.json',
+                '../resources/config/flatdeck48-d3.json'
+            ];
+            return new Promise((resolve, reject) => {
+                loadFile(psConfigs[0])
+                .then(function(data){
+                    scope.Dispatch(ExampleUI.signals.loadPSConfig, data);
+                    resolve();
+                });
+            });
+        }
+
+        function sampleCargo2(){
+            testData = testData2;
+            return testDataCargoAdd();
+        }
+
+        var controller = {
+            PackingTest1: packingTest1,
+            PackingTest2: packingTest2,
+            Flatdeck48_T1: packingTestFlatdeck48,
+            LoadPackingSpace: samplePackingSpace,
+            SampleCargo2: sampleCargo2
+        };
+
+        var autoFolder = this.gui.addFolder('Automate');
+        autoFolder.add(controller, 'Flatdeck48_T1');
+        autoFolder.add(controller, 'PackingTest2');
+        autoFolder.add(controller, 'LoadPackingSpace');
+        autoFolder.add(controller, 'SampleCargo2');
+
+        return autoFolder;
+    }
+
+    CreatePackerController(){
+        var scope = this;
+
+        function pack(){
+            scope.Dispatch(signals.packRequest);
+        }
+
+        var controller = {
+            Solve: pack
+        };
+
+        var packerFolder = this.gui.addFolder('Packer');
+        packerFolder.add(controller, 'Solve');
+
+        return packerFolder;
     }
 
     CreateSpaceController(){
         var scope = this;
 
-        var loadConfig = function(){
+        function loadConfig(){
             namespace.IO.GetFile(function(file){
                 var data = JSON.parse(file);
                 scope.Dispatch(ExampleUI.signals.loadPSConfig, data);
             }, false);
-        };
+        }
 
         var controller = {
             LoadPSConfig: loadConfig
         };
 
         var spaceFolder = this.gui.addFolder('Packing space');
-        spaceFolder.open();
         spaceFolder.add(controller, 'LoadPSConfig');
+
+        return spaceFolder;
     }
 
     CreateInputController(data){
@@ -53,23 +213,23 @@ class ExampleUI extends FreightPacker.utils.Signaler {
         var boxRange = {w:[4, 20], l:[4, 20], h:[2, 16]};
         var boxInput = FreightPacker.utils.Utils.AssignUndefined(data || {}, {width:0, length:0, height:0, label: '', weight: 0, quantity: 1});
         
-        var inputUpdate = function(){
+        function inputUpdate(){
             scope.Dispatch(ExampleUI.signals.boxInputUpdate, boxInput);
-        };
-        var complete = function(){
+        }
+        function complete(){
             scope.Dispatch(ExampleUI.signals.boxInputComplete);
-        };
-        var abort = function(){
+        }
+        function abort(){
             scope.Dispatch(ExampleUI.signals.boxInputAbort);
-        };
+        }
 
         var p = 4;
-        var randomInput = function(){
+        function randomInput(){
             controller.Width    = Math.floor((boxRange.w[0] + Math.random() * (boxRange.w[1] - boxRange.w[0])) * p) / p;
             controller.Length   = Math.floor((boxRange.l[0] + Math.random() * (boxRange.l[1] - boxRange.l[0])) * p) / p;
             controller.Height   = Math.floor((boxRange.h[0] + Math.random() * (boxRange.h[1] - boxRange.h[0])) * p) / p;
             complete();
-        };
+        }
         var controller = {
             Random: randomInput,
             Insert: complete,
@@ -103,7 +263,6 @@ class ExampleUI extends FreightPacker.utils.Signaler {
         });
 
         var inputFolder = this.gui.addFolder('Cargo input');
-        inputFolder.open();
         inputFolder.add(controller, 'Random');
 
         var infoFolder = inputFolder.addFolder('Info');
@@ -120,9 +279,8 @@ class ExampleUI extends FreightPacker.utils.Signaler {
 
         inputFolder.add(controller, 'Insert');
         inputFolder.add(controller, 'Abort');
-
-        controller.Random();
         
+        return inputFolder;
     }
 
     static get signals(){

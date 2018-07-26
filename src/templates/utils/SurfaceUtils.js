@@ -31,6 +31,20 @@ class SurfaceUtils {
 
     /**
      * 
+     * @param {THREE.Object3D} object 
+     */
+    static BakeObject(object){
+        object.updateMatrixWorld(true);
+        object.traverse(function(child){
+            if(child instanceof THREE.Mesh){
+                var bg = child.geometry;
+                bg.applyMatrix(child.matrixWorld);
+            }
+        });
+    }
+
+    /**
+     * 
      * @param {Array<THREE.BufferGeometry>} geometries 
      * @returns {THREE.BufferGeometry}
      */

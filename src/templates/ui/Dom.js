@@ -8,7 +8,8 @@ class Dom {
 
     constructor(){
         instance = this;
-        this.element = crel('div', {id:'UIDom', class:'UIOrigin UIExpand'});
+        //this.element = crel('div', {id:'UIDom', class:'UIOrigin UIExpand'});
+        this.element = document.body;
     }
 
     /**

@@ -12,6 +12,9 @@ if(false){ var FreightPacker = require('../src/FreightPacker').default; }
  * @property {Number} height
  */
 
+const stringType = 'string',
+    numberType = 'number';
+
 class Example {
     constructor(){
         console.log('Freight Packer API Example');
@@ -44,17 +47,25 @@ class Example {
         this.boxEntries = new Map();
 
         var b = this.boxEntry;
+        /** @type {UIEntry} */
         var initEntryData = {
-            label: b.label, weight: b.weight, quantity: b.quantity, 
-            width: b.dimensions.width, length: b.dimensions.length, height: b.dimensions.height
+            label: b.label, weight: b.weight, quantity: b.quantity
         };
         var ui = new ExampleUI(initEntryData);
         var signals = ExampleUI.signals;
+
+        ui.On(signals.packRequest, this.SolvePacking.bind(this));
+
         ui.On(signals.loadPSConfig, this.SetPackingSpace.bind(this));
 
         ui.On(signals.boxInputUpdate, this.BoxInputUpdate.bind(this));
         ui.On(signals.boxInputComplete, this.BoxInputComplete.bind(this));
         ui.On(signals.boxInputAbort, this.BoxInputAbort.bind(this));
+    }
+
+    SolvePacking(){
+        console.log('Packing request');
+        this.api.packer.Solve();
     }
 
     // Packing space
@@ -68,10 +79,16 @@ class Example {
 
         // Copy values into entry
         if(uiEntry){
-            this.boxEntry.label = uiEntry.label;
-            this.boxEntry.weight = uiEntry.weight;
-            this.boxEntry.quantity = uiEntry.quantity;
-            this.boxEntry.dimensions.Set(uiEntry.width, uiEntry.length, uiEntry.height);
+            if(typeof uiEntry.label === stringType) this.boxEntry.label = uiEntry.label;
+            if(isNaN(uiEntry.weight) === false) this.boxEntry.weight = uiEntry.weight;
+            if(isNaN(uiEntry.quantity) === false) this.boxEntry.quantity = uiEntry.quantity;
+
+            if( isNaN(uiEntry.width) === false
+                && isNaN(uiEntry.length) === false
+                && isNaN(uiEntry.height) === false
+            ){
+                this.boxEntry.dimensions.Set(uiEntry.width, uiEntry.length, uiEntry.height);
+            }
         }
 
         // Shows/updates input in viewer

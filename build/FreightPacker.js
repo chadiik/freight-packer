@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 30);
+/******/ 	return __webpack_require__(__webpack_require__.s = 38);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -69,7 +69,150 @@
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Utils__ = __webpack_require__(1);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var trimVariableRegex = new RegExp(/(?:\d|_|-)+$/);
+var twopi = 2 * Math.PI;
+var goldenRatio = (1 + Math.sqrt(5)) / 2;
+var goldenRatioConjugate = goldenRatio - 1;
+
+var Utils = function () {
+    function Utils() {
+        _classCallCheck(this, Utils);
+    }
+
+    _createClass(Utils, null, [{
+        key: 'Redefine',
+        value: function Redefine(object, constructor) {
+            var classProperties = object;
+            var instanceProperties = object.prototype;
+
+            var def = constructor(instanceProperties);
+
+            Object.assign(def, classProperties);
+            Object.assign(def.prototype, instanceProperties);
+            Object.defineProperties(def, Object.getOwnPropertyDescriptors(classProperties));
+            Object.defineProperties(def.prototype, Object.getOwnPropertyDescriptors(instanceProperties));
+
+            return def;
+        }
+
+        /**
+         * @template T
+         * @param {T} target 
+         * @param {Object} source 
+         * @returns {T}
+         */
+
+    }, {
+        key: 'AssignUndefined',
+        value: function AssignUndefined(target, source) {
+            if (target === undefined) {
+                target = {};
+                Object.assign(target, source);
+                return target;
+            }
+
+            var keys = Object.keys(source);
+            keys.forEach(function (key) {
+                if (target[key] === undefined) target[key] = source[key];
+            });
+            return target;
+        }
+    }, {
+        key: 'Snapshot',
+        value: function Snapshot(obj) {
+            return JSON.parse(JSON.stringify(obj));
+        }
+    }, {
+        key: 'GetRectOffset',
+        value: function GetRectOffset(element) {
+            var style = window.getComputedStyle(element),
+                marginLeft = parseFloat(style.marginLeft),
+                marginTop = parseFloat(style.marginTop),
+                paddingLeft = parseFloat(style.paddingLeft),
+                paddingTop = parseFloat(style.paddingTop);
+            return { x: marginLeft + paddingLeft, y: marginTop + paddingTop };
+        }
+    }, {
+        key: 'TrimVariable',
+        value: function TrimVariable(input) {
+            return input.replace(trimVariableRegex, '');
+        }
+    }, {
+        key: 'LimitString',
+        value: function LimitString(str, length) {
+            if (str.length > length) str = str.substring(str.length - length);
+            return str;
+        }
+    }, {
+        key: 'LoopIndex',
+        value: function LoopIndex(i, len) {
+            i = i % len;
+            if (i < 0) i = len + i;
+            return i;
+        }
+    }, {
+        key: 'FastCircleLoop',
+        value: function FastCircleLoop(divisions, callback) {
+            // ref: http://iquilezles.org/www/articles/sincos/sincos.htm
+            var da = twopi / divisions;
+            var a = Math.cos(da);
+            var b = Math.sin(da);
+            var cos = 1;
+            var sin = 0;
+            for (var i = 0; i < divisions; i++) {
+                var nc = a * cos - b * sin;
+                var ns = b * cos + a * sin;
+                cos = nc;
+                sin = ns;
+                callback(cos, sin);
+            }
+        }
+    }, {
+        key: 'ColorPaletteAsVec3',
+        value: function ColorPaletteAsVec3(t, a, b, c, d, color) {
+            // ref: http://iquilezles.org/www/articles/palettes/palettes.htm
+            // return a + b * cos( 6.28318 * ( c * t + d ) );
+            color = color || new THREE.Color();
+            var r = a.x + b.x * Math.cos(twopi * (c.x * t + d.x)),
+                g = a.y + b.y * Math.cos(twopi * (c.y * t + d.y)),
+                b = a.z + b.z * Math.cos(twopi * (c.z * t + d.z));
+            return color.set(r, g, b);
+        }
+
+        /**
+         * Returns the next value [0, 1] in the golden series
+         * @param {Number} base 
+         */
+
+    }, {
+        key: 'GoldenSeries',
+        value: function GoldenSeries(base) {
+            return (base + goldenRatioConjugate) % 1;
+        }
+    }, {
+        key: 'VecToString',
+        value: function VecToString(vector, fixed) {
+            fixed = fixed || 8;
+            return vector.x.toFixed(fixed) + ', ' + vector.y.toFixed(fixed) + (vector.z !== undefined ? ', ' + vector.z.toFixed(fixed) + (vector.w !== undefined ? ', ' + vector.w.toFixed(fixed) : '') : '');
+        }
+    }]);
+
+    return Utils;
+}();
+
+/* harmony default export */ __webpack_exports__["default"] = (Utils);
+
+/***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Utils__ = __webpack_require__(0);
 
 // dat.GUI console mirroring
 // Access with >> dat.list
@@ -219,154 +362,11 @@ Object.defineProperties(dat, {
 /* harmony default export */ __webpack_exports__["default"] = (dat);
 
 /***/ }),
-/* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var trimVariableRegex = new RegExp(/(?:\d|_|-)+$/);
-var twopi = 2 * Math.PI;
-var goldenRatio = (1 + Math.sqrt(5)) / 2;
-var goldenRatioConjugate = goldenRatio - 1;
-
-var Utils = function () {
-    function Utils() {
-        _classCallCheck(this, Utils);
-    }
-
-    _createClass(Utils, null, [{
-        key: 'Redefine',
-        value: function Redefine(object, constructor) {
-            var classProperties = object;
-            var instanceProperties = object.prototype;
-
-            var def = constructor(instanceProperties);
-
-            Object.assign(def, classProperties);
-            Object.assign(def.prototype, instanceProperties);
-            Object.defineProperties(def, Object.getOwnPropertyDescriptors(classProperties));
-            Object.defineProperties(def.prototype, Object.getOwnPropertyDescriptors(instanceProperties));
-
-            return def;
-        }
-
-        /**
-         * @template T
-         * @param {T} target 
-         * @param {Object} source 
-         * @returns {T}
-         */
-
-    }, {
-        key: 'AssignUndefined',
-        value: function AssignUndefined(target, source) {
-            if (target === undefined) {
-                target = {};
-                Object.assign(target, source);
-                return target;
-            }
-
-            var keys = Object.keys(source);
-            keys.forEach(function (key) {
-                if (target[key] === undefined) target[key] = source[key];
-            });
-            return target;
-        }
-    }, {
-        key: 'Snapshot',
-        value: function Snapshot(obj) {
-            return JSON.parse(JSON.stringify(obj));
-        }
-    }, {
-        key: 'GetRectOffset',
-        value: function GetRectOffset(element) {
-            var style = window.getComputedStyle(element),
-                marginLeft = parseFloat(style.marginLeft),
-                marginTop = parseFloat(style.marginTop),
-                paddingLeft = parseFloat(style.paddingLeft),
-                paddingTop = parseFloat(style.paddingTop);
-            return { x: marginLeft + paddingLeft, y: marginTop + paddingTop };
-        }
-    }, {
-        key: 'TrimVariable',
-        value: function TrimVariable(input) {
-            return input.replace(trimVariableRegex, '');
-        }
-    }, {
-        key: 'LimitString',
-        value: function LimitString(str, length) {
-            if (str.length > length) str = str.substring(str.length - length);
-            return str;
-        }
-    }, {
-        key: 'LoopIndex',
-        value: function LoopIndex(i, len) {
-            i = i % len;
-            if (i < 0) i = len + i;
-            return i;
-        }
-    }, {
-        key: 'FastCircleLoop',
-        value: function FastCircleLoop(divisions, callback) {
-            // ref: http://iquilezles.org/www/articles/sincos/sincos.htm
-            var da = twopi / divisions;
-            var a = Math.cos(da);
-            var b = Math.sin(da);
-            var cos = 1;
-            var sin = 0;
-            for (var i = 0; i < divisions; i++) {
-                var nc = a * cos - b * sin;
-                var ns = b * cos + a * sin;
-                cos = nc;
-                sin = ns;
-                callback(cos, sin);
-            }
-        }
-    }, {
-        key: 'ColorPaletteAsVec3',
-        value: function ColorPaletteAsVec3(t, a, b, c, d, color) {
-            // ref: http://iquilezles.org/www/articles/palettes/palettes.htm
-            // return a + b * cos( 6.28318 * ( c * t + d ) );
-            color = color || new THREE.Color();
-            var r = a.x + b.x * Math.cos(twopi * (c.x * t + d.x)),
-                g = a.y + b.y * Math.cos(twopi * (c.y * t + d.y)),
-                b = a.z + b.z * Math.cos(twopi * (c.z * t + d.z));
-            return color.set(r, g, b);
-        }
-
-        /**
-         * Returns the next value [0, 1] in the golden series
-         * @param {Number} base 
-         */
-
-    }, {
-        key: 'GoldenSeries',
-        value: function GoldenSeries(base) {
-            return (base + goldenRatioConjugate) % 1;
-        }
-    }, {
-        key: 'VecToString',
-        value: function VecToString(vector, fixed) {
-            fixed = fixed || 8;
-            return vector.x.toFixed(fixed) + ', ' + vector.y.toFixed(fixed) + (vector.z !== undefined ? ', ' + vector.z.toFixed(fixed) + (vector.w !== undefined ? ', ' + vector.w.toFixed(fixed) : '') : '');
-        }
-    }]);
-
-    return Utils;
-}();
-
-/* harmony default export */ __webpack_exports__["default"] = (Utils);
-
-/***/ }),
 /* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Utils__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Utils__ = __webpack_require__(0);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -393,6 +393,7 @@ var defaultPrintFilter = {
 
 var programStartTime = Date.now();
 var messages = [];
+var warnOnce = {};
 
 var Message = function () {
     function Message(type) {
@@ -491,6 +492,32 @@ var Logger = function () {
                 var message = new (Function.prototype.bind.apply(Message, [null].concat([logType.warn], args)))();
                 this.AddLog(message);
                 if (this._toConsole) (_console3 = console).warn.apply(_console3, args);
+            }
+        }
+    }, {
+        key: 'LogOnce',
+        value: function LogOnce(id) {
+            if (this._active && !warnOnce[id]) {
+                warnOnce[id] = true;
+
+                for (var _len5 = arguments.length, args = Array(_len5 > 1 ? _len5 - 1 : 0), _key5 = 1; _key5 < _len5; _key5++) {
+                    args[_key5 - 1] = arguments[_key5];
+                }
+
+                Logger.Log.apply(Logger, args);
+            }
+        }
+    }, {
+        key: 'WarnOnce',
+        value: function WarnOnce(id) {
+            if (this._active && !warnOnce[id]) {
+                warnOnce[id] = true;
+
+                for (var _len6 = arguments.length, args = Array(_len6 > 1 ? _len6 - 1 : 0), _key6 = 1; _key6 < _len6; _key6++) {
+                    args[_key6 - 1] = arguments[_key6];
+                }
+
+                Logger.Warn.apply(Logger, args);
             }
         }
     }, {
@@ -593,8 +620,397 @@ var Signaler = function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TextField__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__ = __webpack_require__(2);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+
+
+
+var CargoEntry = function () {
+    function CargoEntry() {
+        _classCallCheck(this, CargoEntry);
+
+        this.type = 'CargoEntry';
+
+        this.quantity = 0;
+        this.properties = {};
+        this.uid = '';
+
+        /**
+         * @type {Map<string, TextField>}
+         */
+        this.descriptions = new Map();
+    }
+
+    /**
+     * @param {string} [uid] - You'll rarely need to provide this
+     */
+
+
+    _createClass(CargoEntry, [{
+        key: "SetUID",
+        value: function SetUID(uid) {
+            this.uid = uid || THREE.Math.generateUUID();
+            return this.uid;
+        }
+    }, {
+        key: "Copy",
+        value: function Copy(entry) {
+            __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__["a" /* default */].Warn('CargoEntry.Copy is not implemented');
+        }
+    }, {
+        key: "Clone",
+        value: function Clone() {
+            __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__["a" /* default */].Warn('CargoEntry.Clone is not implemented');
+        }
+    }, {
+        key: "ToString",
+        value: function ToString() {}
+    }]);
+
+    return CargoEntry;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (CargoEntry);
+
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ContainingVolume__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__ = __webpack_require__(2);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+
+
+
+var type = 'Container';
+
+var Container = function () {
+    function Container() {
+        _classCallCheck(this, Container);
+
+        /**
+         * Containing volumes array
+         * @type {Array<ContainingVolume>}
+         */
+        this.volumes = [];
+
+        __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__["a" /* default */].WarnOnce('Container.constructor', 'weight, label not implemented');
+    }
+
+    _createClass(Container, [{
+        key: "Add",
+        value: function Add(volume) {
+            this.volumes.push(volume);
+        }
+    }, {
+        key: "toJSON",
+        value: function toJSON() {
+            return {
+                type: type,
+                volumes: this.volumes
+            };
+        }
+    }, {
+        key: "ToString",
+        value: function ToString() {
+            var result = type + '[';
+            for (var i = 0, numVolumes = this.volumes.length; i < numVolumes; i++) {
+                result += this.volumes[i].ToString() + (i < numVolumes - 1 ? ', ' : ']');
+            }
+            return result;
+        }
+    }, {
+        key: "volume",
+        get: function get() {
+            var index = this.volumes.length - 1;
+            return this.volumes[index];
+        }
+    }], [{
+        key: "FromJSON",
+        value: function FromJSON(data) {
+            if (data.type !== type) console.warn('Data supplied is not: ' + type);
+
+            var container = new Container();
+            for (var i = 0, numVolumes = data.volumes.length; i < numVolumes; i++) {
+                var containingVolume = __WEBPACK_IMPORTED_MODULE_0__ContainingVolume__["a" /* default */].FromJSON(data.volumes[i]);
+                container.Add(containingVolume);
+            }
+
+            return container;
+        }
+    }]);
+
+    return Container;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (Container);
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__PackingProperty__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Dimensions__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_TextField__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_CargoEntry__ = __webpack_require__(4);
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+
+
+/**
+ * @typedef {Object} BoxEntryProperties
+ * @property {SupportsStacking} stacking
+ * @property {RotationConstraint} rotation
+ * @property {TranslationConstraint} translation
+ */
+
+var numEntries = 0;
+function getDefaultLabel() {
+    return 'Box ' + numEntries.toString();
+}
+
+var epsilon = Math.pow(2, -52);
+var numberType = 'number';
+
+var BoxEntry = function (_CargoEntry) {
+    _inherits(BoxEntry, _CargoEntry);
+
+    function BoxEntry() {
+        _classCallCheck(this, BoxEntry);
+
+        numEntries++;
+
+        var _this = _possibleConstructorReturn(this, (BoxEntry.__proto__ || Object.getPrototypeOf(BoxEntry)).call(this));
+
+        _this.type = 'BoxEntry';
+
+        _this.dimensions = new __WEBPACK_IMPORTED_MODULE_1__Dimensions__["a" /* default */](0, 0, 0);
+
+        _this.weight = 0;
+        _this.quantity = 1;
+
+        /**
+         * @type {BoxEntryProperties}
+         */
+        _this.properties;
+
+        _this.properties.stacking = new __WEBPACK_IMPORTED_MODULE_0__PackingProperty__["b" /* SupportsStacking */]();
+        _this.properties.rotation = new __WEBPACK_IMPORTED_MODULE_0__PackingProperty__["a" /* RotationConstraint */]();
+        _this.properties.translation = new __WEBPACK_IMPORTED_MODULE_0__PackingProperty__["c" /* TranslationConstraint */]();
+
+        _this.descriptions.set('label', new __WEBPACK_IMPORTED_MODULE_2__common_TextField__["a" /* default */]('label', getDefaultLabel()));
+        return _this;
+    }
+
+    _createClass(BoxEntry, [{
+        key: "Reset",
+        value: function Reset() {
+            this.weight = 0;
+            this.quantity = 1;
+
+            this.properties.stacking.Reset();
+            this.properties.rotation.Reset();
+            this.properties.translation.Reset();
+
+            var label = this.descriptions.get('label');
+            label.content = __WEBPACK_IMPORTED_MODULE_2__common_TextField__["a" /* default */].defaultContent;
+            this.descriptions.clear();
+            this.descriptions.set('label', label);
+        }
+
+        /**
+         * @param {BoxEntry} entry 
+         */
+
+    }, {
+        key: "Copy",
+        value: function Copy(entry) {
+            this.dimensions.Copy(entry.dimensions);
+            this.weight = entry.weight;
+            this.quantity = entry.quantity;
+
+            this.properties.stacking.Copy(entry.properties.stacking);
+            this.properties.rotation.Copy(entry.properties.rotation);
+            this.properties.translation.Copy(entry.properties.translation);
+
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = entry.descriptions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var _ref = _step.value;
+
+                    var _ref2 = _slicedToArray(_ref, 2);
+
+                    var key = _ref2[0];
+                    var field = _ref2[1];
+
+                    var own = this.descriptions.get(key);
+                    if (own) own.Copy(field);else this.descriptions.set(key, field.Clone());
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+        }
+    }, {
+        key: "Clone",
+        value: function Clone() {
+            var entry = new BoxEntry();
+
+            entry.dimensions = this.dimensions.Clone();
+
+            entry.weight = this.weight;
+            entry.quantity = this.quantity;
+
+            entry.properties.stacking = this.properties.stacking.Clone();
+            entry.properties.rotation = this.properties.rotation.Clone();
+            entry.properties.translation = this.properties.translation.Clone();
+
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+                for (var _iterator2 = this.descriptions[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var _ref3 = _step2.value;
+
+                    var _ref4 = _slicedToArray(_ref3, 2);
+
+                    var key = _ref4[0];
+                    var field = _ref4[1];
+
+                    entry.descriptions.set(key, field.Clone());
+                }
+            } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                        _iterator2.return();
+                    }
+                } finally {
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
+                    }
+                }
+            }
+
+            return entry;
+        }
+
+        /**
+         * @returns {string}
+         */
+
+    }, {
+        key: "ToString",
+        value: function ToString() {
+            return '\'' + this.descriptions.get('label').content + '\': ' + this.dimensions.ToString();
+        }
+
+        /**
+         * @param {BoxEntry} entry 
+         */
+
+    }, {
+        key: "label",
+        get: function get() {
+            var field = this.descriptions.get('label');
+            return field ? field.content : undefined;
+        },
+        set: function set(value) {
+            var field = this.descriptions.get('label');
+            if (field) field.content = value;else this.descriptions.set('label', new __WEBPACK_IMPORTED_MODULE_2__common_TextField__["a" /* default */]('label', value));
+        }
+    }], [{
+        key: "Assert",
+        value: function Assert(entry) {
+            return entry instanceof BoxEntry && __WEBPACK_IMPORTED_MODULE_1__Dimensions__["a" /* default */].Assert(entry.dimensions) && entry.properties && entry.descriptions && entry.weight !== undefined && entry.quantity !== undefined && _typeof(entry.weight) === numberType && _typeof(entry.quantity) === numberType && __WEBPACK_IMPORTED_MODULE_0__PackingProperty__["b" /* SupportsStacking */].Assert(entry.properties.stacking) && __WEBPACK_IMPORTED_MODULE_0__PackingProperty__["a" /* RotationConstraint */].Assert(entry.properties.rotation) && __WEBPACK_IMPORTED_MODULE_0__PackingProperty__["c" /* TranslationConstraint */].Assert(entry.properties.translation);
+        }
+    }]);
+
+    return BoxEntry;
+}(__WEBPACK_IMPORTED_MODULE_3__common_CargoEntry__["a" /* default */]);
+
+/* harmony default export */ __webpack_exports__["a"] = (BoxEntry);
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_Utils__ = __webpack_require__(0);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+
+
+/**
+ * @typedef UXParams
+ * @property {Boolean} hud - Create a hud controller (Scene, camera, loop, etc.)
+ * @property {Boolean} configure - Execute helpers that allow configuration
+ * @property {Number} units - Conversion to unit employed, default=1 for inches, for meters: units=0.0254
+ */
+var defaultParams = {
+    hud: true,
+    configure: false,
+    units: 1
+};
+
+var UX =
+/**
+ * 
+ * @param {UXParams} params 
+ */
+function UX(params) {
+    _classCallCheck(this, UX);
+
+    this.params = __WEBPACK_IMPORTED_MODULE_0__utils_cik_Utils__["default"].AssignUndefined(params, defaultParams);
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (UX);
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Utils__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Utils__ = __webpack_require__(0);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -751,7 +1167,7 @@ var Config = function () {
             var target = this.target;
             if (gui === undefined) {
 
-                gui = new (window.dat || __webpack_require__(0).default).GUI({
+                gui = new (window.dat || __webpack_require__(1).default).GUI({
                     autoPlace: true
                 });
             } else if (label) {
@@ -762,7 +1178,7 @@ var Config = function () {
                 this.editing = {};
 
                 this.Update = function () {
-                    __webpack_require__(16);
+                    __webpack_require__(25);
 
                     gui.updateAll();
                     guiChanged();
@@ -777,7 +1193,7 @@ var Config = function () {
                 if (_this.editing[keyInfo.id] !== true) {
                     var folder = gui;
                     if (keyInfo.folder) {
-                        __webpack_require__(16);
+                        __webpack_require__(25);
 
                         if (gui.find) folder = gui.find(keyInfo.folder);else console.warn('gui extensions not found!');
 
@@ -859,313 +1275,155 @@ Config.Controller = Controller;
 /* harmony default export */ __webpack_exports__["default"] = (Config);
 
 /***/ }),
-/* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TextField__ = __webpack_require__(20);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__ = __webpack_require__(2);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-
-var CargoEntry = function () {
-    function CargoEntry() {
-        _classCallCheck(this, CargoEntry);
-
-        this.type = 'CargoEntry';
-
-        this.quantity = 0;
-        this.properties = {};
-        this.uid = '';
-
-        /**
-         * @type {Map<string, TextField>}
-         */
-        this.descriptions = new Map();
-    }
-
-    /**
-     * @param {string} [uid] - You'll rarely need to provide this
-     */
-
-
-    _createClass(CargoEntry, [{
-        key: "SetUID",
-        value: function SetUID(uid) {
-            this.uid = uid || THREE.Math.generateUUID();
-            return this.uid;
-        }
-    }, {
-        key: "Copy",
-        value: function Copy(entry) {
-            __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__["a" /* default */].Warn('CargoEntry.Copy is not implemented');
-        }
-    }, {
-        key: "Clone",
-        value: function Clone() {
-            __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__["a" /* default */].Warn('CargoEntry.Clone is not implemented');
-        }
-    }, {
-        key: "ToString",
-        value: function ToString() {}
-    }]);
-
-    return CargoEntry;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (CargoEntry);
-
-/***/ }),
-/* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ContainingVolume__ = __webpack_require__(41);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-var type = 'Container';
-
-var Container = function () {
-    function Container() {
-        _classCallCheck(this, Container);
-
-        /**
-         * Containing volumes array
-         * @type {Array<ContainingVolume>}
-         */
-        this.volumes = [];
-    }
-
-    _createClass(Container, [{
-        key: 'Add',
-        value: function Add(volume) {
-            this.volumes.push(volume);
-        }
-    }, {
-        key: 'toJSON',
-        value: function toJSON() {
-            return {
-                type: type,
-                volumes: this.volumes
-            };
-        }
-    }, {
-        key: 'ToString',
-        value: function ToString() {
-            var result = type + '[';
-            for (var i = 0, numVolumes = this.volumes.length; i < numVolumes; i++) {
-                result += this.volumes[i].ToString() + (i < numVolumes - 1 ? ', ' : ']');
-            }
-            return result;
-        }
-    }, {
-        key: 'volume',
-        get: function get() {
-            var index = this.volumes.length - 1;
-            return this.volumes[index];
-        }
-    }], [{
-        key: 'FromJSON',
-        value: function FromJSON(data) {
-            if (data.type !== type) console.warn('Data supplied is not: ' + type);
-
-            var container = new Container();
-            for (var i = 0, numVolumes = data.volumes.length; i < numVolumes; i++) {
-                var containingVolume = __WEBPACK_IMPORTED_MODULE_0__ContainingVolume__["a" /* default */].FromJSON(data.volumes[i]);
-                container.Add(containingVolume);
-            }
-
-            return container;
-        }
-    }]);
-
-    return Container;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (Container);
-
-/***/ }),
-/* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api_utils_Capabilities__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__api_App__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api_components_CargoInput__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__api_utils_cik_Logger__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__api_utils_cik_Utils__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__api_components_PackingSpaceInput__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__api_UX__ = __webpack_require__(8);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-
-
-
-
-
-
-/**
- * @typedef InitializationParams
- * @property {Boolean} debug
- * @property {import('./api/UX').UXParams} ux
- */
-
-/**
- * @type {InitializationParams}
- */
-var defaultParams = {
-	debug: false,
-	ux: {// defaults from './api/UX'
-	}
-};
-
-var utils = {
-	dat: window.dat || __webpack_require__(0).default,
-	Signaler: __webpack_require__(3).default,
-	Utils: __webpack_require__(1).default
-};
-
-var instance;
-
-var FreightPacker = function () {
-	/**
-  * Freight Packer API instance
-  * @param {HTMLDivElement} containerDiv
-  * @param {InitializationParams} params
-  */
-	function FreightPacker(containerDiv, params) {
-		_classCallCheck(this, FreightPacker);
-
-		instance = this;
-
-		this.params = __WEBPACK_IMPORTED_MODULE_4__api_utils_cik_Utils__["default"].AssignUndefined(params, defaultParams);
-		FreightPacker.DevSetup(this.params);
-
-		this.ux = new __WEBPACK_IMPORTED_MODULE_6__api_UX__["a" /* default */](this.params.ux);
-
-		/**
-   * Handles input of: description fields (label, etc.), dimensions and constraints
-   * @type {CargoInput}
-   */
-		this.cargoInput = new __WEBPACK_IMPORTED_MODULE_2__api_components_CargoInput__["a" /* default */]();
-
-		/**
-   * Handles input of: packing spaces configurations and assets
-   * @type {PackingSpaceInput}
-   */
-		this.packingSpaceInput = new __WEBPACK_IMPORTED_MODULE_5__api_components_PackingSpaceInput__["a" /* default */]();
-
-		new __WEBPACK_IMPORTED_MODULE_1__api_App__["a" /* default */](containerDiv, this.ux, {
-			cargoInput: this.cargoInput,
-			packingSpaceInput: this.packingSpaceInput
-		});
-	}
-
-	/**
-  * Will resolve if requirements are met, otherwise rejects with an error message
-  * @return {Promise<Void>|Promise<string>} 
-  */
-
-
-	_createClass(FreightPacker, null, [{
-		key: 'CheckRequirements',
-		value: function CheckRequirements() {
-			var webgl = __WEBPACK_IMPORTED_MODULE_0__api_utils_Capabilities__["a" /* default */].IsWebGLReady();
-
-			return new Promise(function (resolve, reject) {
-				if (webgl) {
-					resolve();
-				} else {
-					var message = 'WebGL not supported.';
-					reject(message);
-				}
-			});
-		}
-
-		/**
-   * @returns {FreightPacker}
-   */
-
-	}, {
-		key: 'DevSetup',
-		value: function DevSetup(params) {
-			if (params.debug) {
-				__WEBPACK_IMPORTED_MODULE_3__api_utils_cik_Logger__["a" /* default */].active = true;
-				__WEBPACK_IMPORTED_MODULE_3__api_utils_cik_Logger__["a" /* default */].toConsole = true;
-				__WEBPACK_IMPORTED_MODULE_3__api_utils_cik_Logger__["a" /* default */].traceToConsole = true;
-
-				__webpack_require__(50).testAFit();
-			}
-		}
-	}, {
-		key: 'instance',
-		get: function get() {
-			return instance;
-		}
-	}, {
-		key: 'utils',
-		get: function get() {
-			return utils;
-		}
-	}]);
-
-	return FreightPacker;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (FreightPacker);
-
-/***/ }),
-/* 8 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_Utils__ = __webpack_require__(1);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-/**
- * @typedef UXParams
- * @property {Boolean} configure - Execute helpers that allow configuration
- * @property {Number} units - Conversion to unit employed, default=1 for inches, for meters: units=0.0254
- */
-var defaultParams = {
-    configure: false,
-    units: 1
-};
-
-var UX =
-/**
- * 
- * @param {UXParams} params 
- */
-function UX(params) {
-    _classCallCheck(this, UX);
-
-    this.params = __WEBPACK_IMPORTED_MODULE_0__utils_cik_Utils__["default"].AssignUndefined(params, defaultParams);
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (UX);
-
-/***/ }),
 /* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_common_CargoEntry__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Cargo__ = __webpack_require__(40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CargoList__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__PackingSpace__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__afit_AFit__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_box_BoxEntry__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__utils_cik_Utils__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_cik_Signaler__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__utils_cik_Logger__ = __webpack_require__(2);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+
+
+
+
+
+/**
+ * @typedef {Object} PackerParams
+ * @property {import('../UX').default} ux
+ */
+
+/**
+ * @typedef {import('./afit/AFit').PackingResult} PackingResult
+ */
+
+function sumOfVolumes(items) {
+        var sum = 0;
+        for (var i = 0, len = items.length; i < len; i++) {
+                sum += items[i].Volume;
+        }return sum;
+}
+
+var _afit = Symbol('afit');
+var defaultParams = {};
+var signals = {
+        packUpdate: 'packUpdate'
+};
+
+var Packer = function (_Signaler) {
+        _inherits(Packer, _Signaler);
+
+        /**
+         * @param {PackerParams} params 
+         */
+        function Packer(params) {
+                _classCallCheck(this, Packer);
+
+                var _this = _possibleConstructorReturn(this, (Packer.__proto__ || Object.getPrototypeOf(Packer)).call(this));
+
+                _this.params = __WEBPACK_IMPORTED_MODULE_4__utils_cik_Utils__["default"].AssignUndefined(params, defaultParams);
+
+                _this[_afit] = new __WEBPACK_IMPORTED_MODULE_2__afit_AFit__["a" /* default */]();
+
+                _this.packingSpace = new __WEBPACK_IMPORTED_MODULE_1__PackingSpace__["a" /* default */]();
+                _this.cargoList = new __WEBPACK_IMPORTED_MODULE_0__CargoList__["a" /* default */]();
+                return _this;
+        }
+
+        _createClass(Packer, [{
+                key: "Solve",
+                value: function Solve() {
+                        /** @type {AFit} */
+                        var afit = this[_afit];
+
+                        var Container = __webpack_require__(14).default;
+                        var Item = __webpack_require__(15).default;
+
+                        var containingVolume = this.packingSpace.current.volume;
+                        console.warn('Currently solves for 1 ContainingVolume', containingVolume);
+
+                        var d = containingVolume.dimensions;
+                        var container = new Container(containingVolume.uid, d.width, d.length, d.height);
+
+                        /** @type {Array<Item>} */
+                        var items = [];
+                        var _iteratorNormalCompletion = true;
+                        var _didIteratorError = false;
+                        var _iteratorError = undefined;
+
+                        try {
+                                for (var _iterator = this.cargoList.groups.values()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                        var group = _step.value;
+
+                                        /** @type {BoxEntry} */
+                                        var entry = group.entry;
+                                        d = entry.dimensions;
+                                        var item = new Item(entry.uid, d.width, d.length, d.height, entry.quantity);
+                                        items.push(item);
+                                }
+                        } catch (err) {
+                                _didIteratorError = true;
+                                _iteratorError = err;
+                        } finally {
+                                try {
+                                        if (!_iteratorNormalCompletion && _iterator.return) {
+                                                _iterator.return();
+                                        }
+                                } finally {
+                                        if (_didIteratorError) {
+                                                throw _iteratorError;
+                                        }
+                                }
+                        }
+
+                        __WEBPACK_IMPORTED_MODULE_6__utils_cik_Logger__["a" /* default */].Log('Solving', items, ' in ', container);
+
+                        var startTime = performance.now();
+                        var result = afit.Solve(container, items);
+                        result.PackTimeInMilliseconds = Math.ceil(performance.now() - startTime);
+
+                        var containerVolume = container.Length * container.Width * container.Height;
+                        var itemVolumePacked = sumOfVolumes(result.PackedItems);
+                        var itemVolumeUnpacked = sumOfVolumes(result.UnpackedItems);
+
+                        result.PercentContainerVolumePacked = Math.floor(itemVolumePacked / containerVolume * 100 * 100) / 100;
+                        result.PercentItemVolumePacked = Math.floor(itemVolumePacked / (itemVolumePacked + itemVolumeUnpacked) * 100 * 100) / 100;
+
+                        this.Dispatch(signals.packUpdate, result);
+                }
+        }], [{
+                key: "signals",
+                get: function get() {
+                        return signals;
+                }
+        }]);
+
+        return Packer;
+}(__WEBPACK_IMPORTED_MODULE_5__utils_cik_Signaler__["default"]);
+
+/* harmony default export */ __webpack_exports__["a"] = (Packer);
+
+/***/ }),
+/* 10 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_common_CargoEntry__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Cargo__ = __webpack_require__(47);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1219,11 +1477,11 @@ var CargoGroup = function () {
 /* harmony default export */ __webpack_exports__["a"] = (CargoGroup);
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__container_Container__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__container_Container__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Signaler__ = __webpack_require__(3);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -1240,6 +1498,8 @@ var signals = {
     containerAdded: 'containerAdded'
 };
 
+var _currentIndex = Symbol('currentIndex');
+
 var PackingSpace = function (_Signaler) {
     _inherits(PackingSpace, _Signaler);
 
@@ -1248,7 +1508,7 @@ var PackingSpace = function (_Signaler) {
 
         var _this = _possibleConstructorReturn(this, (PackingSpace.__proto__ || Object.getPrototypeOf(PackingSpace)).call(this));
 
-        _this._current = -1;
+        _this[_currentIndex] = -1;
 
         /**
          * @type {Container}
@@ -1261,6 +1521,7 @@ var PackingSpace = function (_Signaler) {
         key: "AddContainer",
         value: function AddContainer(container) {
             this.containers.push(container);
+            this[_currentIndex]++;
 
             this.Dispatch(signals.containerAdded, container);
         }
@@ -1272,8 +1533,9 @@ var PackingSpace = function (_Signaler) {
     }, {
         key: "current",
         get: function get() {
-            if (this._current != -1) {
-                return this.containers[this._current];
+            var currentIndex = this[_currentIndex];
+            if (currentIndex != -1) {
+                return this.containers[currentIndex];
             }
         }
     }], [{
@@ -1289,18 +1551,471 @@ var PackingSpace = function (_Signaler) {
 /* harmony default export */ __webpack_exports__["a"] = (PackingSpace);
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_input_Input__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Quality__ = __webpack_require__(36);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Controller__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Renderer__ = __webpack_require__(37);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Camera__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__view_HUDView__ = __webpack_require__(38);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__UX__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Volume__ = __webpack_require__(48);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+var type = 'ContainingVolume';
+
+var ContainingVolume = function (_Volume) {
+    _inherits(ContainingVolume, _Volume);
+
+    function ContainingVolume() {
+        _classCallCheck(this, ContainingVolume);
+
+        var _this = _possibleConstructorReturn(this, (ContainingVolume.__proto__ || Object.getPrototypeOf(ContainingVolume)).call(this));
+
+        _this.SetUID();
+        return _this;
+    }
+
+    /**
+     * @param {string} [uid] - You'll rarely need to provide this
+     */
+
+
+    _createClass(ContainingVolume, [{
+        key: 'SetUID',
+        value: function SetUID(uid) {
+            this.uid = uid || THREE.Math.generateUUID();
+            return this.uid;
+        }
+    }, {
+        key: 'toJSON',
+        value: function toJSON() {
+            var json = _get(ContainingVolume.prototype.__proto__ || Object.getPrototypeOf(ContainingVolume.prototype), 'toJSON', this).call(this);
+            json.type = type;
+            return json;
+        }
+    }, {
+        key: 'ToString',
+        value: function ToString() {
+            return _get(ContainingVolume.prototype.__proto__ || Object.getPrototypeOf(ContainingVolume.prototype), 'ToString', this).call(this);
+        }
+    }], [{
+        key: 'FromJSON',
+        value: function FromJSON(data) {
+            if (data.type !== type) console.warn('Data supplied is not: ' + type);
+
+            var containingVolume = new ContainingVolume();
+            __WEBPACK_IMPORTED_MODULE_0__Volume__["a" /* default */].FromJSON(data, containingVolume);
+
+            return containingVolume;
+        }
+    }]);
+
+    return ContainingVolume;
+}(__WEBPACK_IMPORTED_MODULE_0__Volume__["a" /* default */]);
+
+/* harmony default export */ __webpack_exports__["a"] = (ContainingVolume);
+
+/***/ }),
+/* 13 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var type = 'Dimensions';
+var _vec3 = Symbol('vec3');
+
+var epsilon = Math.pow(2, -52);
+var numberType = 'number';
+
+var Dimensions = function () {
+    /**
+     * @param {Number} width 
+     * @param {Number} length 
+     * @param {Number} height 
+     */
+    function Dimensions(width, length, height) {
+        _classCallCheck(this, Dimensions);
+
+        if (width === undefined) width = 0;
+        if (length === undefined) length = 0;
+        if (height === undefined) height = 0;
+
+        this.Set(width, length, height);
+        this[_vec3] = new THREE.Vector3();
+    }
+
+    /**
+     * @param {Number} width 
+     * @param {Number} length 
+     * @param {Number} height 
+     */
+
+
+    _createClass(Dimensions, [{
+        key: 'Set',
+        value: function Set(width, length, height) {
+            this.width = width;
+            this.length = length;
+            this.height = height;
+        }
+
+        /**
+         * Returns a THREE.Vector3 representation of the dimensions
+         * Beware of ordering: x=width, y=height and z=length
+         * @returns {THREE.Vector3}
+         */
+
+    }, {
+        key: 'Abs',
+        value: function Abs() {
+            if (this.width < 0) this.width = -this.width;
+            if (this.length < 0) this.length = -this.length;
+            if (this.height < 0) this.height = -this.height;
+            return this;
+        }
+    }, {
+        key: 'Compare',
+        value: function Compare(dimensions) {
+            var d = this.volume - dimensions.volume;
+            if (d < -epsilon) return -1;
+            if (d > epsilon) return 1;
+            return 0;
+        }
+    }, {
+        key: 'Copy',
+        value: function Copy(dimensions) {
+            this.Set(dimensions.width, dimensions.length, dimensions.height);
+        }
+    }, {
+        key: 'Clone',
+        value: function Clone() {
+            var dimensions = new Dimensions(this.width, this.length, this.height);
+            return dimensions;
+        }
+    }, {
+        key: 'ToString',
+        value: function ToString() {
+            return this.width.toFixed(2) + 'x' + this.length.toFixed(2) + 'x' + this.height.toFixed(2);
+        }
+    }, {
+        key: 'toJSON',
+        value: function toJSON() {
+            return {
+                type: type,
+                width: this.width,
+                length: this.length,
+                height: this.height
+            };
+        }
+    }, {
+        key: 'vec3',
+        get: function get() {
+            return this[_vec3].set(this.width, this.height, this.length);
+        }
+    }, {
+        key: 'volume',
+        get: function get() {
+            return this.width * this.height * this.length;
+        }
+    }], [{
+        key: 'IsVolume',
+        value: function IsVolume(dimensions) {
+            return Dimensions.Assert(dimensions) && dimensions.width > epsilon && dimensions.length > epsilon && dimensions.height > epsilon;
+        }
+    }, {
+        key: 'FromJSON',
+        value: function FromJSON(data) {
+            if (data.type !== type) console.warn('Data supplied is not: ' + type);
+
+            var dimensions = new Dimensions(data.width, data.length, data.height);
+            return dimensions;
+        }
+    }, {
+        key: 'Assert',
+        value: function Assert(dimensions) {
+            return dimensions instanceof Dimensions && _typeof(dimensions.width) === numberType && _typeof(dimensions.length) === numberType && _typeof(dimensions.height) === numberType;
+        }
+    }]);
+
+    return Dimensions;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (Dimensions);
+
+/***/ }),
+/* 14 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Container =
+/**
+ * @param {Object} id 
+ * @param {Number} width 
+ * @param {Number} length 
+ * @param {Number} height 
+ */
+function Container(id, width, length, height) {
+    _classCallCheck(this, Container);
+
+    this.ID = id;
+
+    this.Width = length || 0;
+    this.Length = width || 0;
+    this.Height = height || 0;
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Container);
+
+/***/ }),
+/* 15 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Item =
+/**
+ * @param {Object} id 
+ * @param {Number} dim1 
+ * @param {Number} dim2 
+ * @param {Number} dim3 
+ * @param {Number} quantity 
+ */
+function Item(id, dim1, dim2, dim3, quantity) {
+    _classCallCheck(this, Item);
+
+    this.ID = id;
+    this.IsPacked = false;
+    this.Dim1 = dim2;
+    this.Dim2 = dim1;
+    this.Dim3 = dim3;
+    this.CoordX = 0;
+    this.CoordY = 0;
+    this.CoordZ = 0;
+    this.Quantity = quantity;
+    this.PackDimX = 0;
+    this.PackDimY = 0;
+    this.PackDimZ = 0;
+    this.Volume = this.Dim1 * this.Dim2 * this.Dim3;
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Item);
+
+/***/ }),
+/* 16 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_common_CargoEntry__ = __webpack_require__(4);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+
+
+var dummyGeometry = new THREE.SphereBufferGeometry(1, 4, 4);
+var dummyMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000, transparent: true, opacity: .5 });
+
+var _entry = Symbol('entry');
+
+var CargoView = function () {
+    /**
+     * @param {CargoEntry} entry 
+     */
+    function CargoView(entry) {
+        _classCallCheck(this, CargoView);
+
+        this[_entry] = entry;
+
+        /**
+         * @type {THREE.Mesh}
+         */
+        this.mesh;
+
+        /**
+         * @type {THREE.Object3D}
+         */
+        this.view;
+    }
+
+    /** @returns {CargoEntry} */
+
+
+    _createClass(CargoView, [{
+        key: "entry",
+        get: function get() {
+            return this[_entry];
+        },
+        set: function set(value) {
+            this[_entry] = value;
+        }
+    }, {
+        key: "position",
+        get: function get() {
+            return this.view.position;
+        },
+        set: function set(value) {
+            this.view.position.copy(value);
+        }
+
+        /**
+         * @param {CargoEntry} entry 
+         */
+
+    }], [{
+        key: "Dummy",
+        value: function Dummy(entry) {
+            var cargoView = new CargoView(entry);
+            cargoView.view = new THREE.Mesh(dummyGeometry, dummyMaterial);
+            return cargoView;
+        }
+    }]);
+
+    return CargoView;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (CargoView);
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view_SceneSetup__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__packer_Packer__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__view_View__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_CargoInput__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_PackingSpaceInput__ = __webpack_require__(37);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__UX__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__utils_cik_Logger__ = __webpack_require__(2);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+
+
+
+
+
+
+
+
+/**
+ * @typedef AppComponents
+ * @property {CargoInput} cargoInput
+ * @property {PackingSpaceInput} packingSpaceInput
+ */
+
+var App = function () {
+
+        /**
+         * 
+         * @param {HTMLDivElement} containerDiv
+         * @param {UX} ux
+         * @param {AppComponents} components 
+         */
+        function App(containerDiv, ux, components) {
+                _classCallCheck(this, App);
+
+                this.ux = ux;
+                this.components = components;
+
+                /** @type {import('./packer/Packer').PackerParams} */
+                var packerParams = { ux: this.ux };
+                this.packer = new __WEBPACK_IMPORTED_MODULE_1__packer_Packer__["a" /* default */](packerParams);
+
+                this.sceneSetup = new __WEBPACK_IMPORTED_MODULE_0__view_SceneSetup__["a" /* default */](containerDiv, this.ux);
+                this.sceneSetup.Init().then(this.Start.bind(this));
+        }
+
+        _createClass(App, [{
+                key: 'Start',
+                value: function Start() {
+                        var packer = this.packer;
+
+                        /** @type {import('./view/View').ViewParams} */
+                        var viewParams = { ux: this.ux };
+                        this.view = new __WEBPACK_IMPORTED_MODULE_2__view_View__["a" /* default */](packer, this.sceneSetup, viewParams);
+                        this.sceneSetup.Start();
+
+                        this.components.cargoInput.On(__WEBPACK_IMPORTED_MODULE_3__components_CargoInput__["a" /* default */].signals.completed, function (boxEntry) {
+                                packer.cargoList.Add(boxEntry);
+                        });
+
+                        this.components.packingSpaceInput.On(__WEBPACK_IMPORTED_MODULE_4__components_PackingSpaceInput__["a" /* default */].signals.containerLoaded, function (container) {
+                                packer.packingSpace.AddContainer(container);
+                        });
+
+                        /** @param {import('./packer/Packer').PackingResult} packingResult */
+                        function onPackUpdate(packingResult) {
+                                __WEBPACK_IMPORTED_MODULE_6__utils_cik_Logger__["a" /* default */].Log('Packing result', packingResult);
+                        }
+
+                        packer.On(__WEBPACK_IMPORTED_MODULE_1__packer_Packer__["a" /* default */].signals.packUpdate, onPackUpdate);
+                }
+        }]);
+
+        return App;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (App);
+
+/***/ }),
+/* 19 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_input_Input__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Quality__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scene_Controller__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scene_Renderer__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__scene_Camera__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__HUDView__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__UX__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__ = __webpack_require__(0);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -1336,16 +2051,17 @@ var SceneSetup = function () {
             var quality = new __WEBPACK_IMPORTED_MODULE_1__utils_cik_Quality__["a" /* default */]().Common(2);
 
             var units = this.ux.params.units;
-            var controllerParams = { units: units };
-            this.sceneController = new __WEBPACK_IMPORTED_MODULE_2__Controller__["a" /* default */](controllerParams);
+            var controllerParams = {};
+            this.sceneController = new __WEBPACK_IMPORTED_MODULE_2__scene_Controller__["a" /* default */](controllerParams);
 
             var rendererParams = { clearColor: 0xafafaf, renderSizeMul: 1 };
             Object.assign(rendererParams, quality);
-            this.sceneRenderer = new __WEBPACK_IMPORTED_MODULE_3__Renderer__["a" /* default */](rendererParams);
+            this.sceneRenderer = new __WEBPACK_IMPORTED_MODULE_3__scene_Renderer__["a" /* default */](rendererParams);
             this.domElement.appendChild(this.sceneRenderer.renderer.domElement);
 
-            var cameraParams = { fov: 30, aspect: 1, near: 0.01 * units, far: 4000 * units, id: 'app' };
-            this.cameraController = new __WEBPACK_IMPORTED_MODULE_4__Camera__["a" /* default */](cameraParams);
+            /** @type {import('./Camera').CameraParams} */
+            var cameraParams = { fov: 30, aspect: 1, near: 0.1 * units, far: 4000 * units };
+            this.cameraController = new __WEBPACK_IMPORTED_MODULE_4__scene_Camera__["a" /* default */](cameraParams);
             this.cameraController.OrbitControls(this.sceneRenderer.renderer.domElement);
 
             this.input = new __WEBPACK_IMPORTED_MODULE_0__utils_cik_input_Input__["a" /* default */](this.domElement);
@@ -1358,16 +2074,19 @@ var SceneSetup = function () {
             });
 
             // hud
-            var hudParams = Object.assign({}, controllerParams);
-            var hudCameraParams = __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__["default"].AssignUndefined({ fov: 15, id: 'hud' }, cameraParams);
-            this.hud = new __WEBPACK_IMPORTED_MODULE_5__view_HUDView__["a" /* default */](hudParams, hudCameraParams);
-            var hudCameraRef = this.hud.cameraController.camera;
-            this.input.onResize.push(function (screen) {
-                sceneRendererRef.AdjustCamera(screen, hudCameraRef);
-            });
+            if (this.ux.params.hud) {
+                /** @type {import('../view/HUDView').HUDViewParams} */
+                var hudParams = { ux: this.ux };
+                /** @type {import('./Camera').CameraParams} */
+                var hudCameraParams = __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__["default"].AssignUndefined({ fov: 15 }, cameraParams);
+                this.hud = new __WEBPACK_IMPORTED_MODULE_5__HUDView__["a" /* default */](hudParams, hudCameraParams);
+                var hudCameraRef = this.hud.cameraController.camera;
+                this.input.onResize.push(function (screen) {
+                    sceneRendererRef.AdjustCamera(screen, hudCameraRef);
+                });
 
-            this.sceneRenderer.renderer.autoClear = false;
-
+                this.sceneRenderer.renderer.autoClear = false;
+            }
             // /hud
 
             // Comeplete setup
@@ -1378,13 +2097,15 @@ var SceneSetup = function () {
                 // Initial camera move
             };this.cameraController.position.x = 100 * units;
             this.cameraController.position.y = 40 * units;
-            this.cameraController.position.z = -100 * units;
+            this.cameraController.position.z = 100 * units;
             this.cameraController.SetTarget(new THREE.Vector3());
 
             // Fill lights
             if (setupParams.fillLights) {
                 this.DefaultLights(this.sceneController);
-                this.DefaultLights(this.hud);
+                if (this.ux.params.hud) {
+                    this.DefaultLights(this.hud);
+                }
             }
 
             // Env
@@ -1393,7 +2114,7 @@ var SceneSetup = function () {
                 this.sceneController.AddDefault(gridHelper);
             }
 
-            if (FreightPacker.instance.ux.params.configure) {
+            if (this.ux.params.configure) {
                 this.Configure();
             }
 
@@ -1408,22 +2129,35 @@ var SceneSetup = function () {
                 var scope = this;
                 var sceneRenderer = this.sceneRenderer;
                 var scene1 = this.sceneController.scene,
-                    camera1 = this.cameraController.camera,
-                    scene2 = this.hud.scene,
-                    camera2 = this.hud.cameraController.camera;
+                    camera1 = this.cameraController.camera;
 
-                this.Update = function (timestamp) {
-                    scope.animationFrameID = requestAnimationFrame(scope.Update);
+                if (this.ux.params.hud) {
+                    var hud = this.hud;
+                    var scene2 = hud.scene,
+                        camera2 = hud.cameraController.camera;
 
-                    scope.input.Update();
-                    scope.cameraController.Update();
-                    scope.hud.cameraController.Update();
+                    this.Update = function (timestamp) {
+                        scope.animationFrameID = requestAnimationFrame(scope.Update);
 
-                    sceneRenderer.renderer.clear();
-                    sceneRenderer.Render(scene1, camera1);
-                    sceneRenderer.renderer.clearDepth();
-                    sceneRenderer.Render(scene2, camera2);
-                };
+                        scope.input.Update();
+                        scope.cameraController.Update();
+                        hud.cameraController.Update();
+
+                        sceneRenderer.renderer.clear();
+                        sceneRenderer.Render(scene1, camera1);
+                        sceneRenderer.renderer.clearDepth();
+                        sceneRenderer.Render(scene2, camera2);
+                    };
+                } else {
+                    this.Update = function (timestamp) {
+                        scope.animationFrameID = requestAnimationFrame(scope.Update);
+
+                        scope.input.Update();
+                        scope.cameraController.Update();
+
+                        sceneRenderer.Render(scene1, camera1);
+                    };
+                }
             }
 
             this.Update();
@@ -1450,7 +2184,7 @@ var SceneSetup = function () {
         key: 'DefaultLights',
         value: function DefaultLights(controller) {
 
-            var units = controller.params.units;
+            var units = this.ux.params.units;
 
             var ambient = new THREE.AmbientLight(0x404040);
 
@@ -1464,58 +2198,62 @@ var SceneSetup = function () {
         key: 'Configure',
         value: function Configure() {
 
-            var Smart = __webpack_require__(14).default;
-            var Config = __webpack_require__(4).default;
-            var Control3D = __webpack_require__(17).default;
+            var Smart = __webpack_require__(23).default;
+            var Config = __webpack_require__(8).default;
+            var Control3D = __webpack_require__(26).default;
+
+            var scope = this;
 
             var appControl3D = Control3D.Configure('app', this.cameraController.camera, this.sceneRenderer.renderer.domElement);
             this.sceneController.AddDefault(appControl3D.control);
-            var hudControl3D = Control3D.Configure('hud', this.hud.cameraController.camera, this.sceneRenderer.renderer.domElement);
-            this.hud.AddDefault(hudControl3D.control);
 
-            var scope = this;
-            var hud = this.hud;
-            var onGUIChanged = function onGUIChanged() {
-                console.log('Camera changed');
-            };
+            if (this.ux.params.hud) {
+                var hudControl3D = Control3D.Configure('hud', this.hud.cameraController.camera, this.sceneRenderer.renderer.domElement);
+                this.hud.AddDefault(hudControl3D.control);
 
-            var toggle = false;
-            var control = {
-                toggleOrbitOwner: function toggleOrbitOwner() {
-                    if (toggle) {
-                        if (!hud.cameraController.orbitControls) {
-                            hud.cameraController.OrbitControls(scope.sceneRenderer.renderer.domElement);
+                var hud = this.hud;
+                var onGUIChanged = function onGUIChanged() {
+                    console.log('Camera changed');
+                };
+
+                var toggle = false;
+                var control = {
+                    toggleOrbitOwner: function toggleOrbitOwner() {
+                        if (toggle) {
+                            if (!hud.cameraController.orbitControls) {
+                                hud.cameraController.OrbitControls(scope.sceneRenderer.renderer.domElement);
+                            }
+                            scope.cameraController.Hold();
+                            hud.cameraController.Release();
+                        } else {
+                            scope.cameraController.Release();
+                            hud.cameraController.Hold();
                         }
-                        scope.cameraController.Hold();
-                        hud.cameraController.Release();
-                    } else {
-                        scope.cameraController.Release();
-                        hud.cameraController.Hold();
+                        toggle = !toggle;
+                    },
+                    hudCam: hud.cameraController,
+                    print: function print() {
+                        smart.config.Update();
+                        console.group('hudCam properties');
+                        console.log('position', __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__["default"].VecToString(hud.cameraController.position, 1));
+                        console.log('rotation', __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__["default"].VecToString(hud.cameraController.rotation, 3));
+                        console.groupEnd();
                     }
-                    toggle = !toggle;
-                },
-                hudCam: hud.cameraController,
-                print: function print() {
-                    smart.config.Update();
-                    console.group('hudCam properties');
-                    console.log('position', __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__["default"].VecToString(hud.cameraController.position, 1));
-                    console.log('rotation', __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__["default"].VecToString(hud.cameraController.rotation, 3));
-                    console.groupEnd();
-                }
-            };
+                };
 
-            control.toggleOrbitOwner();
+                control.toggleOrbitOwner();
 
-            var smart = new Smart(this, 'HUDView');
-            var rotationProperties = Config.Unroll('#hudCam.rotation', 'x', 'y', 'z');
-            var rotationControllers = Config.Controller.Multiple(rotationProperties, 0, 2 * Math.PI, 2 * Math.PI / 360);
-            smart.Config.apply(smart, [null, control, onGUIChanged, 'toggleOrbitOwner', 'print', 'hudCam.camera.fov'].concat(_toConsumableArray(Config.Unroll('#hudCam.position', 'x', 'y', 'z')), _toConsumableArray(rotationControllers)));
+                var smart = new Smart(this, 'HUDView');
+                var rotationProperties = Config.Unroll('#hudCam.rotation', 'x', 'y', 'z');
+                var rotationControllers = Config.Controller.Multiple(rotationProperties, 0, 2 * Math.PI, 2 * Math.PI / 360);
+                smart.Config.apply(smart, [null, control, onGUIChanged, 'toggleOrbitOwner', 'print', 'hudCam.camera.fov'].concat(_toConsumableArray(Config.Unroll('#hudCam.position', 'x', 'y', 'z')), _toConsumableArray(rotationControllers)));
 
-            this.input.keyboard.on('s', function () {
-                smart.Show();
-            });
+                this.input.keyboard.on('s', function () {
+                    smart.Show();
+                });
 
-            console.log('HUDView config', smart.config.gui.list || smart);
+                console.log('HUDView config', smart.config.gui.list || smart);
+            }
         }
     }]);
 
@@ -1525,7 +2263,59 @@ var SceneSetup = function () {
 /* harmony default export */ __webpack_exports__["a"] = (SceneSetup);
 
 /***/ }),
-/* 12 */
+/* 20 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/*
+const _callback = Symbol('callback');
+/** @returns {function} /
+get callback(){ return this[_callback]; }
+set callback(value){
+    this[_callback] = value;
+}
+*/
+
+var UpdateComponent = function () {
+    /**
+     * 
+     * @param {Boolean} active 
+     * @param {Number} interval 
+     * @param {function(Number)} callback
+     */
+    function UpdateComponent(active, interval, callback) {
+        _classCallCheck(this, UpdateComponent);
+
+        this.active = active === undefined ? false : active;
+        this.interval = interval === undefined ? 1 / 30 : interval;
+        this.callback = callback;
+        this.lastUpdateTime = 0;
+    }
+
+    /**
+     * @param {Number} now 
+     */
+
+
+    _createClass(UpdateComponent, [{
+        key: "Update",
+        value: function Update(now) {
+            this.lastUpdateTime = now;
+            this.callback(now);
+        }
+    }]);
+
+    return UpdateComponent;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (UpdateComponent);
+
+/***/ }),
+/* 21 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1590,7 +2380,7 @@ var Controller = function () {
 /* harmony default export */ __webpack_exports__["a"] = (Controller);
 
 /***/ }),
-/* 13 */
+/* 22 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1598,7 +2388,18 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * @typedef {Object} CameraParams
+ * @property {Number} fov
+ * @property {Number} aspect
+ * @property {Number} near
+ * @property {Number} far
+ */
+
 var Camera = function () {
+    /**
+     * @param {CameraParams} params 
+     */
     function Camera(params) {
         _classCallCheck(this, Camera);
 
@@ -1768,13 +2569,13 @@ var Camera = function () {
 /* harmony default export */ __webpack_exports__["a"] = (Camera);
 
 /***/ }),
-/* 14 */
+/* 23 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__UIUtils__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Config__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__UIUtils__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Config__ = __webpack_require__(8);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1797,7 +2598,7 @@ var Smart = function () {
 
         var scope = this;
 
-        this.gui = new (window.dat || __webpack_require__(0).default).GUI({ autoPlace: false });
+        this.gui = new (window.dat || __webpack_require__(1).default).GUI({ autoPlace: false });
         this.draggable = new __WEBPACK_IMPORTED_MODULE_0__UIUtils__["a" /* Draggable */](this.label, 250);
         this.draggable.Add(this.gui.domElement);
         this.draggable.closeBtn.onclick = function () {
@@ -1906,7 +2707,7 @@ var Smart = function () {
 /* harmony default export */ __webpack_exports__["default"] = (Smart);
 
 /***/ }),
-/* 15 */
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2214,12 +3015,12 @@ var Draggable = function (_Element) {
 
 
 /***/ }),
-/* 16 */
+/* 25 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__UIUtils__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__UIUtils__ = __webpack_require__(24);
 
 
 __WEBPACK_IMPORTED_MODULE_0__UIUtils__["b" /* Element */].CreateCSS(['.tooltip .tooltiptext {', '    visibility: hidden;', '    position: absolute;', '    width: 120px;', '    background-color: #111;', '    color: #fff;', '    text-align: center;', '    padding: 2px 0;', '    border-radius: 2px;', '    z-index: 1;', '    opacity: 0;', '    transition: opacity .6s;', '}', '.tooltip-top {', '    bottom: 125%;', '    left: 50%;', '    margin-left: -60px;', '}', '.tooltip:hover .tooltiptext {', '    visibility: visible;', '    opacity: 1;', '}']);
@@ -2228,7 +3029,7 @@ var styles = {
     datDisabled: 'color: #606060 !important; cursor: not-allowed !important;'
 };
 
-Object.defineProperty((window.dat || __webpack_require__(0).default).GUI.prototype, 'onGUIEvent', {
+Object.defineProperty((window.dat || __webpack_require__(1).default).GUI.prototype, 'onGUIEvent', {
     get: function get() {
         if (!this._onGUIEvent) this._onGUIEvent = [];
         return this._onGUIEvent;
@@ -2237,7 +3038,7 @@ Object.defineProperty((window.dat || __webpack_require__(0).default).GUI.prototy
 
 // update all
 
-(window.dat || __webpack_require__(0).default).GUI.prototype.updateAll = function () {
+(window.dat || __webpack_require__(1).default).GUI.prototype.updateAll = function () {
     var gui = this;
     for (var i in gui.__controllers) {
         var controller = gui.__controllers[i];
@@ -2252,7 +3053,7 @@ Object.defineProperty((window.dat || __webpack_require__(0).default).GUI.prototy
 
 // find
 
-(window.dat || __webpack_require__(0).default).GUI.prototype.find = function (object, property) {
+(window.dat || __webpack_require__(1).default).GUI.prototype.find = function (object, property) {
     var gui = this,
         controller,
         i;
@@ -2284,7 +3085,7 @@ Object.defineProperty((window.dat || __webpack_require__(0).default).GUI.prototy
 
 // On open event
 //if(_this.opening !== undefined) _this.opening = _this.closed; // chadiik
-Object.defineProperty((window.dat || __webpack_require__(0).default).GUI.prototype, 'opening', {
+Object.defineProperty((window.dat || __webpack_require__(1).default).GUI.prototype, 'opening', {
     get: function get() {
         return !this.closed;
     },
@@ -2301,7 +3102,7 @@ function blockEvent(event) {
     event.stopPropagation();
 }
 
-Object.defineProperty((window.dat || __webpack_require__(0).default).controllers.Controller.prototype, "disabled", {
+Object.defineProperty((window.dat || __webpack_require__(1).default).controllers.Controller.prototype, "disabled", {
     get: function get() {
         return this.domElement.hasAttribute("disabled");
     },
@@ -2321,14 +3122,14 @@ Object.defineProperty((window.dat || __webpack_require__(0).default).controllers
     enumerable: true
 });
 
-(window.dat || __webpack_require__(0).default).GUI.prototype.enable = function (object, property, value) {
+(window.dat || __webpack_require__(1).default).GUI.prototype.enable = function (object, property, value) {
     var controller = this.find(object, property);
     controller.disabled = !value;
 };
 
 // Tooltip
 
-Object.defineProperty((window.dat || __webpack_require__(0).default).controllers.Controller.prototype, "tooltip", {
+Object.defineProperty((window.dat || __webpack_require__(1).default).controllers.Controller.prototype, "tooltip", {
     get: function get() {
         return this._tooltip.innerHTML;
     },
@@ -2352,13 +3153,13 @@ Object.defineProperty((window.dat || __webpack_require__(0).default).controllers
     enumerable: true
 });
 
-(window.dat || __webpack_require__(0).default).GUI.prototype.setTooltip = function (object, property, value) {
+(window.dat || __webpack_require__(1).default).GUI.prototype.setTooltip = function (object, property, value) {
     var controller = this.find(object, property);
     controller.tooltip = value;
 };
 
 /***/ }),
-/* 17 */
+/* 26 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2497,34 +3298,13 @@ var Control3D = function () {
 /* harmony default export */ __webpack_exports__["default"] = (Control3D);
 
 /***/ }),
-/* 18 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CargoList__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__PackingSpace__ = __webpack_require__(10);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-
-var Packer = function Packer() {
-    _classCallCheck(this, Packer);
-
-    this.packingSpace = new __WEBPACK_IMPORTED_MODULE_1__PackingSpace__["a" /* default */]();
-    this.cargoList = new __WEBPACK_IMPORTED_MODULE_0__CargoList__["a" /* default */]();
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (Packer);
-
-/***/ }),
-/* 19 */
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_Signaler__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_common_CargoEntry__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CargoGroup__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_common_CargoEntry__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CargoGroup__ = __webpack_require__(10);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2597,7 +3377,7 @@ var CargoList = function (_Signaler) {
 /* harmony default export */ __webpack_exports__["a"] = (CargoList);
 
 /***/ }),
-/* 20 */
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2653,194 +3433,1174 @@ var TextField = function () {
 /* harmony default export */ __webpack_exports__["a"] = (TextField);
 
 /***/ }),
-/* 21 */
+/* 29 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var type = 'Dimensions';
-var _vec3 = Symbol('vec3');
-
-var epsilon = Math.pow(2, -52);
-var numberType = 'number';
-
-var Dimensions = function () {
-    /**
-     * @param {Number} width 
-     * @param {Number} length 
-     * @param {Number} height 
-     */
-    function Dimensions(width, length, height) {
-        _classCallCheck(this, Dimensions);
-
-        if (width === undefined) width = 0;
-        if (length === undefined) length = 0;
-        if (height === undefined) height = 0;
-
-        this.Set(width, length, height);
-        this[_vec3] = new THREE.Vector3();
-    }
-
-    /**
-     * @param {Number} width 
-     * @param {Number} length 
-     * @param {Number} height 
-     */
-
-
-    _createClass(Dimensions, [{
-        key: 'Set',
-        value: function Set(width, length, height) {
-            this.width = width;
-            this.length = length;
-            this.height = height;
-        }
-
-        /**
-         * Returns a THREE.Vector3 representation of the dimensions
-         * Beware of ordering: x=width, y=height and z=length
-         */
-
-    }, {
-        key: 'Compare',
-        value: function Compare(dimensions) {
-            var d = this.volume - dimensions.volume;
-            if (d < -epsilon) return -1;
-            if (d > epsilon) return 1;
-            return 0;
-        }
-    }, {
-        key: 'Copy',
-        value: function Copy(dimensions) {
-            this.Set(dimensions.width, dimensions.length, dimensions.height);
-        }
-    }, {
-        key: 'Clone',
-        value: function Clone() {
-            var dimensions = new Dimensions(this.width, this.length, this.height);
-            return dimensions;
-        }
-    }, {
-        key: 'ToString',
-        value: function ToString() {
-            return this.width.toFixed(2) + 'x' + this.length.toFixed(2) + 'x' + this.height.toFixed(2);
-        }
-    }, {
-        key: 'toJSON',
-        value: function toJSON() {
-            return {
-                type: type,
-                width: this.width,
-                length: this.length,
-                height: this.height
-            };
-        }
-    }, {
-        key: 'vec3',
-        get: function get() {
-            return this[_vec3].set(this.width, this.height, this.length);
-        }
-    }, {
-        key: 'volume',
-        get: function get() {
-            return this.width * this.height * this.length;
-        }
-    }], [{
-        key: 'FromJSON',
-        value: function FromJSON(data) {
-            if (data.type !== type) console.warn('Data supplied is not: ' + type);
-
-            var dimensions = new Dimensions(data.width, data.length, data.height);
-            return dimensions;
-        }
-    }, {
-        key: 'Assert',
-        value: function Assert(dimensions) {
-            return dimensions instanceof Dimensions && _typeof(dimensions.width) === numberType && _typeof(dimensions.length) === numberType && _typeof(dimensions.height) === numberType;
-        }
-    }]);
-
-    return Dimensions;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (Dimensions);
-
-/***/ }),
-/* 22 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_common_CargoEntry__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_Container__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Item__ = __webpack_require__(15);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 
 
-var dummyGeometry = new THREE.SphereBufferGeometry(1, 4, 4);
-var dummyMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000, transparent: true, opacity: .5 });
 
-var CargoView = function () {
-    /**
-     * @param {CargoEntry} entry 
-     */
-    function CargoView(entry) {
-        _classCallCheck(this, CargoView);
+var epsilon = Math.pow(2, -52);;
 
-        this.entry = entry;
+/**
+ * From the master's thesis:
+ * "The double linked list we use keeps the topology of the edge of the 
+ * current layer under construction. We keep the x and z coordinates of 
+ * each gap's right corner. The program looks at those gaps and tries to 
+ * fill them with boxes one at a time while trying to keep the edge of the
+ * layer even" (p. 3-7).
+ */
 
-        /**
-         * @type {THREE.Object3D}
-         */
-        this.view;
-    }
+var ScrapPad = function ScrapPad() {
+	_classCallCheck(this, ScrapPad);
 
-    _createClass(CargoView, [{
-        key: "position",
-        get: function get() {
-            return this.view.position;
-        },
-        set: function set(value) {
-            this.view.position.copy(value);
-        }
+	/** The x coordinate of the gap's right corner. */
+	this.CumX = 0;
+	/** The z coordinate of the gap's right corner. */
+	this.CumZ = 0;
 
-        /**
-         * @param {CargoEntry} entry 
-         */
+	/** The following entry.
+  * @type {ScrapPad}
+  */
+	this.Post;
 
-    }], [{
-        key: "Dummy",
-        value: function Dummy(entry) {
-            var cargoView = new CargoView(entry);
-            cargoView.view = new THREE.Mesh(dummyGeometry, dummyMaterial);
-            return cargoView;
-        }
-    }]);
+	/** The previous entry.
+  * @type {ScrapPad}
+  */
+	this.Pre;
+};
 
-    return CargoView;
+/**
+ * A list that stores all the different lengths of all item dimensions.
+ * From the master's thesis:
+ * "Each Layerdim value in this array represents a different layer thickness
+ * value with which each iteration can start packing. Before starting iterations,
+ * all different lengths of all box dimensions along with evaluation values are
+ * stored in this array" (p. 3-6).
+ */
+
+
+var Layer = function () {
+	function Layer(layerEval) {
+		_classCallCheck(this, Layer);
+
+		this.LayerDim = 0;
+		this.LayerEval = layerEval !== undefined ? layerEval : 0;
+	}
+
+	/**
+  * @param {Layer} l1 
+  * @param {Layer} l2 
+  */
+
+
+	_createClass(Layer, null, [{
+		key: "SortByEval",
+		value: function SortByEval(l1, l2) {
+			return l1.LayerEval - l2.LayerEval;
+		}
+	}]);
+
+	return Layer;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (CargoView);
+/**
+ * @typedef PackingResult
+ * @property {Container} Container
+ * @property {Boolean} IsCompletePack
+ * @property {Array<Item>} PackedItems
+ * @property {Number} PercentContainerVolumePacked
+ * @property {Number} PercentItemVolumePacked
+ * @property {Array<Item>} UnpackedItems
+ * @property {Number} PackTimeInMilliseconds
+ */
+
+var PackingResult = function PackingResult() {
+	_classCallCheck(this, PackingResult);
+
+	/** @type {Container} */
+	this.Container;
+	this.IsCompletePack = false;
+	/** @type {Array<Item>} */
+	this.PackedItems = [];
+	this.PercentContainerVolumePacked = 0;
+	this.PercentItemVolumePacked = 0;
+	/** @type {Array<Item>} */
+	this.UnpackedItems = [];
+	this.PackTimeInMilliseconds = Number.MAX_SAFE_INTEGER;
+};
+
+/** @type {Array<Item>} */
+
+
+var itemsToPack = [];
+/** @type {Array<Item>} */
+var itemsPackedInOrder;
+/** @type {Array<Layer>} */
+var layers;
+
+/** @type {ScrapPad} */
+var scrapfirst;
+/** @type {ScrapPad} */
+var smallestZ;
+/** @type {ScrapPad} */
+var trash;
+
+var evened = false;
+var hundredPercentPacked = false;
+var layerDone = false;
+var packing = false;
+var packingBest = false;
+var quit = false;
+
+var bboxi = 0;
+var bestIteration = 0;
+var bestVariant = 0;
+var boxi = 0;
+var cboxi = 0;
+var layerListLen = 0;
+var packedItemCount = 0;
+var x = 0;
+
+var bbfx = 0;
+var bbfy = 0;
+var bbfz = 0;
+var bboxx = 0;
+var bboxy = 0;
+var bboxz = 0;
+var bfx = 0;
+var bfy = 0;
+var bfz = 0;
+var boxx = 0;
+var boxy = 0;
+var boxz = 0;
+var cboxx = 0;
+var cboxy = 0;
+var cboxz = 0;
+var layerinlayer = 0;
+var layerThickness = 0;
+var lilz = 0;
+var packedVolume = 0;
+var packedy = 0;
+var prelayer = 0;
+var prepackedy = 0;
+var preremainpy = 0;
+var px = 0;
+var py = 0;
+var pz = 0;
+var remainpy = 0;
+var remainpz = 0;
+var itemsToPackCount = 0;
+var totalItemVolume = 0;
+var totalContainerVolume = 0;
+
+/**
+ * Current port by chadiik (2018)
+ * A 3D bin packing algorithm originally ported from https://github.com/davidmchapman/3DContainerPacking
+ * which itself was ported from https://github.com/keremdemirer/3dbinpackingjs,
+ * which itself was a JavaScript port of https://github.com/wknechtel/3d-bin-pack/, which is a C reconstruction 
+ * of a novel algorithm developed in a U.S. Air Force master's thesis by Erhan Baltacioglu in 2001.
+ */
+
+var AFit = function () {
+	function AFit() {
+		_classCallCheck(this, AFit);
+	}
+
+	/**
+  * Runs the algorithm
+  * @param {Container} container 
+  * @param {Array<Item>} items 
+  * @returns {PackingResult}
+  */
+
+
+	_createClass(AFit, [{
+		key: "Solve",
+		value: function Solve(container, items) {
+			this.Initialize(container, items);
+			this.ExecuteIterations(container);
+			this.Report(container);
+
+			var result = new PackingResult();
+			result.Container = container;
+
+			for (var i = 1; i <= itemsToPackCount; i++) {
+				itemsToPack[i].Quantity = 1;
+
+				if (!itemsToPack[i].IsPacked) {
+					result.UnpackedItems.push(itemsToPack[i]);
+				}
+			}
+
+			result.PackedItems = itemsPackedInOrder;
+
+			if (result.UnpackedItems.length == 0) {
+				result.IsCompletePack = true;
+			}
+
+			return result;
+		}
+
+		/**
+   * Analyzes each unpacked box to find the best fitting one to the empty space given.
+   * @param {Number} hmx 
+   * @param {Number} hy 
+   * @param {Number} hmy 
+   * @param {Number} hz 
+   * @param {Number} hmz 
+   * @param {Number} dim1 
+   * @param {Number} dim2 
+   * @param {Number} dim3 
+   */
+
+	}, {
+		key: "AnalyzeBox",
+		value: function AnalyzeBox(hmx, hy, hmy, hz, hmz, dim1, dim2, dim3) {
+			if (dim1 <= hmx && dim2 <= hmy && dim3 <= hmz) {
+				if (dim2 <= hy) {
+					if (hy - dim2 < bfy) {
+						boxx = dim1;
+						boxy = dim2;
+						boxz = dim3;
+						bfx = hmx - dim1;
+						bfy = hy - dim2;
+						bfz = Math.abs(hz - dim3);
+						boxi = x;
+					} else if (hy - dim2 == bfy && hmx - dim1 < bfx) {
+						boxx = dim1;
+						boxy = dim2;
+						boxz = dim3;
+						bfx = hmx - dim1;
+						bfy = hy - dim2;
+						bfz = Math.abs(hz - dim3);
+						boxi = x;
+					} else if (hy - dim2 == bfy && hmx - dim1 == bfx && Math.abs(hz - dim3) < bfz) {
+						boxx = dim1;
+						boxy = dim2;
+						boxz = dim3;
+						bfx = hmx - dim1;
+						bfy = hy - dim2;
+						bfz = Math.abs(hz - dim3);
+						boxi = x;
+					}
+				} else {
+					if (dim2 - hy < bbfy) {
+						bboxx = dim1;
+						bboxy = dim2;
+						bboxz = dim3;
+						bbfx = hmx - dim1;
+						bbfy = dim2 - hy;
+						bbfz = Math.abs(hz - dim3);
+						bboxi = x;
+					} else if (dim2 - hy == bbfy && hmx - dim1 < bbfx) {
+						bboxx = dim1;
+						bboxy = dim2;
+						bboxz = dim3;
+						bbfx = hmx - dim1;
+						bbfy = dim2 - hy;
+						bbfz = Math.abs(hz - dim3);
+						bboxi = x;
+					} else if (dim2 - hy == bbfy && hmx - dim1 == bbfx && Math.abs(hz - dim3) < bbfz) {
+						bboxx = dim1;
+						bboxy = dim2;
+						bboxz = dim3;
+						bbfx = hmx - dim1;
+						bbfy = dim2 - hy;
+						bbfz = Math.abs(hz - dim3);
+						bboxi = x;
+					}
+				}
+			}
+		}
+
+		/**
+   * After finding each box, the candidate boxes and the condition of the layer are examined.
+   */
+
+	}, {
+		key: "CheckFound",
+		value: function CheckFound() {
+			evened = false;
+
+			if (boxi != 0) {
+				cboxi = boxi;
+				cboxx = boxx;
+				cboxy = boxy;
+				cboxz = boxz;
+			} else {
+				if (bboxi > 0 && (layerinlayer != 0 || !smallestZ.Pre && !smallestZ.Post)) {
+					if (layerinlayer == 0) {
+						prelayer = layerThickness;
+						lilz = smallestZ.CumZ;
+					}
+
+					cboxi = bboxi;
+					cboxx = bboxx;
+					cboxy = bboxy;
+					cboxz = bboxz;
+					layerinlayer = layerinlayer + bboxy - layerThickness;
+					layerThickness = bboxy;
+				} else {
+					if (!smallestZ.Pre && !smallestZ.Post) {
+						layerDone = true;
+					} else {
+						evened = true;
+
+						if (!smallestZ.Pre) {
+							trash = smallestZ.Post;
+							smallestZ.CumX = smallestZ.Post.CumX;
+							smallestZ.CumZ = smallestZ.Post.CumZ;
+							smallestZ.Post = smallestZ.Post.Post;
+							if (smallestZ.Post) {
+								smallestZ.Post.Pre = smallestZ;
+							}
+						} else if (!smallestZ.Post) {
+							smallestZ.Pre.Post = undefined;
+							smallestZ.Pre.CumX = smallestZ.CumX;
+						} else {
+							if (smallestZ.Pre.CumZ == smallestZ.Post.CumZ) {
+								smallestZ.Pre.Post = smallestZ.Post.Post;
+
+								if (smallestZ.Post.Post) {
+									smallestZ.Post.Post.Pre = smallestZ.Pre;
+								}
+
+								smallestZ.Pre.CumX = smallestZ.Post.CumX;
+							} else {
+								smallestZ.Pre.Post = smallestZ.Post;
+								smallestZ.Post.Pre = smallestZ.Pre;
+
+								if (smallestZ.Pre.CumZ < smallestZ.Post.CumZ) {
+									smallestZ.Pre.CumX = smallestZ.CumX;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		/**
+   * Executes the packing algorithm variants.
+   * @param {Container} container 
+   */
+
+	}, {
+		key: "ExecuteIterations",
+		value: function ExecuteIterations(container) {
+			var itelayer = 0;
+			var layersIndex = 0;
+			var bestVolume = 0;
+
+			for (var containerOrientationVariant = 1; containerOrientationVariant <= 6 && !quit; containerOrientationVariant++) {
+				switch (containerOrientationVariant) {
+					case 1:
+						px = container.Length;py = container.Height;pz = container.Width;
+						break;
+
+					case 2:
+						px = container.Width;py = container.Height;pz = container.Length;
+						break;
+
+					case 3:
+						px = container.Width;py = container.Length;pz = container.Height;
+						break;
+
+					case 4:
+						px = container.Height;py = container.Length;pz = container.Width;
+						break;
+
+					case 5:
+						px = container.Length;py = container.Width;pz = container.Height;
+						break;
+
+					case 6:
+						px = container.Height;py = container.Width;pz = container.Length;
+						break;
+				}
+
+				layers.push(new Layer(-1));
+				this.ListCanditLayers();
+				//layers = layers.OrderBy(l => l.LayerEval).ToList();
+				layers.sort(Layer.SortByEval);
+
+				for (layersIndex = 1; layersIndex <= layerListLen && !quit; layersIndex++) {
+					packedVolume = 0;
+					packedy = 0;
+					packing = true;
+					layerThickness = layers[layersIndex].LayerDim;
+					itelayer = layersIndex;
+					remainpy = py;
+					remainpz = pz;
+					packedItemCount = 0;
+
+					for (x = 1; x <= itemsToPackCount; x++) {
+						itemsToPack[x].IsPacked = false;
+					}
+
+					do {
+						layerinlayer = 0;
+						layerDone = false;
+
+						this.PackLayer();
+
+						packedy = packedy + layerThickness;
+						remainpy = py - packedy;
+
+						if (layerinlayer != 0 && !quit) {
+							prepackedy = packedy;
+							preremainpy = remainpy;
+							remainpy = layerThickness - prelayer;
+							packedy = packedy - layerThickness + prelayer;
+							remainpz = lilz;
+							layerThickness = layerinlayer;
+							layerDone = false;
+
+							this.PackLayer();
+
+							packedy = prepackedy;
+							remainpy = preremainpy;
+							remainpz = pz;
+						}
+
+						this.FindLayer(remainpy);
+					} while (packing && !quit);
+
+					if (packedVolume > bestVolume && !quit) {
+						bestVolume = packedVolume;
+						bestVariant = containerOrientationVariant;
+						bestIteration = itelayer;
+					}
+
+					if (hundredPercentPacked) break;
+				}
+
+				if (hundredPercentPacked) break;
+
+				if (container.Length == container.Height && container.Height == container.Width) containerOrientationVariant = 6;
+
+				layers = [];
+			}
+		}
+
+		/**
+   * Finds the most proper boxes by looking at all six possible orientations,
+  * empty space given, adjacent boxes, and pallet limits.
+   * @param {Number} hmx 
+   * @param {Number} hy 
+   * @param {Number} hmy 
+   * @param {Number} hz 
+   * @param {Number} hmz 
+   */
+
+	}, {
+		key: "FindBox",
+		value: function FindBox(hmx, hy, hmy, hz, hmz) {
+			var y = 0;
+
+			bfx = Number.MAX_VALUE;
+			bfy = Number.MAX_VALUE;
+			bfz = Number.MAX_VALUE;
+			bbfx = Number.MAX_VALUE;
+			bbfy = Number.MAX_VALUE;
+			bbfz = Number.MAX_VALUE;
+			boxi = 0;
+			bboxi = 0;
+
+			for (y = 1; y <= itemsToPackCount; y = y + itemsToPack[y].Quantity) {
+				for (x = y; x < x + itemsToPack[y].Quantity - 1; x++) {
+					if (!itemsToPack[x].IsPacked) break;
+				}
+
+				if (itemsToPack[x].IsPacked) continue;
+
+				if (x > itemsToPackCount) return;
+
+				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim1, itemsToPack[x].Dim2, itemsToPack[x].Dim3);
+
+				if (itemsToPack[x].Dim1 == itemsToPack[x].Dim3 && itemsToPack[x].Dim3 == itemsToPack[x].Dim2) continue;
+
+				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim1, itemsToPack[x].Dim3, itemsToPack[x].Dim2);
+				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim2, itemsToPack[x].Dim1, itemsToPack[x].Dim3);
+				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim2, itemsToPack[x].Dim3, itemsToPack[x].Dim1);
+				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim3, itemsToPack[x].Dim1, itemsToPack[x].Dim2);
+				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim3, itemsToPack[x].Dim2, itemsToPack[x].Dim1);
+			}
+		}
+
+		/**
+   * Finds the most proper layer height by looking at the unpacked boxes and the remaining empty space available.
+   * @param {Number} thickness 
+   */
+
+	}, {
+		key: "FindLayer",
+		value: function FindLayer(thickness) {
+			var exdim = 0;
+			var dimdif = 0;
+			var dimen2 = 0;
+			var dimen3 = 0;
+			var y = 0;
+			var z = 0;
+			var layereval = 0;
+			var maxEvaluations = 1000000;
+
+			layerThickness = 0;
+
+			for (x = 1; x <= itemsToPackCount; x++) {
+				if (itemsToPack[x].IsPacked) continue;
+
+				for (y = 1; y <= 3; y++) {
+					switch (y) {
+						case 1:
+							exdim = itemsToPack[x].Dim1;
+							dimen2 = itemsToPack[x].Dim2;
+							dimen3 = itemsToPack[x].Dim3;
+							break;
+
+						case 2:
+							exdim = itemsToPack[x].Dim2;
+							dimen2 = itemsToPack[x].Dim1;
+							dimen3 = itemsToPack[x].Dim3;
+							break;
+
+						case 3:
+							exdim = itemsToPack[x].Dim3;
+							dimen2 = itemsToPack[x].Dim1;
+							dimen3 = itemsToPack[x].Dim2;
+							break;
+					}
+
+					layereval = 0;
+
+					if (exdim <= thickness && (dimen2 <= px && dimen3 <= pz || dimen3 <= px && dimen2 <= pz)) {
+						for (z = 1; z <= itemsToPackCount; z++) {
+							if (!(x == z) && !itemsToPack[z].IsPacked) {
+								dimdif = Math.abs(exdim - itemsToPack[z].Dim1);
+
+								if (Math.abs(exdim - itemsToPack[z].Dim2) < dimdif) {
+									dimdif = Math.abs(exdim - itemsToPack[z].Dim2);
+								}
+
+								if (Math.abs(exdim - itemsToPack[z].Dim3) < dimdif) {
+									dimdif = Math.abs(exdim - itemsToPack[z].Dim3);
+								}
+
+								layereval = layereval + dimdif;
+							}
+						}
+
+						if (layereval < maxEvaluations) {
+							maxEvaluations = layereval;
+							layerThickness = exdim;
+						}
+					}
+				}
+			}
+
+			if (layerThickness == 0 || layerThickness > remainpy) packing = false;
+		}
+
+		/**
+   * Finds the first to be packed gap in the layer edge.
+   */
+
+	}, {
+		key: "FindSmallestZ",
+		value: function FindSmallestZ() {
+			var scrapmemb = scrapfirst;
+			smallestZ = scrapmemb;
+
+			while (scrapmemb.Post) {
+				if (scrapmemb.Post.CumZ < smallestZ.CumZ) {
+					smallestZ = scrapmemb.Post;
+				}
+
+				scrapmemb = scrapmemb.Post;
+			}
+		}
+
+		/**
+   * Initializes everything.
+   * @param {Container} container 
+   * @param {Array<Item>} items 
+   */
+
+	}, {
+		key: "Initialize",
+		value: function Initialize(container, items) {
+			itemsToPack = [];
+			itemsPackedInOrder = [];
+
+			// The original code uses 1-based indexing everywhere. This fake entry is added to the beginning
+			// of the list to make that possible.
+			itemsToPack.push(new __WEBPACK_IMPORTED_MODULE_1__components_Item__["default"](0, 0, 0, 0, 0, 0));
+
+			layers = [];
+			itemsToPackCount = 0;
+
+			for (var iItems = 0, numItems = items.length; iItems < numItems; iItems++) {
+				var item = items[iItems];
+				for (var i = 1; i <= item.Quantity; i++) {
+					var newItem = new __WEBPACK_IMPORTED_MODULE_1__components_Item__["default"](item.ID, item.Dim1, item.Dim2, item.Dim3, item.Quantity);
+					itemsToPack.push(newItem);
+				}
+
+				itemsToPackCount += item.Quantity;
+			}
+
+			itemsToPack.push(new __WEBPACK_IMPORTED_MODULE_1__components_Item__["default"](0, 0, 0, 0, 0));
+
+			totalContainerVolume = container.Length * container.Height * container.Width;
+			totalItemVolume = 0;
+
+			for (x = 1; x <= itemsToPackCount; x++) {
+				totalItemVolume = totalItemVolume + itemsToPack[x].Volume;
+			}
+
+			scrapfirst = new ScrapPad();
+
+			scrapfirst.Pre = undefined;
+			scrapfirst.Post = undefined;
+			packingBest = false;
+			hundredPercentPacked = false;
+			quit = false;
+		}
+
+		/**
+   * Lists all possible layer heights by giving a weight value to each of them.
+   */
+
+	}, {
+		key: "ListCanditLayers",
+		value: function ListCanditLayers() {
+			var same = false;
+			var exdim = 0;
+			var dimdif = 0;
+			var dimen2 = 0;
+			var dimen3 = 0;
+			var y = 0;
+			var z = 0;
+			var k = 0;
+			var layereval = 0;
+
+			layerListLen = 0;
+
+			for (x = 1; x <= itemsToPackCount; x++) {
+				for (y = 1; y <= 3; y++) {
+					switch (y) {
+						case 1:
+							exdim = itemsToPack[x].Dim1;
+							dimen2 = itemsToPack[x].Dim2;
+							dimen3 = itemsToPack[x].Dim3;
+							break;
+
+						case 2:
+							exdim = itemsToPack[x].Dim2;
+							dimen2 = itemsToPack[x].Dim1;
+							dimen3 = itemsToPack[x].Dim3;
+							break;
+
+						case 3:
+							exdim = itemsToPack[x].Dim3;
+							dimen2 = itemsToPack[x].Dim1;
+							dimen3 = itemsToPack[x].Dim2;
+							break;
+					}
+
+					if (exdim > py || (dimen2 > px || dimen3 > pz) && (dimen3 > px || dimen2 > pz)) continue;
+
+					same = false;
+
+					for (k = 1; k <= layerListLen; k++) {
+						if (exdim == layers[k].LayerDim) {
+							same = true;
+							continue;
+						}
+					}
+
+					if (same) continue;
+
+					layereval = 0;
+
+					for (z = 1; z <= itemsToPackCount; z++) {
+						if (!(x == z)) {
+							dimdif = Math.abs(exdim - itemsToPack[z].Dim1);
+
+							if (Math.abs(exdim - itemsToPack[z].Dim2) < dimdif) {
+								dimdif = Math.abs(exdim - itemsToPack[z].Dim2);
+							}
+							if (Math.abs(exdim - itemsToPack[z].Dim3) < dimdif) {
+								dimdif = Math.abs(exdim - itemsToPack[z].Dim3);
+							}
+							layereval = layereval + dimdif;
+						}
+					}
+
+					layerListLen++;
+
+					layers.push(new Layer());
+					layers[layerListLen].LayerEval = layereval;
+					layers[layerListLen].LayerDim = exdim;
+				}
+			}
+		}
+
+		/**
+   * Transforms the found coordinate system to the one entered by the user and writes them to the report file.
+   */
+
+	}, {
+		key: "OutputBoxList",
+		value: function OutputBoxList() {
+			var packCoordX = 0;
+			var packCoordY = 0;
+			var packCoordZ = 0;
+			var packDimX = 0;
+			var packDimY = 0;
+			var packDimZ = 0;
+
+			switch (bestVariant) {
+				case 1:
+					packCoordX = itemsToPack[cboxi].CoordX;
+					packCoordY = itemsToPack[cboxi].CoordY;
+					packCoordZ = itemsToPack[cboxi].CoordZ;
+					packDimX = itemsToPack[cboxi].PackDimX;
+					packDimY = itemsToPack[cboxi].PackDimY;
+					packDimZ = itemsToPack[cboxi].PackDimZ;
+					break;
+
+				case 2:
+					packCoordX = itemsToPack[cboxi].CoordZ;
+					packCoordY = itemsToPack[cboxi].CoordY;
+					packCoordZ = itemsToPack[cboxi].CoordX;
+					packDimX = itemsToPack[cboxi].PackDimZ;
+					packDimY = itemsToPack[cboxi].PackDimY;
+					packDimZ = itemsToPack[cboxi].PackDimX;
+					break;
+
+				case 3:
+					packCoordX = itemsToPack[cboxi].CoordY;
+					packCoordY = itemsToPack[cboxi].CoordZ;
+					packCoordZ = itemsToPack[cboxi].CoordX;
+					packDimX = itemsToPack[cboxi].PackDimY;
+					packDimY = itemsToPack[cboxi].PackDimZ;
+					packDimZ = itemsToPack[cboxi].PackDimX;
+					break;
+
+				case 4:
+					packCoordX = itemsToPack[cboxi].CoordY;
+					packCoordY = itemsToPack[cboxi].CoordX;
+					packCoordZ = itemsToPack[cboxi].CoordZ;
+					packDimX = itemsToPack[cboxi].PackDimY;
+					packDimY = itemsToPack[cboxi].PackDimX;
+					packDimZ = itemsToPack[cboxi].PackDimZ;
+					break;
+
+				case 5:
+					packCoordX = itemsToPack[cboxi].CoordX;
+					packCoordY = itemsToPack[cboxi].CoordZ;
+					packCoordZ = itemsToPack[cboxi].CoordY;
+					packDimX = itemsToPack[cboxi].PackDimX;
+					packDimY = itemsToPack[cboxi].PackDimZ;
+					packDimZ = itemsToPack[cboxi].PackDimY;
+					break;
+
+				case 6:
+					packCoordX = itemsToPack[cboxi].CoordZ;
+					packCoordY = itemsToPack[cboxi].CoordX;
+					packCoordZ = itemsToPack[cboxi].CoordY;
+					packDimX = itemsToPack[cboxi].PackDimZ;
+					packDimY = itemsToPack[cboxi].PackDimX;
+					packDimZ = itemsToPack[cboxi].PackDimY;
+					break;
+			}
+
+			itemsToPack[cboxi].CoordX = packCoordX;
+			itemsToPack[cboxi].CoordY = packCoordY;
+			itemsToPack[cboxi].CoordZ = packCoordZ;
+			itemsToPack[cboxi].PackDimX = packDimX;
+			itemsToPack[cboxi].PackDimY = packDimY;
+			itemsToPack[cboxi].PackDimZ = packDimZ;
+
+			itemsPackedInOrder.push(itemsToPack[cboxi]);
+		}
+
+		/**
+   * Packs the boxes found and arranges all variables and records properly.
+   */
+
+	}, {
+		key: "PackLayer",
+		value: function PackLayer() {
+			var lenx = 0;
+			var lenz = 0;
+			var lpz = 0;
+
+			if (layerThickness == 0) {
+				packing = false;
+				return;
+			}
+
+			scrapfirst.CumX = px;
+			scrapfirst.CumZ = 0;
+
+			//for (; !quit;)
+			while (!quit) {
+				this.FindSmallestZ();
+
+				if (!smallestZ.Pre && !smallestZ.Post) {
+					//*** SITUATION-1: NO BOXES ON THE RIGHT AND LEFT SIDES ***
+
+					lenx = smallestZ.CumX;
+					lpz = remainpz - smallestZ.CumZ;
+					this.FindBox(lenx, layerThickness, remainpy, lpz, lpz);
+					this.CheckFound();
+
+					if (layerDone) break;
+					if (evened) continue;
+
+					itemsToPack[cboxi].CoordX = 0;
+					itemsToPack[cboxi].CoordY = packedy;
+					itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
+					if (cboxx == smallestZ.CumX) {
+						smallestZ.CumZ = smallestZ.CumZ + cboxz;
+					} else {
+						smallestZ.Post = new ScrapPad();
+
+						smallestZ.Post.Post = undefined;
+						smallestZ.Post.Pre = smallestZ;
+						smallestZ.Post.CumX = smallestZ.CumX;
+						smallestZ.Post.CumZ = smallestZ.CumZ;
+						smallestZ.CumX = cboxx;
+						smallestZ.CumZ = smallestZ.CumZ + cboxz;
+					}
+				} else if (!smallestZ.Pre) {
+					//*** SITUATION-2: NO BOXES ON THE LEFT SIDE ***
+
+					lenx = smallestZ.CumX;
+					lenz = smallestZ.Post.CumZ - smallestZ.CumZ;
+					lpz = remainpz - smallestZ.CumZ;
+					this.FindBox(lenx, layerThickness, remainpy, lenz, lpz);
+					this.CheckFound();
+
+					if (layerDone) break;
+					if (evened) continue;
+
+					itemsToPack[cboxi].CoordY = packedy;
+					itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
+					if (cboxx == smallestZ.CumX) {
+						itemsToPack[cboxi].CoordX = 0;
+
+						if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ) {
+							smallestZ.CumZ = smallestZ.Post.CumZ;
+							smallestZ.CumX = smallestZ.Post.CumX;
+							trash = smallestZ.Post;
+							smallestZ.Post = smallestZ.Post.Post;
+
+							if (smallestZ.Post) {
+								smallestZ.Post.Pre = smallestZ;
+							}
+						} else {
+							smallestZ.CumZ = smallestZ.CumZ + cboxz;
+						}
+					} else {
+						itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
+
+						if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ) {
+							smallestZ.CumX = smallestZ.CumX - cboxx;
+						} else {
+							smallestZ.Post.Pre = new ScrapPad();
+
+							smallestZ.Post.Pre.Post = smallestZ.Post;
+							smallestZ.Post.Pre.Pre = smallestZ;
+							smallestZ.Post = smallestZ.Post.Pre;
+							smallestZ.Post.CumX = smallestZ.CumX;
+							smallestZ.CumX = smallestZ.CumX - cboxx;
+							smallestZ.Post.CumZ = smallestZ.CumZ + cboxz;
+						}
+					}
+				} else if (!smallestZ.Post) {
+					//*** SITUATION-3: NO BOXES ON THE RIGHT SIDE ***
+
+					lenx = smallestZ.CumX - smallestZ.Pre.CumX;
+					lenz = smallestZ.Pre.CumZ - smallestZ.CumZ;
+					lpz = remainpz - smallestZ.CumZ;
+					this.FindBox(lenx, layerThickness, remainpy, lenz, lpz);
+					this.CheckFound();
+
+					if (layerDone) break;
+					if (evened) continue;
+
+					itemsToPack[cboxi].CoordY = packedy;
+					itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
+					itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
+
+					if (cboxx == smallestZ.CumX - smallestZ.Pre.CumX) {
+						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
+							smallestZ.Pre.CumX = smallestZ.CumX;
+							smallestZ.Pre.Post = undefined;
+						} else {
+							smallestZ.CumZ = smallestZ.CumZ + cboxz;
+						}
+					} else {
+						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
+							smallestZ.Pre.CumX = smallestZ.Pre.CumX + cboxx;
+						} else {
+							smallestZ.Pre.Post = new ScrapPad();
+
+							smallestZ.Pre.Post.Pre = smallestZ.Pre;
+							smallestZ.Pre.Post.Post = smallestZ;
+							smallestZ.Pre = smallestZ.Pre.Post;
+							smallestZ.Pre.CumX = smallestZ.Pre.Pre.CumX + cboxx;
+							smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
+						}
+					}
+				} else if (smallestZ.Pre.CumZ == smallestZ.Post.CumZ) {
+					//*** SITUATION-4: THERE ARE BOXES ON BOTH OF THE SIDES ***
+
+					//*** SUBSITUATION-4A: SIDES ARE EQUAL TO EACH OTHER ***
+
+					lenx = smallestZ.CumX - smallestZ.Pre.CumX;
+					lenz = smallestZ.Pre.CumZ - smallestZ.CumZ;
+					lpz = remainpz - smallestZ.CumZ;
+
+					this.FindBox(lenx, layerThickness, remainpy, lenz, lpz);
+					this.CheckFound();
+
+					if (layerDone) break;
+					if (evened) continue;
+
+					itemsToPack[cboxi].CoordY = packedy;
+					itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
+
+					if (cboxx == smallestZ.CumX - smallestZ.Pre.CumX) {
+						itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
+
+						if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ) {
+							smallestZ.Pre.CumX = smallestZ.Post.CumX;
+
+							if (smallestZ.Post.Post) {
+								smallestZ.Pre.Post = smallestZ.Post.Post;
+								smallestZ.Post.Post.Pre = smallestZ.Pre;
+							} else {
+								smallestZ.Pre.Post = undefined;
+							}
+						} else {
+							smallestZ.CumZ = smallestZ.CumZ + cboxz;
+						}
+					} else if (smallestZ.Pre.CumX < px - smallestZ.CumX) {
+						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
+							smallestZ.CumX = smallestZ.CumX - cboxx;
+							itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
+						} else {
+							itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
+							smallestZ.Pre.Post = new ScrapPad();
+
+							smallestZ.Pre.Post.Pre = smallestZ.Pre;
+							smallestZ.Pre.Post.Post = smallestZ;
+							smallestZ.Pre = smallestZ.Pre.Post;
+							smallestZ.Pre.CumX = smallestZ.Pre.Pre.CumX + cboxx;
+							smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
+						}
+					} else {
+						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
+							smallestZ.Pre.CumX = smallestZ.Pre.CumX + cboxx;
+							itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
+						} else {
+							itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
+							smallestZ.Post.Pre = new ScrapPad();
+
+							smallestZ.Post.Pre.Post = smallestZ.Post;
+							smallestZ.Post.Pre.Pre = smallestZ;
+							smallestZ.Post = smallestZ.Post.Pre;
+							smallestZ.Post.CumX = smallestZ.CumX;
+							smallestZ.Post.CumZ = smallestZ.CumZ + cboxz;
+							smallestZ.CumX = smallestZ.CumX - cboxx;
+						}
+					}
+				} else {
+					//*** SUBSITUATION-4B: SIDES ARE NOT EQUAL TO EACH OTHER ***
+
+					lenx = smallestZ.CumX - smallestZ.Pre.CumX;
+					lenz = smallestZ.Pre.CumZ - smallestZ.CumZ;
+					lpz = remainpz - smallestZ.CumZ;
+					this.FindBox(lenx, layerThickness, remainpy, lenz, lpz);
+					this.CheckFound();
+
+					if (layerDone) break;
+					if (evened) continue;
+
+					itemsToPack[cboxi].CoordY = packedy;
+					itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
+					itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
+
+					if (cboxx == smallestZ.CumX - smallestZ.Pre.CumX) {
+						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
+							smallestZ.Pre.CumX = smallestZ.CumX;
+							smallestZ.Pre.Post = smallestZ.Post;
+							smallestZ.Post.Pre = smallestZ.Pre;
+						} else {
+							smallestZ.CumZ = smallestZ.CumZ + cboxz;
+						}
+					} else {
+						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
+							smallestZ.Pre.CumX = smallestZ.Pre.CumX + cboxx;
+						} else if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ) {
+							itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
+							smallestZ.CumX = smallestZ.CumX - cboxx;
+						} else {
+							smallestZ.Pre.Post = new ScrapPad();
+
+							smallestZ.Pre.Post.Pre = smallestZ.Pre;
+							smallestZ.Pre.Post.Post = smallestZ;
+							smallestZ.Pre = smallestZ.Pre.Post;
+							smallestZ.Pre.CumX = smallestZ.Pre.Pre.CumX + cboxx;
+							smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
+						}
+					}
+				}
+
+				this.VolumeCheck();
+			}
+		}
+
+		/**
+   * Using the parameters found, packs the best solution found and reports to the console.
+   * @param {Container} container 
+   */
+
+	}, {
+		key: "Report",
+		value: function Report(container) {
+			quit = false;
+
+			switch (bestVariant) {
+				case 1:
+					px = container.Length;py = container.Height;pz = container.Width;
+					break;
+
+				case 2:
+					px = container.Width;py = container.Height;pz = container.Length;
+					break;
+
+				case 3:
+					px = container.Width;py = container.Length;pz = container.Height;
+					break;
+
+				case 4:
+					px = container.Height;py = container.Length;pz = container.Width;
+					break;
+
+				case 5:
+					px = container.Length;py = container.Width;pz = container.Height;
+					break;
+
+				case 6:
+					px = container.Height;py = container.Width;pz = container.Length;
+					break;
+			}
+
+			packingBest = true;
+
+			//Print("BEST SOLUTION FOUND AT ITERATION                      :", bestIteration, "OF VARIANT", bestVariant);
+			//Print("TOTAL ITEMS TO PACK                                   :", itemsToPackCount);
+			//Print("TOTAL VOLUME OF ALL ITEMS                             :", totalItemVolume);
+			//Print("WHILE CONTAINER ORIENTATION X - Y - Z                 :", px, py, pz);
+
+			layers.length = 0;
+			layers[0] = new Layer(-1);
+			this.ListCanditLayers();
+			//layers = layers.OrderBy(l => l.LayerEval).ToList();
+			layers.sort(Layer.SortByEval);
+			packedVolume = 0;
+			packedy = 0;
+			packing = true;
+			layerThickness = layers[bestIteration].LayerDim;
+			remainpy = py;
+			remainpz = pz;
+
+			for (x = 1; x <= itemsToPackCount; x++) {
+				itemsToPack[x].IsPacked = false;
+			}
+
+			do {
+				layerinlayer = 0;
+				layerDone = false;
+				this.PackLayer();
+				packedy = packedy + layerThickness;
+				remainpy = py - packedy;
+
+				if (layerinlayer > epsilon) {
+					prepackedy = packedy;
+					preremainpy = remainpy;
+					remainpy = layerThickness - prelayer;
+					packedy = packedy - layerThickness + prelayer;
+					remainpz = lilz;
+					layerThickness = layerinlayer;
+					layerDone = false;
+					this.PackLayer();
+					packedy = prepackedy;
+					remainpy = preremainpy;
+					remainpz = pz;
+				}
+
+				if (!quit) {
+					this.FindLayer(remainpy);
+				}
+			} while (packing && !quit);
+		}
+
+		/**
+   * After packing of each item, the 100% packing condition is checked.
+   */
+
+	}, {
+		key: "VolumeCheck",
+		value: function VolumeCheck() {
+			itemsToPack[cboxi].IsPacked = true;
+			itemsToPack[cboxi].PackDimX = cboxx;
+			itemsToPack[cboxi].PackDimY = cboxy;
+			itemsToPack[cboxi].PackDimZ = cboxz;
+			packedVolume = packedVolume + itemsToPack[cboxi].Volume;
+			packedItemCount++;
+
+			if (packingBest) {
+				this.OutputBoxList();
+			} else if (packedVolume == totalContainerVolume || packedVolume == totalItemVolume) {
+				packing = false;
+				hundredPercentPacked = true;
+			}
+		}
+	}]);
+
+	return AFit;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (AFit);
 
 /***/ }),
-/* 23 */
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__PackingProperty__ = __webpack_require__(46);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Dimensions__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_TextField__ = __webpack_require__(20);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_CargoEntry__ = __webpack_require__(5);
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_Logger__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__CargoBoxView__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CargoView__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils_cik_Signaler__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__packer_CargoGroup__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_cik_Utils__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_common_CargoEntry__ = __webpack_require__(4);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2853,204 +4613,361 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
+
+
+
 /**
- * @typedef {Object} BoxEntryProperties
- * @property {SupportsStacking} stacking
- * @property {RotationConstraint} rotation
- * @property {TranslationConstraint} translation
+ * @typedef {Object} CargoListViewParams
+ * @property {import('../UX').default} ux
  */
 
-var numEntries = 0;
-function getDefaultLabel() {
-    return 'Box ' + numEntries.toString();
-}
+/**
+ * @typedef SortResult
+ * @property {Number} min
+ * @property {Number} max
+ * @property {Number} cargoes
+ */
 
-var epsilon = Math.pow(2, -52);
-var numberType = 'number';
+var tempBox = new THREE.Box3();
+var tempVec = new THREE.Vector3();
 
-var BoxEntry = function (_CargoEntry) {
-    _inherits(BoxEntry, _CargoEntry);
+var signals = {
+    sort: 'sort'
+};
 
-    function BoxEntry() {
-        _classCallCheck(this, BoxEntry);
+/** @type {CargoListViewParams} */
+var defaultParams = {};
 
-        numEntries++;
+var CargoListView = function (_Signaler) {
+    _inherits(CargoListView, _Signaler);
 
-        var _this = _possibleConstructorReturn(this, (BoxEntry.__proto__ || Object.getPrototypeOf(BoxEntry)).call(this));
+    /**
+     * @param {CargoListViewParams} params 
+     */
+    function CargoListView(params) {
+        _classCallCheck(this, CargoListView);
 
-        _this.type = 'BoxEntry';
+        var _this = _possibleConstructorReturn(this, (CargoListView.__proto__ || Object.getPrototypeOf(CargoListView)).call(this));
 
-        _this.dimensions = new __WEBPACK_IMPORTED_MODULE_1__Dimensions__["a" /* default */](0, 0, 0);
+        _this.params = __WEBPACK_IMPORTED_MODULE_5__utils_cik_Utils__["default"].AssignUndefined(params, defaultParams);
 
-        _this.weight = 0;
-        _this.quantity = 1;
+        _this.view;
+        _this.templatesView = new THREE.Object3D();
 
         /**
-         * @type {BoxEntryProperties}
+         * @type {Map<CargoGroup, CargoView>}
          */
-        _this.properties;
-
-        _this.properties.stacking = new __WEBPACK_IMPORTED_MODULE_0__PackingProperty__["b" /* SupportsStacking */]();
-        _this.properties.rotation = new __WEBPACK_IMPORTED_MODULE_0__PackingProperty__["a" /* RotationConstraint */]();
-        _this.properties.translation = new __WEBPACK_IMPORTED_MODULE_0__PackingProperty__["c" /* TranslationConstraint */]();
-
-        _this.descriptions.set('label', new __WEBPACK_IMPORTED_MODULE_2__common_TextField__["a" /* default */]('label', getDefaultLabel()));
+        _this.cargoTemplateViews = new Map();
         return _this;
     }
 
-    _createClass(BoxEntry, [{
-        key: "Reset",
-        value: function Reset() {
-            this.weight = 0;
-            this.quantity = 1;
+    /**
+     * 
+     * @param {CargoGroup} group 
+     */
 
-            this.properties.stacking.Reset();
-            this.properties.rotation.Reset();
-            this.properties.translation.Reset();
 
-            var label = this.descriptions.get('label');
-            label.content = __WEBPACK_IMPORTED_MODULE_2__common_TextField__["a" /* default */].defaultContent;
-            this.descriptions.clear();
-            this.descriptions.set('label', label);
+    _createClass(CargoListView, [{
+        key: "Add",
+        value: function Add(group) {
+            //Logger.Log('Adding cargo group #' + this.cargoTemplateViews.size + ': ' + group.ToString() + ' to view', group);
+            var templateCargoView;
+            switch (group.entry.type) {
+                case 'BoxEntry':
+                    {
+                        templateCargoView = new __WEBPACK_IMPORTED_MODULE_1__CargoBoxView__["a" /* default */](group.entry);
+
+                        break;
+                    }
+
+                default:
+                    templateCargoView = __WEBPACK_IMPORTED_MODULE_2__CargoView__["a" /* default */].Dummy(group.entry);
+                    __WEBPACK_IMPORTED_MODULE_0__utils_cik_Logger__["a" /* default */].Warn('group.entry.type not supported by viewer,', group);
+                    break;
+            }
+
+            this.cargoTemplateViews.set(group, templateCargoView);
+            this.templatesView.add(templateCargoView.view);
+
+            this.Sort();
         }
 
         /**
-         * @param {BoxEntry} entry 
+         * 
+         * @param {CargoGroup} group 
          */
 
     }, {
-        key: "Copy",
-        value: function Copy(entry) {
-            this.dimensions.Copy(entry.dimensions);
-            this.weight = entry.weight;
-            this.quantity = entry.quantity;
+        key: "Remove",
+        value: function Remove(group) {
+            var templateCargoView = this.cargoTemplateViews.get(group);
+            if (templateCargoView) {
+                this.cargoTemplateViews.delete(group);
+                this.templatesView.remove(templateCargoView.view);
 
-            this.properties.stacking.Copy(entry.properties.stacking);
-            this.properties.rotation.Copy(entry.properties.rotation);
-            this.properties.translation.Copy(entry.properties.translation);
+                this.Sort();
+            }
+        }
 
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
+        /**
+         * 
+         * @param {CargoGroup|CargoEntry|string|Number} id 
+         */
 
-            try {
-                for (var _iterator = entry.descriptions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var _ref = _step.value;
+    }, {
+        key: "GetTemplate",
+        value: function GetTemplate(id) {
+            var group;
+            if (id instanceof __WEBPACK_IMPORTED_MODULE_4__packer_CargoGroup__["a" /* default */]) {
+                group = id;
+            } else if (id instanceof __WEBPACK_IMPORTED_MODULE_6__components_common_CargoEntry__["a" /* default */]) {
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
 
-                    var _ref2 = _slicedToArray(_ref, 2);
-
-                    var key = _ref2[0];
-                    var field = _ref2[1];
-
-                    var own = this.descriptions.get(key);
-                    if (own) own.Copy(field);else this.descriptions.set(key, field.Clone());
-                }
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
                 try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
+                    for (var _iterator = this.cargoTemplateViews.keys()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var cargoGroup = _step.value;
+
+                        if (cargoGroup.entry === id) group = cargoGroup;
                     }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
                 } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
+            } else {
+                var _iteratorNormalCompletion2 = true;
+                var _didIteratorError2 = false;
+                var _iteratorError2 = undefined;
+
+                try {
+                    for (var _iterator2 = this.cargoTemplateViews.keys()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                        var cargoGroup = _step2.value;
+
+                        if (cargoGroup.entry.uid === id) group = cargoGroup;
+                    }
+                } catch (err) {
+                    _didIteratorError2 = true;
+                    _iteratorError2 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                            _iterator2.return();
+                        }
+                    } finally {
+                        if (_didIteratorError2) {
+                            throw _iteratorError2;
+                        }
                     }
                 }
             }
+
+            return this.cargoTemplateViews.get(group);
         }
+
+        /**
+         * @param {Map<CargoGroup, CargoView>} cargoViews 
+         * @returns {Number}
+         */
+
     }, {
-        key: "Clone",
-        value: function Clone() {
-            var entry = new BoxEntry();
+        key: "Sort",
+        value: function Sort() {
 
-            entry.dimensions = this.dimensions.Clone();
+            this.SortMapBySize();
 
-            entry.weight = this.weight;
-            entry.quantity = this.quantity;
+            var units = this.params.ux.params.units;
 
-            entry.properties.stacking = this.properties.stacking.Clone();
-            entry.properties.rotation = this.properties.rotation.Clone();
-            entry.properties.translation = this.properties.translation.Clone();
+            this.templatesView.scale.set(1, 1, 1);
+            this.templatesView.updateMatrixWorld(true);
+            var worldToLocal = new THREE.Matrix4().getInverse(this.templatesView.matrixWorld);
+            var padding = 3 * units,
+                start = 0;
 
-            var _iteratorNormalCompletion2 = true;
-            var _didIteratorError2 = false;
-            var _iteratorError2 = undefined;
+            var i = 0,
+                offset = 0;
 
-            try {
-                for (var _iterator2 = this.descriptions[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                    var _ref3 = _step2.value;
+            /**
+             * @type {SortResult}
+             */
+            var result = { min: start, max: start, cargoes: 0 };
 
-                    var _ref4 = _slicedToArray(_ref3, 2);
+            var list = this.cargoTemplateViews.values(),
+                cargoView;
+            while ((cargoView = list.next()).done === false) {
 
-                    var key = _ref4[0];
-                    var field = _ref4[1];
+                cargoView.value.position.set(0, start, 0);
 
-                    entry.descriptions.set(key, field.Clone());
-                }
-            } catch (err) {
-                _didIteratorError2 = true;
-                _iteratorError2 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                        _iterator2.return();
-                    }
-                } finally {
-                    if (_didIteratorError2) {
-                        throw _iteratorError2;
-                    }
-                }
+                tempBox.setFromObject(cargoView.value.view);
+                tempBox.applyMatrix4(worldToLocal);
+
+                tempBox.getSize(tempVec);
+                var halfSize = tempVec.y / 2;
+                if (i > 0) offset += halfSize;
+
+                cargoView.value.position.set(0, start + offset, 0);
+
+                offset += halfSize + padding;
+
+                i++;
             }
 
-            return entry;
+            //result.min = tempVec.set(0, result.min, 0).applyMatrix4(this.view.matrixWorld).y;
+            //result.max = tempVec.set(0, offset, 0).applyMatrix4(this.view.matrixWorld).y;
+            result.min = start;
+            result.max = offset;
+            result.cargoes = i;
+            this.Dispatch(signals.sort, result);
+
+            //for(var [cargo, cargoView] of cargoViews){}
         }
-
-        /**
-         * @returns {string}
-         */
-
     }, {
-        key: "ToString",
-        value: function ToString() {
-            return '\'' + this.descriptions.get('label').content + '\': ' + this.dimensions.ToString();
-        }
+        key: "SortMapBySize",
+        value: function SortMapBySize() {
+            var _this2 = this;
 
-        /**
-         * @param {BoxEntry} entry 
-         */
+            /**
+             * 
+             * @param {[CargoGroup, CargoListView]} a 
+             * @param {[CargoGroup, CargoListView]} b 
+             */
+            function sort(a, b) {
+                return -a[0].entry.dimensions.Compare(b[0].entry.dimensions);
+            }
 
-    }, {
-        key: "label",
-        get: function get() {
-            var field = this.descriptions.get('label');
-            return field ? field.content : undefined;
-        },
-        set: function set(value) {
-            var field = this.descriptions.get('label');
-            if (field) field.content = value;else this.descriptions.set('label', new __WEBPACK_IMPORTED_MODULE_2__common_TextField__["a" /* default */]('label', value));
+            var list = [].concat(_toConsumableArray(this.cargoTemplateViews.entries()));
+            list.sort(sort);
+            this.cargoTemplateViews = new Map(list);
+            return;
+
+            this.cargoTemplateViews.clear();
+            list.forEach(function (entry) {
+                _this2.cargoTemplateViews.set(entry[0], entry[1]);
+            });
         }
     }], [{
-        key: "Assert",
-        value: function Assert(entry) {
-            return entry instanceof BoxEntry && __WEBPACK_IMPORTED_MODULE_1__Dimensions__["a" /* default */].Assert(entry.dimensions) && entry.properties && entry.descriptions && entry.weight !== undefined && entry.quantity !== undefined && _typeof(entry.weight) === numberType && _typeof(entry.quantity) === numberType && __WEBPACK_IMPORTED_MODULE_0__PackingProperty__["b" /* SupportsStacking */].Assert(entry.properties.stacking) && __WEBPACK_IMPORTED_MODULE_0__PackingProperty__["a" /* RotationConstraint */].Assert(entry.properties.rotation) && __WEBPACK_IMPORTED_MODULE_0__PackingProperty__["c" /* TranslationConstraint */].Assert(entry.properties.translation);
+        key: "signals",
+        get: function get() {
+            return signals;
         }
     }]);
 
-    return BoxEntry;
-}(__WEBPACK_IMPORTED_MODULE_3__common_CargoEntry__["a" /* default */]);
+    return CargoListView;
+}(__WEBPACK_IMPORTED_MODULE_3__utils_cik_Signaler__["default"]);
 
-/* harmony default export */ __webpack_exports__["a"] = (BoxEntry);
+/* harmony default export */ __webpack_exports__["a"] = (CargoListView);
 
 /***/ }),
-/* 24 */
+/* 31 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__packer_container_Container__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_assets_Asset__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CargoView__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Utils__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_box_BoxEntry__ = __webpack_require__(6);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _set = function set(object, property, value, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent !== null) { set(parent, property, value, receiver); } } else if ("value" in desc && desc.writable) { desc.value = value; } else { var setter = desc.set; if (setter !== undefined) { setter.call(receiver, value); } } return value; };
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+
+var unitCubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 1, 1, 1);
+var materialTemplate = new THREE.MeshStandardMaterial();
+
+var brightnessRange = [.45, .55];
+var hueBase = Math.random();
+function nextColor() {
+    var color = new THREE.Color();
+    color.setHSL(hueBase, 1, brightnessRange[0] + Math.random() * (brightnessRange[1] - brightnessRange[0]));
+    hueBase = __WEBPACK_IMPORTED_MODULE_1__utils_cik_Utils__["default"].GoldenSeries(hueBase);
+    return color;
+}
+
+var CargoBoxView = function (_CargoView) {
+    _inherits(CargoBoxView, _CargoView);
+
+    /**
+     * 
+     * @param {BoxEntry} boxEntry 
+     */
+    function CargoBoxView(boxEntry) {
+        _classCallCheck(this, CargoBoxView);
+
+        var _this = _possibleConstructorReturn(this, (CargoBoxView.__proto__ || Object.getPrototypeOf(CargoBoxView)).call(this, boxEntry));
+
+        var material = materialTemplate.clone();
+        material.color = nextColor();
+        _this.mesh = new THREE.Mesh(unitCubeGeometry, material);
+        _this.mesh.scale.copy(boxEntry.dimensions.vec3);
+
+        _this.view = new THREE.Object3D();
+        _this.view.add(_this.mesh);
+        return _this;
+    }
+
+    /** @returns {BoxEntry} */
+
+
+    _createClass(CargoBoxView, [{
+        key: "SetScale",
+
+
+        /**
+         * @param {Number} x 
+         * @param {Number} y 
+         * @param {Number} z 
+         */
+        value: function SetScale(x, y, z) {
+            this.mesh.scale.set(x, y, z);
+        }
+    }, {
+        key: "entry",
+        get: function get() {
+            return _get(CargoBoxView.prototype.__proto__ || Object.getPrototypeOf(CargoBoxView.prototype), "entry", this);
+        },
+        set: function set(value) {
+            _set(CargoBoxView.prototype.__proto__ || Object.getPrototypeOf(CargoBoxView.prototype), "entry", value, this);
+            var s = value.dimensions.vec3;
+            this.SetScale(s.x, s.y, s.z);
+        }
+    }]);
+
+    return CargoBoxView;
+}(__WEBPACK_IMPORTED_MODULE_0__CargoView__["a" /* default */]);
+
+/* harmony default export */ __webpack_exports__["a"] = (CargoBoxView);
+
+/***/ }),
+/* 32 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__packer_container_Container__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ContainerView__ = __webpack_require__(33);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_cik_Logger__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__packer_container_ContainingVolume__ = __webpack_require__(12);
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3058,6 +4975,136 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
 
+
+
+var typeofString = 'string';
+
+var yRotation = new THREE.Matrix4().makeRotationY(-Math.PI / 2);
+var tempMatrix4 = new THREE.Matrix4();
+
+var PackingSpaceView = function () {
+    function PackingSpaceView() {
+        _classCallCheck(this, PackingSpaceView);
+
+        this.view = new THREE.Object3D();
+
+        /**
+         * @type {Array<ContainerView>}
+         */
+        this.containerViews = [];
+    }
+
+    /**
+     * @param {Container} container 
+     */
+
+
+    _createClass(PackingSpaceView, [{
+        key: "Add",
+        value: function Add(container) {
+            __WEBPACK_IMPORTED_MODULE_2__utils_cik_Logger__["a" /* default */].Log('Adding container: ' + container.ToString() + ' to view', container);
+            var containerView = __WEBPACK_IMPORTED_MODULE_1__ContainerView__["a" /* default */].Request(container);
+            this.view.add(containerView.view);
+            this.containerViews.push(containerView);
+        }
+
+        /**
+         * 
+         * @param {Container} container 
+         */
+
+    }, {
+        key: "Remove",
+        value: function Remove(container) {}
+
+        /**
+         * @param {string} containingVolumeUID 
+         */
+
+    }, {
+        key: "FindContainingVolume",
+        value: function FindContainingVolume(containingVolumeUID) {
+            for (var iCView = 0; iCView < this.containerViews.length; iCView++) {
+                var volumes = this.containerViews[iCView].container.volumes;
+                for (var iCVolume = 0; iCVolume < volumes.length; iCVolume++) {
+                    if (volumes[iCVolume].uid === containingVolumeUID) {
+                        return volumes[iCVolume];
+                    }
+                }
+            }
+        }
+
+        /**
+         * @param {ContainingVolume} containingVolume 
+         */
+
+    }, {
+        key: "GetMatrix",
+        value: function GetMatrix(containingVolume) {
+            if ((typeof containingVolume === "undefined" ? "undefined" : _typeof(containingVolume)) === typeofString) containingVolume = this.FindContainingVolume(containingVolume);
+            tempMatrix4.identity();
+            tempMatrix4.makeTranslation(containingVolume.position.x - containingVolume.dimensions.width / 2, containingVolume.position.y, containingVolume.position.z - containingVolume.dimensions.length / 2);
+            //tempMatrix4.premultiply(yRotation);
+            return tempMatrix4;
+        }
+    }]);
+
+    return PackingSpaceView;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (PackingSpaceView);
+
+/***/ }),
+/* 33 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__packer_container_Container__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_assets_Asset__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_cik_Logger__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__packer_container_ContainingVolume__ = __webpack_require__(12);
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+
+
+
+
+
+/**
+ * 
+ * @param {Container} container 
+ */
+function createContainerBoxes(container) {
+    /**
+     * @type {Map<ContainingVolume, THREE.Mesh>}
+     */
+    var meshes = new Map();
+
+    container.volumes.forEach(function (cv) {
+        var mesh = __WEBPACK_IMPORTED_MODULE_1__components_assets_Asset__["a" /* default */].CreateMesh();
+
+        var extent = cv.dimensions.vec3;
+        mesh.scale.copy(extent);
+        mesh.position.y += extent.y / 2;
+
+        mesh.material = mesh.material.clone();
+        mesh.material.color.setHex(0xffaaaa);
+        mesh.material.transparent = true;
+        mesh.material.opacity = .5;
+        mesh.material.side = THREE.BackSide;
+        mesh.material.polygonOffset = true;
+        mesh.material.polygonOffsetFactor = 1;
+        mesh.material.polygonOffsetUnits = 1;
+
+        meshes.set(cv, mesh);
+    });
+
+    return meshes;
+}
 
 var views = new WeakMap();
 
@@ -3073,26 +5120,92 @@ var ContainerView = function () {
         views.set(container, this);
 
         this.container = container;
-        this.view = view;
+        this.view = new THREE.Object3D();
+        this.view.add(view);
+
+        var containerBoxes = createContainerBoxes(container);
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+            for (var _iterator = containerBoxes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var _ref = _step.value;
+
+                var _ref2 = _slicedToArray(_ref, 2);
+
+                var cv = _ref2[0];
+                var mesh = _ref2[1];
+
+                mesh.position.add(cv.position);
+                this.view.add(mesh);
+            }
+        } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                    _iterator.return();
+                }
+            } finally {
+                if (_didIteratorError) {
+                    throw _iteratorError;
+                }
+            }
+        }
     }
 
-    _createClass(ContainerView, [{
-        key: "Set",
-        value: function Set(object3d) {
-            this.view = object3d;
-        }
+    /*
+    Set(object3d){
+        this.view = object3d;
+    }*/
 
-        /**
-         * @param {Container} container
-         * @returns {ContainerView}
-         */
+    /**
+     * @param {Container} container
+     * @returns {ContainerView}
+     */
 
-    }], [{
+
+    _createClass(ContainerView, null, [{
         key: "Request",
         value: function Request(container) {
             var view = views.get(container);
             if (!view) {
-                view = new ContainerView(container, __WEBPACK_IMPORTED_MODULE_1__components_assets_Asset__["a" /* default */].CreateMesh());
+                var meshes = createContainerBoxes(container);
+                var _view = new THREE.Object3D();
+                var _iteratorNormalCompletion2 = true;
+                var _didIteratorError2 = false;
+                var _iteratorError2 = undefined;
+
+                try {
+                    for (var _iterator2 = meshes[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                        var _ref3 = _step2.value;
+
+                        var _ref4 = _slicedToArray(_ref3, 2);
+
+                        var cv = _ref4[0];
+                        var mesh = _ref4[1];
+
+                        mesh.position.add(cv.position);
+                        _view.add(mesh);
+                    }
+                } catch (err) {
+                    _didIteratorError2 = true;
+                    _iteratorError2 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                            _iterator2.return();
+                        }
+                    } finally {
+                        if (_didIteratorError2) {
+                            throw _iteratorError2;
+                        }
+                    }
+                }
+
+                containerView = new ContainerView(container, _view);
                 __WEBPACK_IMPORTED_MODULE_2__utils_cik_Logger__["a" /* default */].Warn('View not found for:', container);
             }
             return view;
@@ -3105,7 +5218,7 @@ var ContainerView = function () {
 /* harmony default export */ __webpack_exports__["a"] = (ContainerView);
 
 /***/ }),
-/* 25 */
+/* 34 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3156,6 +5269,17 @@ var Asset = function () {
         value: function FromGeometryJSON(json, texturePath) {
             return jsonLoader.parse(json, texturePath);
         }
+
+        /**
+         * @param {Object} json 
+         * @param {THREE.Object3D} texturePath 
+         */
+
+    }, {
+        key: "FromJSON",
+        value: function FromJSON(json, texturePath) {
+            return objectLoader.parse(json, texturePath);
+        }
     }]);
 
     return Asset;
@@ -3164,13 +5288,84 @@ var Asset = function () {
 /* harmony default export */ __webpack_exports__["a"] = (Asset);
 
 /***/ }),
-/* 26 */
+/* 35 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var _new = Symbol('new'),
+    _reset = Symbol('reset');
+
+/**
+ * @template {T}
+ */
+
+var Pool = function () {
+    /**
+     * @param {function(...args)=>T} fnNew 
+     * @param {function(T, ...args)=>T} [fnReset]
+     */
+    function Pool(fnNew, fnReset) {
+        _classCallCheck(this, Pool);
+
+        this.objects = [];
+
+        this[_new] = fnNew;
+        this[_reset] = fnReset;
+    }
+
+    /** Get a clean object (fnNew & fnReset) from the pool
+     * @returns {T}
+     */
+
+
+    _createClass(Pool, [{
+        key: 'Request',
+        value: function Request() {
+            var object;
+
+            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+                args[_key] = arguments[_key];
+            }
+
+            if (this.objects.length === 0) {
+                object = this[_new].apply(this, args);
+            } else {
+                object = this.objects[this.objects.length - 1];
+                --this.objects.length;
+            }
+
+            return this[_reset].apply(this, [object].concat(args));
+        }
+
+        /** Make object available again
+         * @param {T} object 
+         */
+
+    }, {
+        key: 'Return',
+        value: function Return(object) {
+            this.objects[this.objects.length] = object;
+        }
+    }]);
+
+    return Pool;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (Pool);
+
+/***/ }),
+/* 36 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_Logger__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Signaler__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__box_BoxEntry__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__box_BoxEntry__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__box_Dimensions__ = __webpack_require__(13);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3182,6 +5377,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
+
+
+var epsilon = Math.pow(2, -52);
+var numberType = 'number';
 
 var signals = {
     updated: 'updated',
@@ -3256,6 +5455,12 @@ var CargoInput = function (_Signaler) {
         key: 'Add',
         value: function Add(entry) {
             if (__WEBPACK_IMPORTED_MODULE_2__box_BoxEntry__["a" /* default */].Assert(entry)) {
+
+                if (__WEBPACK_IMPORTED_MODULE_3__box_Dimensions__["a" /* default */].IsVolume(entry.dimensions.Abs()) === false) {
+                    __WEBPACK_IMPORTED_MODULE_0__utils_cik_Logger__["a" /* default */].Warn('Cargo.Input.Add, entry rejected, dimensions != Volume:', entry);
+                    return false;
+                }
+
                 try {
                     var commitedEntry = entry.Clone();
                     var uid = commitedEntry.SetUID();
@@ -3285,15 +5490,15 @@ var CargoInput = function (_Signaler) {
 /* harmony default export */ __webpack_exports__["a"] = (CargoInput);
 
 /***/ }),
-/* 27 */
+/* 37 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_Signaler__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__packer_container_Container__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__packer_PackingSpace__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__view_ContainerView__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__assets_Asset__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__packer_container_Container__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__packer_PackingSpace__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__view_ContainerView__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__assets_Asset__ = __webpack_require__(34);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3344,11 +5549,10 @@ var PackingSpaceInput = function (_Signaler) {
             if (data.container) {
                 var container = __WEBPACK_IMPORTED_MODULE_1__packer_container_Container__["a" /* default */].FromJSON(data.container);
 
-                if (data.geometry) {
-                    var geometry = __WEBPACK_IMPORTED_MODULE_4__assets_Asset__["a" /* default */].FromGeometryJSON(data.geometry).geometry;
-                    var model = __WEBPACK_IMPORTED_MODULE_4__assets_Asset__["a" /* default */].CreateMesh(geometry);
+                if (data.view) {
+                    var model = __WEBPACK_IMPORTED_MODULE_4__assets_Asset__["a" /* default */].FromJSON(data.view);
+                    //var model = Asset.CreateMesh(geometry);
                     var containerView = new __WEBPACK_IMPORTED_MODULE_3__view_ContainerView__["a" /* default */](container, model);
-                    console.log(containerView);
                 }
 
                 this.packingSpace.AddContainer(container);
@@ -3369,98 +5573,169 @@ var PackingSpaceInput = function (_Signaler) {
 /* harmony default export */ __webpack_exports__["a"] = (PackingSpaceInput);
 
 /***/ }),
-/* 28 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Item = function Item(ID, Dim1, Dim2, Dim3, Quantity) {
-    _classCallCheck(this, Item);
-
-    this.ID = ID;
-    this.IsPacked = false;
-    this.Dim1 = Dim1;
-    this.Dim2 = Dim2;
-    this.Dim3 = Dim3;
-    this.CoordX = 0;
-    this.CoordY = 0;
-    this.CoordZ = 0;
-    this.Quantity = Quantity;
-    this.PackDimX = 0;
-    this.PackDimY = 0;
-    this.PackDimZ = 0;
-    this.Volume = this.Dim1 * this.Dim2 * this.Dim3;
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (Item);
-
-/***/ }),
-/* 29 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Container = function Container() {
-    _classCallCheck(this, Container);
-
-    this.ID = 0;
-    this.Width = 0;
-    this.Length = 0;
-    this.Height = 0;
-    this.Volume = 0;
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (Container);
-
-/***/ }),
-/* 30 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(31);
+module.exports = __webpack_require__(39);
 
 
 /***/ }),
-/* 31 */
+/* 39 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* WEBPACK VAR INJECTION */(function(global) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__FreightPacker__ = __webpack_require__(7);
+/* WEBPACK VAR INJECTION */(function(global) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__FreightPacker__ = __webpack_require__(40);
 
 global.FreightPacker = __WEBPACK_IMPORTED_MODULE_0__FreightPacker__["a" /* default */];
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(32)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(17)))
 
 /***/ }),
-/* 32 */
-/***/ (function(module, exports) {
+/* 40 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-var g;
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api_utils_Capabilities__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__api_App__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api_components_CargoInput__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__api_utils_cik_Logger__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__api_utils_cik_Utils__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__api_components_PackingSpaceInput__ = __webpack_require__(37);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__api_UX__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__api_components_PackerInterface__ = __webpack_require__(55);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
 
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
 
-module.exports = g;
 
+
+
+
+
+
+
+/**
+ * @typedef InitializationParams
+ * @property {Boolean} debug
+ * @property {import('./api/UX').UXParams} ux
+ */
+
+/**
+ * @type {InitializationParams}
+ */
+var defaultParams = {
+	debug: false
+};
+
+var utils = {
+	THREE: THREE,
+	dat: window.dat || __webpack_require__(1).default,
+	Signaler: __webpack_require__(3).default,
+	Utils: __webpack_require__(0).default,
+	Debug: __webpack_require__(56).default
+};
+
+var FreightPacker = function () {
+	/**
+  * Freight Packer API instance
+  * @param {HTMLDivElement} containerDiv
+  * @param {InitializationParams} params
+  */
+	function FreightPacker(containerDiv, params) {
+		_classCallCheck(this, FreightPacker);
+
+		this.params = __WEBPACK_IMPORTED_MODULE_4__api_utils_cik_Utils__["default"].AssignUndefined(params, defaultParams);
+		FreightPacker.DevSetup(this);
+
+		this.ux = new __WEBPACK_IMPORTED_MODULE_6__api_UX__["a" /* default */](this.params.ux);
+
+		/**
+   * Handles input of: description fields (label, etc.), dimensions and constraints
+   * @type {CargoInput}
+   */
+		this.cargoInput = new __WEBPACK_IMPORTED_MODULE_2__api_components_CargoInput__["a" /* default */]();
+
+		/**
+   * Handles input of: packing spaces configurations and assets
+   * @type {PackingSpaceInput}
+   */
+		this.packingSpaceInput = new __WEBPACK_IMPORTED_MODULE_5__api_components_PackingSpaceInput__["a" /* default */]();
+
+		var app = new __WEBPACK_IMPORTED_MODULE_1__api_App__["a" /* default */](containerDiv, this.ux, {
+			cargoInput: this.cargoInput,
+			packingSpaceInput: this.packingSpaceInput
+		});
+
+		/**
+   * Manual solving and notification
+   * @type {PackerInterface}
+   */
+		this.packer = new __WEBPACK_IMPORTED_MODULE_7__api_components_PackerInterface__["a" /* default */](app);
+
+		if (this.params.debug) {
+			FreightPacker.Auto(this);
+		}
+	}
+
+	/**
+  * Will resolve if requirements are met, otherwise rejects with an error message
+  * @return {Promise<Void>|Promise<string>} 
+  */
+
+
+	_createClass(FreightPacker, null, [{
+		key: 'CheckRequirements',
+		value: function CheckRequirements() {
+			var webgl = __WEBPACK_IMPORTED_MODULE_0__api_utils_Capabilities__["a" /* default */].IsWebGLReady();
+
+			return new Promise(function (resolve, reject) {
+				if (webgl) {
+					resolve();
+				} else {
+					var message = 'WebGL not supported.';
+					reject(message);
+				}
+			});
+		}
+	}, {
+		key: 'DevSetup',
+
+
+		/** @param {FreightPacker} fp */
+		value: function DevSetup(fp) {
+			global.fp = fp;
+			var params = fp.params;
+			if (params.debug) {
+				__WEBPACK_IMPORTED_MODULE_3__api_utils_cik_Logger__["a" /* default */].active = true;
+				__WEBPACK_IMPORTED_MODULE_3__api_utils_cik_Logger__["a" /* default */].toConsole = true;
+				__WEBPACK_IMPORTED_MODULE_3__api_utils_cik_Logger__["a" /* default */].traceToConsole = true;
+			}
+
+			//require('./api/debug/Tester').testPool();
+		}
+
+		/** @param {FreightPacker} fp */
+
+	}, {
+		key: 'Auto',
+		value: function Auto(fp) {}
+	}, {
+		key: 'utils',
+		get: function get() {
+			return utils;
+		}
+	}]);
+
+	return FreightPacker;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (FreightPacker);
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(17)))
 
 /***/ }),
-/* 33 */
+/* 41 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3488,87 +5763,16 @@ var Capabilities = function () {
 /* harmony default export */ __webpack_exports__["a"] = (Capabilities);
 
 /***/ }),
-/* 34 */
+/* 42 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scene_SceneSetup__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__packer_Packer__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__view_View__ = __webpack_require__(43);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_CargoInput__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_PackingSpaceInput__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__UX__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__UpdateComponent__ = __webpack_require__(20);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 
-
-
-
-
-
-
-
-/**
- * @typedef AppComponents
- * @property {CargoInput} cargoInput
- * @property {PackingSpaceInput} packingSpaceInput
- */
-
-var App = function () {
-
-    /**
-     * 
-     * @param {HTMLDivElement} containerDiv
-     * @param {UX} ux
-     * @param {AppComponents} components 
-     */
-    function App(containerDiv, ux, components) {
-        _classCallCheck(this, App);
-
-        this.ux = ux;
-        this.components = components;
-
-        this.packer = new __WEBPACK_IMPORTED_MODULE_2__packer_Packer__["a" /* default */]();
-
-        this.sceneSetup = new __WEBPACK_IMPORTED_MODULE_0__scene_SceneSetup__["a" /* default */](containerDiv, this.ux);
-        this.sceneSetup.Init().then(this.Start.bind(this));
-    }
-
-    _createClass(App, [{
-        key: 'Start',
-        value: function Start() {
-            var packer = this.packer;
-            this.view = new __WEBPACK_IMPORTED_MODULE_3__view_View__["a" /* default */](packer, this.sceneSetup);
-            this.sceneSetup.Start();
-
-            this.components.cargoInput.On(__WEBPACK_IMPORTED_MODULE_4__components_CargoInput__["a" /* default */].signals.completed, function (boxEntry) {
-                __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__["a" /* default */].Log('insert box');
-                packer.cargoList.Add(boxEntry);
-            });
-
-            this.components.packingSpaceInput.On(__WEBPACK_IMPORTED_MODULE_5__components_PackingSpaceInput__["a" /* default */].signals.containerLoaded, function (container) {
-                __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__["a" /* default */].Log('insert container');
-                packer.packingSpace.AddContainer(container);
-            });
-        }
-    }]);
-
-    return App;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (App);
-
-/***/ }),
-/* 35 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
  * @typedef {Object} IScreen
@@ -3645,7 +5849,7 @@ var Input = function () {
         this.clock.start();
 
         this._raycastGroups = { Update: {}, Update25: {}, Update10: {}, OnMouseDown: {}, OnDoubleClick: {}, OnMouseUp: {}, OnRightClick: {}, OnClick: {} };
-        this.update = [{ interval: 1 / 25, last: 0, callback: this.Update25.bind(this) }, { interval: 1 / 10, last: 0, callback: this.Update10.bind(this) }];
+        this.updateComponents = [new __WEBPACK_IMPORTED_MODULE_0__UpdateComponent__["a" /* default */](true, 1 / 25, this.Update25.bind(this)), new __WEBPACK_IMPORTED_MODULE_0__UpdateComponent__["a" /* default */](true, 1 / 10, this.Update10.bind(this))];
 
         this.fireOnce = [];
 
@@ -3933,13 +6137,10 @@ var Input = function () {
             this.UpdateRaycast('Update');
 
             var now = this.clock.getElapsedTime();
-            for (var iUpdate = 0; iUpdate < this.update.length; iUpdate++) {
-                var update = this.update[iUpdate];
-                if (update.callback === undefined) {
-                    update();
-                } else if (now - update.last > update.interval) {
-                    update.callback();
-                    update.last = now;
+            for (var iUpdate = 0; iUpdate < this.updateComponents.length; iUpdate++) {
+                var updateComponent = this.updateComponents[iUpdate];
+                if (updateComponent.active && now - updateComponent.lastUpdateTime > updateComponent.interval) {
+                    updateComponent.Update(now);
                 }
             }
 
@@ -4079,7 +6280,7 @@ var Input = function () {
 /* harmony default export */ __webpack_exports__["a"] = (Input);
 
 /***/ }),
-/* 36 */
+/* 43 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4132,7 +6333,7 @@ var Quality = function () {
 /* harmony default export */ __webpack_exports__["a"] = (Quality);
 
 /***/ }),
-/* 37 */
+/* 44 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4242,13 +6443,14 @@ var Renderer = function () {
 /* harmony default export */ __webpack_exports__["a"] = (Renderer);
 
 /***/ }),
-/* 38 */
+/* 45 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scene_Controller__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__scene_Camera__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scene_Transform__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scene_Controller__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__scene_Camera__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scene_Transform__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils_cik_Utils__ = __webpack_require__(0);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -4259,18 +6461,33 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
+
+/**
+ * @typedef {Object} HUDViewParams
+ * @property {import('../UX').default} ux
+ */
+
+/** @type {HUDViewParams} */
+var defaultParams = {};
+
 // -11.3, 23.9, 215.5
 var defaultCamTRS = new __WEBPACK_IMPORTED_MODULE_2__scene_Transform__["a" /* default */](new THREE.Vector3(0, 80, 400), new THREE.Euler(-0.1, 0, 0));
 
 var HUDView = function (_Controller) {
         _inherits(HUDView, _Controller);
 
+        /**
+         * @param {HUDViewParams} params 
+         * @param {import('../scene/Camera').CameraParams} cameraParams 
+         */
         function HUDView(params, cameraParams) {
                 _classCallCheck(this, HUDView);
 
                 var _this = _possibleConstructorReturn(this, (HUDView.__proto__ || Object.getPrototypeOf(HUDView)).call(this, params));
 
-                var units = _this.params.units;
+                _this.params = __WEBPACK_IMPORTED_MODULE_3__utils_cik_Utils__["default"].AssignUndefined(params, defaultParams);
+
+                var units = _this.params.ux.params.units;
 
                 _this.cameraController = new __WEBPACK_IMPORTED_MODULE_1__scene_Camera__["a" /* default */](cameraParams);
 
@@ -4279,8 +6496,8 @@ var HUDView = function (_Controller) {
                 _this.cameraTransform.Apply(_this.cameraController);
                 _this.cameraController.camera.updateMatrixWorld();
 
-                var gridHelper = new THREE.GridHelper(100 * units, 20);
-                _this.AddDefault(gridHelper);
+                //var gridHelper = new THREE.GridHelper(100 * units, 20);
+                //this.AddDefault(gridHelper);
                 return _this;
         }
 
@@ -4290,7 +6507,7 @@ var HUDView = function (_Controller) {
 /* harmony default export */ __webpack_exports__["a"] = (HUDView);
 
 /***/ }),
-/* 39 */
+/* 46 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4366,11 +6583,11 @@ var Transform = function () {
 /* harmony default export */ __webpack_exports__["a"] = (Transform);
 
 /***/ }),
-/* 40 */
+/* 47 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CargoGroup__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CargoGroup__ = __webpack_require__(10);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -4461,69 +6678,11 @@ var Cargo = function (_PackingItem) {
 /* harmony default export */ __webpack_exports__["a"] = (Cargo);
 
 /***/ }),
-/* 41 */
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Volume__ = __webpack_require__(42);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-var type = 'ContainingVolume';
-
-var ContainingVolume = function (_Volume) {
-    _inherits(ContainingVolume, _Volume);
-
-    function ContainingVolume() {
-        _classCallCheck(this, ContainingVolume);
-
-        return _possibleConstructorReturn(this, (ContainingVolume.__proto__ || Object.getPrototypeOf(ContainingVolume)).call(this));
-    }
-
-    _createClass(ContainingVolume, [{
-        key: 'toJSON',
-        value: function toJSON() {
-            var json = _get(ContainingVolume.prototype.__proto__ || Object.getPrototypeOf(ContainingVolume.prototype), 'toJSON', this).call(this);
-            json.type = type;
-            return json;
-        }
-    }, {
-        key: 'ToString',
-        value: function ToString() {
-            return _get(ContainingVolume.prototype.__proto__ || Object.getPrototypeOf(ContainingVolume.prototype), 'ToString', this).call(this);
-        }
-    }], [{
-        key: 'FromJSON',
-        value: function FromJSON(data) {
-            if (data.type !== type) console.warn('Data supplied is not: ' + type);
-
-            var containingVolume = new ContainingVolume();
-            __WEBPACK_IMPORTED_MODULE_0__Volume__["a" /* default */].FromJSON(data, containingVolume);
-
-            return containingVolume;
-        }
-    }]);
-
-    return ContainingVolume;
-}(__WEBPACK_IMPORTED_MODULE_0__Volume__["a" /* default */]);
-
-/* harmony default export */ __webpack_exports__["a"] = (ContainingVolume);
-
-/***/ }),
-/* 42 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_box_Dimensions__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_box_Dimensions__ = __webpack_require__(13);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -4583,451 +6742,7 @@ var Volume = function () {
 /* harmony default export */ __webpack_exports__["a"] = (Volume);
 
 /***/ }),
-/* 43 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CargoListView__ = __webpack_require__(44);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__packer_Packer__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__packer_CargoList__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__PackingSpaceView__ = __webpack_require__(47);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__packer_PackingSpace__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__scene_SceneSetup__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__ = __webpack_require__(48);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__debug_Debug__ = __webpack_require__(49);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__FreightPacker__ = __webpack_require__(7);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-
-
-
-
-
-
-
-
-
-var defaultParams = {
-
-    cargoListView: {
-        bottomLeft: { x: 100, y: 100 }
-    }
-};
-
-var tempVec = new THREE.Vector3();
-
-var View = function () {
-    /**
-     * Constructor
-     * @param {Packer} packer 
-     * @param {SceneSetup} sceneSetup 
-     */
-    function View(packer, sceneSetup, params) {
-        _classCallCheck(this, View);
-
-        this.sceneSetup = sceneSetup;
-        this.params = __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__["default"].AssignUndefined(params, defaultParams);
-
-        this.packingSpaceView = new __WEBPACK_IMPORTED_MODULE_3__PackingSpaceView__["a" /* default */]();
-        this.sceneSetup.sceneController.AddDefault(this.packingSpaceView.view);
-
-        var onContainerAdded = this.packingSpaceView.Add.bind(this.packingSpaceView);
-        packer.packingSpace.On(__WEBPACK_IMPORTED_MODULE_4__packer_PackingSpace__["a" /* default */].signals.containerAdded, onContainerAdded);
-
-        this.cargoListView = new __WEBPACK_IMPORTED_MODULE_0__CargoListView__["a" /* default */]();
-        this.sceneSetup.hud.Add(this.cargoListView.templatesView);
-
-        this.HUDSetup();
-
-        var onCargoGroupAdded = this.cargoListView.Add.bind(this.cargoListView);
-        packer.cargoList.On(__WEBPACK_IMPORTED_MODULE_2__packer_CargoList__["a" /* default */].signals.groupAdded, onCargoGroupAdded);
-        var onCargoRemoved = this.cargoListView.Remove.bind(this.cargoListView);
-        packer.cargoList.On(__WEBPACK_IMPORTED_MODULE_2__packer_CargoList__["a" /* default */].signals.groupRemoved, onCargoRemoved);
-
-        if (__WEBPACK_IMPORTED_MODULE_9__FreightPacker__["a" /* default */].instance.ux.params.configure) {
-            this.Configure();
-        }
-    }
-
-    _createClass(View, [{
-        key: "HUDSetup",
-        value: function HUDSetup() {
-            var units = __WEBPACK_IMPORTED_MODULE_9__FreightPacker__["a" /* default */].instance.ux.params.units;
-            var input = this.sceneSetup.input;
-            var hud = this.sceneSetup.hud;
-            var clv = this.cargoListView;
-            var scope = this;
-
-            var cargoListViewRect = new __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__["a" /* default */].Rect(0, 0, 150, input.screen.height);
-            var clvRectIgnore = cargoListViewRect.Clone();
-            clvRectIgnore.Offset(input.screen.left, input.screen.top);
-
-            var min = -1,
-                max = 1;
-            var v = new THREE.Vector3(),
-                viewportPointA = new THREE.Vector2(),
-                viewportPointB = new THREE.Vector2();
-            var dragOffset = 0;
-
-            // 
-
-            /**
-             * @param {import('./CargoListView').SortResult} sortResult
-             */
-            function onSort(sortResult) {
-                if (sortResult.cargoes > 0) {
-                    __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__["a" /* default */].Project(v.set(0, sortResult.min, 0), hud.cameraController.camera, input.screen, viewportPointA);
-                    __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__["a" /* default */].Project(v.set(0, sortResult.max, 0), hud.cameraController.camera, input.screen, viewportPointB);
-
-                    var distance = viewportPointA.sub(viewportPointB).length();
-                    var ratio = .8 / distance;
-                    var s = Math.max(.6, Math.pow(Math.min(1, clv.templatesView.scale.length() * ratio), .9));
-                    clv.templatesView.scale.set(s, s, s);
-                    clv.templatesView.updateMatrixWorld();
-                }
-
-                min = v.set(0, sortResult.min, 0).applyMatrix4(clv.templatesView.matrixWorld).y;
-                max = v.set(0, sortResult.max, 0).applyMatrix4(clv.templatesView.matrixWorld).y;
-            }
-            this.cargoListView.On(__WEBPACK_IMPORTED_MODULE_0__CargoListView__["a" /* default */].signals.sort, onSort);
-
-            /**
-             * @param {import('../utils/cik/input/Input').DragEvent} dragEvent 
-             */
-            function onDrag(dragEvent) {
-                var start = cargoListViewRect.ContainsPoint(dragEvent.sx, dragEvent.sy);
-                var current = cargoListViewRect.ContainsPoint(dragEvent.x, dragEvent.y);
-                if (start && current) {
-                    var offset = dragEvent.dy * .5 * units;
-                    var clvMin = min + offset,
-                        clvMax = max + offset;
-                    __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__["a" /* default */].Project(v.set(0, clvMin, 0), hud.cameraController.camera, input.screen, viewportPointA);
-                    __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__["a" /* default */].Project(v.set(0, clvMax, 0), hud.cameraController.camera, input.screen, viewportPointB);
-                    //console.log(viewportPointA, viewportPointB);
-                    if (offset > 0 && viewportPointA.y < -.7 || offset < 0 && viewportPointB.y > .8) {
-                        dragOffset += offset;
-                        min += offset;
-                        max += offset;
-                        clv.templatesView.position.y += offset;
-                    }
-                }
-            }
-            input.onDrag.push(onDrag);
-
-            this.sceneSetup.cameraController.orbitControls.ignoredAreas.push(clvRectIgnore);
-
-            /**
-             * @param {import('../utils/cik/input/Input').IScreen} screen 
-             */
-            function onScreenResize(screen) {
-
-                cargoListViewRect.bottom = screen.height;
-                clvRectIgnore.Copy(cargoListViewRect);
-                clvRectIgnore.Offset(screen.left, screen.top);
-
-                var bottomLeft = scope.params.cargoListView.bottomLeft; // offset in pixels
-                tempVec.set(bottomLeft.x, bottomLeft.y); // viewport point in pixels
-
-                __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__["a" /* default */].ToNDC(tempVec, screen); // NDC point
-                __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__["a" /* default */].Unproject(tempVec, hud.cameraController.camera, tempVec, 'z'); // worldPos on z plane
-                tempVec.y += dragOffset;
-                clv.templatesView.position.copy(tempVec); // set view position
-
-                clv.templatesView.updateMatrixWorld(true);
-
-                clv.Sort();
-            }
-
-            input.onResize.push(onScreenResize);
-            onScreenResize(input.screen);
-        }
-    }, {
-        key: "Configure",
-        value: function Configure() {
-
-            var Smart = __webpack_require__(14).default;
-            var Config = __webpack_require__(4).default;
-            var Control3D = __webpack_require__(17).default;
-
-            var hudControl3D = Control3D.Request('hud');
-
-            var scope = this;
-            var input = this.sceneSetup.input;
-            input.keyboard.on('s', function () {
-                hudControl3D.Toggle(scope.cargoListView.templatesView);
-            });
-        }
-    }]);
-
-    return View;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (View);
-
-/***/ }),
-/* 44 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_Logger__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__CargoBoxView__ = __webpack_require__(45);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CargoView__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__FreightPacker__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__utils_cik_Signaler__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__packer_CargoGroup__ = __webpack_require__(9);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-
-
-
-
-
-/**
- * @typedef SortResult
- * @property {Number} min
- * @property {Number} max
- * @property {Number} cargoes
- */
-
-var tempBox = new THREE.Box3();
-var tempVec = new THREE.Vector3();
-
-var signals = {
-    sort: 'sort'
-};
-
-var CargoListView = function (_Signaler) {
-    _inherits(CargoListView, _Signaler);
-
-    function CargoListView() {
-        _classCallCheck(this, CargoListView);
-
-        var _this = _possibleConstructorReturn(this, (CargoListView.__proto__ || Object.getPrototypeOf(CargoListView)).call(this));
-
-        _this.view;
-        _this.templatesView = new THREE.Object3D();
-
-        /**
-         * @type {Map<CargoGroup, CargoView>}
-         */
-        _this.cargoTemplateViews = new Map();
-        return _this;
-    }
-
-    /**
-     * 
-     * @param {CargoGroup} group 
-     */
-
-
-    _createClass(CargoListView, [{
-        key: "Add",
-        value: function Add(group) {
-            __WEBPACK_IMPORTED_MODULE_0__utils_cik_Logger__["a" /* default */].Log('Adding cargo group #' + this.cargoTemplateViews.size + ': ' + group.ToString() + ' to view', group);
-            var templateCargoView;
-            switch (group.entry.type) {
-                case 'BoxEntry':
-                    {
-                        templateCargoView = new __WEBPACK_IMPORTED_MODULE_1__CargoBoxView__["a" /* default */](group.entry);
-
-                        break;
-                    }
-
-                default:
-                    templateCargoView = __WEBPACK_IMPORTED_MODULE_2__CargoView__["a" /* default */].Dummy(group.entry);
-                    __WEBPACK_IMPORTED_MODULE_0__utils_cik_Logger__["a" /* default */].Warn('group.entry.type not supported by viewer,', group);
-                    break;
-            }
-
-            this.cargoTemplateViews.set(group, templateCargoView);
-            this.templatesView.add(templateCargoView.view);
-
-            this.Sort();
-        }
-
-        /**
-         * 
-         * @param {CargoGroup} group 
-         */
-
-    }, {
-        key: "Remove",
-        value: function Remove(group) {
-            var templateCargoView = this.cargoTemplateViews.get(group);
-            if (templateCargoView) {
-                this.cargoTemplateViews.delete(group);
-                this.templatesView.remove(templateCargoView.view);
-
-                this.Sort();
-            }
-        }
-
-        /**
-         * @param {Map<CargoGroup, CargoView>} cargoViews 
-         * @returns {Number}
-         */
-
-    }, {
-        key: "Sort",
-        value: function Sort() {
-
-            this.SortMapBySize();
-
-            var units = __WEBPACK_IMPORTED_MODULE_3__FreightPacker__["a" /* default */].instance.params.ux.units;
-
-            this.templatesView.scale.set(1, 1, 1);
-            this.templatesView.updateMatrixWorld(true);
-            var worldToLocal = new THREE.Matrix4().getInverse(this.templatesView.matrixWorld);
-            var padding = 3 * units,
-                start = 0;
-
-            var i = 0,
-                offset = 0;
-
-            /**
-             * @type {SortResult}
-             */
-            var result = { min: start, max: start, cargoes: 0 };
-
-            var list = this.cargoTemplateViews.values(),
-                cargoView;
-            while ((cargoView = list.next()).done === false) {
-
-                cargoView.value.position.set(0, start, 0);
-
-                tempBox.setFromObject(cargoView.value.view);
-                tempBox.applyMatrix4(worldToLocal);
-
-                tempBox.getSize(tempVec);
-                var halfSize = tempVec.y / 2;
-                if (i > 0) offset += halfSize;
-
-                cargoView.value.position.set(0, start + offset, 0);
-
-                offset += halfSize + padding;
-
-                i++;
-            }
-
-            //result.min = tempVec.set(0, result.min, 0).applyMatrix4(this.view.matrixWorld).y;
-            //result.max = tempVec.set(0, offset, 0).applyMatrix4(this.view.matrixWorld).y;
-            result.min = start;
-            result.max = offset;
-            result.cargoes = i;
-            this.Dispatch(signals.sort, result);
-
-            //for(var [cargo, cargoView] of cargoViews){}
-        }
-    }, {
-        key: "SortMapBySize",
-        value: function SortMapBySize() {
-            var _this2 = this;
-
-            /**
-             * 
-             * @param {[CargoGroup, CargoListView]} a 
-             * @param {[CargoGroup, CargoListView]} b 
-             */
-            function sort(a, b) {
-                return -a[0].entry.dimensions.Compare(b[0].entry.dimensions);
-            }
-
-            var list = [].concat(_toConsumableArray(this.cargoTemplateViews.entries()));
-            list.sort(sort);
-            this.cargoTemplateViews = new Map(list);
-            return;
-
-            this.cargoTemplateViews.clear();
-            list.forEach(function (entry) {
-                _this2.cargoTemplateViews.set(entry[0], entry[1]);
-            });
-        }
-    }], [{
-        key: "signals",
-        get: function get() {
-            return signals;
-        }
-    }]);
-
-    return CargoListView;
-}(__WEBPACK_IMPORTED_MODULE_4__utils_cik_Signaler__["default"]);
-
-/* harmony default export */ __webpack_exports__["a"] = (CargoListView);
-
-/***/ }),
-/* 45 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CargoView__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Utils__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_box_BoxEntry__ = __webpack_require__(23);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-
-
-var unitCubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 1, 1, 1);
-var materialTemplate = new THREE.MeshStandardMaterial();
-
-var brightnessRange = [.4, .6];
-var hueBase = Math.random();
-function nextColor() {
-    var color = new THREE.Color();
-    color.setHSL(hueBase, 1, brightnessRange[0] + Math.random() * (brightnessRange[1] - brightnessRange[0]));
-    hueBase = __WEBPACK_IMPORTED_MODULE_1__utils_cik_Utils__["default"].GoldenSeries(hueBase);
-    return color;
-}
-
-var CargoBoxView = function (_CargoView) {
-    _inherits(CargoBoxView, _CargoView);
-
-    /**
-     * 
-     * @param {BoxEntry} boxEntry 
-     */
-    function CargoBoxView(boxEntry) {
-        _classCallCheck(this, CargoBoxView);
-
-        var _this = _possibleConstructorReturn(this, (CargoBoxView.__proto__ || Object.getPrototypeOf(CargoBoxView)).call(this, boxEntry));
-
-        var material = materialTemplate.clone();
-        material.color = nextColor();
-        _this.mesh = new THREE.Mesh(unitCubeGeometry, material);
-        _this.mesh.scale.copy(boxEntry.dimensions.vec3);
-
-        _this.view = new THREE.Object3D();
-        _this.view.add(_this.mesh);
-        return _this;
-    }
-
-    return CargoBoxView;
-}(__WEBPACK_IMPORTED_MODULE_0__CargoView__["a" /* default */]);
-
-/* harmony default export */ __webpack_exports__["a"] = (CargoBoxView);
-
-/***/ }),
-/* 46 */
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5208,13 +6923,20 @@ var TranslationConstraint = function (_Constraint2) {
 
 
 /***/ }),
-/* 47 */
+/* 50 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__packer_container_Container__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ContainerView__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_cik_Logger__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CargoListView__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__packer_Packer__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__packer_CargoList__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__PackingSpaceView__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__packer_PackingSpace__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__view_SceneSetup__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__PackResultView__ = __webpack_require__(52);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__utils_cik_input_UpdateComponent__ = __webpack_require__(20);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -5223,51 +6945,214 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
 
-var PackingSpaceView = function () {
-    function PackingSpaceView() {
-        _classCallCheck(this, PackingSpaceView);
 
-        this.view = new THREE.Object3D();
-        this.domain = Symbol('PackingSpaceView');
 
-        /**
-         * @type {Array<ContainerView>}
-         */
-        this.containers = [];
+
+
+
+
+
+/**
+ * @typedef {Object} ViewParams
+ * @property {import('../UX').default} ux
+ * @property {Object} cargoListView
+ * @property {import('../utils/cik/Utils3D').IPoint} cargoListView.bottomLeft
+ * @property {import('./CargoListView').CargoListViewParams} cargoListView.params
+ * @property {Object} packResultView
+ * @property {import('./PackResultView').PackResultViewParams} packResultView.params
+ */
+
+/** @type {ViewParams} */
+var defaultParams = {
+    ux: undefined,
+    cargoListView: {
+        bottomLeft: { x: 100, y: 100 },
+        params: {}
+    },
+    packResultView: {
+        params: {}
     }
+};
 
+var tempVec = new THREE.Vector3();
+
+var View = function () {
     /**
-     * 
-     * @param {Container} container 
+     * Constructor
+     * @param {Packer} packer 
+     * @param {SceneSetup} sceneSetup 
+     * @param {ViewParams} params 
      */
+    function View(packer, sceneSetup, params) {
+        _classCallCheck(this, View);
 
+        this.sceneSetup = sceneSetup;
+        this.params = __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__["default"].AssignUndefined(params, defaultParams);
 
-    _createClass(PackingSpaceView, [{
-        key: "Add",
-        value: function Add(container) {
-            __WEBPACK_IMPORTED_MODULE_2__utils_cik_Logger__["a" /* default */].Log('Adding container: ' + container.ToString() + ' to view', container);
-            var containerView = __WEBPACK_IMPORTED_MODULE_1__ContainerView__["a" /* default */].Request(container);
-            this.view.add(containerView.view);
-            this.containers.push(containerView);
+        // Packing space
+        this.packingSpaceView = new __WEBPACK_IMPORTED_MODULE_3__PackingSpaceView__["a" /* default */]();
+        this.sceneSetup.sceneController.AddDefault(this.packingSpaceView.view);
+        var onContainerAdded = this.packingSpaceView.Add.bind(this.packingSpaceView);
+        packer.packingSpace.On(__WEBPACK_IMPORTED_MODULE_4__packer_PackingSpace__["a" /* default */].signals.containerAdded, onContainerAdded);
+
+        // Cargo list
+        this.params.cargoListView.params.ux = this.params.ux;
+        this.cargoListView = new __WEBPACK_IMPORTED_MODULE_0__CargoListView__["a" /* default */](this.params.cargoListView.params);
+        var onCargoGroupAdded = this.cargoListView.Add.bind(this.cargoListView);
+        packer.cargoList.On(__WEBPACK_IMPORTED_MODULE_2__packer_CargoList__["a" /* default */].signals.groupAdded, onCargoGroupAdded);
+        var onCargoRemoved = this.cargoListView.Remove.bind(this.cargoListView);
+        packer.cargoList.On(__WEBPACK_IMPORTED_MODULE_2__packer_CargoList__["a" /* default */].signals.groupRemoved, onCargoRemoved);
+
+        // Cargo list display
+        if (this.params.ux.params.hud) {
+            this.sceneSetup.hud.Add(this.cargoListView.templatesView);
+            this.HUDSetup();
         }
 
-        /**
-         * 
-         * @param {Container} container 
-         */
+        // Packing result
+        this.params.packResultView.params.ux = this.params.ux;
+        this.packResultView = new __WEBPACK_IMPORTED_MODULE_8__PackResultView__["a" /* default */](this.cargoListView, this.packingSpaceView, this.params.packResultView.params);
+        this.sceneSetup.sceneController.AddDefault(this.packResultView.view);
 
+        var onPackUpdate = this.packResultView.DisplayPackingResult.bind(this.packResultView);
+        packer.On(__WEBPACK_IMPORTED_MODULE_1__packer_Packer__["a" /* default */].signals.packUpdate, onPackUpdate);
+
+        var updateComponent = new __WEBPACK_IMPORTED_MODULE_9__utils_cik_input_UpdateComponent__["a" /* default */](true, 1 / 30, this.Update.bind(this));
+        this.sceneSetup.input.updateComponents.push(updateComponent);
+
+        if (this.params.ux.params.configure) {
+            this.Configure();
+        }
+    }
+
+    /** @param {Number} now */
+
+
+    _createClass(View, [{
+        key: "Update",
+        value: function Update(now) {
+            this.packResultView.Update();
+        }
     }, {
-        key: "Remove",
-        value: function Remove(container) {}
+        key: "HUDSetup",
+        value: function HUDSetup() {
+            var units = this.params.ux.params.units;
+            var input = this.sceneSetup.input;
+            var hud = this.sceneSetup.hud;
+            var clv = this.cargoListView;
+            var scope = this;
+
+            var cargoListViewRect = new __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__["a" /* default */].Rect(0, 0, 150, input.screen.height);
+            var clvRectIgnore = cargoListViewRect.Clone();
+            clvRectIgnore.Offset(input.screen.left, input.screen.top);
+
+            var min = -1,
+                max = 1;
+            var v = new THREE.Vector3(),
+                viewportPointA = new THREE.Vector2(),
+                viewportPointB = new THREE.Vector2();
+            var dragOffset = 0;
+
+            // 
+
+            /**
+             * @param {import('./CargoListView').SortResult} sortResult
+             */
+            function onSort(sortResult) {
+                if (sortResult.cargoes > 0) {
+                    __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__["a" /* default */].Project(v.set(0, sortResult.min, 0), hud.cameraController.camera, input.screen, viewportPointA);
+                    __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__["a" /* default */].Project(v.set(0, sortResult.max, 0), hud.cameraController.camera, input.screen, viewportPointB);
+
+                    var distance = viewportPointA.sub(viewportPointB).length();
+                    var ratio = .8 / distance;
+                    var s = Math.max(.6, Math.pow(Math.min(1, clv.templatesView.scale.length() * ratio), .9));
+                    clv.templatesView.scale.set(s, s, s);
+                    clv.templatesView.updateMatrixWorld();
+                }
+
+                min = v.set(0, sortResult.min, 0).applyMatrix4(clv.templatesView.matrixWorld).y;
+                max = v.set(0, sortResult.max, 0).applyMatrix4(clv.templatesView.matrixWorld).y;
+            }
+            this.cargoListView.On(__WEBPACK_IMPORTED_MODULE_0__CargoListView__["a" /* default */].signals.sort, onSort);
+
+            /**
+             * @param {import('../utils/cik/input/Input').DragEvent} dragEvent 
+             */
+            function onDrag(dragEvent) {
+                var start = cargoListViewRect.ContainsPoint(dragEvent.sx, dragEvent.sy);
+                var current = cargoListViewRect.ContainsPoint(dragEvent.x, dragEvent.y);
+                if (start && current) {
+                    var offset = dragEvent.dy * .5 * units;
+                    var clvMin = min + offset,
+                        clvMax = max + offset;
+                    __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__["a" /* default */].Project(v.set(0, clvMin, 0), hud.cameraController.camera, input.screen, viewportPointA);
+                    __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__["a" /* default */].Project(v.set(0, clvMax, 0), hud.cameraController.camera, input.screen, viewportPointB);
+                    //console.log(viewportPointA, viewportPointB);
+                    if (offset > 0 && viewportPointA.y < -.7 || offset < 0 && viewportPointB.y > .8) {
+                        dragOffset += offset;
+                        min += offset;
+                        max += offset;
+                        clv.templatesView.position.y += offset;
+                    }
+                }
+            }
+            input.onDrag.push(onDrag);
+
+            this.sceneSetup.cameraController.orbitControls.ignoredAreas.push(clvRectIgnore);
+
+            /**
+             * @param {import('../utils/cik/input/Input').IScreen} screen 
+             */
+            function onScreenResize(screen) {
+
+                cargoListViewRect.bottom = screen.height;
+                clvRectIgnore.Copy(cargoListViewRect);
+                clvRectIgnore.Offset(screen.left, screen.top);
+
+                var bottomLeft = scope.params.cargoListView.bottomLeft; // offset in pixels
+                tempVec.set(bottomLeft.x, bottomLeft.y); // viewport point in pixels
+
+                __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__["a" /* default */].ToNDC(tempVec, screen); // NDC point
+                __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__["a" /* default */].Unproject(tempVec, hud.cameraController.camera, tempVec, 'z'); // worldPos on z plane
+                tempVec.y += dragOffset;
+                clv.templatesView.position.copy(tempVec); // set view position
+
+                clv.templatesView.updateMatrixWorld(true);
+
+                clv.Sort();
+            }
+
+            input.onResize.push(onScreenResize);
+            onScreenResize(input.screen);
+        }
+    }, {
+        key: "Configure",
+        value: function Configure() {
+
+            var Smart = __webpack_require__(23).default;
+            var Config = __webpack_require__(8).default;
+            var Control3D = __webpack_require__(26).default;
+
+            var scope = this;
+            var input = this.sceneSetup.input;
+
+            if (this.params.ux.params.hud) {
+                var hudControl3D = Control3D.Request('hud');
+
+                input.keyboard.on('s', function () {
+                    hudControl3D.Toggle(scope.cargoListView.templatesView);
+                });
+            }
+        }
     }]);
 
-    return PackingSpaceView;
+    return View;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (PackingSpaceView);
+/* harmony default export */ __webpack_exports__["a"] = (View);
 
 /***/ }),
-/* 48 */
+/* 51 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5457,13 +7342,630 @@ Utils3D.Rect = Rect;
 /* harmony default export */ __webpack_exports__["a"] = (Utils3D);
 
 /***/ }),
-/* 49 */
+/* 52 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_Utils__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__CargoListView__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CargoView__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils_cik_Pool__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__PackedCargoBoxView__ = __webpack_require__(53);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__PackingSpaceView__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__utils_cik_Logger__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__utils_cik_Tween__ = __webpack_require__(54);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+
+
+
+
+
+
+
+
+
+/**
+ * @typedef {Object} PackResultViewParams
+ * @property {import('../UX').default} ux
+ */
+
+/** @type {PackResultViewParams} */
+var defaultParams = {};
+
+/**
+ * @param {CargoView} cargoView
+ * @returns {PackedCargoBoxView}
+ */
+function poolNewFN(cargoView) {
+    //console.log('pool new', cargoView);
+    var packedCargoView = new __WEBPACK_IMPORTED_MODULE_4__PackedCargoBoxView__["a" /* default */](cargoView.entry);
+    packedCargoView.Extend(cargoView);
+    return packedCargoView;
+}
+
+/**
+ * @param {PackedCargoBoxView} object 
+ * @param {CargoView} cargoView
+ * @returns {PackedCargoBoxView}
+ */
+function poolResetFN(object, cargoView) {
+    //console.log('pool reset', cargoView);
+    object.Extend(cargoView);
+    return object;
+}
+
+var PackResultView = function () {
+    /**
+     * @param {CargoListView} cargoListView
+     * @param {PackingSpaceView} packingSpaceView
+     * @param {PackResultViewParams} params 
+     */
+    function PackResultView(cargoListView, packingSpaceView, params) {
+        _classCallCheck(this, PackResultView);
+
+        this.cargoListView = cargoListView;
+        this.packingSpaceView = packingSpaceView;
+        this.params = __WEBPACK_IMPORTED_MODULE_0__utils_cik_Utils__["default"].AssignUndefined(params, defaultParams);
+
+        this.view = new THREE.Object3D();
+
+        this.pool = new __WEBPACK_IMPORTED_MODULE_3__utils_cik_Pool__["a" /* default */](poolNewFN, poolResetFN);
+
+        /** @type {Array<Tween>} */
+        this.animatingViews = [];
+    }
+
+    /** 
+     * @param {import('../packer/Packer').PackingResult} packingResult
+     */
+
+
+    _createClass(PackResultView, [{
+        key: 'DisplayPackingResult',
+        value: function DisplayPackingResult(packingResult) {
+            var _this = this;
+
+            var containingVolumeID = packingResult.Container.ID;
+            var containingVolume = this.packingSpaceView.FindContainingVolume(containingVolumeID);
+            var matrix = this.packingSpaceView.GetMatrix(containingVolume);
+            var offset = new THREE.Vector3();
+            var orientation = new THREE.Quaternion();
+            var scale = new THREE.Vector3();
+            matrix.decompose(offset, orientation, scale);
+
+            var animatingViews = this.animatingViews;
+            var view = this.view;
+            var onTweenCompleted = this.OnTweenCompleted.bind(this);
+
+            var _loop = function _loop() {
+                var item = packingResult.PackedItems[i];
+                var cargoViewTemplate = _this.cargoListView.GetTemplate(item.ID);
+                var packedCargoView = _this.pool.Request(cargoViewTemplate);
+
+                var width = item.PackDimX,
+                    length = item.PackDimZ,
+                    height = item.PackDimY;
+
+                __WEBPACK_IMPORTED_MODULE_6__utils_cik_Logger__["a" /* default */].WarnOnce('PackResultView.DisplayPackingResult', 'packedCargoView should be rotated instead of re-scaling');
+                packedCargoView.SetScale(width, height, length);
+
+                var x = item.CoordX + width / 2 + offset.x,
+                    y = item.CoordY + height / 2 + offset.y,
+                    z = item.CoordZ + length / 2 + offset.z;
+                //packedCargoView.position.set(x, y, z);
+
+                var zEntry = containingVolume.dimensions.length;
+                setTimeout(function () {
+                    var posTweenCombo = __WEBPACK_IMPORTED_MODULE_7__utils_cik_Tween__["a" /* default */].Combo.Request3(__WEBPACK_IMPORTED_MODULE_7__utils_cik_Tween__["a" /* default */].functions.linear, x, y, zEntry, 0, 0, z - zEntry, .5);
+
+                    posTweenCombo.Hook(packedCargoView.position, 'x', 'y', 'z');
+                    posTweenCombo.onComplete = onTweenCompleted;
+                    posTweenCombo.Update(0);
+                    animatingViews.push(posTweenCombo);
+
+                    view.add(packedCargoView.view);
+                }, 100 * i);
+            };
+
+            for (var i = 0, numPackedItems = packingResult.PackedItems.length; i < numPackedItems; i++) {
+                _loop();
+            }
+        }
+
+        /**
+         * 
+         * @param {Tween|Tween.Combo} tween 
+         */
+
+    }, {
+        key: 'OnTweenCompleted',
+        value: function OnTweenCompleted(tween) {
+            var index = this.animatingViews.indexOf(tween);
+            if (index != -1) {
+                this.animatingViews.splice(index, 1);
+            }
+            tween.Unhook();
+            tween.Return();
+        }
+    }, {
+        key: 'Update',
+        value: function Update() {
+            this.animatingViews.forEach(function (animatingView) {
+                animatingView.Update();
+            });
+        }
+    }]);
+
+    return PackResultView;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (PackResultView);
+
+/***/ }),
+/* 53 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CargoBoxView__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_box_BoxEntry__ = __webpack_require__(6);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _set = function set(object, property, value, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent !== null) { set(parent, property, value, receiver); } } else if ("value" in desc && desc.writable) { desc.value = value; } else { var setter = desc.set; if (setter !== undefined) { setter.call(receiver, value); } } return value; };
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+var unitCubeEdgeGeometry = new THREE.EdgesGeometry(new THREE.BoxBufferGeometry(1, 1, 1, 1, 1, 1));
+var wireframeMaterialTemplate = new THREE.LineBasicMaterial({ color: 0xffffff });
+
+var PackedCargoBoxView = function (_CargoBoxView) {
+    _inherits(PackedCargoBoxView, _CargoBoxView);
+
+    /**
+     * @param {BoxEntry} boxEntry 
+     */
+    function PackedCargoBoxView(boxEntry) {
+        _classCallCheck(this, PackedCargoBoxView);
+
+        var _this = _possibleConstructorReturn(this, (PackedCargoBoxView.__proto__ || Object.getPrototypeOf(PackedCargoBoxView)).call(this, boxEntry));
+
+        var meshMaterial = _this.mesh.material;
+        meshMaterial.polygonOffset = true;
+        meshMaterial.polygonOffsetFactor = 1;
+        meshMaterial.polygonOffsetUnits = 1;
+        meshMaterial.transparent = true;
+        meshMaterial.opacity = .5;
+
+        var material = wireframeMaterialTemplate.clone();
+        _this.wireMesh = new THREE.LineSegments(unitCubeEdgeGeometry, material);
+        _this.wireMesh.scale.copy(boxEntry.dimensions.vec3);
+
+        _this.view.add(_this.wireMesh);
+        return _this;
+    }
+
+    /** @returns {BoxEntry} */
+
+
+    _createClass(PackedCargoBoxView, [{
+        key: "SetScale",
+
+
+        /**
+         * @param {Number} x 
+         * @param {Number} y 
+         * @param {Number} z 
+         */
+        value: function SetScale(x, y, z) {
+            this.mesh.scale.set(x, y, z);
+            this.wireMesh.scale.set(x, y, z);
+        }
+
+        /**
+         * @param {CargoBoxView} cargoView 
+         */
+
+    }, {
+        key: "Extend",
+        value: function Extend(cargoView) {
+            this.entry = cargoView.entry;
+            this.mesh.material.color = cargoView.mesh.material.color;
+        }
+    }, {
+        key: "entry",
+        get: function get() {
+            return _get(PackedCargoBoxView.prototype.__proto__ || Object.getPrototypeOf(PackedCargoBoxView.prototype), "entry", this);
+        },
+        set: function set(value) {
+            _set(PackedCargoBoxView.prototype.__proto__ || Object.getPrototypeOf(PackedCargoBoxView.prototype), "entry", value, this);
+            this.scale = value.dimensions.vec3;
+        }
+    }]);
+
+    return PackedCargoBoxView;
+}(__WEBPACK_IMPORTED_MODULE_0__CargoBoxView__["a" /* default */]);
+
+/* harmony default export */ __webpack_exports__["a"] = (PackedCargoBoxView);
+
+/***/ }),
+/* 54 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Pool__ = __webpack_require__(35);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+
+
+/** 
+ * Tween update function
+ * @param {Number} time 
+ * @param {Number} startValue 
+ * @param {Number} delta 
+ * @param {Number} duration
+ * @returns {Number} value
+ */
+function TweenCallback(time, startValue, delta, duration) {}
+
+/**
+ * On completed callback
+ * @param {Tween} target
+ */
+function TweenCompletedCallback(target) {}
+
+var clock = new THREE.Clock();
+
+function poolNewFN() {
+    return new Tween();
+}
+/** @param {Tween} tween */
+function poolResetFN(tween) {
+    return tween;
+}
+var pool = new __WEBPACK_IMPORTED_MODULE_0__Pool__["a" /* default */](poolNewFN, poolResetFN);
+
+var functions = {
+    /** @type {TweenCallback} */
+    linear: function linear(t, b, c, d) {
+        return b + c * (t / d);
+    },
+
+    ease: {
+        /** @type {TweenCallback} */
+        easeOutElastic: function easeOutElastic(t, b, c, d) {
+            var ts = (t /= d) * t;
+            var tc = ts * t;
+            return b + c * (33 * tc * ts + -106 * ts * ts + 126 * tc + -67 * ts + 15 * t);
+        }
+    }
+};
+
+/**
+ * On completed callback
+ * @param {TweenCombo} target
+ */
+function TweenComboCompletedCallback(target) {}
+
+var TweenCombo = function () {
+    /**
+     * 
+     * @param {Array<Tween>} tweens 
+     */
+    function TweenCombo() {
+        _classCallCheck(this, TweenCombo);
+
+        for (var _len = arguments.length, tweens = Array(_len), _key = 0; _key < _len; _key++) {
+            tweens[_key] = arguments[_key];
+        }
+
+        this.tweens = tweens;
+
+        /** @type {TweenComboCompletedCallback} */
+        this.onComplete;
+        this.completed = false;
+    }
+
+    /**
+     * @param {Object} object 
+     * @param {Array<string>} properties 
+     */
+
+
+    _createClass(TweenCombo, [{
+        key: "Hook",
+        value: function Hook(object) {
+            for (var _len2 = arguments.length, properties = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+                properties[_key2 - 1] = arguments[_key2];
+            }
+
+            for (var i = 0; i < this.tweens.length; i++) {
+                this.tweens[i].Hook(object, properties[i]);
+            };
+        }
+    }, {
+        key: "Unhook",
+        value: function Unhook() {
+            this.tweens.forEach(function (tween) {
+                tween.Unhook();
+            });
+        }
+
+        /**
+         * Update tween
+         * @param {Number} t [0, duration]
+         */
+
+    }, {
+        key: "Update",
+        value: function Update(t) {
+            var completed = true;
+            this.tweens.forEach(function (tween) {
+                if (tween.completed === false) tween.Update(t);
+
+                completed = completed && tween.completed;
+            });
+
+            this.completed = completed;
+            if (this.completed && this.onComplete) this.onComplete(this);
+        }
+
+        /**
+         * Returns tweens to pool
+         */
+
+    }, {
+        key: "Return",
+        value: function Return() {
+            this.tweens.forEach(function (tween) {
+                pool.Return(tween);
+            });
+        }
+
+        /**
+         * @param {TweenCallback} callback 
+         * @param {Number} startValue0
+         * @param {Number} startValue1
+         * @param {Number} startValue2
+         * @param {Number} delta0
+         * @param {Number} delta1
+         * @param {Number} delta2
+         * @param {Number} duration
+         */
+
+    }], [{
+        key: "Request3",
+        value: function Request3(callback, startValue0, startValue1, startValue2, delta0, delta1, delta2, duration) {
+            var tween0 = pool.Request();
+            tween0.Reset(callback, startValue0, delta0, duration);
+
+            var tween1 = pool.Request();
+            tween1.Reset(callback, startValue1, delta1, duration);
+
+            var tween2 = pool.Request();
+            tween2.Reset(callback, startValue2, delta2, duration);
+
+            var combo = new TweenCombo(tween0, tween1, tween2);
+
+            return combo;
+        }
+    }]);
+
+    return TweenCombo;
+}();
+
+var Tween = function () {
+    /**
+     * @param {TweenCallback} callback 
+     * @param {Number} [startValue] 
+     * @param {Number} delta 
+     * @param {Number} duration 
+     */
+    function Tween(callback, startValue, delta, duration) {
+        _classCallCheck(this, Tween);
+
+        this.Reset(callback, startValue, delta, duration);
+
+        /** @type {TweenCompletedCallback} */
+        this.onComplete;
+    }
+
+    /**
+     * @param {TweenCallback} callback 
+     * @param {Number} [startValue]
+     * @param {Number} delta 
+     * @param {Number} duration 
+     */
+
+
+    _createClass(Tween, [{
+        key: "Reset",
+        value: function Reset(callback, startValue, delta, duration) {
+            this.callback = callback;
+            this.startValue = startValue;
+            this.delta = delta;
+            this.duration = duration;
+
+            if (this.startValue === undefined && this.object && this.property) {
+                this.startValue = this.object[this.property];
+            }
+
+            this.startTime = clock.getElapsedTime();
+            this.completed = false;
+        }
+
+        /**
+         * @param {Object} object 
+         * @param {string} property 
+         */
+
+    }, {
+        key: "Hook",
+        value: function Hook(object, property) {
+            this.object = object;
+            this.property = property;
+
+            if (this.startValue === undefined) {
+                this.startValue = this.object[this.property];
+            }
+        }
+    }, {
+        key: "Unhook",
+        value: function Unhook() {
+            this.object = this.property = undefined;
+        }
+
+        /**
+         * Update tween
+         * @param {Number} t [0, duration]
+         */
+
+    }, {
+        key: "Update",
+        value: function Update(t) {
+            if (t === undefined) t = clock.getElapsedTime() - this.startTime;
+
+            if (t >= this.duration) {
+                this.completed = true;
+                var endValue = this.startValue + this.delta;
+
+                if (this.object) this.object[this.property] = endValue;
+
+                if (this.onComplete) this.onComplete(this);
+
+                return endValue;
+            }
+
+            var x = this.callback(t, this.startValue, this.delta, this.duration);
+            if (this.object) this.object[this.property] = x;
+
+            return x;
+        }
+    }, {
+        key: "Return",
+        value: function Return() {
+            pool.Return(this);
+        }
+
+        /**
+         * @param {TweenCallback} callback 
+         * @param {Number} [startValue]
+         * @param {Number} delta 
+         * @param {Number} duration 
+         */
+
+    }], [{
+        key: "Request",
+        value: function Request(callback, startValue, delta, duration) {
+            var tween = pool.Request();
+            tween.Reset(callback, startValue, delta, duration);
+
+            return tween;
+        }
+    }, {
+        key: "functions",
+        get: function get() {
+            return functions;
+        }
+    }]);
+
+    return Tween;
+}();
+
+Tween.Combo = TweenCombo;
+
+/* harmony default export */ __webpack_exports__["a"] = (Tween);
+
+/***/ }),
+/* 55 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__App__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Signaler__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__packer_Packer__ = __webpack_require__(9);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+
+var _app = Symbol('app');
+
+var signals = {
+    packUpdate: 'packUpdate'
+};
+
+var PackerInterface = function (_Signaler) {
+    _inherits(PackerInterface, _Signaler);
+
+    /**
+     * @param {App} app 
+     */
+    function PackerInterface(app) {
+        _classCallCheck(this, PackerInterface);
+
+        var _this = _possibleConstructorReturn(this, (PackerInterface.__proto__ || Object.getPrototypeOf(PackerInterface)).call(this));
+
+        var scope = _this;
+        function onPackUpdate() {
+            scope.Dispatch(signals.packUpdate);
+        }
+
+        app.packer.On(__WEBPACK_IMPORTED_MODULE_2__packer_Packer__["a" /* default */].signals.packUpdate, onPackUpdate);
+        _this[_app] = app;
+        return _this;
+    }
+
+    _createClass(PackerInterface, [{
+        key: "Solve",
+        value: function Solve() {
+            /** @type {App} */
+            var app = this[_app];
+            app.packer.Solve();
+        }
+    }], [{
+        key: "signals",
+        get: function get() {
+            return signals;
+        }
+    }]);
+
+    return PackerInterface;
+}(__WEBPACK_IMPORTED_MODULE_1__utils_cik_Signaler__["default"]);
+
+/* harmony default export */ __webpack_exports__["a"] = (PackerInterface);
+
+/***/ }),
+/* 56 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__packer_afit_AFitTest__ = __webpack_require__(57);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+
 
 var debugGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 1, 1, 1);
 var debugMaterial = new THREE.MeshStandardMaterial({ color: 0xff7f00, transparent: true, opacity: .35 });
@@ -5514,70 +8016,33 @@ var DebugBox = function () {
     return DebugBox;
 }();
 
-var Debug = function Debug() {
-    _classCallCheck(this, Debug);
-};
+var Debug = function () {
+    function Debug() {
+        _classCallCheck(this, Debug);
+    }
+
+    _createClass(Debug, null, [{
+        key: "AFitTest",
+        get: function get() {
+            return __WEBPACK_IMPORTED_MODULE_0__packer_afit_AFitTest__["a" /* default */];
+        }
+    }]);
+
+    return Debug;
+}();
 
 Debug.Box = DebugBox;
 
-/* unused harmony default export */ var _unused_webpack_default_export = (Debug);
+/* harmony default export */ __webpack_exports__["default"] = (Debug);
 
 /***/ }),
-/* 50 */
+/* 57 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "testConfig", function() { return testConfig; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "testAFit", function() { return testAFit; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_config_Config__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__packer_afit_AFitTest__ = __webpack_require__(51);
-
-
-
-function testConfig() {
-    var obj;
-    obj = {
-        prop1: '1',
-        prop2: '2',
-        child: {
-            prop: 'child object'
-        },
-        fn: function fn() {
-            console.log('prop1:' + obj.prop1 + ', prop2:' + obj.prop2);
-        }
-    };
-
-    var config = new __WEBPACK_IMPORTED_MODULE_0__utils_cik_config_Config__["default"](obj);
-    config.Track('prop1', 'prop2', 'fn', 'child.prop');
-
-    var onGUIChanged = function onGUIChanged() {
-        console.log(obj, 'changed');
-    };
-    config.Edit(onGUIChanged, 'obj', undefined);
-
-    console.log(config.gui.list);
-}
-
-function testAFit() {
-    var test = new __WEBPACK_IMPORTED_MODULE_1__packer_afit_AFitTest__["a" /* default */]();
-    var data = __WEBPACK_IMPORTED_MODULE_1__packer_afit_AFitTest__["a" /* default */].GenerateDataRandom1();
-    var result = test.T1(data.container, data.items);
-    console.group('AFit packing', data);
-    console.log(result);
-    console.groupEnd();
-}
-
-
-
-/***/ }),
-/* 51 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_Item__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__AFit__ = __webpack_require__(52);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Container__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_Item__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__AFit__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Container__ = __webpack_require__(14);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -5601,7 +8066,7 @@ function sumOfVolumes(items) {
 function toItems(objects, m) {
     var items = [];
     objects.forEach(function (o) {
-        items.push(new __WEBPACK_IMPORTED_MODULE_0__components_Item__["a" /* default */](o[m[0]], o[m[1]], o[m[2]], o[m[3]], o[m[4]]));
+        items.push(new __WEBPACK_IMPORTED_MODULE_0__components_Item__["default"](o[m[0]], o[m[1]], o[m[2]], o[m[3]], o[m[4]]));
     });
     return items;
 }
@@ -5635,9 +8100,9 @@ var AFitTest = function () {
         key: "T1",
         value: function T1(container, items) {
 
-            var now = performance.now();
+            var startTime = performance.now();
             var result = this.aFitPacker.Solve(container, items);
-            result.PackTimeInMilliseconds = now - performance.now();
+            result.PackTimeInMilliseconds = Math.ceil(performance.now() - startTime);
 
             var containerVolume = container.Length * container.Width * container.Height;
             var itemVolumePacked = sumOfVolumes(result.PackedItems);
@@ -5649,12 +8114,36 @@ var AFitTest = function () {
             return result;
         }
     }], [{
-        key: "GenerateDataRandom1",
-        value: function GenerateDataRandom1() {
+        key: "GenerateDataSample1",
+        value: function GenerateDataSample1() {
             var containerData = { ID: 1000, Name: 'Box1', Length: 15, Width: 13, Height: 9 };
             var itemsData = [{ ID: 1000, Name: 'Item1', Length: 5, Width: 4, Height: 2, Quantity: 1 }, { ID: 1001, Name: 'Item2', Length: 2, Width: 1, Height: 1, Quantity: 3 }, { ID: 1002, Name: 'Item3', Length: 9, Width: 7, Height: 3, Quantity: 4 }, { ID: 1003, Name: 'Item4', Length: 13, Width: 6, Height: 3, Quantity: 8 }, { ID: 1004, Name: 'Item5', Length: 17, Width: 8, Height: 6, Quantity: 1 }, { ID: 1005, Name: 'Item6', Length: 3, Width: 3, Height: 2, Quantity: 2 }];
 
-            var container = Object.assign(new __WEBPACK_IMPORTED_MODULE_2__components_Container__["a" /* default */](), containerData);
+            var container = Object.assign(new __WEBPACK_IMPORTED_MODULE_2__components_Container__["default"](), containerData);
+            var items = toItems(itemsData, ['ID', 'Length', 'Width', 'Height', 'Quantity']);
+
+            var data = new TestData(container, items);
+            return data;
+        }
+    }, {
+        key: "GenerateDataSample2",
+        value: function GenerateDataSample2() {
+            var containerData = { ID: 1000, Name: 'Box1', Length: 60, Width: 35, Height: 25 };
+            var itemsData = [{ ID: 1000, Name: 'Item1', Length: 30, Width: 50, Height: 20, Quantity: 1 }, { ID: 1003, Name: 'Item4', Length: 13, Width: 6, Height: 3, Quantity: 6 }, { ID: 1004, Name: 'Item5', Length: 17, Width: 8, Height: 6, Quantity: 3 }, { ID: 1005, Name: 'Item6', Length: 5, Width: 5, Height: 2, Quantity: 16 }];
+
+            var container = Object.assign(new __WEBPACK_IMPORTED_MODULE_2__components_Container__["default"](), containerData);
+            var items = toItems(itemsData, ['ID', 'Length', 'Width', 'Height', 'Quantity']);
+
+            var data = new TestData(container, items);
+            return data;
+        }
+    }, {
+        key: "GenerateDataSampleFlatdeck",
+        value: function GenerateDataSampleFlatdeck() {
+            var containerData = { ID: 1000, Name: 'Box1', Length: 576, Width: 102, Height: 102 };
+            var itemsData = [{ ID: 1000, Name: 'Item1', Length: 100, Width: 70, Height: 90, Quantity: 3 }, { ID: 1003, Name: 'Item4', Length: 60, Width: 60, Height: 60, Quantity: 7 }, { ID: 1004, Name: 'Item5', Length: 40, Width: 20, Height: 30, Quantity: 4 }, { ID: 1005, Name: 'Item6', Length: 30, Width: 20, Height: 30, Quantity: 20 }];
+
+            var container = Object.assign(new __WEBPACK_IMPORTED_MODULE_2__components_Container__["default"](), containerData);
             var items = toItems(itemsData, ['ID', 'Length', 'Width', 'Height', 'Quantity']);
 
             var data = new TestData(container, items);
@@ -5666,2258 +8155,6 @@ var AFitTest = function () {
 }();
 
 /* harmony default export */ __webpack_exports__["a"] = (AFitTest);
-
-/***/ }),
-/* 52 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_Container__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Item__ = __webpack_require__(28);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-
-var epsilon = Math.pow(2, -52);;
-
-/*c# using CromulentBisgetti.ContainerPacking.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace CromulentBisgetti.ContainerPacking.Algorithms
-{
-	/// <summary>
-	/// A 3D bin packing algorithm originally ported from https://github.com/keremdemirer/3dbinpackingjs,
-	/// which itself was a JavaScript port of https://github.com/wknechtel/3d-bin-pack/, which is a C reconstruction 
-	/// of a novel algorithm developed in a U.S. Air Force master's thesis by Erhan Baltacioglu in 2001.
-	/// </summary>
-	public class EB_AFIT : IPackingAlgorithm
-	{
-c#*/
-
-/*c# ScrapPad
-/// <summary>
-		/// From the master's thesis:
-		/// "The double linked list we use keeps the topology of the edge of the 
-		/// current layer under construction. We keep the x and z coordinates of 
-		/// each gap's right corner. The program looks at those gaps and tries to 
-		/// fill them with boxes one at a time while trying to keep the edge of the
-		/// layer even" (p. 3-7).
-		/// </summary>
-		private class ScrapPad
-		{
-			/// <summary>
-			/// Gets or sets the x coordinate of the gap's right corner.
-			/// </summary>
-			/// <value>
-			/// The x coordinate of the gap's right corner.
-			/// </value>
-			public decimal CumX { get; set; }
-
-			/// <summary>
-			/// Gets or sets the z coordinate of the gap's right corner.
-			/// </summary>
-			/// <value>
-			/// The z coordinate of the gap's right corner.
-			/// </value>
-			public decimal CumZ { get; set; }
-
-			/// <summary>
-			/// Gets or sets the following entry.
-			/// </summary>
-			/// <value>
-			/// The following entry.
-			/// </value>
-			public ScrapPad Post { get; set; }
-
-			/// <summary>
-			/// Gets or sets the previous entry.
-			/// </summary>
-			/// <value>
-			/// The previous entry.
-			/// </value>
-			public ScrapPad Pre { get; set; }
-        }
-c#*/
-
-/**
- * From the master's thesis:
- * "The double linked list we use keeps the topology of the edge of the 
- * current layer under construction. We keep the x and z coordinates of 
- * each gap's right corner. The program looks at those gaps and tries to 
- * fill them with boxes one at a time while trying to keep the edge of the
- * layer even" (p. 3-7).
- */
-
-var ScrapPad = function ScrapPad() {
-	_classCallCheck(this, ScrapPad);
-
-	/** The x coordinate of the gap's right corner. */
-	this.CumX = 0;
-	/** The z coordinate of the gap's right corner. */
-	this.CumZ = 0;
-
-	/** The following entry.
-  * @type {ScrapPad}
-  */
-	this.Post;
-
-	/** The previous entry.
-  * @type {ScrapPad}
-  */
-	this.Pre;
-};
-
-/*c#
-/// <summary>
-	/// A list that stores all the different lengths of all item dimensions.
-	/// From the master's thesis:
-	/// "Each Layerdim value in this array represents a different layer thickness
-	/// value with which each iteration can start packing. Before starting iterations,
-	/// all different lengths of all box dimensions along with evaluation values are
-	/// stored in this array" (p. 3-6).
-	/// </summary>
-	private class Layer
-	{
-		/// <summary>
-		/// Gets or sets the layer dimension value, representing a layer thickness.
-		/// </summary>
-		/// <value>
-		/// The layer dimension value.
-		/// </value>
-		public decimal LayerDim { get; set; }
-
-		/// <summary>
-		/// Gets or sets the layer eval value, representing an evaluation weight
-		/// value for the corresponding LayerDim value.
-		/// </summary>
-		/// <value>
-		/// The layer eval value.
-		/// </value>
-		public decimal LayerEval { get; set; }
-    }
-    c#*/
-
-/**
- * A list that stores all the different lengths of all item dimensions.
- * From the master's thesis:
- * "Each Layerdim value in this array represents a different layer thickness
- * value with which each iteration can start packing. Before starting iterations,
- * all different lengths of all box dimensions along with evaluation values are
- * stored in this array" (p. 3-6).
- */
-
-
-var Layer = function () {
-	function Layer(layerEval) {
-		_classCallCheck(this, Layer);
-
-		this.LayerDim = 0;
-		this.LayerEval = layerEval !== undefined ? layerEval : 0;
-	}
-
-	/**
-  * @param {Layer} l1 
-  * @param {Layer} l2 
-  */
-
-
-	_createClass(Layer, null, [{
-		key: "SortByEval",
-		value: function SortByEval(l1, l2) {
-			return l1.LayerEval - l2.LayerEval;
-		}
-	}]);
-
-	return Layer;
-}();
-
-var PackingResult = function PackingResult() {
-	_classCallCheck(this, PackingResult);
-
-	this.IsCompletePack = false;
-	/** @type {Array<Item>} */
-	this.PackedItems = [];
-	this.PercentContainerVolumePacked = 0;
-	this.PercentItemVolumePacked = 0;
-	/** @type {Array<Item>} */
-	this.UnpackedItems = [];
-	this.PackTimeInMilliseconds = Number.MAX_SAFE_INTEGER;
-};
-
-/** @type {Array<Item>} */
-
-
-var itemsToPack = [];
-/** @type {Array<Item>} */
-var itemsPackedInOrder;
-/** @type {Array<Layer>} */
-var layers;
-
-/** @type {ScrapPad} */
-var scrapfirst;
-/** @type {ScrapPad} */
-var smallestZ;
-/** @type {ScrapPad} */
-var trash;
-
-var evened = false;
-var hundredPercentPacked = false;
-var layerDone = false;
-var packing = false;
-var packingBest = false;
-var quit = false;
-
-var bboxi = 0;
-var bestIteration = 0;
-var bestVariant = 0;
-var boxi = 0;
-var cboxi = 0;
-var layerListLen = 0;
-var packedItemCount = 0;
-var x = 0;
-
-var bbfx = 0;
-var bbfy = 0;
-var bbfz = 0;
-var bboxx = 0;
-var bboxy = 0;
-var bboxz = 0;
-var bfx = 0;
-var bfy = 0;
-var bfz = 0;
-var boxx = 0;
-var boxy = 0;
-var boxz = 0;
-var cboxx = 0;
-var cboxy = 0;
-var cboxz = 0;
-var layerinlayer = 0;
-var layerThickness = 0;
-var lilz = 0;
-var packedVolume = 0;
-var packedy = 0;
-var prelayer = 0;
-var prepackedy = 0;
-var preremainpy = 0;
-var px = 0;
-var py = 0;
-var pz = 0;
-var remainpy = 0;
-var remainpz = 0;
-var itemsToPackCount = 0;
-var totalItemVolume = 0;
-var totalContainerVolume = 0;
-
-/**
- * Current port by chadiik (2018)
- * A 3D bin packing algorithm originally ported from https://github.com/davidmchapman/3DContainerPacking
- * which itself was ported from https://github.com/keremdemirer/3dbinpackingjs,
- * which itself was a JavaScript port of https://github.com/wknechtel/3d-bin-pack/, which is a C reconstruction 
- * of a novel algorithm developed in a U.S. Air Force master's thesis by Erhan Baltacioglu in 2001.
- */
-
-var AFit = function () {
-	/*c# #region Private Variables
- private List<Item> itemsToPack;
- private List<Item> itemsPackedInOrder;
- private List<Layer> layers;
- private ContainerPackingResult result;
- private ScrapPad scrapfirst;
- private ScrapPad smallestZ;
- private ScrapPad trash;
- private bool evened;
- private bool hundredPercentPacked = false;
- private bool layerDone;
- private bool packing;
- private bool packingBest = false;
- private bool quit = false;
- private int bboxi;
- private int bestIteration;
- private int bestVariant;
- private int boxi;
- private int cboxi;
- private int layerListLen;
- private int packedItemCount;
- private int x;
- private decimal bbfx;
- private decimal bbfy;
- private decimal bbfz;
- private decimal bboxx;
- private decimal bboxy;
- private decimal bboxz;
- private decimal bfx;
- private decimal bfy;
- private decimal bfz;
- private decimal boxx;
- private decimal boxy;
- private decimal boxz;
- private decimal cboxx;
- private decimal cboxy;
- private decimal cboxz;
- private decimal layerinlayer;
- private decimal layerThickness;
- private decimal lilz;
- private decimal packedVolume;
- private decimal packedy;
- private decimal prelayer;
- private decimal prepackedy;
- private decimal preremainpy;
- private decimal px;
- private decimal py;
- private decimal pz;
- private decimal remainpy;
- private decimal remainpz;
- private decimal itemsToPackCount;
- private decimal totalItemVolume;
- private decimal totalContainerVolume;
- #endregion Private Variables
- c#*/
-	function AFit() {
-		_classCallCheck(this, AFit);
-	}
-
-	/*c# #region Public Methods
- /// <summary>
- /// Runs the packing algorithm.
- /// </summary>
- /// <param name="container">The container to pack items into.</param>
- /// <param name="items">The items to pack.</param>
- /// <returns>The bin packing result.</returns>
- public AlgorithmPackingResult Run(Container container, List<Item> items)
- {
- Initialize(container, items);
- ExecuteIterations(container);
- Report(container);
- 	AlgorithmPackingResult result = new AlgorithmPackingResult();
- result.AlgorithmID = (int)AlgorithmType.EB_AFIT;
- result.AlgorithmName = "EB-AFIT";
- 	for (int i = 1; i <= itemsToPackCount; i++)
- {
- itemsToPack[i].Quantity = 1;
- 		if (!itemsToPack[i].IsPacked)
- {
- 	result.UnpackedItems.Add(itemsToPack[i]);
- }
- }
- 	result.PackedItems = itemsPackedInOrder;
- 
- 			if (result.UnpackedItems.Count == 0)
- {
- result.IsCompletePack = true;
- }
- 	return result;
- }
-       #endregion Public Methods
-     c#*/
-
-	/**
-  * Runs the algorithm
-  * @param {Container} container 
-  * @param {Array<Item>} items 
-  * @returns {PackingResult}
-  */
-
-
-	_createClass(AFit, [{
-		key: "Solve",
-		value: function Solve(container, items) {
-			this.Initialize(container, items);
-			this.ExecuteIterations(container);
-			this.Report(container);
-
-			var result = new PackingResult();
-
-			for (var i = 1; i <= itemsToPackCount; i++) {
-				itemsToPack[i].Quantity = 1;
-
-				if (!itemsToPack[i].IsPacked) {
-					result.UnpackedItems.push(itemsToPack[i]);
-				}
-			}
-
-			result.PackedItems = itemsPackedInOrder;
-
-			if (result.UnpackedItems.length == 0) {
-				result.IsCompletePack = true;
-			}
-
-			return result;
-		}
-
-		/*c# AnalyzeBox
-  #region Private Methods
-  /// <summary>
-  /// Analyzes each unpacked box to find the best fitting one to the empty space given.
-  /// </summary>
-  private void AnalyzeBox(decimal hmx, decimal hy, decimal hmy, decimal hz, decimal hmz, decimal dim1, decimal dim2, decimal dim3)
-  {
-  if (dim1 <= hmx && dim2 <= hmy && dim3 <= hmz)
-  {
-  if (dim2 <= hy)
-  {
-  	if (hy - dim2 < bfy)
-  	{
-  		boxx = dim1;
-  		boxy = dim2;
-  		boxz = dim3;
-  		bfx = hmx - dim1;
-  		bfy = hy - dim2;
-  		bfz = Math.Abs(hz - dim3);
-  		boxi = x;
-  	}
-  	else if (hy - dim2 == bfy && hmx - dim1 < bfx)
-  	{
-  		boxx = dim1;
-  		boxy = dim2;
-  		boxz = dim3;
-  		bfx = hmx - dim1;
-  		bfy = hy - dim2;
-  		bfz = Math.Abs(hz - dim3);
-  		boxi = x;
-  	}
-  	else if (hy - dim2 == bfy && hmx - dim1 == bfx && Math.Abs(hz - dim3) < bfz)
-  	{
-  		boxx = dim1;
-  		boxy = dim2;
-  		boxz = dim3;
-  		bfx = hmx - dim1;
-  		bfy = hy - dim2;
-  		bfz = Math.Abs(hz - dim3);
-  		boxi = x;
-  	}
-  }
-  else
-  {
-  	if (dim2 - hy < bbfy)
-  	{
-  		bboxx = dim1;
-  		bboxy = dim2;
-  		bboxz = dim3;
-  		bbfx = hmx - dim1;
-  		bbfy = dim2 - hy;
-  		bbfz = Math.Abs(hz - dim3);
-  		bboxi = x;
-  	}
-  	else if (dim2 - hy == bbfy && hmx - dim1 < bbfx)
-  	{
-  		bboxx = dim1;
-  		bboxy = dim2;
-  		bboxz = dim3;
-  		bbfx = hmx - dim1;
-  		bbfy = dim2 - hy;
-  		bbfz = Math.Abs(hz - dim3);
-  		bboxi = x;
-  	}
-  	else if (dim2 - hy == bbfy && hmx - dim1 == bbfx && Math.Abs(hz - dim3) < bbfz)
-  	{
-  		bboxx = dim1;
-  		bboxy = dim2;
-  		bboxz = dim3;
-  		bbfx = hmx - dim1;
-  		bbfy = dim2 - hy;
-  		bbfz = Math.Abs(hz - dim3);
-  		bboxi = x;
-  	}
-  }
-  }
-      }
-  c#*/
-
-		/**
-   * Analyzes each unpacked box to find the best fitting one to the empty space given.
-   * @param {Number} hmx 
-   * @param {Number} hy 
-   * @param {Number} hmy 
-   * @param {Number} hz 
-   * @param {Number} hmz 
-   * @param {Number} dim1 
-   * @param {Number} dim2 
-   * @param {Number} dim3 
-   */
-
-	}, {
-		key: "AnalyzeBox",
-		value: function AnalyzeBox(hmx, hy, hmy, hz, hmz, dim1, dim2, dim3) {
-			if (dim1 <= hmx && dim2 <= hmy && dim3 <= hmz) {
-				if (dim2 <= hy) {
-					if (hy - dim2 < bfy) {
-						boxx = dim1;
-						boxy = dim2;
-						boxz = dim3;
-						bfx = hmx - dim1;
-						bfy = hy - dim2;
-						bfz = Math.abs(hz - dim3);
-						boxi = x;
-					} else if (hy - dim2 == bfy && hmx - dim1 < bfx) {
-						boxx = dim1;
-						boxy = dim2;
-						boxz = dim3;
-						bfx = hmx - dim1;
-						bfy = hy - dim2;
-						bfz = Math.abs(hz - dim3);
-						boxi = x;
-					} else if (hy - dim2 == bfy && hmx - dim1 == bfx && Math.abs(hz - dim3) < bfz) {
-						boxx = dim1;
-						boxy = dim2;
-						boxz = dim3;
-						bfx = hmx - dim1;
-						bfy = hy - dim2;
-						bfz = Math.abs(hz - dim3);
-						boxi = x;
-					}
-				} else {
-					if (dim2 - hy < bbfy) {
-						bboxx = dim1;
-						bboxy = dim2;
-						bboxz = dim3;
-						bbfx = hmx - dim1;
-						bbfy = dim2 - hy;
-						bbfz = Math.abs(hz - dim3);
-						bboxi = x;
-					} else if (dim2 - hy == bbfy && hmx - dim1 < bbfx) {
-						bboxx = dim1;
-						bboxy = dim2;
-						bboxz = dim3;
-						bbfx = hmx - dim1;
-						bbfy = dim2 - hy;
-						bbfz = Math.abs(hz - dim3);
-						bboxi = x;
-					} else if (dim2 - hy == bbfy && hmx - dim1 == bbfx && Math.abs(hz - dim3) < bbfz) {
-						bboxx = dim1;
-						bboxy = dim2;
-						bboxz = dim3;
-						bbfx = hmx - dim1;
-						bbfy = dim2 - hy;
-						bbfz = Math.abs(hz - dim3);
-						bboxi = x;
-					}
-				}
-			}
-		}
-
-		/*c# CheckFound
-  /// <summary>
-  /// After finding each box, the candidate boxes and the condition of the layer are examined.
-  /// </summary>
-  private void CheckFound()
-  {
-  evened = false;
-  if (boxi != 0)
-  {
-  cboxi = boxi;
-  cboxx = boxx;
-  cboxy = boxy;
-  cboxz = boxz;
-  }
-  else
-  {
-  if ((bboxi > 0) && (layerinlayer != 0 || (smallestZ.Pre == null && smallestZ.Post == null)))
-  {
-  if (layerinlayer == 0)
-  {
-  	prelayer = layerThickness;
-  	lilz = smallestZ.CumZ;
-  }
-  		cboxi = bboxi;
-  cboxx = bboxx;
-  cboxy = bboxy;
-  cboxz = bboxz;
-  layerinlayer = layerinlayer + bboxy - layerThickness;
-  layerThickness = bboxy;
-  }
-  else
-  {
-  if (smallestZ.Pre == null && smallestZ.Post == null)
-  {
-  	layerDone = true;
-  }
-  else
-  {
-  	evened = true;
-  			if (smallestZ.Pre == null)
-  	{
-  		trash = smallestZ.Post;
-  		smallestZ.CumX = smallestZ.Post.CumX;
-  		smallestZ.CumZ = smallestZ.Post.CumZ;
-  		smallestZ.Post = smallestZ.Post.Post;
-  		if (smallestZ.Post != null)
-  		{
-  			smallestZ.Post.Pre = smallestZ;
-  		}
-  	}
-  	else if (smallestZ.Post == null)
-  	{
-  		smallestZ.Pre.Post = null;
-  		smallestZ.Pre.CumX = smallestZ.CumX;
-  	}
-  	else
-  	{
-  		if (smallestZ.Pre.CumZ == smallestZ.Post.CumZ)
-  		{
-  			smallestZ.Pre.Post = smallestZ.Post.Post;
-  					if (smallestZ.Post.Post != null)
-  			{
-  				smallestZ.Post.Post.Pre = smallestZ.Pre;
-  			}
-  					smallestZ.Pre.CumX = smallestZ.Post.CumX;
-  		}
-  		else
-  		{
-  			smallestZ.Pre.Post = smallestZ.Post;
-  			smallestZ.Post.Pre = smallestZ.Pre;
-  					if (smallestZ.Pre.CumZ < smallestZ.Post.CumZ)
-  			{
-  				smallestZ.Pre.CumX = smallestZ.CumX;
-  			}
-  		}
-  	}
-  }
-  }
-  }
-     }
-     c#*/
-
-		/**
-   * After finding each box, the candidate boxes and the condition of the layer are examined.
-   */
-
-	}, {
-		key: "CheckFound",
-		value: function CheckFound() {
-			evened = false;
-
-			if (boxi != 0) {
-				cboxi = boxi;
-				cboxx = boxx;
-				cboxy = boxy;
-				cboxz = boxz;
-			} else {
-				if (bboxi > 0 && (layerinlayer != 0 || !smallestZ.Pre && !smallestZ.Post)) {
-					if (layerinlayer == 0) {
-						prelayer = layerThickness;
-						lilz = smallestZ.CumZ;
-					}
-
-					cboxi = bboxi;
-					cboxx = bboxx;
-					cboxy = bboxy;
-					cboxz = bboxz;
-					layerinlayer = layerinlayer + bboxy - layerThickness;
-					layerThickness = bboxy;
-				} else {
-					if (!smallestZ.Pre && !smallestZ.Post) {
-						layerDone = true;
-					} else {
-						evened = true;
-
-						if (!smallestZ.Pre) {
-							trash = smallestZ.Post;
-							smallestZ.CumX = smallestZ.Post.CumX;
-							smallestZ.CumZ = smallestZ.Post.CumZ;
-							smallestZ.Post = smallestZ.Post.Post;
-							if (smallestZ.Post) {
-								smallestZ.Post.Pre = smallestZ;
-							}
-						} else if (!smallestZ.Post) {
-							smallestZ.Pre.Post = undefined;
-							smallestZ.Pre.CumX = smallestZ.CumX;
-						} else {
-							if (smallestZ.Pre.CumZ == smallestZ.Post.CumZ) {
-								smallestZ.Pre.Post = smallestZ.Post.Post;
-
-								if (smallestZ.Post.Post) {
-									smallestZ.Post.Post.Pre = smallestZ.Pre;
-								}
-
-								smallestZ.Pre.CumX = smallestZ.Post.CumX;
-							} else {
-								smallestZ.Pre.Post = smallestZ.Post;
-								smallestZ.Post.Pre = smallestZ.Pre;
-
-								if (smallestZ.Pre.CumZ < smallestZ.Post.CumZ) {
-									smallestZ.Pre.CumX = smallestZ.CumX;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-		/*c# ExecuteIterations
-  /// <summary>
-  /// Executes the packing algorithm variants.
-  /// </summary>
-  private void ExecuteIterations(Container container)
-  {
-  int itelayer;
-  int layersIndex;
-  decimal bestVolume = 0.0M;
-  for (int containerOrientationVariant = 1; (containerOrientationVariant <= 6) && !quit; containerOrientationVariant++)
-  {
-  switch (containerOrientationVariant)
-  {
-  case 1:
-  	px = container.Length; py = container.Height; pz = container.Width;
-  	break;
-  		case 2:
-  	px = container.Width; py = container.Height; pz = container.Length;
-  	break;
-  		case 3:
-  	px = container.Width; py = container.Length; pz = container.Height;
-  	break;
-  		case 4:
-  	px = container.Height; py = container.Length; pz = container.Width;
-  	break;
-  		case 5:
-  	px = container.Length; py = container.Width; pz = container.Height;
-  	break;
-  		case 6:
-  	px = container.Height; py = container.Width; pz = container.Length;
-  	break;
-  }
-  	layers.Add(new Layer { LayerEval = -1 });
-  ListCanditLayers();
-  layers = layers.OrderBy(l => l.LayerEval).ToList();
-  	for (layersIndex = 1; (layersIndex <= layerListLen) && !quit; layersIndex++)
-  {
-  packedVolume = 0.0M;
-  packedy = 0;
-  packing = true;
-  layerThickness = layers[layersIndex].LayerDim;
-  itelayer = layersIndex;
-  remainpy = py;
-  remainpz = pz;
-  packedItemCount = 0;
-  		for (x = 1; x <= itemsToPackCount; x++)
-  {
-  	itemsToPack[x].IsPacked = false;
-  }
-  		do
-  {
-  	layerinlayer = 0;
-  	layerDone = false;
-  			PackLayer();
-  			packedy = packedy + layerThickness;
-  	remainpy = py - packedy;
-  			if (layerinlayer != 0 && !quit)
-  	{
-  		prepackedy = packedy;
-  		preremainpy = remainpy;
-  		remainpy = layerThickness - prelayer;
-  		packedy = packedy - layerThickness + prelayer;
-  		remainpz = lilz;
-  		layerThickness = layerinlayer;
-  		layerDone = false;
-  				PackLayer();
-  				packedy = prepackedy;
-  		remainpy = preremainpy;
-  		remainpz = pz;
-  	}
-  			FindLayer(remainpy);
-  } while (packing && !quit);
-  		if ((packedVolume > bestVolume) && !quit)
-  {
-  	bestVolume = packedVolume;
-  	bestVariant = containerOrientationVariant;
-  	bestIteration = itelayer;
-  }
-  		if (hundredPercentPacked) break;
-  }
-  	if (hundredPercentPacked) break;
-  	if ((container.Length == container.Height) && (container.Height == container.Width)) containerOrientationVariant = 6;
-  	layers = new List<Layer>();
-  }
-  }
-  c#*/
-
-		/**
-   * Executes the packing algorithm variants.
-   * @param {Container} container 
-   */
-
-	}, {
-		key: "ExecuteIterations",
-		value: function ExecuteIterations(container) {
-			var itelayer = 0;
-			var layersIndex = 0;
-			var bestVolume = 0;
-
-			for (var containerOrientationVariant = 1; containerOrientationVariant <= 6 && !quit; containerOrientationVariant++) {
-				switch (containerOrientationVariant) {
-					case 1:
-						px = container.Length;py = container.Height;pz = container.Width;
-						break;
-
-					case 2:
-						px = container.Width;py = container.Height;pz = container.Length;
-						break;
-
-					case 3:
-						px = container.Width;py = container.Length;pz = container.Height;
-						break;
-
-					case 4:
-						px = container.Height;py = container.Length;pz = container.Width;
-						break;
-
-					case 5:
-						px = container.Length;py = container.Width;pz = container.Height;
-						break;
-
-					case 6:
-						px = container.Height;py = container.Width;pz = container.Length;
-						break;
-				}
-
-				layers.push(new Layer(-1));
-				this.ListCanditLayers();
-				//layers = layers.OrderBy(l => l.LayerEval).ToList();
-				layers.sort(Layer.SortByEval);
-
-				for (layersIndex = 1; layersIndex <= layerListLen && !quit; layersIndex++) {
-					packedVolume = 0;
-					packedy = 0;
-					packing = true;
-					layerThickness = layers[layersIndex].LayerDim;
-					itelayer = layersIndex;
-					remainpy = py;
-					remainpz = pz;
-					packedItemCount = 0;
-
-					for (x = 1; x <= itemsToPackCount; x++) {
-						itemsToPack[x].IsPacked = false;
-					}
-
-					do {
-						layerinlayer = 0;
-						layerDone = false;
-
-						this.PackLayer();
-
-						packedy = packedy + layerThickness;
-						remainpy = py - packedy;
-
-						if (layerinlayer != 0 && !quit) {
-							prepackedy = packedy;
-							preremainpy = remainpy;
-							remainpy = layerThickness - prelayer;
-							packedy = packedy - layerThickness + prelayer;
-							remainpz = lilz;
-							layerThickness = layerinlayer;
-							layerDone = false;
-
-							this.PackLayer();
-
-							packedy = prepackedy;
-							remainpy = preremainpy;
-							remainpz = pz;
-						}
-
-						this.FindLayer(remainpy);
-					} while (packing && !quit);
-
-					if (packedVolume > bestVolume && !quit) {
-						bestVolume = packedVolume;
-						bestVariant = containerOrientationVariant;
-						bestIteration = itelayer;
-					}
-
-					if (hundredPercentPacked) break;
-				}
-
-				if (hundredPercentPacked) break;
-
-				if (container.Length == container.Height && container.Height == container.Width) containerOrientationVariant = 6;
-
-				layers = [];
-			}
-		}
-
-		/*c# FindBox
-  /// <summary>
-  /// Finds the most proper boxes by looking at all six possible orientations,
-  /// empty space given, adjacent boxes, and pallet limits.
-  /// </summary>
-  private void FindBox(decimal hmx, decimal hy, decimal hmy, decimal hz, decimal hmz)
-  {
-  int y;
-  bfx = 32767;
-  bfy = 32767;
-  bfz = 32767;
-  bbfx = 32767;
-  bbfy = 32767;
-  bbfz = 32767;
-  boxi = 0;
-  bboxi = 0;
-  for (y = 1; y <= itemsToPackCount; y = y + itemsToPack[y].Quantity)
-  {
-  for (x = y; x < x + itemsToPack[y].Quantity - 1; x++)
-  {
-  if (!itemsToPack[x].IsPacked) break;
-  }
-  	if (itemsToPack[x].IsPacked) continue;
-  	if (x > itemsToPackCount) return;
-  	AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim1, itemsToPack[x].Dim2, itemsToPack[x].Dim3);
-  	if ((itemsToPack[x].Dim1 == itemsToPack[x].Dim3) && (itemsToPack[x].Dim3 == itemsToPack[x].Dim2)) continue;
-  	AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim1, itemsToPack[x].Dim3, itemsToPack[x].Dim2);
-  AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim2, itemsToPack[x].Dim1, itemsToPack[x].Dim3);
-  AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim2, itemsToPack[x].Dim3, itemsToPack[x].Dim1);
-  AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim3, itemsToPack[x].Dim1, itemsToPack[x].Dim2);
-  AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim3, itemsToPack[x].Dim2, itemsToPack[x].Dim1);
-  }
-  }
-  c#*/
-
-		/**
-   * Finds the most proper boxes by looking at all six possible orientations,
-  * empty space given, adjacent boxes, and pallet limits.
-   * @param {Number} hmx 
-   * @param {Number} hy 
-   * @param {Number} hmy 
-   * @param {Number} hz 
-   * @param {Number} hmz 
-   */
-
-	}, {
-		key: "FindBox",
-		value: function FindBox(hmx, hy, hmy, hz, hmz) {
-			var y = 0;
-
-			bfx = Number.MAX_VALUE;
-			bfy = Number.MAX_VALUE;
-			bfz = Number.MAX_VALUE;
-			bbfx = Number.MAX_VALUE;
-			bbfy = Number.MAX_VALUE;
-			bbfz = Number.MAX_VALUE;
-			boxi = 0;
-			bboxi = 0;
-
-			for (y = 1; y <= itemsToPackCount; y = y + itemsToPack[y].Quantity) {
-				for (x = y; x < x + itemsToPack[y].Quantity - 1; x++) {
-					if (!itemsToPack[x].IsPacked) break;
-				}
-
-				if (itemsToPack[x].IsPacked) continue;
-
-				if (x > itemsToPackCount) return;
-
-				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim1, itemsToPack[x].Dim2, itemsToPack[x].Dim3);
-
-				if (itemsToPack[x].Dim1 == itemsToPack[x].Dim3 && itemsToPack[x].Dim3 == itemsToPack[x].Dim2) continue;
-
-				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim1, itemsToPack[x].Dim3, itemsToPack[x].Dim2);
-				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim2, itemsToPack[x].Dim1, itemsToPack[x].Dim3);
-				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim2, itemsToPack[x].Dim3, itemsToPack[x].Dim1);
-				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim3, itemsToPack[x].Dim1, itemsToPack[x].Dim2);
-				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim3, itemsToPack[x].Dim2, itemsToPack[x].Dim1);
-			}
-		}
-
-		/*c# FindLayer
-  /// <summary>
-  /// Finds the most proper layer height by looking at the unpacked boxes and the remaining empty space available.
-  /// </summary>
-  private void FindLayer(decimal thickness)
-  {
-  decimal exdim = 0;
-  decimal dimdif;
-  decimal dimen2 = 0;
-  decimal dimen3 = 0;
-  int y;
-  int z;
-  decimal layereval;
-  decimal eval;
-  layerThickness = 0;
-  eval = 1000000;
-  for (x = 1; x <= itemsToPackCount; x++)
-  {
-  if (itemsToPack[x].IsPacked) continue;
-  	for (y = 1; y <= 3; y++)
-  {
-  switch (y)
-  {
-  	case 1:
-  		exdim = itemsToPack[x].Dim1;
-  		dimen2 = itemsToPack[x].Dim2;
-  		dimen3 = itemsToPack[x].Dim3;
-  		break;
-  			case 2:
-  		exdim = itemsToPack[x].Dim2;
-  		dimen2 = itemsToPack[x].Dim1;
-  		dimen3 = itemsToPack[x].Dim3;
-  		break;
-  			case 3:
-  		exdim = itemsToPack[x].Dim3;
-  		dimen2 = itemsToPack[x].Dim1;
-  		dimen3 = itemsToPack[x].Dim2;
-  		break;
-  }
-  		layereval = 0;
-  		if ((exdim <= thickness) && (((dimen2 <= px) && (dimen3 <= pz)) || ((dimen3 <= px) && (dimen2 <= pz))))
-  {
-  	for (z = 1; z <= itemsToPackCount; z++)
-  	{
-  		if (!(x == z) && !(itemsToPack[z].IsPacked))
-  		{
-  			dimdif = Math.Abs(exdim - itemsToPack[z].Dim1);
-  					if (Math.Abs(exdim - itemsToPack[z].Dim2) < dimdif)
-  			{
-  				dimdif = Math.Abs(exdim - itemsToPack[z].Dim2);
-  			}
-  					if (Math.Abs(exdim - itemsToPack[z].Dim3) < dimdif)
-  			{
-  				dimdif = Math.Abs(exdim - itemsToPack[z].Dim3);
-  			}
-  					layereval = layereval + dimdif;
-  		}
-  	}
-  			if (layereval < eval)
-  	{
-  		eval = layereval;
-  		layerThickness = exdim;
-  	}
-  }
-  }
-  }
-  if (layerThickness == 0 || layerThickness > remainpy) packing = false;
-  }
-  c#*/
-
-		/**
-   * Finds the most proper layer height by looking at the unpacked boxes and the remaining empty space available.
-   * @param {Number} thickness 
-   */
-
-	}, {
-		key: "FindLayer",
-		value: function FindLayer(thickness) {
-			var exdim = 0;
-			var dimdif = 0;
-			var dimen2 = 0;
-			var dimen3 = 0;
-			var y = 0;
-			var z = 0;
-			var layereval = 0;
-			var maxEvaluations = 1000000;
-
-			layerThickness = 0;
-
-			for (x = 1; x <= itemsToPackCount; x++) {
-				if (itemsToPack[x].IsPacked) continue;
-
-				for (y = 1; y <= 3; y++) {
-					switch (y) {
-						case 1:
-							exdim = itemsToPack[x].Dim1;
-							dimen2 = itemsToPack[x].Dim2;
-							dimen3 = itemsToPack[x].Dim3;
-							break;
-
-						case 2:
-							exdim = itemsToPack[x].Dim2;
-							dimen2 = itemsToPack[x].Dim1;
-							dimen3 = itemsToPack[x].Dim3;
-							break;
-
-						case 3:
-							exdim = itemsToPack[x].Dim3;
-							dimen2 = itemsToPack[x].Dim1;
-							dimen3 = itemsToPack[x].Dim2;
-							break;
-					}
-
-					layereval = 0;
-
-					if (exdim <= thickness && (dimen2 <= px && dimen3 <= pz || dimen3 <= px && dimen2 <= pz)) {
-						for (z = 1; z <= itemsToPackCount; z++) {
-							if (!(x == z) && !itemsToPack[z].IsPacked) {
-								dimdif = Math.abs(exdim - itemsToPack[z].Dim1);
-
-								if (Math.abs(exdim - itemsToPack[z].Dim2) < dimdif) {
-									dimdif = Math.abs(exdim - itemsToPack[z].Dim2);
-								}
-
-								if (Math.abs(exdim - itemsToPack[z].Dim3) < dimdif) {
-									dimdif = Math.abs(exdim - itemsToPack[z].Dim3);
-								}
-
-								layereval = layereval + dimdif;
-							}
-						}
-
-						if (layereval < maxEvaluations) {
-							maxEvaluations = layereval;
-							layerThickness = exdim;
-						}
-					}
-				}
-			}
-
-			if (layerThickness == 0 || layerThickness > remainpy) packing = false;
-		}
-
-		/*c# FindSmallestZ
-  /// <summary>
-  /// Finds the first to be packed gap in the layer edge.
-  /// </summary>
-  private void FindSmallestZ()
-  {
-  ScrapPad scrapmemb = scrapfirst;
-  smallestZ = scrapmemb;
-  while (scrapmemb.Post != null)
-  {
-  if (scrapmemb.Post.CumZ < smallestZ.CumZ)
-  {
-  smallestZ = scrapmemb.Post;
-  }
-  	scrapmemb = scrapmemb.Post;
-  }
-  }
-  c#*/
-
-		/**
-   * Finds the first to be packed gap in the layer edge.
-   */
-
-	}, {
-		key: "FindSmallestZ",
-		value: function FindSmallestZ() {
-			var scrapmemb = scrapfirst;
-			smallestZ = scrapmemb;
-
-			while (scrapmemb.Post) {
-				if (scrapmemb.Post.CumZ < smallestZ.CumZ) {
-					smallestZ = scrapmemb.Post;
-				}
-
-				scrapmemb = scrapmemb.Post;
-			}
-		}
-
-		/*c# Initialize
-  /// <summary>
-  /// Initializes everything.
-  /// </summary>
-  private void Initialize(Container container, List<Item> items)
-  {
-  itemsToPack = new List<Item>();
-  itemsPackedInOrder = new List<Item>();
-  result = new ContainerPackingResult();
-  // The original code uses 1-based indexing everywhere. This fake entry is added to the beginning
-  // of the list to make that possible.
-  itemsToPack.Add(new Item(0, 0, 0, 0, 0));
-  layers = new List<Layer>();
-  itemsToPackCount = 0;
-  foreach (Item item in items)
-  {
-  for (int i = 1; i <= item.Quantity; i++)
-  {
-  Item newItem = new Item(item.ID, item.Dim1, item.Dim2, item.Dim3, item.Quantity);
-  itemsToPack.Add(newItem);
-  }
-  	itemsToPackCount += item.Quantity;
-  }
-  itemsToPack.Add(new Item(0, 0, 0, 0, 0));
-  totalContainerVolume = container.Length * container.Height * container.Width;
-  totalItemVolume = 0.0M;
-  for (x = 1; x <= itemsToPackCount; x++)
-  {
-  totalItemVolume = totalItemVolume + itemsToPack[x].Volume;
-  }
-  scrapfirst = new ScrapPad();
-  scrapfirst.Pre = null;
-  scrapfirst.Post = null;
-  packingBest = false;
-  hundredPercentPacked = false;
-  quit = false;
-  }
-  c#*/
-
-		/**
-   * Initializes everything.
-   * @param {Container} container 
-   * @param {Array<Item>} items 
-   */
-
-	}, {
-		key: "Initialize",
-		value: function Initialize(container, items) {
-			itemsToPack = [];
-			itemsPackedInOrder = [];
-
-			// The original code uses 1-based indexing everywhere. This fake entry is added to the beginning
-			// of the list to make that possible.
-			itemsToPack.push(new __WEBPACK_IMPORTED_MODULE_1__components_Item__["a" /* default */](0, 0, 0, 0, 0));
-
-			layers = [];
-			itemsToPackCount = 0;
-
-			for (var iItems = 0, numItems = items.length; iItems < numItems; iItems++) {
-				var item = items[iItems];
-				for (var i = 1; i <= item.Quantity; i++) {
-					var newItem = new __WEBPACK_IMPORTED_MODULE_1__components_Item__["a" /* default */](item.ID, item.Dim1, item.Dim2, item.Dim3, item.Quantity);
-					itemsToPack.push(newItem);
-				}
-
-				itemsToPackCount += item.Quantity;
-			}
-
-			itemsToPack.push(new __WEBPACK_IMPORTED_MODULE_1__components_Item__["a" /* default */](0, 0, 0, 0, 0));
-
-			totalContainerVolume = container.Length * container.Height * container.Width;
-			totalItemVolume = 0;
-
-			for (x = 1; x <= itemsToPackCount; x++) {
-				totalItemVolume = totalItemVolume + itemsToPack[x].Volume;
-			}
-
-			scrapfirst = new ScrapPad();
-
-			scrapfirst.Pre = undefined;
-			scrapfirst.Post = undefined;
-			packingBest = false;
-			hundredPercentPacked = false;
-			quit = false;
-		}
-
-		/*c# ListCanditLayers
-  /// <summary>
-  /// Lists all possible layer heights by giving a weight value to each of them.
-  /// </summary>
-  private void ListCanditLayers()
-  {
-  bool same;
-  decimal exdim = 0;
-  decimal dimdif;
-  decimal dimen2 = 0;
-  decimal dimen3 = 0;
-  int y;
-  int z;
-  int k;
-  decimal layereval;
-  layerListLen = 0;
-  for (x = 1; x <= itemsToPackCount; x++)
-  {
-  for (y = 1; y <= 3; y++)
-  {
-  switch (y)
-  {
-  	case 1:
-  		exdim = itemsToPack[x].Dim1;
-  		dimen2 = itemsToPack[x].Dim2;
-  		dimen3 = itemsToPack[x].Dim3;
-  		break;
-  			case 2:
-  		exdim = itemsToPack[x].Dim2;
-  		dimen2 = itemsToPack[x].Dim1;
-  		dimen3 = itemsToPack[x].Dim3;
-  		break;
-  			case 3:
-  		exdim = itemsToPack[x].Dim3;
-  		dimen2 = itemsToPack[x].Dim1;
-  		dimen3 = itemsToPack[x].Dim2;
-  		break;
-  }
-  		if ((exdim > py) || (((dimen2 > px) || (dimen3 > pz)) && ((dimen3 > px) || (dimen2 > pz)))) continue;
-  		same = false;
-  		for (k = 1; k <= layerListLen; k++)
-  {
-  	if (exdim == layers[k].LayerDim)
-  	{
-  		same = true;
-  		continue;
-  	}
-  }
-  		if (same) continue;
-  		layereval = 0;
-  		for (z = 1; z <= itemsToPackCount; z++)
-  {
-  	if (!(x == z))
-  	{
-  		dimdif = Math.Abs(exdim - itemsToPack[z].Dim1);
-  				if (Math.Abs(exdim - itemsToPack[z].Dim2) < dimdif)
-  		{
-  			dimdif = Math.Abs(exdim - itemsToPack[z].Dim2);
-  		}
-  		if (Math.Abs(exdim - itemsToPack[z].Dim3) < dimdif)
-  		{
-  			dimdif = Math.Abs(exdim - itemsToPack[z].Dim3);
-  		}
-  		layereval = layereval + dimdif;
-  	}
-  }
-  		layerListLen++;
-  		layers.Add(new Layer());
-  layers[layerListLen].LayerEval = layereval;
-  layers[layerListLen].LayerDim = exdim;
-  }
-  }
-  }
-  c#*/
-
-		/**
-   * Lists all possible layer heights by giving a weight value to each of them.
-   */
-
-	}, {
-		key: "ListCanditLayers",
-		value: function ListCanditLayers() {
-			var same = false;
-			var exdim = 0;
-			var dimdif = 0;
-			var dimen2 = 0;
-			var dimen3 = 0;
-			var y = 0;
-			var z = 0;
-			var k = 0;
-			var layereval = 0;
-
-			layerListLen = 0;
-
-			for (x = 1; x <= itemsToPackCount; x++) {
-				for (y = 1; y <= 3; y++) {
-					switch (y) {
-						case 1:
-							exdim = itemsToPack[x].Dim1;
-							dimen2 = itemsToPack[x].Dim2;
-							dimen3 = itemsToPack[x].Dim3;
-							break;
-
-						case 2:
-							exdim = itemsToPack[x].Dim2;
-							dimen2 = itemsToPack[x].Dim1;
-							dimen3 = itemsToPack[x].Dim3;
-							break;
-
-						case 3:
-							exdim = itemsToPack[x].Dim3;
-							dimen2 = itemsToPack[x].Dim1;
-							dimen3 = itemsToPack[x].Dim2;
-							break;
-					}
-
-					if (exdim > py || (dimen2 > px || dimen3 > pz) && (dimen3 > px || dimen2 > pz)) continue;
-
-					same = false;
-
-					for (k = 1; k <= layerListLen; k++) {
-						if (exdim == layers[k].LayerDim) {
-							same = true;
-							continue;
-						}
-					}
-
-					if (same) continue;
-
-					layereval = 0;
-
-					for (z = 1; z <= itemsToPackCount; z++) {
-						if (!(x == z)) {
-							dimdif = Math.abs(exdim - itemsToPack[z].Dim1);
-
-							if (Math.abs(exdim - itemsToPack[z].Dim2) < dimdif) {
-								dimdif = Math.abs(exdim - itemsToPack[z].Dim2);
-							}
-							if (Math.abs(exdim - itemsToPack[z].Dim3) < dimdif) {
-								dimdif = Math.abs(exdim - itemsToPack[z].Dim3);
-							}
-							layereval = layereval + dimdif;
-						}
-					}
-
-					layerListLen++;
-
-					layers.push(new Layer());
-					layers[layerListLen].LayerEval = layereval;
-					layers[layerListLen].LayerDim = exdim;
-				}
-			}
-		}
-
-		/*c# OutputBoxList
-  /// <summary>
-  /// Transforms the found coordinate system to the one entered by the user and writes them
-  /// to the report file.
-  /// </summary>
-  private void OutputBoxList()
-  {
-  decimal packCoordX = 0;
-  decimal packCoordY = 0;
-  decimal packCoordZ = 0;
-  dynamic packDimX = 0;
-  dynamic packDimY = 0;
-  dynamic packDimZ = 0;
-  switch (bestVariant)
-  {
-  case 1:
-  packCoordX = itemsToPack[cboxi].CoordX;
-  packCoordY = itemsToPack[cboxi].CoordY;
-  packCoordZ = itemsToPack[cboxi].CoordZ;
-  packDimX = itemsToPack[cboxi].PackDimX;
-  packDimY = itemsToPack[cboxi].PackDimY;
-  packDimZ = itemsToPack[cboxi].PackDimZ;
-  break;
-  	case 2:
-  packCoordX = itemsToPack[cboxi].CoordZ;
-  packCoordY = itemsToPack[cboxi].CoordY;
-  packCoordZ = itemsToPack[cboxi].CoordX;
-  packDimX = itemsToPack[cboxi].PackDimZ;
-  packDimY = itemsToPack[cboxi].PackDimY;
-  packDimZ = itemsToPack[cboxi].PackDimX;
-  break;
-  	case 3:
-  packCoordX = itemsToPack[cboxi].CoordY;
-  packCoordY = itemsToPack[cboxi].CoordZ;
-  packCoordZ = itemsToPack[cboxi].CoordX;
-  packDimX = itemsToPack[cboxi].PackDimY;
-  packDimY = itemsToPack[cboxi].PackDimZ;
-  packDimZ = itemsToPack[cboxi].PackDimX;
-  break;
-  	case 4:
-  packCoordX = itemsToPack[cboxi].CoordY;
-  packCoordY = itemsToPack[cboxi].CoordX;
-  packCoordZ = itemsToPack[cboxi].CoordZ;
-  packDimX = itemsToPack[cboxi].PackDimY;
-  packDimY = itemsToPack[cboxi].PackDimX;
-  packDimZ = itemsToPack[cboxi].PackDimZ;
-  break;
-  	case 5:
-  packCoordX = itemsToPack[cboxi].CoordX;
-  packCoordY = itemsToPack[cboxi].CoordZ;
-  packCoordZ = itemsToPack[cboxi].CoordY;
-  packDimX = itemsToPack[cboxi].PackDimX;
-  packDimY = itemsToPack[cboxi].PackDimZ;
-  packDimZ = itemsToPack[cboxi].PackDimY;
-  break;
-  	case 6:
-  packCoordX = itemsToPack[cboxi].CoordZ;
-  packCoordY = itemsToPack[cboxi].CoordX;
-  packCoordZ = itemsToPack[cboxi].CoordY;
-  packDimX = itemsToPack[cboxi].PackDimZ;
-  packDimY = itemsToPack[cboxi].PackDimX;
-  packDimZ = itemsToPack[cboxi].PackDimY;
-  break;
-  }
-  itemsToPack[cboxi].CoordX = packCoordX;
-  itemsToPack[cboxi].CoordY = packCoordY;
-  itemsToPack[cboxi].CoordZ = packCoordZ;
-  itemsToPack[cboxi].PackDimX = packDimX;
-  itemsToPack[cboxi].PackDimY = packDimY;
-  itemsToPack[cboxi].PackDimZ = packDimZ;
-  itemsPackedInOrder.Add(itemsToPack[cboxi]);
-  }
-  c#*/
-
-		/**
-   * Transforms the found coordinate system to the one entered by the user and writes them to the report file.
-   */
-
-	}, {
-		key: "OutputBoxList",
-		value: function OutputBoxList() {
-			var packCoordX = 0;
-			var packCoordY = 0;
-			var packCoordZ = 0;
-			var packDimX = 0;
-			var packDimY = 0;
-			var packDimZ = 0;
-
-			switch (bestVariant) {
-				case 1:
-					packCoordX = itemsToPack[cboxi].CoordX;
-					packCoordY = itemsToPack[cboxi].CoordY;
-					packCoordZ = itemsToPack[cboxi].CoordZ;
-					packDimX = itemsToPack[cboxi].PackDimX;
-					packDimY = itemsToPack[cboxi].PackDimY;
-					packDimZ = itemsToPack[cboxi].PackDimZ;
-					break;
-
-				case 2:
-					packCoordX = itemsToPack[cboxi].CoordZ;
-					packCoordY = itemsToPack[cboxi].CoordY;
-					packCoordZ = itemsToPack[cboxi].CoordX;
-					packDimX = itemsToPack[cboxi].PackDimZ;
-					packDimY = itemsToPack[cboxi].PackDimY;
-					packDimZ = itemsToPack[cboxi].PackDimX;
-					break;
-
-				case 3:
-					packCoordX = itemsToPack[cboxi].CoordY;
-					packCoordY = itemsToPack[cboxi].CoordZ;
-					packCoordZ = itemsToPack[cboxi].CoordX;
-					packDimX = itemsToPack[cboxi].PackDimY;
-					packDimY = itemsToPack[cboxi].PackDimZ;
-					packDimZ = itemsToPack[cboxi].PackDimX;
-					break;
-
-				case 4:
-					packCoordX = itemsToPack[cboxi].CoordY;
-					packCoordY = itemsToPack[cboxi].CoordX;
-					packCoordZ = itemsToPack[cboxi].CoordZ;
-					packDimX = itemsToPack[cboxi].PackDimY;
-					packDimY = itemsToPack[cboxi].PackDimX;
-					packDimZ = itemsToPack[cboxi].PackDimZ;
-					break;
-
-				case 5:
-					packCoordX = itemsToPack[cboxi].CoordX;
-					packCoordY = itemsToPack[cboxi].CoordZ;
-					packCoordZ = itemsToPack[cboxi].CoordY;
-					packDimX = itemsToPack[cboxi].PackDimX;
-					packDimY = itemsToPack[cboxi].PackDimZ;
-					packDimZ = itemsToPack[cboxi].PackDimY;
-					break;
-
-				case 6:
-					packCoordX = itemsToPack[cboxi].CoordZ;
-					packCoordY = itemsToPack[cboxi].CoordX;
-					packCoordZ = itemsToPack[cboxi].CoordY;
-					packDimX = itemsToPack[cboxi].PackDimZ;
-					packDimY = itemsToPack[cboxi].PackDimX;
-					packDimZ = itemsToPack[cboxi].PackDimY;
-					break;
-			}
-
-			itemsToPack[cboxi].CoordX = packCoordX;
-			itemsToPack[cboxi].CoordY = packCoordY;
-			itemsToPack[cboxi].CoordZ = packCoordZ;
-			itemsToPack[cboxi].PackDimX = packDimX;
-			itemsToPack[cboxi].PackDimY = packDimY;
-			itemsToPack[cboxi].PackDimZ = packDimZ;
-
-			itemsPackedInOrder.push(itemsToPack[cboxi]);
-		}
-
-		/*c# PackLayer
-  /// <summary>
-  /// Packs the boxes found and arranges all variables and records properly.
-  /// </summary>
-  private void PackLayer()
-  {
-  decimal lenx;
-  decimal lenz;
-  decimal lpz;
-  if (layerThickness == 0)
-  {
-  packing = false;
-  return;
-  }
-  scrapfirst.CumX = px;
-  scrapfirst.CumZ = 0;
-  for (; !quit;)
-  {
-  FindSmallestZ();
-  	if ((smallestZ.Pre == null) && (smallestZ.Post == null))
-  {
-  //*** SITUATION-1: NO BOXES ON THE RIGHT AND LEFT SIDES ***
-  		lenx = smallestZ.CumX;
-  lpz = remainpz - smallestZ.CumZ;
-  FindBox(lenx, layerThickness, remainpy, lpz, lpz);
-  CheckFound();
-  		if (layerDone) break;
-  if (evened) continue;
-  		itemsToPack[cboxi].CoordX = 0;
-  itemsToPack[cboxi].CoordY = packedy;
-  itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
-  if (cboxx == smallestZ.CumX)
-  {
-  	smallestZ.CumZ = smallestZ.CumZ + cboxz;
-  }
-  else
-  {
-  	smallestZ.Post = new ScrapPad();
-  			smallestZ.Post.Post = null;
-  	smallestZ.Post.Pre = smallestZ;
-  	smallestZ.Post.CumX = smallestZ.CumX;
-  	smallestZ.Post.CumZ = smallestZ.CumZ;
-  	smallestZ.CumX = cboxx;
-  	smallestZ.CumZ = smallestZ.CumZ + cboxz;
-  }
-  }
-  else if (smallestZ.Pre == null)
-  {
-  //*** SITUATION-2: NO BOXES ON THE LEFT SIDE ***
-  		lenx = smallestZ.CumX;
-  lenz = smallestZ.Post.CumZ - smallestZ.CumZ;
-  lpz = remainpz - smallestZ.CumZ;
-  FindBox(lenx, layerThickness, remainpy, lenz, lpz);
-  CheckFound();
-  		if (layerDone) break;
-  if (evened) continue;
-  		itemsToPack[cboxi].CoordY = packedy;
-  itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
-  if (cboxx == smallestZ.CumX)
-  {
-  	itemsToPack[cboxi].CoordX = 0;
-  			if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ)
-  	{
-  		smallestZ.CumZ = smallestZ.Post.CumZ;
-  		smallestZ.CumX = smallestZ.Post.CumX;
-  		trash = smallestZ.Post;
-  		smallestZ.Post = smallestZ.Post.Post;
-  				if (smallestZ.Post != null)
-  		{
-  			smallestZ.Post.Pre = smallestZ;
-  		}
-  	}
-  	else
-  	{
-  		smallestZ.CumZ = smallestZ.CumZ + cboxz;
-  	}
-  }
-  else
-  {
-  	itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
-  			if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ)
-  	{
-  		smallestZ.CumX = smallestZ.CumX - cboxx;
-  	}
-  	else
-  	{
-  		smallestZ.Post.Pre = new ScrapPad();
-  				smallestZ.Post.Pre.Post = smallestZ.Post;
-  		smallestZ.Post.Pre.Pre = smallestZ;
-  		smallestZ.Post = smallestZ.Post.Pre;
-  		smallestZ.Post.CumX = smallestZ.CumX;
-  		smallestZ.CumX = smallestZ.CumX - cboxx;
-  		smallestZ.Post.CumZ = smallestZ.CumZ + cboxz;
-  	}
-  }
-  }
-  else if (smallestZ.Post == null)
-  {
-  //*** SITUATION-3: NO BOXES ON THE RIGHT SIDE ***
-  		lenx = smallestZ.CumX - smallestZ.Pre.CumX;
-  lenz = smallestZ.Pre.CumZ - smallestZ.CumZ;
-  lpz = remainpz - smallestZ.CumZ;
-  FindBox(lenx, layerThickness, remainpy, lenz, lpz);
-  CheckFound();
-  		if (layerDone) break;
-  if (evened) continue;
-  		itemsToPack[cboxi].CoordY = packedy;
-  itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
-  itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
-  		if (cboxx == smallestZ.CumX - smallestZ.Pre.CumX)
-  {
-  	if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ)
-  	{
-  		smallestZ.Pre.CumX = smallestZ.CumX;
-  		smallestZ.Pre.Post = null;
-  	}
-  	else
-  	{
-  		smallestZ.CumZ = smallestZ.CumZ + cboxz;
-  	}
-  }
-  else
-  {
-  	if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ)
-  	{
-  		smallestZ.Pre.CumX = smallestZ.Pre.CumX + cboxx;
-  	}
-  	else
-  	{
-  		smallestZ.Pre.Post = new ScrapPad();
-  				smallestZ.Pre.Post.Pre = smallestZ.Pre;
-  		smallestZ.Pre.Post.Post = smallestZ;
-  		smallestZ.Pre = smallestZ.Pre.Post;
-  		smallestZ.Pre.CumX = smallestZ.Pre.Pre.CumX + cboxx;
-  		smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
-  	}
-  }
-  }
-  else if (smallestZ.Pre.CumZ == smallestZ.Post.CumZ)
-  {
-  //*** SITUATION-4: THERE ARE BOXES ON BOTH OF THE SIDES ***
-  		//*** SUBSITUATION-4A: SIDES ARE EQUAL TO EACH OTHER ***
-  		lenx = smallestZ.CumX - smallestZ.Pre.CumX;
-  lenz = smallestZ.Pre.CumZ - smallestZ.CumZ;
-  lpz = remainpz - smallestZ.CumZ;
-  		FindBox(lenx, layerThickness, remainpy, lenz, lpz);
-  CheckFound();
-  		if (layerDone) break;
-  if (evened) continue;
-  		itemsToPack[cboxi].CoordY = packedy;
-  itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
-  		if (cboxx == smallestZ.CumX - smallestZ.Pre.CumX)
-  {
-  	itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
-  			if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ)
-  	{
-  		smallestZ.Pre.CumX = smallestZ.Post.CumX;
-  				if (smallestZ.Post.Post != null)
-  		{
-  			smallestZ.Pre.Post = smallestZ.Post.Post;
-  			smallestZ.Post.Post.Pre = smallestZ.Pre;
-  		}
-  		else
-  		{
-  			smallestZ.Pre.Post = null;
-  		}
-  	}
-  	else
-  	{
-  		smallestZ.CumZ = smallestZ.CumZ + cboxz;
-  	}
-  }
-  else if (smallestZ.Pre.CumX < px - smallestZ.CumX)
-  {
-  	if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ)
-  	{
-  		smallestZ.CumX = smallestZ.CumX - cboxx;
-  		itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
-  	}
-  	else
-  	{
-  		itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
-  		smallestZ.Pre.Post = new ScrapPad();
-  				smallestZ.Pre.Post.Pre = smallestZ.Pre;
-  		smallestZ.Pre.Post.Post = smallestZ;
-  		smallestZ.Pre = smallestZ.Pre.Post;
-  		smallestZ.Pre.CumX = smallestZ.Pre.Pre.CumX + cboxx;
-  		smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
-  	}
-  }
-  else
-  {
-  	if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ)
-  	{
-  		smallestZ.Pre.CumX = smallestZ.Pre.CumX + cboxx;
-  		itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
-  	}
-  	else
-  	{
-  		itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
-  		smallestZ.Post.Pre = new ScrapPad();
-  				smallestZ.Post.Pre.Post = smallestZ.Post;
-  		smallestZ.Post.Pre.Pre = smallestZ;
-  		smallestZ.Post = smallestZ.Post.Pre;
-  		smallestZ.Post.CumX = smallestZ.CumX;
-  		smallestZ.Post.CumZ = smallestZ.CumZ + cboxz;
-  		smallestZ.CumX = smallestZ.CumX - cboxx;
-  	}
-  }
-  }
-  else
-  {
-  //*** SUBSITUATION-4B: SIDES ARE NOT EQUAL TO EACH OTHER ***
-  		lenx = smallestZ.CumX - smallestZ.Pre.CumX;
-  lenz = smallestZ.Pre.CumZ - smallestZ.CumZ;
-  lpz = remainpz - smallestZ.CumZ;
-  FindBox(lenx, layerThickness, remainpy, lenz, lpz);
-  CheckFound();
-  		if (layerDone) break;
-  if (evened) continue;
-  		itemsToPack[cboxi].CoordY = packedy;
-  itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
-  itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
-  		if (cboxx == (smallestZ.CumX - smallestZ.Pre.CumX))
-  {
-  	if ((smallestZ.CumZ + cboxz) == smallestZ.Pre.CumZ)
-  	{
-  		smallestZ.Pre.CumX = smallestZ.CumX;
-  		smallestZ.Pre.Post = smallestZ.Post;
-  		smallestZ.Post.Pre = smallestZ.Pre;
-  	}
-  	else
-  	{
-  		smallestZ.CumZ = smallestZ.CumZ + cboxz;
-  	}
-  }
-  else
-  {
-  	if ((smallestZ.CumZ + cboxz) == smallestZ.Pre.CumZ)
-  	{
-  		smallestZ.Pre.CumX = smallestZ.Pre.CumX + cboxx;
-  	}
-  	else if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ)
-  	{
-  		itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
-  		smallestZ.CumX = smallestZ.CumX - cboxx;
-  	}
-  	else
-  	{
-  		smallestZ.Pre.Post = new ScrapPad();
-  				smallestZ.Pre.Post.Pre = smallestZ.Pre;
-  		smallestZ.Pre.Post.Post = smallestZ;
-  		smallestZ.Pre = smallestZ.Pre.Post;
-  		smallestZ.Pre.CumX = smallestZ.Pre.Pre.CumX + cboxx;
-  		smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
-  	}
-  }
-  }
-  	VolumeCheck();
-  }
-  }
-  c#*/
-
-		/**
-   * Packs the boxes found and arranges all variables and records properly.
-   */
-
-	}, {
-		key: "PackLayer",
-		value: function PackLayer() {
-			var lenx = 0;
-			var lenz = 0;
-			var lpz = 0;
-
-			if (layerThickness == 0) {
-				packing = false;
-				return;
-			}
-
-			scrapfirst.CumX = px;
-			scrapfirst.CumZ = 0;
-
-			//for (; !quit;)
-			while (!quit) {
-				this.FindSmallestZ();
-
-				if (!smallestZ.Pre && !smallestZ.Post) {
-					//*** SITUATION-1: NO BOXES ON THE RIGHT AND LEFT SIDES ***
-
-					lenx = smallestZ.CumX;
-					lpz = remainpz - smallestZ.CumZ;
-					this.FindBox(lenx, layerThickness, remainpy, lpz, lpz);
-					this.CheckFound();
-
-					if (layerDone) break;
-					if (evened) continue;
-
-					itemsToPack[cboxi].CoordX = 0;
-					itemsToPack[cboxi].CoordY = packedy;
-					itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
-					if (cboxx == smallestZ.CumX) {
-						smallestZ.CumZ = smallestZ.CumZ + cboxz;
-					} else {
-						smallestZ.Post = new ScrapPad();
-
-						smallestZ.Post.Post = undefined;
-						smallestZ.Post.Pre = smallestZ;
-						smallestZ.Post.CumX = smallestZ.CumX;
-						smallestZ.Post.CumZ = smallestZ.CumZ;
-						smallestZ.CumX = cboxx;
-						smallestZ.CumZ = smallestZ.CumZ + cboxz;
-					}
-				} else if (!smallestZ.Pre) {
-					//*** SITUATION-2: NO BOXES ON THE LEFT SIDE ***
-
-					lenx = smallestZ.CumX;
-					lenz = smallestZ.Post.CumZ - smallestZ.CumZ;
-					lpz = remainpz - smallestZ.CumZ;
-					this.FindBox(lenx, layerThickness, remainpy, lenz, lpz);
-					this.CheckFound();
-
-					if (layerDone) break;
-					if (evened) continue;
-
-					itemsToPack[cboxi].CoordY = packedy;
-					itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
-					if (cboxx == smallestZ.CumX) {
-						itemsToPack[cboxi].CoordX = 0;
-
-						if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ) {
-							smallestZ.CumZ = smallestZ.Post.CumZ;
-							smallestZ.CumX = smallestZ.Post.CumX;
-							trash = smallestZ.Post;
-							smallestZ.Post = smallestZ.Post.Post;
-
-							if (smallestZ.Post) {
-								smallestZ.Post.Pre = smallestZ;
-							}
-						} else {
-							smallestZ.CumZ = smallestZ.CumZ + cboxz;
-						}
-					} else {
-						itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
-
-						if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ) {
-							smallestZ.CumX = smallestZ.CumX - cboxx;
-						} else {
-							smallestZ.Post.Pre = new ScrapPad();
-
-							smallestZ.Post.Pre.Post = smallestZ.Post;
-							smallestZ.Post.Pre.Pre = smallestZ;
-							smallestZ.Post = smallestZ.Post.Pre;
-							smallestZ.Post.CumX = smallestZ.CumX;
-							smallestZ.CumX = smallestZ.CumX - cboxx;
-							smallestZ.Post.CumZ = smallestZ.CumZ + cboxz;
-						}
-					}
-				} else if (!smallestZ.Post) {
-					//*** SITUATION-3: NO BOXES ON THE RIGHT SIDE ***
-
-					lenx = smallestZ.CumX - smallestZ.Pre.CumX;
-					lenz = smallestZ.Pre.CumZ - smallestZ.CumZ;
-					lpz = remainpz - smallestZ.CumZ;
-					this.FindBox(lenx, layerThickness, remainpy, lenz, lpz);
-					this.CheckFound();
-
-					if (layerDone) break;
-					if (evened) continue;
-
-					itemsToPack[cboxi].CoordY = packedy;
-					itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
-					itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
-
-					if (cboxx == smallestZ.CumX - smallestZ.Pre.CumX) {
-						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
-							smallestZ.Pre.CumX = smallestZ.CumX;
-							smallestZ.Pre.Post = undefined;
-						} else {
-							smallestZ.CumZ = smallestZ.CumZ + cboxz;
-						}
-					} else {
-						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
-							smallestZ.Pre.CumX = smallestZ.Pre.CumX + cboxx;
-						} else {
-							smallestZ.Pre.Post = new ScrapPad();
-
-							smallestZ.Pre.Post.Pre = smallestZ.Pre;
-							smallestZ.Pre.Post.Post = smallestZ;
-							smallestZ.Pre = smallestZ.Pre.Post;
-							smallestZ.Pre.CumX = smallestZ.Pre.Pre.CumX + cboxx;
-							smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
-						}
-					}
-				} else if (smallestZ.Pre.CumZ == smallestZ.Post.CumZ) {
-					//*** SITUATION-4: THERE ARE BOXES ON BOTH OF THE SIDES ***
-
-					//*** SUBSITUATION-4A: SIDES ARE EQUAL TO EACH OTHER ***
-
-					lenx = smallestZ.CumX - smallestZ.Pre.CumX;
-					lenz = smallestZ.Pre.CumZ - smallestZ.CumZ;
-					lpz = remainpz - smallestZ.CumZ;
-
-					this.FindBox(lenx, layerThickness, remainpy, lenz, lpz);
-					this.CheckFound();
-
-					if (layerDone) break;
-					if (evened) continue;
-
-					itemsToPack[cboxi].CoordY = packedy;
-					itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
-
-					if (cboxx == smallestZ.CumX - smallestZ.Pre.CumX) {
-						itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
-
-						if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ) {
-							smallestZ.Pre.CumX = smallestZ.Post.CumX;
-
-							if (smallestZ.Post.Post) {
-								smallestZ.Pre.Post = smallestZ.Post.Post;
-								smallestZ.Post.Post.Pre = smallestZ.Pre;
-							} else {
-								smallestZ.Pre.Post = undefined;
-							}
-						} else {
-							smallestZ.CumZ = smallestZ.CumZ + cboxz;
-						}
-					} else if (smallestZ.Pre.CumX < px - smallestZ.CumX) {
-						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
-							smallestZ.CumX = smallestZ.CumX - cboxx;
-							itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
-						} else {
-							itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
-							smallestZ.Pre.Post = new ScrapPad();
-
-							smallestZ.Pre.Post.Pre = smallestZ.Pre;
-							smallestZ.Pre.Post.Post = smallestZ;
-							smallestZ.Pre = smallestZ.Pre.Post;
-							smallestZ.Pre.CumX = smallestZ.Pre.Pre.CumX + cboxx;
-							smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
-						}
-					} else {
-						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
-							smallestZ.Pre.CumX = smallestZ.Pre.CumX + cboxx;
-							itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
-						} else {
-							itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
-							smallestZ.Post.Pre = new ScrapPad();
-
-							smallestZ.Post.Pre.Post = smallestZ.Post;
-							smallestZ.Post.Pre.Pre = smallestZ;
-							smallestZ.Post = smallestZ.Post.Pre;
-							smallestZ.Post.CumX = smallestZ.CumX;
-							smallestZ.Post.CumZ = smallestZ.CumZ + cboxz;
-							smallestZ.CumX = smallestZ.CumX - cboxx;
-						}
-					}
-				} else {
-					//*** SUBSITUATION-4B: SIDES ARE NOT EQUAL TO EACH OTHER ***
-
-					lenx = smallestZ.CumX - smallestZ.Pre.CumX;
-					lenz = smallestZ.Pre.CumZ - smallestZ.CumZ;
-					lpz = remainpz - smallestZ.CumZ;
-					this.FindBox(lenx, layerThickness, remainpy, lenz, lpz);
-					this.CheckFound();
-
-					if (layerDone) break;
-					if (evened) continue;
-
-					itemsToPack[cboxi].CoordY = packedy;
-					itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
-					itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
-
-					if (cboxx == smallestZ.CumX - smallestZ.Pre.CumX) {
-						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
-							smallestZ.Pre.CumX = smallestZ.CumX;
-							smallestZ.Pre.Post = smallestZ.Post;
-							smallestZ.Post.Pre = smallestZ.Pre;
-						} else {
-							smallestZ.CumZ = smallestZ.CumZ + cboxz;
-						}
-					} else {
-						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
-							smallestZ.Pre.CumX = smallestZ.Pre.CumX + cboxx;
-						} else if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ) {
-							itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
-							smallestZ.CumX = smallestZ.CumX - cboxx;
-						} else {
-							smallestZ.Pre.Post = new ScrapPad();
-
-							smallestZ.Pre.Post.Pre = smallestZ.Pre;
-							smallestZ.Pre.Post.Post = smallestZ;
-							smallestZ.Pre = smallestZ.Pre.Post;
-							smallestZ.Pre.CumX = smallestZ.Pre.Pre.CumX + cboxx;
-							smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
-						}
-					}
-				}
-
-				this.VolumeCheck();
-			}
-		}
-
-		/*c# Report
-  /// <summary>
-  /// Using the parameters found, packs the best solution found and
-  /// reports to the console.
-  /// </summary>
-  private void Report(Container container)
-  {
-  quit = false;
-  switch (bestVariant)
-  {
-  case 1:
-  px = container.Length; py = container.Height; pz = container.Width;
-  break;
-  	case 2:
-  px = container.Width; py = container.Height; pz = container.Length;
-  break;
-  	case 3:
-  px = container.Width; py = container.Length; pz = container.Height;
-  break;
-  	case 4:
-  px = container.Height; py = container.Length; pz = container.Width;
-  break;
-  	case 5:
-  px = container.Length; py = container.Width; pz = container.Height;
-  break;
-  	case 6:
-  px = container.Height; py = container.Width; pz = container.Length;
-  break;
-  }
-  packingBest = true;
-  //Print("BEST SOLUTION FOUND AT ITERATION                      :", bestIteration, "OF VARIANT", bestVariant);
-  //Print("TOTAL ITEMS TO PACK                                   :", itemsToPackCount);
-  //Print("TOTAL VOLUME OF ALL ITEMS                             :", totalItemVolume);
-  //Print("WHILE CONTAINER ORIENTATION X - Y - Z                 :", px, py, pz);
-  layers.Clear();
-  layers.Add(new Layer { LayerEval = -1 });
-  ListCanditLayers();
-  layers = layers.OrderBy(l => l.LayerEval).ToList();
-  packedVolume = 0;
-  packedy = 0;
-  packing = true;
-  layerThickness = layers[bestIteration].LayerDim;
-  remainpy = py;
-  remainpz = pz;
-  for (x = 1; x <= itemsToPackCount; x++)
-  {
-  itemsToPack[x].IsPacked = false;
-  }
-  do
-  {
-  layerinlayer = 0;
-  layerDone = false;
-  PackLayer();
-  packedy = packedy + layerThickness;
-  remainpy = py - packedy;
-  	if (layerinlayer > 0.0001M)
-  {
-  prepackedy = packedy;
-  preremainpy = remainpy;
-  remainpy = layerThickness - prelayer;
-  packedy = packedy - layerThickness + prelayer;
-  remainpz = lilz;
-  layerThickness = layerinlayer;
-  layerDone = false;
-  PackLayer();
-  packedy = prepackedy;
-  remainpy = preremainpy;
-  remainpz = pz;
-  }
-  	if (!quit)
-  {
-  FindLayer(remainpy);
-  }
-  } while (packing && !quit);
-  }
-  c#*/
-
-		/**
-   * Using the parameters found, packs the best solution found and reports to the console.
-   * @param {Container} container 
-   */
-
-	}, {
-		key: "Report",
-		value: function Report(container) {
-			quit = false;
-
-			switch (bestVariant) {
-				case 1:
-					px = container.Length;py = container.Height;pz = container.Width;
-					break;
-
-				case 2:
-					px = container.Width;py = container.Height;pz = container.Length;
-					break;
-
-				case 3:
-					px = container.Width;py = container.Length;pz = container.Height;
-					break;
-
-				case 4:
-					px = container.Height;py = container.Length;pz = container.Width;
-					break;
-
-				case 5:
-					px = container.Length;py = container.Width;pz = container.Height;
-					break;
-
-				case 6:
-					px = container.Height;py = container.Width;pz = container.Length;
-					break;
-			}
-
-			packingBest = true;
-
-			//Print("BEST SOLUTION FOUND AT ITERATION                      :", bestIteration, "OF VARIANT", bestVariant);
-			//Print("TOTAL ITEMS TO PACK                                   :", itemsToPackCount);
-			//Print("TOTAL VOLUME OF ALL ITEMS                             :", totalItemVolume);
-			//Print("WHILE CONTAINER ORIENTATION X - Y - Z                 :", px, py, pz);
-
-			layers.length = 0;
-			layers[0] = new Layer(-1);
-			this.ListCanditLayers();
-			//layers = layers.OrderBy(l => l.LayerEval).ToList();
-			layers.sort(Layer.SortByEval);
-			packedVolume = 0;
-			packedy = 0;
-			packing = true;
-			layerThickness = layers[bestIteration].LayerDim;
-			remainpy = py;
-			remainpz = pz;
-
-			for (x = 1; x <= itemsToPackCount; x++) {
-				itemsToPack[x].IsPacked = false;
-			}
-
-			do {
-				layerinlayer = 0;
-				layerDone = false;
-				this.PackLayer();
-				packedy = packedy + layerThickness;
-				remainpy = py - packedy;
-
-				if (layerinlayer > epsilon) {
-					prepackedy = packedy;
-					preremainpy = remainpy;
-					remainpy = layerThickness - prelayer;
-					packedy = packedy - layerThickness + prelayer;
-					remainpz = lilz;
-					layerThickness = layerinlayer;
-					layerDone = false;
-					this.PackLayer();
-					packedy = prepackedy;
-					remainpy = preremainpy;
-					remainpz = pz;
-				}
-
-				if (!quit) {
-					this.FindLayer(remainpy);
-				}
-			} while (packing && !quit);
-		}
-
-		/*c# VolumeCheck
-  /// <summary>
-  /// After packing of each item, the 100% packing condition is checked.
-  /// </summary>
-  private void VolumeCheck()
-  {
-  itemsToPack[cboxi].IsPacked = true;
-  itemsToPack[cboxi].PackDimX = cboxx;
-  itemsToPack[cboxi].PackDimY = cboxy;
-  itemsToPack[cboxi].PackDimZ = cboxz;
-  packedVolume = packedVolume + itemsToPack[cboxi].Volume;
-  packedItemCount++;
-  if (packingBest)
-  {
-  OutputBoxList();
-  }
-  else if (packedVolume == totalContainerVolume || packedVolume == totalItemVolume)
-  {
-  packing = false;
-  hundredPercentPacked = true;
-  }
-  }
-  c#*/
-
-		/**
-   * After packing of each item, the 100% packing condition is checked.
-   */
-
-	}, {
-		key: "VolumeCheck",
-		value: function VolumeCheck() {
-			itemsToPack[cboxi].IsPacked = true;
-			itemsToPack[cboxi].PackDimX = cboxx;
-			itemsToPack[cboxi].PackDimY = cboxy;
-			itemsToPack[cboxi].PackDimZ = cboxz;
-			packedVolume = packedVolume + itemsToPack[cboxi].Volume;
-			packedItemCount++;
-
-			if (packingBest) {
-				this.OutputBoxList();
-			} else if (packedVolume == totalContainerVolume || packedVolume == totalItemVolume) {
-				packing = false;
-				hundredPercentPacked = true;
-			}
-		}
-
-		/*c#
-  #endregion Private Methods
-  #region Private Classes
-  #endregion Private Classes
-  }
-  c#*/
-
-	}]);
-
-	return AFit;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (AFit);
 
 /***/ })
 /******/ ]);

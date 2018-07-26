@@ -5,11 +5,13 @@ const signals = {
     containerAdded: 'containerAdded'
 };
 
+const _currentIndex = Symbol('currentIndex');
+
 class PackingSpace extends Signaler {
     constructor(){
         super();
         
-        this._current = -1;
+        this[_currentIndex] = -1;
 
         /**
          * @type {Container}
@@ -19,6 +21,7 @@ class PackingSpace extends Signaler {
 
     AddContainer(container){
         this.containers.push(container);
+        this[_currentIndex]++;
 
         this.Dispatch(signals.containerAdded, container);
     }
@@ -27,8 +30,9 @@ class PackingSpace extends Signaler {
      * @returns {Container}
      */
     get current(){
-        if(this._current != -1){
-            return this.containers[this._current];
+        var currentIndex = this[_currentIndex];
+        if(currentIndex != -1){
+            return this.containers[currentIndex];
         }
     }
 

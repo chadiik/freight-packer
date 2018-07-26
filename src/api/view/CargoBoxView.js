@@ -5,7 +5,7 @@ import BoxEntry from "../components/box/BoxEntry";
 const unitCubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 1, 1, 1);
 const materialTemplate = new THREE.MeshStandardMaterial();
 
-const brightnessRange = [.4, .6];
+const brightnessRange = [.45, .55];
 var hueBase = Math.random();
 function nextColor(){
     let color = new THREE.Color();
@@ -29,6 +29,23 @@ class CargoBoxView extends CargoView {
 
         this.view = new THREE.Object3D();
         this.view.add(this.mesh);
+    }
+
+    /** @returns {BoxEntry} */
+    get entry(){ return super.entry; }
+    set entry(value){
+        super.entry = value;
+        var s = value.dimensions.vec3;
+        this.SetScale(s.x, s.y, s.z);
+    }
+
+    /**
+     * @param {Number} x 
+     * @param {Number} y 
+     * @param {Number} z 
+     */
+    SetScale(x, y, z){
+        this.mesh.scale.set(x, y, z);
     }
 }
 

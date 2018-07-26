@@ -4,6 +4,7 @@ import Draggable from "../../../ui/elements/Draggable";
 import Dom from "../../../ui/Dom";
 import SurfaceUtils from "../../../utils/SurfaceUtils";
 import ContainersEditorWizard from "./ContainersEditorWizard";
+import OptimizedMultiMat from "../../../utils/OptimizedMultiMat";
 
 class LoadRefStep extends WizardStep {
     constructor(){
@@ -36,20 +37,32 @@ class LoadRefStep extends WizardStep {
     }
 
     SetRefModel(obj){
-        var refGeometry = SurfaceUtils.MergeObject(obj);
-        refGeometry = new THREE.Geometry().fromBufferGeometry(refGeometry);
-        refGeometry.mergeVertices();
-        refGeometry.computeFaceNormals();
-        this.vertexHash = SurfaceUtils.CreateVertexHash(refGeometry);
+        console.log(obj);
 
-        if(this.obj === undefined){
-            this.obj = new THREE.Mesh(refGeometry, new THREE.MeshStandardMaterial({color: 0x999999}));
-            this.data.view.add(this.obj);
-            this.data.ref = this.obj;
-        }
-        else{
-            this.obj.geometry = refGeometry;
-        }
+        var optimizedRefObject = new OptimizedMultiMat(obj);
+        var refObject = optimizedRefObject.obj;
+
+        refObject.traverse(function(child){
+            if(child instanceof THREE.Mesh){
+                /** @type {THREE.BufferGeometry} */
+                var geometry = child.geometry;
+                console.log(geometry);
+                if(geometry.isBufferGeometry){
+                    geometry = new THREE.Geometry().fromBufferGeometry(geometry);
+                    geometry.mergeVertices();
+                    geometry.computeFaceNormals();
+                    child.geometry = geometry;
+                }
+            }
+        });
+
+        console.log(refObject);
+
+        if(this.data.ref !== undefined)
+            this.data.view.remove(this.data.ref);
+
+        this.data.ref = refObject;
+        this.data.view.add(this.data.ref);
 
         this.Complete(this.data);
     }

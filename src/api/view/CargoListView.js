@@ -1,9 +1,15 @@
 import Logger from "../utils/cik/Logger";
 import CargoBoxView from "./CargoBoxView";
 import CargoView from "./CargoView";
-import FreightPacker from "../../FreightPacker";
 import Signaler from "../utils/cik/Signaler";
 import CargoGroup from "../packer/CargoGroup";
+import Utils from "../utils/cik/Utils";
+import CargoEntry from "../components/common/CargoEntry";
+
+/**
+ * @typedef {Object} CargoListViewParams
+ * @property {import('../UX').default} ux
+ */
 
 /**
  * @typedef SortResult
@@ -19,9 +25,17 @@ const signals = {
     sort: 'sort'
 };
 
+/** @type {CargoListViewParams} */
+const defaultParams = {};
+
 class CargoListView extends Signaler {
-    constructor(){
+    /**
+     * @param {CargoListViewParams} params 
+     */
+    constructor(params){
         super();
+
+        this.params = Utils.AssignUndefined(params, defaultParams);
 
         this.view;
         this.templatesView = new THREE.Object3D();
@@ -37,7 +51,7 @@ class CargoListView extends Signaler {
      * @param {CargoGroup} group 
      */
     Add(group){
-        Logger.Log('Adding cargo group #' + this.cargoTemplateViews.size + ': ' + group.ToString() + ' to view', group);
+        //Logger.Log('Adding cargo group #' + this.cargoTemplateViews.size + ': ' + group.ToString() + ' to view', group);
         var templateCargoView;
         switch(group.entry.type){
             case 'BoxEntry': {
@@ -73,6 +87,29 @@ class CargoListView extends Signaler {
     }
 
     /**
+     * 
+     * @param {CargoGroup|CargoEntry|string|Number} id 
+     */
+    GetTemplate(id){
+        var group;
+        if(id instanceof CargoGroup){
+            group = id;
+        }
+        else if(id instanceof CargoEntry){
+            for(var cargoGroup of this.cargoTemplateViews.keys()){
+                if(cargoGroup.entry === id) group = cargoGroup;
+            }
+        }
+        else{
+            for(var cargoGroup of this.cargoTemplateViews.keys()){
+                if(cargoGroup.entry.uid === id) group = cargoGroup;
+            }
+        }
+
+        return this.cargoTemplateViews.get(group);
+    }
+
+    /**
      * @param {Map<CargoGroup, CargoView>} cargoViews 
      * @returns {Number}
      */
@@ -80,7 +117,7 @@ class CargoListView extends Signaler {
 
         this.SortMapBySize();
 
-        var units = FreightPacker.instance.params.ux.units;
+        var units = this.params.ux.params.units;
 
         this.templatesView.scale.set(1, 1, 1);
         this.templatesView.updateMatrixWorld(true);
