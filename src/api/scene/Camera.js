@@ -1,4 +1,7 @@
 
+var tempVec3 = new THREE.Vector3(),
+    tempVec3_b = new THREE.Vector3();
+
 /**
  * @typedef {Object} CameraParams
  * @property {Number} fov
@@ -57,7 +60,7 @@ class Camera {
             lookTarget.multiplyScalar(200).add(this.camera.position);
 
             this.orbitControls = new THREE.OrbitControls(this.camera, container);
-            this.orbitControls.target = lookTarget;
+            this.orbitControls.target.copy(lookTarget);
             
             var scope = this;
             this.orbitControls.Update = function(){
@@ -143,6 +146,30 @@ class Camera {
         if(this.controls !== undefined && this.controls.Release){
             this.controls.Release();
         }
+    }
+
+    /**
+     * @param {THREE.Box3} box3 
+     * @param {Number} [distanceMultiplier]
+     */
+    Frame(box3, distanceMultiplier){
+        if(distanceMultiplier === undefined) distanceMultiplier = .75;
+
+        var fov = this.camera.fov * (Math.PI / 180);
+
+        var extent = tempVec3;
+        box3.getSize(extent);
+        var frameSize = Math.max(extent.x, extent.y, extent.z);
+        var distance = Math.abs(frameSize / Math.sin(fov / 2)) * distanceMultiplier;
+        
+        var center = tempVec3_b;
+        box3.getCenter(center);
+        
+        var position = tempVec3;
+        position.subVectors(this.camera.position, center).normalize().multiplyScalar(distance).add(center);
+
+        this.camera.position.copy(position);
+        this.SetTarget(center);
     }
 
     /**

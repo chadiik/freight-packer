@@ -47,6 +47,15 @@ class CargoBoxView extends CargoView {
     SetScale(x, y, z){
         this.mesh.scale.set(x, y, z);
     }
+
+    /**
+     * @param {Number} x in radians
+     * @param {Number} y in radians
+     * @param {Number} z in radians
+     */
+    SetRotationAngles(x, y, z){
+        this.mesh.rotation.set(x, y, z);
+    }
 }
 
 export default CargoBoxView;

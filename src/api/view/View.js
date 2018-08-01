@@ -8,6 +8,7 @@ import Utils3D from "../utils/cik/Utils3D";
 import Utils from "../utils/cik/Utils";
 import PackResultView from "./PackResultView";
 import UpdateComponent from "../utils/cik/input/UpdateComponent";
+import Container from "../packer/container/Container";
 
 /**
  * @typedef {Object} ViewParams
@@ -44,10 +45,38 @@ class View {
         this.sceneSetup = sceneSetup;
         this.params = Utils.AssignUndefined(params, defaultParams);
 
+        var scope = this;
+
+        // Fill lights
+        if(true){
+            let lights = this.sceneSetup.DefaultLights(this.sceneSetup.sceneController, true, false);
+
+            let dl = lights.filter(light => light instanceof THREE.DirectionalLight)[0];
+            let dlData = {"color":"0xfeeedd","intensity":1,"castShadow":true,"shadow.bias":0.001,"shadow.radius":1,"shadow.mapSize.x":2048,"shadow.mapSize.y":2048,"shadow.camera.left":-400,"shadow.camera.top":400,"shadow.camera.right":400,"shadow.camera.bottom":-400,"shadow.camera.near":1,"shadow.camera.far":1000};
+            let Config = require('../utils/cik/config/Config').default;
+            Config.Load(dl, dlData);
+
+            if(this.sceneSetup.ux.params.hud){
+                this.sceneSetup.DefaultLights(this.sceneSetup.hud);
+            }
+        }
+
         // Packing space
         this.packingSpaceView = new PackingSpaceView();
         this.sceneSetup.sceneController.AddDefault(this.packingSpaceView.view);
-        var onContainerAdded = this.packingSpaceView.Add.bind(this.packingSpaceView);
+        /** @param {Container} container */
+        function onContainerAdded(container){
+            /** @type {THREE.Box3} */
+            let box3;
+            container.volumes.forEach(volume => {
+                if(box3 === undefined)
+                    box3 = volume.box3;
+                else
+                    box3.union(volume.box3);
+            });
+            scope.sceneSetup.cameraController.Frame(box3, .7);
+            scope.packingSpaceView.Add(container);
+        }
         packer.packingSpace.On(PackingSpace.signals.containerAdded, onContainerAdded);
 
         // Cargo list
@@ -192,7 +221,7 @@ class View {
         if(this.params.ux.params.hud){
             var hudControl3D = Control3D.Request('hud');
 
-            input.keyboard.on('s', function(){
+            Config.MakeShortcut('Configure', 'Show HUDControl3D', function(){
                 hudControl3D.Toggle(scope.cargoListView.templatesView);
             });
         }

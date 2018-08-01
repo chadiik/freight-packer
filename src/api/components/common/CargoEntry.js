@@ -1,6 +1,8 @@
 import TextField from "./TextField";
 import Logger from "../../utils/cik/Logger";
 
+const _weight = Symbol('weight');
+
 class CargoEntry {
     constructor(){
         this.type = 'CargoEntry';
@@ -8,12 +10,17 @@ class CargoEntry {
         this.quantity = 0;
         this.properties = {};
         this.uid = '';
+        this[_weight] = 0;
 
         /**
          * @type {Map<string, TextField>}
          */
         this.descriptions = new Map();
     }
+
+    /** @returns {Number} */
+    get weight(){ return this[_weight]; }
+    set weight(value){ this[_weight] = value; }
 
     /**
      * @param {string} [uid] - You'll rarely need to provide this

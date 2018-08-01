@@ -7,14 +7,24 @@ import Camera from '../scene/Camera';
 import HUDView from './HUDView';
 import UX from '../UX';
 import Utils from '../utils/cik/Utils';
+import Signaler from '../utils/cik/Signaler';
 
-class SceneSetup {
+const signals = {
+    init: 'init',
+    started: 'started',
+    paused: 'paused',
+    stopped: 'stopped'
+};
+
+class SceneSetup extends Signaler {
     /**
      * 
      * @param {HTMLDivElement} containerDiv 
      * @param {UX} ux 
      */
     constructor(containerDiv, ux){
+        super();
+        
         this.domElement = containerDiv;
         this.ux = ux;
     }
@@ -27,7 +37,8 @@ class SceneSetup {
         var controllerParams = {};
         this.sceneController = new Controller(controllerParams);
 
-        var rendererParams = {clearColor: 0xafafaf, renderSizeMul: 1};
+        /** @type {import('../scene/Renderer').RendererParams} */
+        var rendererParams = {};
         Object.assign(rendererParams, quality);
         this.sceneRenderer = new Renderer(rendererParams);
         this.domElement.appendChild(this.sceneRenderer.renderer.domElement);
@@ -64,7 +75,6 @@ class SceneSetup {
 
         // Comeplete setup
         var setupParams = {
-            fillLights: true,
             gridHelper: true,
         }
 
@@ -73,14 +83,6 @@ class SceneSetup {
 		this.cameraController.position.y = 40 * units;
         this.cameraController.position.z = 100 * units;
         this.cameraController.SetTarget(new THREE.Vector3());
-
-        // Fill lights
-        if(setupParams.fillLights){
-            this.DefaultLights(this.sceneController);
-            if(this.ux.params.hud){
-                this.DefaultLights(this.hud);
-            }
-        }
 
         // Env
         if(setupParams.gridHelper){
@@ -92,7 +94,9 @@ class SceneSetup {
             this.Configure();
         }
 
+        var scope = this;
         return new Promise((resolve, reject) => {
+            scope.Dispatch(signals.init);
             resolve();
         });
     }
@@ -137,12 +141,16 @@ class SceneSetup {
         this.Update();
         this.input.screenNeedsUpdate = true;
         this.input.cameraNeedsUpdate = true;
+
+        this.Dispatch(signals.started);
     }
 
     Pause(){
         if(this.animationFrameID){
             cancelAnimationFrame(this.animationFrameID);
         }
+
+        this.Dispatch(signals.paused);
     }
 
     Stop(){
@@ -151,19 +159,65 @@ class SceneSetup {
         }
         this.input.Dispose();
         this.sceneRenderer.Dispose();
+
+        this.Dispatch(signals.stopped);
     }
 
-    DefaultLights(controller){
+    static get signals(){
+        return signals;
+    }
+
+    DefaultLights(controller, configure, helpers){
 
         var units = this.ux.params.units;
 
-        var ambient = new THREE.AmbientLight( 0x404040 );
+        var ambientLight = new THREE.AmbientLight( 0x404040 );
 
         var directionalLight = new THREE.DirectionalLight(0xfeeedd);
-        directionalLight.position.set(7 * units, 15 * units, 30 * units);
+        directionalLight.position.set(300 * units, 175 * units, 125 * units);
         
-        controller.ambientContainer.add(ambient);
+        controller.ambientContainer.add(ambientLight);
         controller.ambientContainer.add(directionalLight);
+
+        if(this.ux.params.configure && configure){
+            let Smart = require('../utils/cik/config/Smart').default;
+            let Config = require('../utils/cik/config/Config').default;
+            let Control3D = require('../utils/cik/config/Control3D').default;
+
+            let dl = directionalLight;
+            let smart = new Smart(dl, 'Directional light');
+            smart.MakeShortcut('Configure');
+            
+            let lightController = ['color', 'intensity', 'castShadow'];
+            let shadowControllers = ['shadow.bias', 'shadow.radius', 'shadow.mapSize.x', 'shadow.mapSize.y'];
+            //let sc = dl.shadow.camera as THREE.OrthographicCamera;
+            let shadowCameraControllers = Config.Unroll('#shadow.camera', 'left', 'top', 'right', 'bottom', 'near', 'far');
+
+            let dlHelper, dlCameraHelper;
+            if(helpers){
+                dlHelper = new THREE.DirectionalLightHelper(dl, 5);
+                this.sceneController.AddDefault(dlHelper);
+                dlCameraHelper = new THREE.CameraHelper(dl.shadow.camera);
+                this.sceneController.AddDefault(dlCameraHelper);
+            }
+
+            function onGUIChanged(){
+                dl.shadow.camera.updateProjectionMatrix();
+
+                if(helpers){
+                    dlHelper.update();
+                    dlCameraHelper.update();
+                }
+            }
+
+            smart.Config('Directional light + shadow', dl, onGUIChanged, Smart.serializeModes.json,
+                ...lightController,
+                ...shadowControllers,
+                ...shadowCameraControllers
+            );
+        }
+
+        return [ambientLight, directionalLight];
     }
 
     Configure(){
@@ -182,7 +236,7 @@ class SceneSetup {
             this.hud.AddDefault(hudControl3D.control);
 
             var hud = this.hud;
-            var onGUIChanged = function(){
+            function onGUIChanged(){
                 console.log('Camera changed');
             }
 
@@ -215,20 +269,16 @@ class SceneSetup {
             control.toggleOrbitOwner();
             
             var smart = new Smart(this, 'HUDView');
+            smart.MakeShortcut('Configure');
             var rotationProperties = Config.Unroll('#hudCam.rotation', 'x', 'y', 'z');
             var rotationControllers = Config.Controller.Multiple(rotationProperties, 0, 2 * Math.PI, 2 * Math.PI / 360);
-            smart.Config(null, control, onGUIChanged, 
+            smart.Config(null, control, onGUIChanged, Smart.serializeModes.none,
                 'toggleOrbitOwner',
                 'print',
                 'hudCam.camera.fov', 
                 ...Config.Unroll('#hudCam.position', 'x', 'y', 'z'), 
                 ...rotationControllers
             );
-
-            this.input.keyboard.on('s', function(){
-                smart.Show();
-            });
-
 
             console.log('HUDView config', smart.config.gui.list || smart);
         }

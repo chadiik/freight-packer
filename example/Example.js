@@ -35,6 +35,7 @@ class Example {
         var params = {
             debug: true,
             ux: {
+                hud: false,
                 configure: true
             }
         };
@@ -63,9 +64,9 @@ class Example {
         ui.On(signals.boxInputAbort, this.BoxInputAbort.bind(this));
     }
 
-    SolvePacking(){
-        console.log('Packing request');
-        this.api.packer.Solve();
+    SolvePacking(algorithm){
+        console.log('Packing request using ' + algorithm);
+        this.api.packer.Solve(algorithm);
     }
 
     // Packing space

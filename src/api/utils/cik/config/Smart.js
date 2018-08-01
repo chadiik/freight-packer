@@ -2,13 +2,17 @@ import { styles, Element, Draggable } from "./UIUtils";
 import Config from "./Config";
 //import dat from "./datGUIConsole";
 
+const serializeModes = Config.serializeModes;
 
 var current = undefined,
     onFocus = [],
     onFocusLost = [];
 
-
 class Smart {
+    /**
+     * @param {*} target 
+     * @param {string} label 
+     */
     constructor(target, label){
         this.target = target;
         this.label = label;
@@ -41,6 +45,7 @@ class Smart {
     }
 
     Hide(){
+        this.visible = false;
         this.draggable.Hide();
         Smart.SetCurrent(undefined);
     }
@@ -54,6 +59,7 @@ class Smart {
 
             current.Hide();
         }
+        this.visible = true;
         this.draggable.Show();
         Element.AddStyle(this.draggable.domElement, styles.UIWiggleAnim);
         Smart.SetCurrent(this);
@@ -61,11 +67,45 @@ class Smart {
         this.UpdateGUI();
     }
     
-    Config(folderName, target, guiChanged, ...args){
+    /**
+     * 
+     * @param {string} folderName 
+     * @param {*} target 
+     * @param {Function} guiChanged 
+     * @param {serializeModes} serializeMode
+     * @param {Array<string|Config.Controller>} args 
+     */
+    Config(folderName, target, guiChanged, serializeMode, ...args){
         this.config = new Config(target);
         this.config.Track(...args);
-        this.config.Edit(guiChanged, folderName, this.gui, {save: false});
+        this.config.Edit(guiChanged, folderName, this.gui, {serializeMode: serializeMode, save: false});
         return this.config.gui;
+    }
+
+    /**
+     * @param {string} category 
+     */
+    MakeShortcut(category){
+        Smart.MakeShortcut(category, this);
+    }
+
+    static get serializeModes(){
+        return serializeModes;
+    }
+
+    /**
+     * @param {string} category 
+     * @param {Smart} target 
+     */
+    static MakeShortcut(category, target){
+        Config.MakeShortcut(category, target.label, function(){
+            if(target.visible){
+                target.Hide();
+            }
+            else{
+                target.Show();
+            }
+        });
     }
 
     static SetCurrent(current){

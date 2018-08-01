@@ -42,6 +42,27 @@ class BoxEntry extends CargoEntry {
         this.descriptions.set('label', new TextField('label', getDefaultLabel()));
     }
 
+    set weight(value){ return super.weight; }
+    get weight(){
+        return this.dimensions.volume / 1000;
+    }
+
+    /**
+     * @returns {string}
+     */
+    get label(){
+        var field = this.descriptions.get('label');
+        return field ? field.content : undefined;
+    }
+
+    set label(value){
+        var field = this.descriptions.get('label');
+        if(field)
+            field.content = value;
+        else
+            this.descriptions.set('label', new TextField('label', value));
+    }
+
     Reset(){
         this.weight = 0;
         this.quantity = 1;
@@ -94,22 +115,6 @@ class BoxEntry extends CargoEntry {
         }
 
         return entry;
-    }
-
-    /**
-     * @returns {string}
-     */
-    get label(){
-        var field = this.descriptions.get('label');
-        return field ? field.content : undefined;
-    }
-
-    set label(value){
-        var field = this.descriptions.get('label');
-        if(field)
-            field.content = value;
-        else
-            this.descriptions.set('label', new TextField('label', value));
     }
 
     ToString(){

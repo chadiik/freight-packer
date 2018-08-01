@@ -45,6 +45,19 @@ class Asset {
     static FromJSON(json, texturePath){
         return objectLoader.parse(json, texturePath);
     }
+
+    /**
+     * 
+     * @param {THREE.Object3D} object 
+     */
+    static StandardSceneObject(object){
+        object.traverse(function(child){
+            if(child instanceof THREE.Mesh){
+                child.castShadow = true;
+                child.receiveShadow = true;
+            }
+        });
+    }
 }
 
 export default Asset;

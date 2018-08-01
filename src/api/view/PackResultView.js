@@ -6,6 +6,7 @@ import PackedCargoBoxView from './PackedCargoBoxView';
 import PackingSpaceView from './PackingSpaceView';
 import Logger from '../utils/cik/Logger';
 import Tween from '../utils/cik/Tween';
+import Packer from '../packer/Packer';
 
 /**
  * @typedef {Object} PackResultViewParams
@@ -37,6 +38,26 @@ function poolResetFN(object, cargoView){
     return object;
 }
 
+function getOrientationAngles(orientation){
+    switch(orientation){
+        case 'xyz': return  [0,     0,      0];
+        case 'xzy': return  [90,    0,      0];
+        case 'yxz': return  [0,     0,      90];
+        case 'yzx': return  [90,    0,      90];
+        case 'zxy': return  [90,    -90,    0];
+        case 'zyx': return  [0,     -90,    0];
+    }
+}
+
+/**
+ * @param {string} orientation 
+ */
+function getOrientationEuler(orientation){
+    const rad = Math.PI / 180.0;
+    var a = getOrientationAngles(orientation);
+    return new THREE.Euler(a[0] * rad, a[1] * rad, a[2] * rad);
+}
+
 class PackResultView{
     /**
      * @param {CargoListView} cargoListView
@@ -58,11 +79,12 @@ class PackResultView{
     }
 
     /** 
-     * @param {import('../packer/Packer').PackingResult} packingResult
+     * @param {Packer.PackingResult} packingResult
      */
     DisplayPackingResult(packingResult){
-        var containingVolumeID = packingResult.Container.ID;
-        var containingVolume = this.packingSpaceView.FindContainingVolume(containingVolumeID);
+        console.log(packingResult);
+        //var containingVolume = this.packingSpaceView.FindContainingVolume(containingVolumeID);
+        var containingVolume = packingResult.packed[0].containingVolume;
         var matrix = this.packingSpaceView.GetMatrix(containingVolume);
         var offset = new THREE.Vector3();
         var orientation = new THREE.Quaternion();
@@ -74,22 +96,18 @@ class PackResultView{
         var view = this.view;
         var onTweenCompleted = this.OnTweenCompleted.bind(this);
 
-        for(var i = 0, numPackedItems = packingResult.PackedItems.length; i < numPackedItems; i++){
-            let item = packingResult.PackedItems[i];
-            let cargoViewTemplate = this.cargoListView.GetTemplate(item.ID);
+        for(var i = 0, numPackedItems = packingResult.packed.length; i < numPackedItems; i++){
+            let item = packingResult.packed[i];
+            let cargoViewTemplate = this.cargoListView.GetTemplate(item.entry);
             let packedCargoView = this.pool.Request(cargoViewTemplate);
 
-            let width = item.PackDimX,
-                length = item.PackDimZ,
-                height = item.PackDimY;
-
             Logger.WarnOnce('PackResultView.DisplayPackingResult', 'packedCargoView should be rotated instead of re-scaling');
-            packedCargoView.SetScale(width, height, length);
+            let rotation = getOrientationEuler(item.orientation);
+            packedCargoView.SetRotationAngles(rotation.x, rotation.y, rotation.z);
 
-            let x = item.CoordX + width / 2 + offset.x,
-                y = item.CoordY + height / 2 + offset.y,
-                z = item.CoordZ + length / 2 + offset.z;
-            //packedCargoView.position.set(x, y, z);
+            let x = item.position.x + offset.x,
+                y = item.position.y + offset.y,
+                z = item.position.z + offset.z;
 
             let zEntry = containingVolume.dimensions.length;
             setTimeout(function(){

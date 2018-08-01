@@ -1,14 +1,38 @@
+import Utils from "../utils/cik/Utils";
+
+/**
+ * @typedef RendererParams
+ * @property {Boolean} antialias
+ * @property {Boolean} shadows
+ * @property {Boolean} shadowsAutoUpdate
+ * @property {Number} clearColor - hex color 0xff7f00
+ * @property {Number} renderSizeMul
+ * @property {Boolean} composer
+ */
+
+/** @type {RendererParams} */
+const defaultParams = {
+    antialias: true,
+    shadows: THREE.PCFSoftShadowMap,
+    shadowsAutoUpdate: true,
+    clearColor: 0xcfcfcf,
+    renderSizeMul: 1,
+    composer: false
+};
 
 class Renderer {
+    /**
+     * @param {RendererParams} params 
+     */
     constructor(params) {
 
-        this.params = params;
+        this.params = Utils.AssignUndefined(params, defaultParams);
         this.renderer = new THREE.WebGLRenderer({antialias: this.params.antialias});
 
         if(this.params.shadows){
             this.renderer.shadowMap.enabled = true;
-            this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            this.renderer.shadowMap.autoUpdate = false;
+            this.renderer.shadowMap.type = this.params.shadows;
+            this.renderer.shadowMap.autoUpdate = this.params.shadowsAutoUpdate;
         }
 
         this.renderer.physicallyCorrectLights = true;

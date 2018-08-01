@@ -1,5 +1,18 @@
 import Utils from "../Utils";
 
+const serializeModes = {
+    none: 'none',
+    json: 'json'
+};
+
+/**
+ * @typedef ConfigParams
+ * @property {Boolean} debug
+ * @property {Boolean} save
+ * @property {serializeModes} serializeMode
+ */
+
+
 class Controller {
     constructor(property, min, max, step, onChange){
         this.property = property;
@@ -26,6 +39,8 @@ function createKeyInfo(obj, key){
     if(isFolderGrouped)
         key = key.substr(1);
     
+    var propertyPath = key;
+    
     key = key.split('.');
     var folder = isFolderGrouped ? key.slice(0, key.length - 1).join('.') : undefined;
     while (key.length > 1) obj = obj[key.shift()];
@@ -33,7 +48,8 @@ function createKeyInfo(obj, key){
         id: (folder ? folder + '.' : '') + key[0],
         folder: folder,
         owner: obj,
-        key: key[0]
+        key: key[0],
+        propertyPath: propertyPath
     };
 }
 
@@ -46,7 +62,14 @@ function getKey(obj, key){
 function setKey(obj, key, val){
     key = key.split('.');
     while (key.length > 1) obj = obj[key.shift()];
-    return obj[key.shift()] = val;
+    var endKey = key.shift();
+    if(obj[endKey].isColor){
+        obj[endKey].setHex(val);
+    }
+    else{
+        obj[endKey] = val;
+    }
+    return obj[endKey];
 }
 
 function download(data, filename, type) {
@@ -72,13 +95,47 @@ const defaultEditParams = {
     save: true, debug: true
 };
 
-var debug = new Map();
+/** 
+ * @typedef GUI
+ * @property {HTMLElement} domElement
+ */
+
+class Shortcut{
+    /**
+     * @param {string} label 
+     */
+    constructor(label){
+        this.label = label;
+
+        ///** @type {Map<string, GUI>} */
+        //this.folders = new Map();
+
+        this.controller = {};
+    }
+
+    Add(label, target){
+        label = label.replace(new RegExp(' ', 'g'), '_');
+        this.controller[label] = target;
+        Config.shortcutsGUI.add(this.controller, label);
+        console.log('added ' + label + ' shortcut to ' + this.label);
+    }
+}
+
+/** @type {GUI} */
+var shortcutsGUI;
+
+/** @type {Map<string, Shortcut>} */
+var shortcuts = new Map();
+
+/** @type {Map<Object, Config>} */
+var instances = new Map();
+
 
 class Config {
     constructor(target){
         if(!Config.debug) 
-            Config.debug = debug;
-        debug.set(target, this);
+            Config.debug = instances;
+        instances.set(target, this);
 
         this.target = target;
         this.keys = [];
@@ -114,6 +171,20 @@ class Config {
         return data;
     }
 
+    Serialize(){
+        var data = {};
+        this.keys.forEach(key => {
+            let isController = key instanceof Controller;
+            let keyInfo = createKeyInfo(this.target, isController ? key.property : key);
+            let keyValue = keyInfo.owner[keyInfo.key];
+            if(typeof keyValue !== 'function'){
+                var saveValue = keyInfo.owner[keyInfo.key].isColor ? '0x' + Number.parseInt(keyValue.toJSON()).toString(16) : keyValue;
+                data[keyInfo.propertyPath] = saveValue;
+            }
+        });
+        return data;
+    }
+
     Save(){
         if(this.Update){
             this.Update();
@@ -121,6 +192,13 @@ class Config {
         }
     }
 
+    /**
+     * 
+     * @param {Function} guiChanged 
+     * @param {string} label 
+     * @param {string} gui - or a dat.GUI object
+     * @param {ConfigParams} params 
+     */
     Edit(guiChanged, label, gui, params){
 
         params = Utils.AssignUndefined(params, defaultEditParams);
@@ -196,6 +274,15 @@ class Config {
 
             Debug: function(){
                 console.log(scope.target);
+            },
+
+            Serialize: function(){
+                if(scope.Update){
+                    scope.Update();
+                    var data = scope.Serialize();
+                    var json = JSON.stringify(data);
+                    console.log(data, json);
+                }
             }
         }
         if(params.save){
@@ -213,6 +300,17 @@ class Config {
             }
         }
 
+        switch(params.serializeMode){
+            default: break;
+            case serializeModes.json:
+                if(this.defaultsFolder === undefined) this.defaultsFolder = gui.addFolder('...');
+                if(this.editing['editor.Serialize'] !== true){
+                    this.defaultsFolder.add(editor, 'Serialize');
+                    this.editing['editor.Serialize'] = true;
+                }
+                break;
+        }
+
         this.gui = gui;
     }
 
@@ -221,6 +319,27 @@ class Config {
         return this.data;
     }
 
+    static get serializeModes(){
+        return serializeModes;
+    }
+
+    static get shortcuts(){
+        return shortcuts;
+    }
+
+    static get shortcutsGUI(){
+        if(shortcutsGUI === undefined) shortcutsGUI = new (window.dat || require("./datGUIConsole").default).GUI({
+            autoPlace: false
+        });
+        return shortcutsGUI;
+    }
+
+    /**
+     * 
+     * @param {string} property - #property marks a folder
+     * @param {Array<string>} subProperties 
+     * @returns returns the subProperties full paths
+     */
     static Unroll(property, ...subProperties){
         var unrolled = [];
         subProperties.forEach(subProperty => {
@@ -229,11 +348,29 @@ class Config {
         return unrolled;
     }
 
+    /**
+     * @param {*} target 
+     * @param {*} data 
+     */
     static Load(target, data){
         var keys = Object.keys(data);
         keys.forEach(key => {
             setKey(target, key, data[key]);
         });
+
+        if(instances.has(target) && instances.get(target).Update)
+            instances.get(target).Update();
+    }
+
+    /**
+     * @param {string} category
+     * @param {string} label 
+     * @param {Function} target 
+     */
+    static MakeShortcut(category, label, target){
+        if(shortcuts.has(category) === false) shortcuts.set(category, new Shortcut(category));
+        var shortcut = shortcuts.get(category);
+        shortcut.Add(label, target);
     }
 }
 

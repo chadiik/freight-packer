@@ -1,7 +1,7 @@
 import Container from "./components/Container";
 import Item from "./components/Item";
 
-const epsilon = Math.pow(2, -52);;
+const epsilon = Math.pow(2, -52);
 
 /**
  * From the master's thesis:

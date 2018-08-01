@@ -23,7 +23,7 @@ function createContainerBoxes(container){
         mesh.material = mesh.material.clone();
         mesh.material.color.setHex(0xffaaaa);
         mesh.material.transparent = true;
-        mesh.material.opacity = .5;
+        mesh.material.opacity = .2;
         mesh.material.side = THREE.BackSide;
         mesh.material.polygonOffset = true;
         mesh.material.polygonOffsetFactor = 1;
@@ -51,12 +51,15 @@ class ContainerView {
         this.view = new THREE.Object3D();
         this.view.add(view);
 
+        Asset.StandardSceneObject(this.view);
+
         var containerBoxes = createContainerBoxes(container);
         for(var [cv, mesh] of containerBoxes){
             mesh.position.add(cv.position);
             this.view.add(mesh);
         }
 
+        console.log(this);
     }
 
     /*

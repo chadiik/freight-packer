@@ -18,6 +18,8 @@ class PackedCargoBoxView extends CargoBoxView {
         meshMaterial.transparent = true;
         meshMaterial.opacity = .5;
 
+        this.mesh.castShadow = this.mesh.receiveShadow = true;
+
         var material = wireframeMaterialTemplate.clone();
         this.wireMesh = new THREE.LineSegments(unitCubeEdgeGeometry, material);
         this.wireMesh.scale.copy(boxEntry.dimensions.vec3);
@@ -40,6 +42,16 @@ class PackedCargoBoxView extends CargoBoxView {
     SetScale(x, y, z){
         this.mesh.scale.set(x, y, z);
         this.wireMesh.scale.set(x, y, z);
+    }
+
+    /**
+     * @param {Number} x in radians
+     * @param {Number} y in radians
+     * @param {Number} z in radians
+     */
+    SetRotationAngles(x, y, z){
+        this.mesh.rotation.set(x, y, z);
+        this.wireMesh.rotation.set(x, y, z);
     }
 
     /**

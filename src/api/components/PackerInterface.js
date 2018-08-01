@@ -24,10 +24,10 @@ class PackerInterface extends Signaler {
         this[_app] = app;
     }
 
-    Solve(){
+    Solve(arg){
         /** @type {App} */
         var app = this[_app];
-        app.packer.Solve();
+        app.packer.Solve(arg);
     }
 
     static get signals(){

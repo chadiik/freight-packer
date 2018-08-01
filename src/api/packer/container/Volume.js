@@ -1,6 +1,7 @@
 import Dimensions from "../../components/box/Dimensions";
 
 const type = 'Volume';
+const _box3 = Symbol('box3');
 
 class Volume {
     constructor(){
@@ -13,6 +14,16 @@ class Volume {
          * @type {Dimensions}
          */
         this.dimensions = new Dimensions();
+
+        this[_box3] = new THREE.Box3();
+    }
+
+    /** @returns {THREE.Box3} */
+    get box3(){
+        /** @type {THREE.Box3} */
+        let b = this[_box3];
+        b.setFromCenterAndSize(this.position, this.dimensions.vec3);
+        return b;
     }
 
     toJSON(){

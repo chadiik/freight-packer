@@ -9,6 +9,10 @@ class ContainingVolume extends Volume {
         this.SetUID();
     }
 
+    get weightCapacity(){
+        return this.dimensions.volume / 1000;
+    }
+
     /**
      * @param {string} [uid] - You'll rarely need to provide this
      */

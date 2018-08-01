@@ -25,7 +25,8 @@ const utils = {
 	dat: (window.dat || require('./api/utils/cik/config/datGUIConsole').default),
 	Signaler: require('./api/utils/cik/Signaler').default,
 	Utils: require('./api/utils/cik/Utils').default,
-	Debug: require('./api/debug/Debug').default
+	Debug: require('./api/debug/Debug').default,
+	Config: require('./api/utils/cik/config/Config').default
 };
 
 class FreightPacker {
@@ -57,6 +58,8 @@ class FreightPacker {
 			cargoInput: this.cargoInput,
 			packingSpaceInput: this.packingSpaceInput
 		});
+
+		FreightPacker.DevSetup(app);
 
 		/**
 		 * Manual solving and notification
@@ -91,17 +94,29 @@ class FreightPacker {
 		return utils;
 	}
 
-	/** @param {FreightPacker} fp */
-	static DevSetup(fp){
-		global.fp = fp;
-		var params = fp.params;
-		if(params.debug) {
-			Logger.active = true;
-			Logger.toConsole = true;
-			Logger.traceToConsole = true;
+	/** @param {FreightPacker|App} domain */
+	static DevSetup(domain){
+		if(domain instanceof FreightPacker){
+			let fp = domain;
+			global.fp = fp;
+			let params = fp.params;
+			if(params.debug) {
+				Logger.active = true;
+				Logger.toConsole = true;
+				Logger.traceToConsole = true;
+			}
+
+			//require('./api/debug/Tester').testPool();
+			//utils.Debug.CLPTest.Test1();
 		}
 
-		//require('./api/debug/Tester').testPool();
+		if(domain instanceof App){
+			const SceneSetup = require('./api/view/SceneSetup').default;
+			let app = domain;
+			app.sceneSetup.On(SceneSetup.signals.init, function(){
+				FreightPacker.utils.Debug.Viz.scene = app.sceneSetup.sceneController.scene;
+			});
+		}
 	}
 
 	/** @param {FreightPacker} fp */

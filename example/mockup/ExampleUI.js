@@ -30,11 +30,16 @@ class ExampleUI extends FreightPacker.utils.Signaler {
     constructor(inputData){
         super();
 
+        this.domElement = document.getElementById('fp-gui');
+
+        var shortcutsGUI = FreightPacker.utils.Config.shortcutsGUI;
+        this.domElement.appendChild(shortcutsGUI.domElement);
+        console.log(shortcutsGUI);
+
         this.gui = new (window.dat || FreightPacker.utils.dat).GUI({
             autoPlace: false
         });
 
-        this.domElement = document.getElementById('fp-gui');
         this.domElement.appendChild(this.gui.domElement);
 
         var autoFolder = this.CreateAutoController();
@@ -84,12 +89,12 @@ class ExampleUI extends FreightPacker.utils.Signaler {
         function testDataCargoAdd(){
             var items = testData.items;
             return new Promise((resolve, reject) => {
-                var iid = setInterval(roll, 100);
+                let iid = setInterval(roll, 100);
                 function roll(){
-                    var item = items.pop();
+                    let item = items.pop();
                     if(item){
                         let boxInput = {
-                            label: item.ID,
+                            label: item.ID.toString(),
                             width: item.Dim1,
                             length: item.Dim2,
                             height: item.Dim3,
@@ -98,7 +103,7 @@ class ExampleUI extends FreightPacker.utils.Signaler {
                         scope.Dispatch(ExampleUI.signals.boxInputUpdate, boxInput);
                         scope.Dispatch(ExampleUI.signals.boxInputComplete);
                     }
-                    else{
+                    else if(items.length <= 0){
                         clearInterval(iid);
                         resolve();
                     }
@@ -106,8 +111,9 @@ class ExampleUI extends FreightPacker.utils.Signaler {
             });
         }
 
+        var algorithm = 'afit';
         function pack(){
-            scope.Dispatch(signals.packRequest);
+            scope.Dispatch(signals.packRequest, algorithm);
         }
 
         function packingTest1(){
@@ -128,11 +134,31 @@ class ExampleUI extends FreightPacker.utils.Signaler {
 
         function packingTestFlatdeck48(){
             testData = testDataFlatdeck;
+            algorithm = 'afit';
             
             samplePackingSpace()
             .then(testDataCargoAdd)
             .then(pack);
         }
+
+        function packingTestFlatdeck48SIM(){
+            testData = testDataFlatdeck;
+            algorithm = 'sim';
+
+            samplePackingSpace()
+            .then(testDataCargoAdd)
+            .then(pack);
+        }
+
+        function packingTestFlatdeck48BRB(){
+            testData = testDataFlatdeck;
+            algorithm = 'brb';
+
+            samplePackingSpace()
+            .then(testDataCargoAdd)
+            .then(pack);
+        }
+        
 
         function samplePackingSpace(){
             let psConfigs = [
@@ -157,12 +183,16 @@ class ExampleUI extends FreightPacker.utils.Signaler {
             PackingTest1: packingTest1,
             PackingTest2: packingTest2,
             Flatdeck48_T1: packingTestFlatdeck48,
+            Flatdeck48_SIM: packingTestFlatdeck48SIM,
+            Flatdeck48_BRB: packingTestFlatdeck48BRB,
             LoadPackingSpace: samplePackingSpace,
             SampleCargo2: sampleCargo2
         };
 
         var autoFolder = this.gui.addFolder('Automate');
         autoFolder.add(controller, 'Flatdeck48_T1');
+        autoFolder.add(controller, 'Flatdeck48_SIM');
+        autoFolder.add(controller, 'Flatdeck48_BRB');
         autoFolder.add(controller, 'PackingTest2');
         autoFolder.add(controller, 'LoadPackingSpace');
         autoFolder.add(controller, 'SampleCargo2');
