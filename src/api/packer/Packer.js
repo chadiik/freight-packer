@@ -1,12 +1,12 @@
 import CargoList from "./CargoList";
 import PackingSpace from "./PackingSpace";
-import AFit from "./afit/AFit";
 import BoxEntry from "../components/box/BoxEntry";
 import Utils from "../utils/cik/Utils";
 import Signaler from "../utils/cik/Signaler";
 import Logger from "../utils/cik/Logger";
 import ContainingVolume from "./container/ContainingVolume";
 import Dimensions from "../components/box/Dimensions";
+import Debug from "../debug/Debug";
 
 function almost(n1, n2){
     return Math.abs(n1 - n2) < .01;
@@ -16,8 +16,6 @@ function almost(n1, n2){
  * @typedef {Object} PackerParams
  * @property {import('../UX').default} ux
  */
-
-///** @typedef {import('./afit/AFit').PackingResult} PackingResult */
 
 class PackedCargo{
     /**
@@ -34,9 +32,10 @@ class PackedCargo{
 }
 
 class PackingResult{
-    constructor(){
+    constructor(numTotalItems){
         /** @type {Array<PackedCargo>} */
         this.packed = [];
+        this.numTotalItems = numTotalItems || 0;
     }
 }
 
@@ -46,7 +45,6 @@ function sumOfVolumes(items){
     return sum;
 }
 
-const _afit = Symbol('afit');
 const defaultParams = {};
 const signals = {
     packUpdate: 'packUpdate'
@@ -61,8 +59,6 @@ class Packer extends Signaler {
 
         this.params = Utils.AssignUndefined(params, defaultParams);
 
-        this[_afit] = new AFit();
-
         this.packingSpace = new PackingSpace();
         this.cargoList = new CargoList();
     }
@@ -72,13 +68,61 @@ class Packer extends Signaler {
             this.SolveSim();
         else if(arg === 'brb')
             this.SolveBRB();
+        else if(arg === 'cub')
+            this.SolveCUB();
         else
             this.SolveAFit();
     }
 
+    async SolveCUB(){
+        const Container = require('./cub/Components').Container;
+        const Item = require('./cub/Components').Item;
+
+        var containingVolume = this.packingSpace.current.volume;
+        var d = containingVolume.dimensions;
+        var container = new Container(containingVolume.uid, d.width, d.height, d.length, containingVolume.weightCapacity);
+
+        var numTotalItems = 0;
+
+         /** @type {Array<Item>} */
+         var items = [];
+         var entries = {};
+         for(let group of this.cargoList.groups.values()){
+            /** @type {BoxEntry} */
+            let entry = group.entry;
+            entries[entry.uid] = entry;
+            d = entry.dimensions;
+            let item = new Item(entry.uid, d.width, d.height, d.length, entry.weight, entry.quantity);
+            items.push(item);
+            numTotalItems += entry.quantity;
+        }
+ 
+        Logger.Log('Solving', items, ' in ', container);
+
+        const CUB = require('./cub/CUB');
+        var result = await CUB.pack(container, items);
+        console.log(result);
+
+        var packingResult = new PackingResult(numTotalItems);
+        result.packedItems.forEach(packedItem => {
+            let entry = entries[packedItem.ref.id];
+            let position = new THREE.Vector3(
+                packedItem.x + packedItem.packedWidth / 2,
+                packedItem.y + packedItem.packedHeight / 2,
+                packedItem.z + packedItem.packedLength / 2
+            );
+            let orientation = Item.ResolveOrientation(packedItem.orientation);
+            let packedCargo = new PackedCargo(entry, containingVolume, position, orientation);
+            packingResult.packed.push(packedCargo);
+        });
+
+        this.Dispatch(signals.packUpdate, packingResult);
+    }
+
     SolveAFit(){
-        /** @type {AFit} */
-        var afit = this[_afit];
+        const AFit = require('./afit/AFit').default;
+
+        var afit = new AFit();
 
         var Container = require('./afit/components/Container').default;
         var Item = require('./afit/components/Item').default;
@@ -89,6 +133,8 @@ class Packer extends Signaler {
         var d = containingVolume.dimensions;
         var container = new Container(containingVolume.uid, d.width, d.length, d.height);
 
+        var numTotalItems = 0;
+
         /** @type {Array<Box>} */
         var items = [];
         var entries = {};
@@ -98,6 +144,7 @@ class Packer extends Signaler {
             entries[entry.uid] = entry;
             d = entry.dimensions;
             let item = new Item(entry.uid, d.width, d.length, d.height, entry.quantity);
+            numTotalItems += entry.quantity;
             items.push(item);
         }
 
@@ -114,7 +161,7 @@ class Packer extends Signaler {
         result.PercentContainerVolumePacked = Math.floor(itemVolumePacked / containerVolume * 100 * 100) / 100;
         result.PercentItemVolumePacked = Math.floor(itemVolumePacked / (itemVolumePacked + itemVolumeUnpacked) * 100 * 100) / 100;
 
-        var packingResult = new PackingResult();
+        var packingResult = new PackingResult(numTotalItems);
         result.PackedItems.forEach(packedItem => {
             if(packedItem.IsPacked){
                 let entry = entries[packedItem.ID];
@@ -451,7 +498,7 @@ class Packer extends Signaler {
         this.Dispatch(signals.packUpdate, packingResult);
     }
 
-    SolveBRB(){
+    async SolveBRB(){
 
         const BRB = require('./brb/BRB');
 
@@ -487,8 +534,13 @@ class Packer extends Signaler {
 
         Logger.Log('Solving', items, ' in ', container);
 
+        /** @type {import('../App').default} */
+        var app = Debug.app;
+        var matrix = app.view.packingSpaceView.GetMatrix(containingVolume);
+        BRB.setDebugMatrix(matrix);
+
         var startTime = performance.now();
-        var result = BRB.pack(container, items);
+        var result = await BRB.pack(container, items);
 
         if( result.failed ){
             console.log('BRB packing failed: ' + result.failed);

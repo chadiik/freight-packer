@@ -179,6 +179,11 @@ class SceneSetup extends Signaler {
         controller.ambientContainer.add(ambientLight);
         controller.ambientContainer.add(directionalLight);
 
+        var directionalLightComplem = new THREE.DirectionalLight(0xfeeedd);
+        directionalLightComplem.position.set(-300 * units, 175 * units, 125 * units);
+        
+        controller.ambientContainer.add(directionalLightComplem);
+
         if(this.ux.params.configure && configure){
             let Smart = require('../utils/cik/config/Smart').default;
             let Config = require('../utils/cik/config/Config').default;

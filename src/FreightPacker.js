@@ -99,6 +99,7 @@ class FreightPacker {
 		if(domain instanceof FreightPacker){
 			let fp = domain;
 			global.fp = fp;
+			FreightPacker.utils.Debug.api = fp;
 			let params = fp.params;
 			if(params.debug) {
 				Logger.active = true;
@@ -113,8 +114,9 @@ class FreightPacker {
 		if(domain instanceof App){
 			const SceneSetup = require('./api/view/SceneSetup').default;
 			let app = domain;
-			app.sceneSetup.On(SceneSetup.signals.init, function(){
-				FreightPacker.utils.Debug.Viz.scene = app.sceneSetup.sceneController.scene;
+			FreightPacker.utils.Debug.app = app;
+			app.sceneSetup.BackListen(SceneSetup.signals.init, function(){
+				FreightPacker.utils.Debug.Viz.SetViewParent(app.sceneSetup.sceneController.scene);
 			});
 		}
 	}

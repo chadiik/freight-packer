@@ -1,6 +1,19 @@
+import Debug from "../../debug/Debug";
+
+var offset = new THREE.Vector3();
+var orientation = new THREE.Quaternion();
+var scale = new THREE.Vector3();
+function setDebugMatrix(matrix){
+    matrix.decompose(offset, orientation, scale);
+}
+
+const debugging = false;
 
 function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => {
+        if(debugging) setTimeout(resolve, ms);
+        else resolve();
+    });
 }
 
 function str(obj){
@@ -16,22 +29,43 @@ function str(obj){
 
 function debugLog(...args){
     console.log(...args);
-    return sleep(200);
+    return sleep(50);
 }
 
 function debugPacking(...args){
-
-    return sleep(200);
+    /** @type {Packing} */
+    var packing = args[0];
+    packing.spaces.forEach(space => {
+        var p = space.position;
+        var d = space.dimensions;
+        Debug.Viz.DrawVolume(p[0], p[1], p[2], d[0], d[1], d[2], args[1] || 0xaaffff, args[2] || 500);
+    });
+    return sleep(500);
 }
 
 function debugSpace(...args){
-
-    return sleep(200);
+    /** @type {Space} */
+    var space = args[0];
+    var p = space.position;
+    var d = space.dimensions;
+    Debug.Viz.DrawVolume(p[0], p[1], p[2], d[0], d[1], d[2], args[1] || 0xaaffff, args[2] || 500);
+    return sleep(300);
 }
 
 function debugPlacement(...args){
+    /** @type {Placement} */
+    var placement = args[0];
+    var p = placement.position;
+    var d = placement.dimensions;
+    Debug.Viz.DrawVolume(p[0], p[1], p[2], d[0], d[1], d[2], args[1] || 0xaaffaa, args[2] || 500);
+    return sleep(300);
+}
 
-    return sleep(200);
+function debugPacked(...args){
+    /** @type {Placement} */
+    var placement = args[0];
+
+    debugPlacement(placement, 0x8888ff, 100000);
 }
 
 function debugAs(type, ...args){
@@ -40,6 +74,7 @@ function debugAs(type, ...args){
         case 'Packing': return debugPacking(...args);
         case 'Space': return debugSpace(...args);
         case 'Placement': return debugPlacement(...args);
+        case 'Packed': return debugPacked(...args);
     }
     return true;
 }
@@ -185,7 +220,7 @@ async function pack(container, items){
                     continue;
                 }
 
-                await debugAs('Placement', 'placement');
+                await debugAs('Placement', placement);
 
                 // Add the item to the packing and break up the surrounding spaces
                 packing.placements.push(placement);
@@ -195,6 +230,7 @@ async function pack(container, items){
 
                 packed = true;
                 items.splice(iItem, 1);
+                await debugAs('Packed', placement);
                 await debugAs('Log', 'Item packed successfully in Space ' + iSpace + ' of Packing ' + iPacking);
                 break;
             }
@@ -228,8 +264,9 @@ async function pack(container, items){
             spaces: breakUpSpace(space, placement)
         };
         packings.push(packing);
-
         items.splice(iItem, 1);
+        await debugAs('Packed', placement);
+        await debugAs('Log', 'Item packed successfully in new Space.');
     }
 
     return {
@@ -282,5 +319,6 @@ function resolveOrientation(packedDimensions, itemDimensions){
 
 export {
     pack,
-    resolveOrientation
+    resolveOrientation,
+    setDebugMatrix
 };

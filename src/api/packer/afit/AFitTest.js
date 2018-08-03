@@ -106,6 +106,23 @@ class AFitTest{
         var data = new TestData(container, items);
         return data;
     }
+
+    static GenerateDataSampleFlatdeck2(){
+        var containerData = { ID: 1000, Name: 'Box1', Length: 576, Width: 102, Height: 102 };
+        var itemsData = [
+            { ID: 1000, Name: 'Item1', Length: 100,  Width: 70, Height: 90, Quantity: 3 },
+		    { ID: 1003, Name: 'Item4', Length: 60, Width: 60, Height: 60, Quantity: 7 },
+		    { ID: 1004, Name: 'Item5', Length: 40, Width: 20, Height: 30, Quantity: 4 },
+            { ID: 1005, Name: 'Item6', Length: 30,  Width: 20, Height: 30, Quantity: 20 },
+            { ID: 1005, Name: 'Item6', Length: 50,  Width: 20, Height: 30, Quantity: 20 }
+        ];
+
+        var container = Object.assign(new Container(), containerData);
+        var items = toItems(itemsData, ['ID', 'Length', 'Width', 'Height', 'Quantity']);
+
+        var data = new TestData(container, items);
+        return data;
+    }
 }
 
 export default AFitTest;

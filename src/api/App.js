@@ -51,7 +51,7 @@ class App {
 
         /** @param {import('./packer/Packer').PackingResult} packingResult */
         function onPackUpdate(packingResult){
-            Logger.Log('Packing result', packingResult);
+            Logger.Log('Packing result:', packingResult);
         }
 
         packer.On(Packer.signals.packUpdate, onPackUpdate);

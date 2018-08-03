@@ -2,6 +2,14 @@
 class Signaler {
     constructor(){
         this.signals = {};
+        this.dispatches = {};
+    }
+
+    BackListen(event, callback){
+        var args = this.dispatches[event];
+        if(args){
+            callback(...args);
+        }
     }
 
     On(event, callback){
@@ -22,6 +30,7 @@ class Signaler {
     }
 
     Dispatch(event, ...args){
+        this.dispatches[event] = args;
         var callbacks = this.signals[event];
         if(callbacks){
             for(var i = 0, len = callbacks.length; i < len; i++){

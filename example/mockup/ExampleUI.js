@@ -59,7 +59,7 @@ class ExampleUI extends FreightPacker.utils.Signaler {
 
         var testData1 = FreightPacker.utils.Debug.AFitTest.GenerateDataSample1();
         var testData2 = FreightPacker.utils.Debug.AFitTest.GenerateDataSample2();
-        var testDataFlatdeck = FreightPacker.utils.Debug.AFitTest.GenerateDataSampleFlatdeck();
+        var testDataFlatdeck = FreightPacker.utils.Debug.AFitTest.GenerateDataSampleFlatdeck2();
         var testData;
 
         function testDataPSLoad(){
@@ -86,6 +86,7 @@ class ExampleUI extends FreightPacker.utils.Signaler {
             });
         }
 
+        var itemQttMultiplier = 1;
         function testDataCargoAdd(){
             var items = testData.items;
             return new Promise((resolve, reject) => {
@@ -98,7 +99,7 @@ class ExampleUI extends FreightPacker.utils.Signaler {
                             width: item.Dim1,
                             length: item.Dim2,
                             height: item.Dim3,
-                            quantity: item.Quantity
+                            quantity: Math.floor(item.Quantity * itemQttMultiplier)
                         };
                         scope.Dispatch(ExampleUI.signals.boxInputUpdate, boxInput);
                         scope.Dispatch(ExampleUI.signals.boxInputComplete);
@@ -141,7 +142,7 @@ class ExampleUI extends FreightPacker.utils.Signaler {
             .then(pack);
         }
 
-        function packingTestFlatdeck48SIM(){
+        function packingTestFlatdeck48Sim(){
             testData = testDataFlatdeck;
             algorithm = 'sim';
 
@@ -150,9 +151,9 @@ class ExampleUI extends FreightPacker.utils.Signaler {
             .then(pack);
         }
 
-        function packingTestFlatdeck48BRB(){
+        function packingTestFlatdeck48CUB(){
             testData = testDataFlatdeck;
-            algorithm = 'brb';
+            algorithm = 'cub';
 
             samplePackingSpace()
             .then(testDataCargoAdd)
@@ -183,16 +184,16 @@ class ExampleUI extends FreightPacker.utils.Signaler {
             PackingTest1: packingTest1,
             PackingTest2: packingTest2,
             Flatdeck48_T1: packingTestFlatdeck48,
-            Flatdeck48_SIM: packingTestFlatdeck48SIM,
-            Flatdeck48_BRB: packingTestFlatdeck48BRB,
+            Flatdeck48_Sim: packingTestFlatdeck48Sim,
+            Flatdeck48_CUB: packingTestFlatdeck48CUB,
             LoadPackingSpace: samplePackingSpace,
             SampleCargo2: sampleCargo2
         };
 
         var autoFolder = this.gui.addFolder('Automate');
         autoFolder.add(controller, 'Flatdeck48_T1');
-        autoFolder.add(controller, 'Flatdeck48_SIM');
-        autoFolder.add(controller, 'Flatdeck48_BRB');
+        autoFolder.add(controller, 'Flatdeck48_Sim');
+        autoFolder.add(controller, 'Flatdeck48_CUB');
         autoFolder.add(controller, 'PackingTest2');
         autoFolder.add(controller, 'LoadPackingSpace');
         autoFolder.add(controller, 'SampleCargo2');

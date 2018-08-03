@@ -94,7 +94,7 @@ class PackResultView{
 
         var animatingViews = this.animatingViews;
         var view = this.view;
-        var onTweenCompleted = this.OnTweenCompleted.bind(this);
+        var onTweenComplete = this.OnTweenComplete.bind(this);
 
         for(var i = 0, numPackedItems = packingResult.packed.length; i < numPackedItems; i++){
             let item = packingResult.packed[i];
@@ -114,16 +114,16 @@ class PackResultView{
                 let posTweenCombo = Tween.Combo.Request3(Tween.functions.linear,
                     x, y, zEntry, 
                     0, 0, z - zEntry,
-                    .5
+                    .75
                 );
                 
                 posTweenCombo.Hook(packedCargoView.position, 'x', 'y', 'z');
-                posTweenCombo.onComplete = onTweenCompleted;
+                posTweenCombo.onComplete = onTweenComplete;
                 posTweenCombo.Update(0);
                 animatingViews.push(posTweenCombo);
     
                 view.add(packedCargoView.view);
-            }, 100 * i);
+            }, 200 * i);
         }
     }
 
@@ -131,7 +131,7 @@ class PackResultView{
      * 
      * @param {Tween|Tween.Combo} tween 
      */
-    OnTweenCompleted(tween){
+    OnTweenComplete(tween){
         var index = this.animatingViews.indexOf(tween);
         if(index != -1){
             this.animatingViews.splice(index, 1);

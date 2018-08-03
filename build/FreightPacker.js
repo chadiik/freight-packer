@@ -60,15 +60,20 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 42);
+/******/ 	return __webpack_require__(__webpack_require__.s = 44);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -204,22 +209,28 @@ var Utils = function () {
     return Utils;
 }();
 
-/* harmony default export */ __webpack_exports__["default"] = (Utils);
+exports.default = Utils;
 
 /***/ }),
 /* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Utils__ = __webpack_require__(0);
-
-// dat.GUI console mirroring
-// Access with >> dat.list
 
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var defaultGUIParams = { publish: true, key: '' };
+// dat.GUI console mirroring
+// Access with >> dat.list
 
 var dat = {
     guis: [],
@@ -285,7 +296,7 @@ var dat = {
         this.__controllers = [];
         this.__folders = [];
 
-        params = __WEBPACK_IMPORTED_MODULE_0__Utils__["default"].AssignUndefined(params, defaultGUIParams);
+        params = _Utils2.default.AssignUndefined(params, defaultGUIParams);
 
         this.label = params.label;
 
@@ -359,15 +370,22 @@ Object.defineProperties(dat, {
     }
 });
 
-/* harmony default export */ __webpack_exports__["default"] = (dat);
+exports.default = dat;
 
 /***/ }),
 /* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -376,9 +394,18 @@ var Signaler = function () {
         _classCallCheck(this, Signaler);
 
         this.signals = {};
+        this.dispatches = {};
     }
 
     _createClass(Signaler, [{
+        key: "BackListen",
+        value: function BackListen(event, callback) {
+            var args = this.dispatches[event];
+            if (args) {
+                callback.apply(undefined, _toConsumableArray(args));
+            }
+        }
+    }, {
         key: "On",
         value: function On(event, callback) {
             if (this.signals[event] === undefined) {
@@ -400,12 +427,13 @@ var Signaler = function () {
     }, {
         key: "Dispatch",
         value: function Dispatch(event) {
+            for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                args[_key - 1] = arguments[_key];
+            }
+
+            this.dispatches[event] = args;
             var callbacks = this.signals[event];
             if (callbacks) {
-                for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-                    args[_key - 1] = arguments[_key];
-                }
-
                 for (var i = 0, len = callbacks.length; i < len; i++) {
                     callbacks[i].apply(callbacks, args);
                 }
@@ -416,19 +444,28 @@ var Signaler = function () {
     return Signaler;
 }();
 
-/* harmony default export */ __webpack_exports__["default"] = (Signaler);
+exports.default = Signaler;
 
 /***/ }),
 /* 3 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Utils__ = __webpack_require__(0);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
 
 var logType = {
     trace: 0,
@@ -580,7 +617,7 @@ var Logger = function () {
     }, {
         key: 'Print',
         value: function Print(filter) {
-            __WEBPACK_IMPORTED_MODULE_0__Utils__["default"].AssignUndefined(filter, defaultPrintFilter);
+            _Utils2.default.AssignUndefined(filter, defaultPrintFilter);
 
             var output = 'Log:\n';
             messages.forEach(function (message) {
@@ -613,20 +650,28 @@ var Logger = function () {
 
 Logger.active = true;
 
-/* harmony default export */ __webpack_exports__["a"] = (Logger);
+exports.default = Logger;
 
 /***/ }),
 /* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Utils__ = __webpack_require__(0);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
 
 var serializeModes = {
     none: 'none',
@@ -861,7 +906,7 @@ var Config = function () {
         value: function Edit(guiChanged, label, gui, params) {
             var _this2 = this;
 
-            params = __WEBPACK_IMPORTED_MODULE_0__Utils__["default"].AssignUndefined(params, defaultEditParams);
+            params = _Utils2.default.AssignUndefined(params, defaultEditParams);
 
             var controllers = [];
             var target = this.target;
@@ -878,7 +923,7 @@ var Config = function () {
                 this.editing = {};
 
                 this.Update = function () {
-                    __webpack_require__(26);
+                    __webpack_require__(28);
 
                     gui.updateAll();
                     guiChanged();
@@ -893,7 +938,7 @@ var Config = function () {
                 if (_this2.editing[keyInfo.id] !== true) {
                     var folder = gui;
                     if (keyInfo.folder) {
-                        __webpack_require__(26);
+                        __webpack_require__(28);
 
                         if (gui.find) folder = gui.find(keyInfo.folder);else console.warn('gui extensions not found!');
 
@@ -1041,21 +1086,32 @@ var Config = function () {
 
 Config.Controller = Controller;
 
-/* harmony default export */ __webpack_exports__["default"] = (Config);
+exports.default = Config;
 
 /***/ }),
 /* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TextField__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__ = __webpack_require__(3);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _TextField = __webpack_require__(30);
+
+var _TextField2 = _interopRequireDefault(_TextField);
+
+var _Logger = __webpack_require__(3);
+
+var _Logger2 = _interopRequireDefault(_Logger);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
 
 var _weight = Symbol('weight');
 
@@ -1093,12 +1149,12 @@ var CargoEntry = function () {
     }, {
         key: "Copy",
         value: function Copy(entry) {
-            __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__["a" /* default */].Warn('CargoEntry.Copy is not implemented');
+            _Logger2.default.Warn('CargoEntry.Copy is not implemented');
         }
     }, {
         key: "Clone",
         value: function Clone() {
-            __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__["a" /* default */].Warn('CargoEntry.Clone is not implemented');
+            _Logger2.default.Warn('CargoEntry.Clone is not implemented');
         }
     }, {
         key: "ToString",
@@ -1116,21 +1172,32 @@ var CargoEntry = function () {
     return CargoEntry;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (CargoEntry);
+exports.default = CargoEntry;
 
 /***/ }),
 /* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ContainingVolume__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__ = __webpack_require__(3);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _ContainingVolume = __webpack_require__(8);
+
+var _ContainingVolume2 = _interopRequireDefault(_ContainingVolume);
+
+var _Logger = __webpack_require__(3);
+
+var _Logger2 = _interopRequireDefault(_Logger);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
 
 var type = 'Container';
 
@@ -1144,7 +1211,7 @@ var Container = function () {
          */
         this.volumes = [];
 
-        __WEBPACK_IMPORTED_MODULE_1__utils_cik_Logger__["a" /* default */].WarnOnce('Container.constructor', 'weight, label not implemented');
+        _Logger2.default.WarnOnce('Container.constructor', 'weight, label not implemented');
     }
 
     _createClass(Container, [{
@@ -1182,7 +1249,7 @@ var Container = function () {
 
             var container = new Container();
             for (var i = 0, numVolumes = data.volumes.length; i < numVolumes; i++) {
-                var containingVolume = __WEBPACK_IMPORTED_MODULE_0__ContainingVolume__["a" /* default */].FromJSON(data.volumes[i]);
+                var containingVolume = _ContainingVolume2.default.FromJSON(data.volumes[i]);
                 container.Add(containingVolume);
             }
 
@@ -1193,39 +1260,66 @@ var Container = function () {
     return Container;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (Container);
+exports.default = Container;
 
 /***/ }),
 /* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CargoList__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__PackingSpace__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__afit_AFit__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_box_BoxEntry__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__utils_cik_Utils__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_cik_Signaler__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__utils_cik_Logger__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__container_ContainingVolume__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__components_box_Dimensions__ = __webpack_require__(9);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _CargoList = __webpack_require__(29);
+
+var _CargoList2 = _interopRequireDefault(_CargoList);
+
+var _PackingSpace = __webpack_require__(17);
+
+var _PackingSpace2 = _interopRequireDefault(_PackingSpace);
+
+var _BoxEntry = __webpack_require__(10);
+
+var _BoxEntry2 = _interopRequireDefault(_BoxEntry);
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+var _Signaler2 = __webpack_require__(2);
+
+var _Signaler3 = _interopRequireDefault(_Signaler2);
+
+var _Logger = __webpack_require__(3);
+
+var _Logger2 = _interopRequireDefault(_Logger);
+
+var _ContainingVolume = __webpack_require__(8);
+
+var _ContainingVolume2 = _interopRequireDefault(_ContainingVolume);
+
+var _Dimensions = __webpack_require__(9);
+
+var _Dimensions2 = _interopRequireDefault(_Dimensions);
+
+var _Debug = __webpack_require__(11);
+
+var _Debug2 = _interopRequireDefault(_Debug);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-
-
-
-
-
-
-
 
 function almost(n1, n2) {
     return Math.abs(n1 - n2) < .01;
@@ -1235,8 +1329,6 @@ function almost(n1, n2) {
  * @typedef {Object} PackerParams
  * @property {import('../UX').default} ux
  */
-
-///** @typedef {import('./afit/AFit').PackingResult} PackingResult */
 
 var PackedCargo =
 /**
@@ -1253,11 +1345,12 @@ function PackedCargo(entry, containingVolume, position, orientation) {
     this.orientation = orientation;
 };
 
-var PackingResult = function PackingResult() {
+var PackingResult = function PackingResult(numTotalItems) {
     _classCallCheck(this, PackingResult);
 
     /** @type {Array<PackedCargo>} */
     this.packed = [];
+    this.numTotalItems = numTotalItems || 0;
 };
 
 function sumOfVolumes(items) {
@@ -1267,7 +1360,6 @@ function sumOfVolumes(items) {
     }return sum;
 }
 
-var _afit = Symbol('afit');
 var defaultParams = {};
 var signals = {
     packUpdate: 'packUpdate'
@@ -1284,27 +1376,97 @@ var Packer = function (_Signaler) {
 
         var _this = _possibleConstructorReturn(this, (Packer.__proto__ || Object.getPrototypeOf(Packer)).call(this));
 
-        _this.params = __WEBPACK_IMPORTED_MODULE_4__utils_cik_Utils__["default"].AssignUndefined(params, defaultParams);
+        _this.params = _Utils2.default.AssignUndefined(params, defaultParams);
 
-        _this[_afit] = new __WEBPACK_IMPORTED_MODULE_2__afit_AFit__["a" /* default */]();
-
-        _this.packingSpace = new __WEBPACK_IMPORTED_MODULE_1__PackingSpace__["a" /* default */]();
-        _this.cargoList = new __WEBPACK_IMPORTED_MODULE_0__CargoList__["a" /* default */]();
+        _this.packingSpace = new _PackingSpace2.default();
+        _this.cargoList = new _CargoList2.default();
         return _this;
     }
 
     _createClass(Packer, [{
         key: "Solve",
         value: function Solve(arg) {
-            if (arg === 'sim') this.SolveSim();else if (arg === 'brb') this.SolveBRB();else this.SolveAFit();
+            if (arg === 'sim') this.SolveSim();else if (arg === 'brb') this.SolveBRB();else if (arg === 'cub') this.SolveCUB();else this.SolveAFit();
         }
+    }, {
+        key: "SolveCUB",
+        value: function () {
+            var _ref = _asyncToGenerator(function* () {
+                var Container = __webpack_require__(20).Container;
+                var Item = __webpack_require__(20).Item;
+
+                var containingVolume = this.packingSpace.current.volume;
+                var d = containingVolume.dimensions;
+                var container = new Container(containingVolume.uid, d.width, d.height, d.length, containingVolume.weightCapacity);
+
+                var numTotalItems = 0;
+
+                /** @type {Array<Item>} */
+                var items = [];
+                var entries = {};
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = this.cargoList.groups.values()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var group = _step.value;
+
+                        /** @type {BoxEntry} */
+                        var entry = group.entry;
+                        entries[entry.uid] = entry;
+                        d = entry.dimensions;
+                        var item = new Item(entry.uid, d.width, d.height, d.length, entry.weight, entry.quantity);
+                        items.push(item);
+                        numTotalItems += entry.quantity;
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
+
+                _Logger2.default.Log('Solving', items, ' in ', container);
+
+                var CUB = __webpack_require__(58);
+                var result = yield CUB.pack(container, items);
+                console.log(result);
+
+                var packingResult = new PackingResult(numTotalItems);
+                result.packedItems.forEach(function (packedItem) {
+                    var entry = entries[packedItem.ref.id];
+                    var position = new THREE.Vector3(packedItem.x + packedItem.packedWidth / 2, packedItem.y + packedItem.packedHeight / 2, packedItem.z + packedItem.packedLength / 2);
+                    var orientation = Item.ResolveOrientation(packedItem.orientation);
+                    var packedCargo = new PackedCargo(entry, containingVolume, position, orientation);
+                    packingResult.packed.push(packedCargo);
+                });
+
+                this.Dispatch(signals.packUpdate, packingResult);
+            });
+
+            function SolveCUB() {
+                return _ref.apply(this, arguments);
+            }
+
+            return SolveCUB;
+        }()
     }, {
         key: "SolveAFit",
         value: function SolveAFit() {
-            /** @type {AFit} */
-            var afit = this[_afit];
+            var AFit = __webpack_require__(31).default;
 
-            var Container = __webpack_require__(17).default;
+            var afit = new AFit();
+
+            var Container = __webpack_require__(19).default;
             var Item = __webpack_require__(18).default;
 
             var containingVolume = this.packingSpace.current.volume;
@@ -1313,40 +1475,43 @@ var Packer = function (_Signaler) {
             var d = containingVolume.dimensions;
             var container = new Container(containingVolume.uid, d.width, d.length, d.height);
 
+            var numTotalItems = 0;
+
             /** @type {Array<Box>} */
             var items = [];
             var entries = {};
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
 
             try {
-                for (var _iterator = this.cargoList.groups.values()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var group = _step.value;
+                for (var _iterator2 = this.cargoList.groups.values()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var group = _step2.value;
 
                     /** @type {BoxEntry} */
                     var entry = group.entry;
                     entries[entry.uid] = entry;
                     d = entry.dimensions;
                     var item = new Item(entry.uid, d.width, d.length, d.height, entry.quantity);
+                    numTotalItems += entry.quantity;
                     items.push(item);
                 }
             } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
             } finally {
                 try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                        _iterator2.return();
                     }
                 } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
                     }
                 }
             }
 
-            __WEBPACK_IMPORTED_MODULE_6__utils_cik_Logger__["a" /* default */].Log('Solving', items, ' in ', container);
+            _Logger2.default.Log('Solving', items, ' in ', container);
 
             var startTime = performance.now();
             var result = afit.Solve(container, items);
@@ -1359,7 +1524,7 @@ var Packer = function (_Signaler) {
             result.PercentContainerVolumePacked = Math.floor(itemVolumePacked / containerVolume * 100 * 100) / 100;
             result.PercentItemVolumePacked = Math.floor(itemVolumePacked / (itemVolumePacked + itemVolumeUnpacked) * 100 * 100) / 100;
 
-            var packingResult = new PackingResult();
+            var packingResult = new PackingResult(numTotalItems);
             result.PackedItems.forEach(function (packedItem) {
                 if (packedItem.IsPacked) {
                     var entry = entries[packedItem.ID];
@@ -1376,7 +1541,7 @@ var Packer = function (_Signaler) {
         key: "SolveCLP",
         value: function SolveCLP() {
 
-            var CLPSolver = __webpack_require__(30);
+            var CLPSolver = __webpack_require__(33);
 
             var containingVolume = this.packingSpace.current.volume;
             console.warn('Currently solves for 1 ContainingVolume', containingVolume);
@@ -1395,13 +1560,13 @@ var Packer = function (_Signaler) {
             /** @type {Array<Dimensions>} */
             var dimensions = [];
             var itemType = 1;
-            var _iteratorNormalCompletion2 = true;
-            var _didIteratorError2 = false;
-            var _iteratorError2 = undefined;
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
 
             try {
-                for (var _iterator2 = this.cargoList.groups.values()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                    var group = _step2.value;
+                for (var _iterator3 = this.cargoList.groups.values()[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var group = _step3.value;
 
                     /** @type {BoxEntry} */
                     var entry = group.entry;
@@ -1418,23 +1583,23 @@ var Packer = function (_Signaler) {
                     items.push(item);
                 }
             } catch (err) {
-                _didIteratorError2 = true;
-                _iteratorError2 = err;
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
             } finally {
                 try {
-                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                        _iterator2.return();
+                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                        _iterator3.return();
                     }
                 } finally {
-                    if (_didIteratorError2) {
-                        throw _iteratorError2;
+                    if (_didIteratorError3) {
+                        throw _iteratorError3;
                     }
                 }
             }
 
             console.log('entries:', entries);
 
-            __WEBPACK_IMPORTED_MODULE_6__utils_cik_Logger__["a" /* default */].Log('Solving', items, ' in ', container);
+            _Logger2.default.Log('Solving', items, ' in ', container);
 
             var scope = this;
 
@@ -1498,34 +1663,34 @@ var Packer = function (_Signaler) {
             console.warn('Currently solves for 1 ContainingVolume', containingVolume);
 
             var entries = {};
-            var _iteratorNormalCompletion3 = true;
-            var _didIteratorError3 = false;
-            var _iteratorError3 = undefined;
+            var _iteratorNormalCompletion4 = true;
+            var _didIteratorError4 = false;
+            var _iteratorError4 = undefined;
 
             try {
-                for (var _iterator3 = this.cargoList.groups.values()[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                    var group = _step3.value;
+                for (var _iterator4 = this.cargoList.groups.values()[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                    var group = _step4.value;
 
                     /** @type {BoxEntry} */
                     var entry = group.entry;
                     entries[entry.label] = entry;
                 }
             } catch (err) {
-                _didIteratorError3 = true;
-                _iteratorError3 = err;
+                _didIteratorError4 = true;
+                _iteratorError4 = err;
             } finally {
                 try {
-                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                        _iterator3.return();
+                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                        _iterator4.return();
                     }
                 } finally {
-                    if (_didIteratorError3) {
-                        throw _iteratorError3;
+                    if (_didIteratorError4) {
+                        throw _iteratorError4;
                     }
                 }
             }
 
-            var AASOrientation = __webpack_require__(54);
+            var AASOrientation = __webpack_require__(59);
 
             console.log('entries:', entries);
 
@@ -1548,9 +1713,9 @@ var Packer = function (_Signaler) {
     }, {
         key: "SolveSim",
         value: function SolveSim() {
-            var Bin = __webpack_require__(32).default;
-            var Item = __webpack_require__(33).default;
-            var SimPacker = __webpack_require__(55).default;
+            var Bin = __webpack_require__(34).default;
+            var Item = __webpack_require__(35).default;
+            var SimPacker = __webpack_require__(60).default;
 
             var containingVolume = this.packingSpace.current.volume;
             console.warn('Currently solves for 1 ContainingVolume', containingVolume);
@@ -1559,81 +1724,6 @@ var Packer = function (_Signaler) {
             var bin = new Bin(containingVolume.uid, d.width, d.height, d.length, containingVolume.weightCapacity);
 
             /** @type {Array<Box>} */
-            var items = [];
-            var entries = {};
-            var _iteratorNormalCompletion4 = true;
-            var _didIteratorError4 = false;
-            var _iteratorError4 = undefined;
-
-            try {
-                for (var _iterator4 = this.cargoList.groups.values()[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-                    var group = _step4.value;
-
-                    /** @type {BoxEntry} */
-                    var entry = group.entry;
-                    entries[entry.uid] = entry;
-                    d = entry.dimensions;
-                    for (var iQtt = 0; iQtt < entry.quantity; iQtt++) {
-                        var item = new Item(entry.uid, d.width, d.height, d.length, entry.weight);
-                        items.push(item);
-                    }
-                }
-            } catch (err) {
-                _didIteratorError4 = true;
-                _iteratorError4 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
-                        _iterator4.return();
-                    }
-                } finally {
-                    if (_didIteratorError4) {
-                        throw _iteratorError4;
-                    }
-                }
-            }
-
-            __WEBPACK_IMPORTED_MODULE_6__utils_cik_Logger__["a" /* default */].Log('Solving', items, ' in ', bin);
-
-            var startTime = performance.now();
-            var simPacker = new SimPacker([bin], items).pack();
-            /** @type {Array<Box>} */
-            var packedItems = simPacker.bins[0].items;
-            __WEBPACK_IMPORTED_MODULE_6__utils_cik_Logger__["a" /* default */].Log('Solved in ' + Math.ceil(performance.now() - startTime) + ':', packedItems);
-
-            var packingResult = new PackingResult();
-            packedItems.forEach(function (packedItem) {
-                var entry = entries[packedItem.name];
-
-                var d = packedItem.getDimension();
-                var position = new THREE.Vector3(packedItem.position[0] + d[0] / 2, packedItem.position[1] + d[1] / 2, packedItem.position[2] + d[2] / 2);
-
-                var orientation = packedItem.getRotationTypeString();
-
-                var packedCargo = new PackedCargo(entry, containingVolume, position, orientation);
-                packingResult.packed.push(packedCargo);
-            });
-
-            this.Dispatch(signals.packUpdate, packingResult);
-        }
-    }, {
-        key: "SolveBRB",
-        value: function SolveBRB() {
-
-            var BRB = __webpack_require__(56);
-
-            var containingVolume = this.packingSpace.current.volume;
-            console.warn('Currently solves for 1 ContainingVolume', containingVolume);
-
-            var d = containingVolume.dimensions;
-
-            /** @type {import('./brb/BRB').Container} */
-            var container = {
-                dimensions: [d.width, d.height, d.length],
-                weight: containingVolume.weightCapacity
-            };
-
-            /** @type {Array<import('./brb/BRB').Item>} */
             var items = [];
             var entries = {};
             var _iteratorNormalCompletion5 = true;
@@ -1649,12 +1739,7 @@ var Packer = function (_Signaler) {
                     entries[entry.uid] = entry;
                     d = entry.dimensions;
                     for (var iQtt = 0; iQtt < entry.quantity; iQtt++) {
-                        /** @type {import('./brb/BRB').Item} */
-                        var item = {
-                            id: entry.uid,
-                            dimensions: [d.width, d.height, d.length],
-                            weight: entry.weight
-                        };
+                        var item = new Item(entry.uid, d.width, d.height, d.length, entry.weight);
                         items.push(item);
                     }
                 }
@@ -1673,50 +1758,143 @@ var Packer = function (_Signaler) {
                 }
             }
 
-            __WEBPACK_IMPORTED_MODULE_6__utils_cik_Logger__["a" /* default */].Log('Solving', items, ' in ', container);
+            _Logger2.default.Log('Solving', items, ' in ', bin);
 
             var startTime = performance.now();
-            var result = BRB.pack(container, items);
-
-            if (result.failed) {
-                console.log('BRB packing failed: ' + result.failed);
-                return;
-            }
-
-            __WEBPACK_IMPORTED_MODULE_6__utils_cik_Logger__["a" /* default */].Log('Solved in ' + Math.ceil(performance.now() - startTime) + ':', result);
+            var simPacker = new SimPacker([bin], items).pack();
+            /** @type {Array<Box>} */
+            var packedItems = simPacker.bins[0].items;
+            _Logger2.default.Log('Solved in ' + Math.ceil(performance.now() - startTime) + ':', packedItems);
 
             var packingResult = new PackingResult();
-            var iPackings = 0;
-            /** @param {import('./brb/BRB').Placement} placement */
-            function collectPlacements(placement) {
-                /** @type {BoxEntry} */
-                var entry = entries[placement.id];
+            packedItems.forEach(function (packedItem) {
+                var entry = entries[packedItem.name];
 
-                var containerOffset = iPackings * containingVolume.dimensions.width;
-                var p = placement.position;
-                var d = placement.dimensions;
-                var position = new THREE.Vector3(p[0] + d[0] / 2, p[1] + d[1] / 2, p[2] + d[2] / 2);
-                position.set(position.z, position.y, position.x);
-                position.x += containerOffset;
-                var packedDimensions = d;
-                packedDimensions = [d[2], d[1], d[0]];
+                var d = packedItem.getDimension();
+                var position = new THREE.Vector3(packedItem.position[0] + d[0] / 2, packedItem.position[1] + d[1] / 2, packedItem.position[2] + d[2] / 2);
 
-                var ed = entry.dimensions;
-                var orientation = BRB.resolveOrientation(packedDimensions, [ed.width, ed.height, ed.length]);
+                var orientation = packedItem.getRotationTypeString();
 
                 var packedCargo = new PackedCargo(entry, containingVolume, position, orientation);
                 packingResult.packed.push(packedCargo);
-            }
-
-            /** @param {import('./brb/BRB').Packing} packing */
-            function collectPackings(packing) {
-                packing.placements.forEach(collectPlacements);
-                iPackings++;
-            }
-            result.packings.forEach(collectPackings);
+            });
 
             this.Dispatch(signals.packUpdate, packingResult);
         }
+    }, {
+        key: "SolveBRB",
+        value: function () {
+            var _ref2 = _asyncToGenerator(function* () {
+
+                var BRB = __webpack_require__(61);
+
+                var containingVolume = this.packingSpace.current.volume;
+                console.warn('Currently solves for 1 ContainingVolume', containingVolume);
+
+                var d = containingVolume.dimensions;
+
+                /** @type {import('./brb/BRB').Container} */
+                var container = {
+                    dimensions: [d.width, d.height, d.length],
+                    weight: containingVolume.weightCapacity
+                };
+
+                /** @type {Array<import('./brb/BRB').Item>} */
+                var items = [];
+                var entries = {};
+                var _iteratorNormalCompletion6 = true;
+                var _didIteratorError6 = false;
+                var _iteratorError6 = undefined;
+
+                try {
+                    for (var _iterator6 = this.cargoList.groups.values()[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+                        var group = _step6.value;
+
+                        /** @type {BoxEntry} */
+                        var entry = group.entry;
+                        entries[entry.uid] = entry;
+                        d = entry.dimensions;
+                        for (var iQtt = 0; iQtt < entry.quantity; iQtt++) {
+                            /** @type {import('./brb/BRB').Item} */
+                            var item = {
+                                id: entry.uid,
+                                dimensions: [d.width, d.height, d.length],
+                                weight: entry.weight
+                            };
+                            items.push(item);
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError6 = true;
+                    _iteratorError6 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion6 && _iterator6.return) {
+                            _iterator6.return();
+                        }
+                    } finally {
+                        if (_didIteratorError6) {
+                            throw _iteratorError6;
+                        }
+                    }
+                }
+
+                _Logger2.default.Log('Solving', items, ' in ', container);
+
+                /** @type {import('../App').default} */
+                var app = _Debug2.default.app;
+                var matrix = app.view.packingSpaceView.GetMatrix(containingVolume);
+                BRB.setDebugMatrix(matrix);
+
+                var startTime = performance.now();
+                var result = yield BRB.pack(container, items);
+
+                if (result.failed) {
+                    console.log('BRB packing failed: ' + result.failed);
+                    return;
+                }
+
+                _Logger2.default.Log('Solved in ' + Math.ceil(performance.now() - startTime) + ':', result);
+
+                var packingResult = new PackingResult();
+                var iPackings = 0;
+                /** @param {import('./brb/BRB').Placement} placement */
+                function collectPlacements(placement) {
+                    /** @type {BoxEntry} */
+                    var entry = entries[placement.id];
+
+                    var containerOffset = iPackings * containingVolume.dimensions.width;
+                    var p = placement.position;
+                    var d = placement.dimensions;
+                    var position = new THREE.Vector3(p[0] + d[0] / 2, p[1] + d[1] / 2, p[2] + d[2] / 2);
+                    position.set(position.z, position.y, position.x);
+                    position.x += containerOffset;
+                    var packedDimensions = d;
+                    packedDimensions = [d[2], d[1], d[0]];
+
+                    var ed = entry.dimensions;
+                    var orientation = BRB.resolveOrientation(packedDimensions, [ed.width, ed.height, ed.length]);
+
+                    var packedCargo = new PackedCargo(entry, containingVolume, position, orientation);
+                    packingResult.packed.push(packedCargo);
+                }
+
+                /** @param {import('./brb/BRB').Packing} packing */
+                function collectPackings(packing) {
+                    packing.placements.forEach(collectPlacements);
+                    iPackings++;
+                }
+                result.packings.forEach(collectPackings);
+
+                this.Dispatch(signals.packUpdate, packingResult);
+            });
+
+            function SolveBRB() {
+                return _ref2.apply(this, arguments);
+            }
+
+            return SolveBRB;
+        }()
     }], [{
         key: "signals",
         get: function get() {
@@ -1725,29 +1903,38 @@ var Packer = function (_Signaler) {
     }]);
 
     return Packer;
-}(__WEBPACK_IMPORTED_MODULE_5__utils_cik_Signaler__["default"]);
+}(_Signaler3.default);
 
 Packer.PackingResult = PackingResult;
 
-/* harmony default export */ __webpack_exports__["a"] = (Packer);
+exports.default = Packer;
 
 /***/ }),
 /* 8 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Volume__ = __webpack_require__(52);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _Volume2 = __webpack_require__(54);
+
+var _Volume3 = _interopRequireDefault(_Volume2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
 
 var type = 'ContainingVolume';
 
@@ -1797,22 +1984,28 @@ var ContainingVolume = function (_Volume) {
             if (data.type !== type) console.warn('Data supplied is not: ' + type);
 
             var containingVolume = new ContainingVolume();
-            __WEBPACK_IMPORTED_MODULE_0__Volume__["a" /* default */].FromJSON(data, containingVolume);
+            _Volume3.default.FromJSON(data, containingVolume);
 
             return containingVolume;
         }
     }]);
 
     return ContainingVolume;
-}(__WEBPACK_IMPORTED_MODULE_0__Volume__["a" /* default */]);
+}(_Volume3.default);
 
-/* harmony default export */ __webpack_exports__["a"] = (ContainingVolume);
+exports.default = ContainingVolume;
 
 /***/ }),
 /* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1938,17 +2131,19 @@ var Dimensions = function () {
     return Dimensions;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (Dimensions);
+exports.default = Dimensions;
 
 /***/ }),
 /* 10 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__PackingProperty__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Dimensions__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_TextField__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_CargoEntry__ = __webpack_require__(5);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
@@ -1957,16 +2152,27 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
+var _PackingProperty = __webpack_require__(55);
+
+var _Dimensions = __webpack_require__(9);
+
+var _Dimensions2 = _interopRequireDefault(_Dimensions);
+
+var _TextField = __webpack_require__(30);
+
+var _TextField2 = _interopRequireDefault(_TextField);
+
+var _CargoEntry2 = __webpack_require__(5);
+
+var _CargoEntry3 = _interopRequireDefault(_CargoEntry2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-
-
 
 /**
  * @typedef {Object} BoxEntryProperties
@@ -1995,7 +2201,7 @@ var BoxEntry = function (_CargoEntry) {
 
         _this.type = 'BoxEntry';
 
-        _this.dimensions = new __WEBPACK_IMPORTED_MODULE_1__Dimensions__["a" /* default */](0, 0, 0);
+        _this.dimensions = new _Dimensions2.default(0, 0, 0);
 
         _this.weight = 0;
         _this.quantity = 1;
@@ -2005,11 +2211,11 @@ var BoxEntry = function (_CargoEntry) {
          */
         _this.properties;
 
-        _this.properties.stacking = new __WEBPACK_IMPORTED_MODULE_0__PackingProperty__["b" /* SupportsStacking */]();
-        _this.properties.rotation = new __WEBPACK_IMPORTED_MODULE_0__PackingProperty__["a" /* RotationConstraint */]();
-        _this.properties.translation = new __WEBPACK_IMPORTED_MODULE_0__PackingProperty__["c" /* TranslationConstraint */]();
+        _this.properties.stacking = new _PackingProperty.SupportsStacking();
+        _this.properties.rotation = new _PackingProperty.RotationConstraint();
+        _this.properties.translation = new _PackingProperty.TranslationConstraint();
 
-        _this.descriptions.set('label', new __WEBPACK_IMPORTED_MODULE_2__common_TextField__["a" /* default */]('label', getDefaultLabel()));
+        _this.descriptions.set('label', new _TextField2.default('label', getDefaultLabel()));
         return _this;
     }
 
@@ -2024,7 +2230,7 @@ var BoxEntry = function (_CargoEntry) {
             this.properties.translation.Reset();
 
             var label = this.descriptions.get('label');
-            label.content = __WEBPACK_IMPORTED_MODULE_2__common_TextField__["a" /* default */].defaultContent;
+            label.content = _TextField2.default.defaultContent;
             this.descriptions.clear();
             this.descriptions.set('label', label);
         }
@@ -2050,12 +2256,9 @@ var BoxEntry = function (_CargoEntry) {
 
             try {
                 for (var _iterator = entry.descriptions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var _ref = _step.value;
-
-                    var _ref2 = _slicedToArray(_ref, 2);
-
-                    var key = _ref2[0];
-                    var field = _ref2[1];
+                    var _step$value = _slicedToArray(_step.value, 2),
+                        key = _step$value[0],
+                        field = _step$value[1];
 
                     var own = this.descriptions.get(key);
                     if (own) own.Copy(field);else this.descriptions.set(key, field.Clone());
@@ -2095,12 +2298,9 @@ var BoxEntry = function (_CargoEntry) {
 
             try {
                 for (var _iterator2 = this.descriptions[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                    var _ref3 = _step2.value;
-
-                    var _ref4 = _slicedToArray(_ref3, 2);
-
-                    var key = _ref4[0];
-                    var field = _ref4[1];
+                    var _step2$value = _slicedToArray(_step2.value, 2),
+                        key = _step2$value[0],
+                        field = _step2$value[1];
 
                     entry.descriptions.set(key, field.Clone());
                 }
@@ -2152,36 +2352,325 @@ var BoxEntry = function (_CargoEntry) {
         },
         set: function set(value) {
             var field = this.descriptions.get('label');
-            if (field) field.content = value;else this.descriptions.set('label', new __WEBPACK_IMPORTED_MODULE_2__common_TextField__["a" /* default */]('label', value));
+            if (field) field.content = value;else this.descriptions.set('label', new _TextField2.default('label', value));
         }
     }], [{
         key: "Assert",
         value: function Assert(entry) {
-            return entry instanceof BoxEntry && __WEBPACK_IMPORTED_MODULE_1__Dimensions__["a" /* default */].Assert(entry.dimensions) && entry.properties && entry.descriptions && entry.weight !== undefined && entry.quantity !== undefined && _typeof(entry.weight) === numberType && _typeof(entry.quantity) === numberType && __WEBPACK_IMPORTED_MODULE_0__PackingProperty__["b" /* SupportsStacking */].Assert(entry.properties.stacking) && __WEBPACK_IMPORTED_MODULE_0__PackingProperty__["a" /* RotationConstraint */].Assert(entry.properties.rotation) && __WEBPACK_IMPORTED_MODULE_0__PackingProperty__["c" /* TranslationConstraint */].Assert(entry.properties.translation);
+            return entry instanceof BoxEntry && _Dimensions2.default.Assert(entry.dimensions) && entry.properties && entry.descriptions && entry.weight !== undefined && entry.quantity !== undefined && _typeof(entry.weight) === numberType && _typeof(entry.quantity) === numberType && _PackingProperty.SupportsStacking.Assert(entry.properties.stacking) && _PackingProperty.RotationConstraint.Assert(entry.properties.rotation) && _PackingProperty.TranslationConstraint.Assert(entry.properties.translation);
         }
     }]);
 
     return BoxEntry;
-}(__WEBPACK_IMPORTED_MODULE_3__common_CargoEntry__["a" /* default */]);
+}(_CargoEntry3.default);
 
-/* harmony default export */ __webpack_exports__["a"] = (BoxEntry);
+exports.default = BoxEntry;
 
 /***/ }),
 /* 11 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_input_Input__ = __webpack_require__(46);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Quality__ = __webpack_require__(47);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scene_Controller__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scene_Renderer__ = __webpack_require__(48);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__scene_Camera__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__HUDView__ = __webpack_require__(49);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__UX__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__utils_cik_Signaler__ = __webpack_require__(2);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _AFitTest = __webpack_require__(56);
+
+var _AFitTest2 = _interopRequireDefault(_AFitTest);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function delay(time, callback) {
+    setTimeout(callback, time);
+}
+
+var debugGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 1, 1, 1);
+var debugMaterial = new THREE.MeshStandardMaterial({ color: 0xff7f00, transparent: true, opacity: .35, map: new THREE.TextureLoader().load('../resources/textures/checkers.jpg', function (map) {
+        map.wrapS = map.wrapT = THREE.RepeatWrapping;
+    }) });
+var debugBox = new THREE.Mesh(debugGeometry, debugMaterial);
+
+var tempVec = new THREE.Vector3();
+
+var DebugBox = function () {
+    function DebugBox() {
+        _classCallCheck(this, DebugBox);
+    }
+
+    _createClass(DebugBox, null, [{
+        key: 'FromCenterSize',
+
+
+        /**
+         * @param {THREE.Vector3} center 
+         * @param {Number|THREE.Vector3} size 
+         */
+        value: function FromCenterSize(center, size) {
+            var box = debugBox.clone();
+            box.position.copy(center);
+
+            if (size instanceof THREE.Vector3) box.scale.copy(size);else box.scale.set(size, size, size);
+
+            return box;
+        }
+
+        /**
+         * @param {THREE.Box3} box3 
+         */
+
+    }, {
+        key: 'FromBox3',
+        value: function FromBox3(box3) {
+            var box = debugBox.clone();
+
+            box3.getCenter(tempVec);
+            box.position.copy(tempVec);
+            box3.getSize(tempVec);
+            box.scale.copy(tempVec);
+
+            return box;
+        }
+    }]);
+
+    return DebugBox;
+}();
+
+/**
+ * DebugViz
+ */
+
+var alphaHexMask = 256 * 256 * 256;
+
+/** @type {THREE.Object3D} */
+var view;
+
+/** @type {Map<string, *>} */
+var debugObjects = new Map();
+
+var tVec3 = new THREE.Vector3(),
+    tPos = new THREE.Vector3(),
+    tScale = new THREE.Vector3();
+
+var DebugViz = function () {
+    function DebugViz() {
+        _classCallCheck(this, DebugViz);
+    }
+
+    _createClass(DebugViz, null, [{
+        key: 'SetViewParent',
+
+
+        /**
+         * @param {THREE.Object3D} parent
+         */
+        value: function SetViewParent(parent) {
+            view = new THREE.Object3D();
+            view.name = 'DebugViz view';
+            console.log(view.name + ' created...');
+            view.renderOrder = Number.MAX_SAFE_INTEGER - 10;
+            parent.add(view);
+        }
+    }, {
+        key: 'DrawVolume',
+
+
+        /**
+         * @param {Number} x center x * @param {Number} y center y * @param {Number} z center z * @param {Number} w * @param {Number} h * @param {Number} l
+         * @param {Number} [color] hex color
+         * @param {Number} [duration] in milliseconds
+         * @param {Boolean} [checkered] checkers map
+         */
+        value: function DrawVolume(x, y, z, w, h, l, color, duration, wireframe, checkered) {
+            tPos.set(x, y, z);
+            tScale.set(w, h, l);
+
+            /** @type {THREE.Mesh} */
+            var volume = debugBox.clone();
+            view.add(volume);
+
+            volume.position.copy(tPos);
+            volume.scale.copy(tScale);
+
+            if (color) {
+                /** @type {THREE.MeshStandardMaterial} */
+                var material = volume.material.clone();
+                volume.material = material;
+                material.color.setHex(color && 0xffffff);
+                if (wireframe === true) {
+                    material.wireframe = true;
+                } else {
+                    material.opacity = Math.floor(color / alphaHexMask) / 256;
+                    material.transparent = material.opacity > 0 && material.opacity < .99;
+                }
+
+                if (!checkered) {
+                    material.map = null;
+                } else {
+                    material.map.repeat.set(10, 10);
+                }
+            }
+
+            var uid = THREE.Math.generateUUID();
+            debugObjects.set(uid, volume);
+
+            if (duration > 0) {
+                delay(duration, function () {
+                    DebugViz.RemoveObjectByUID(uid);
+                });
+            }
+
+            return uid;
+        }
+
+        /**
+         * @param {string} uid 
+         */
+
+    }, {
+        key: 'RemoveObjectByUID',
+        value: function RemoveObjectByUID(uid) {
+            var object = debugObjects.get(uid);
+            if (object instanceof THREE.Object3D && object.parent) {
+                object.parent.remove(object);
+            }
+        }
+    }, {
+        key: 'ClearAll',
+        value: function ClearAll() {
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = debugObjects.keys()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var uid = _step.value;
+
+                    DebugViz.RemoveObjectByUID(uid);
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+        }
+
+        /** @param {Boolean} visible */
+
+    }, {
+        key: 'SetPackingSpaceVisibility',
+        value: function SetPackingSpaceVisibility(visible) {
+            Debug.app.view.packingSpaceView.view.visible = visible;
+        }
+    }, {
+        key: 'view',
+        get: function get() {
+            return view;
+        }
+    }]);
+
+    return DebugViz;
+}();
+
+/**
+ * DebugViz
+ */
+
+var Debug = function () {
+    function Debug() {
+        _classCallCheck(this, Debug);
+    }
+
+    _createClass(Debug, null, [{
+        key: 'AFitTest',
+        get: function get() {
+            return _AFitTest2.default;
+        }
+    }, {
+        key: 'CLPTest',
+        get: function get() {
+            return __webpack_require__(57);
+        }
+    }]);
+
+    return Debug;
+}();
+
+Debug.Box = DebugBox;
+Debug.Viz = DebugViz;
+
+/** @type {import('../../FreightPacker').default} */
+Debug.api;
+/** @type {import('../App').default} */
+Debug.app;
+
+exports.default = Debug;
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Input = __webpack_require__(48);
+
+var _Input2 = _interopRequireDefault(_Input);
+
+var _Quality = __webpack_require__(49);
+
+var _Quality2 = _interopRequireDefault(_Quality);
+
+var _Controller = __webpack_require__(25);
+
+var _Controller2 = _interopRequireDefault(_Controller);
+
+var _Renderer = __webpack_require__(50);
+
+var _Renderer2 = _interopRequireDefault(_Renderer);
+
+var _Camera = __webpack_require__(26);
+
+var _Camera2 = _interopRequireDefault(_Camera);
+
+var _HUDView = __webpack_require__(51);
+
+var _HUDView2 = _interopRequireDefault(_HUDView);
+
+var _UX = __webpack_require__(13);
+
+var _UX2 = _interopRequireDefault(_UX);
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+var _Signaler2 = __webpack_require__(2);
+
+var _Signaler3 = _interopRequireDefault(_Signaler2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -2190,16 +2679,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-
-
-
-
-
-
-
 
 var signals = {
     init: 'init',
@@ -2230,24 +2709,24 @@ var SceneSetup = function (_Signaler) {
         key: 'Init',
         value: function Init() {
 
-            var quality = new __WEBPACK_IMPORTED_MODULE_1__utils_cik_Quality__["a" /* default */]().Common(2);
+            var quality = new _Quality2.default().Common(2);
 
             var units = this.ux.params.units;
             var controllerParams = {};
-            this.sceneController = new __WEBPACK_IMPORTED_MODULE_2__scene_Controller__["a" /* default */](controllerParams);
+            this.sceneController = new _Controller2.default(controllerParams);
 
             /** @type {import('../scene/Renderer').RendererParams} */
             var rendererParams = {};
             Object.assign(rendererParams, quality);
-            this.sceneRenderer = new __WEBPACK_IMPORTED_MODULE_3__scene_Renderer__["a" /* default */](rendererParams);
+            this.sceneRenderer = new _Renderer2.default(rendererParams);
             this.domElement.appendChild(this.sceneRenderer.renderer.domElement);
 
             /** @type {import('./Camera').CameraParams} */
             var cameraParams = { fov: 30, aspect: 1, near: 1 * units, far: 3000 * units };
-            this.cameraController = new __WEBPACK_IMPORTED_MODULE_4__scene_Camera__["a" /* default */](cameraParams);
+            this.cameraController = new _Camera2.default(cameraParams);
             this.cameraController.OrbitControls(this.sceneRenderer.renderer.domElement);
 
-            this.input = new __WEBPACK_IMPORTED_MODULE_0__utils_cik_input_Input__["a" /* default */](this.domElement);
+            this.input = new _Input2.default(this.domElement);
             this.input.camera = this.cameraController.camera;
 
             var sceneRendererRef = this.sceneRenderer;
@@ -2261,8 +2740,8 @@ var SceneSetup = function (_Signaler) {
                 /** @type {import('../view/HUDView').HUDViewParams} */
                 var hudParams = { ux: this.ux };
                 /** @type {import('./Camera').CameraParams} */
-                var hudCameraParams = __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__["default"].AssignUndefined({ fov: 15 }, cameraParams);
-                this.hud = new __WEBPACK_IMPORTED_MODULE_5__HUDView__["a" /* default */](hudParams, hudCameraParams);
+                var hudCameraParams = _Utils2.default.AssignUndefined({ fov: 15 }, cameraParams);
+                this.hud = new _HUDView2.default(hudParams, hudCameraParams);
                 var hudCameraRef = this.hud.cameraController.camera;
                 this.input.onResize.push(function (screen) {
                     sceneRendererRef.AdjustCamera(screen, hudCameraRef);
@@ -2376,6 +2855,11 @@ var SceneSetup = function (_Signaler) {
             controller.ambientContainer.add(ambientLight);
             controller.ambientContainer.add(directionalLight);
 
+            var directionalLightComplem = new THREE.DirectionalLight(0xfeeedd);
+            directionalLightComplem.position.set(-300 * units, 175 * units, 125 * units);
+
+            controller.ambientContainer.add(directionalLightComplem);
+
             if (this.ux.params.configure && configure) {
                 var onGUIChanged = function onGUIChanged() {
                     dl.shadow.camera.updateProjectionMatrix();
@@ -2386,9 +2870,9 @@ var SceneSetup = function (_Signaler) {
                     }
                 };
 
-                var Smart = __webpack_require__(13).default;
+                var Smart = __webpack_require__(14).default;
                 var Config = __webpack_require__(4).default;
-                var Control3D = __webpack_require__(14).default;
+                var Control3D = __webpack_require__(15).default;
 
                 var dl = directionalLight;
                 var _smart = new Smart(dl, 'Directional light');
@@ -2417,9 +2901,9 @@ var SceneSetup = function (_Signaler) {
         key: 'Configure',
         value: function Configure() {
 
-            var Smart = __webpack_require__(13).default;
+            var Smart = __webpack_require__(14).default;
             var Config = __webpack_require__(4).default;
-            var Control3D = __webpack_require__(14).default;
+            var Control3D = __webpack_require__(15).default;
 
             var scope = this;
 
@@ -2456,8 +2940,8 @@ var SceneSetup = function (_Signaler) {
                     print: function print() {
                         smart.config.Update();
                         console.group('hudCam properties');
-                        console.log('position', __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__["default"].VecToString(hud.cameraController.position, 1));
-                        console.log('rotation', __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__["default"].VecToString(hud.cameraController.rotation, 3));
+                        console.log('position', _Utils2.default.VecToString(hud.cameraController.position, 1));
+                        console.log('rotation', _Utils2.default.VecToString(hud.cameraController.rotation, 3));
                         console.groupEnd();
                     }
                 };
@@ -2481,19 +2965,28 @@ var SceneSetup = function (_Signaler) {
     }]);
 
     return SceneSetup;
-}(__WEBPACK_IMPORTED_MODULE_8__utils_cik_Signaler__["default"]);
+}(_Signaler3.default);
 
-/* harmony default export */ __webpack_exports__["default"] = (SceneSetup);
+exports.default = SceneSetup;
 
 /***/ }),
-/* 12 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_Utils__ = __webpack_require__(0);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
 
 /**
  * @typedef UXParams
@@ -2515,28 +3008,37 @@ var UX =
 function UX(params) {
     _classCallCheck(this, UX);
 
-    this.params = __WEBPACK_IMPORTED_MODULE_0__utils_cik_Utils__["default"].AssignUndefined(params, defaultParams);
+    this.params = _Utils2.default.AssignUndefined(params, defaultParams);
 };
 
-/* harmony default export */ __webpack_exports__["a"] = (UX);
+exports.default = UX;
 
 /***/ }),
-/* 13 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__UIUtils__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Config__ = __webpack_require__(4);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _UIUtils = __webpack_require__(27);
+
+var _Config2 = __webpack_require__(4);
+
+var _Config3 = _interopRequireDefault(_Config2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-
-
 //import dat from "./datGUIConsole";
 
-var serializeModes = __WEBPACK_IMPORTED_MODULE_1__Config__["default"].serializeModes;
+var serializeModes = _Config3.default.serializeModes;
 
 var current = undefined,
     onFocus = [],
@@ -2556,13 +3058,13 @@ var Smart = function () {
         var scope = this;
 
         this.gui = new (window.dat || __webpack_require__(1).default).GUI({ autoPlace: false });
-        this.draggable = new __WEBPACK_IMPORTED_MODULE_0__UIUtils__["a" /* Draggable */](this.label, 250);
+        this.draggable = new _UIUtils.Draggable(this.label, 250);
         this.draggable.Add(this.gui.domElement);
         this.draggable.closeBtn.onclick = function () {
             scope.Hide();
         };
 
-        var ui = __WEBPACK_IMPORTED_MODULE_0__UIUtils__["b" /* Element */].Add(this.draggable);
+        var ui = _UIUtils.Element.Add(this.draggable);
         this.draggable.Hide();
 
         this.onFocus = [];
@@ -2602,7 +3104,7 @@ var Smart = function () {
             }
             this.visible = true;
             this.draggable.Show();
-            __WEBPACK_IMPORTED_MODULE_0__UIUtils__["b" /* Element */].AddStyle(this.draggable.domElement, __WEBPACK_IMPORTED_MODULE_0__UIUtils__["c" /* styles */].UIWiggleAnim);
+            _UIUtils.Element.AddStyle(this.draggable.domElement, _UIUtils.styles.UIWiggleAnim);
             Smart.SetCurrent(this);
 
             this.UpdateGUI();
@@ -2622,7 +3124,7 @@ var Smart = function () {
         value: function Config(folderName, target, guiChanged, serializeMode) {
             var _config;
 
-            this.config = new __WEBPACK_IMPORTED_MODULE_1__Config__["default"](target);
+            this.config = new _Config3.default(target);
 
             for (var _len = arguments.length, args = Array(_len > 4 ? _len - 4 : 0), _key = 4; _key < _len; _key++) {
                 args[_key - 4] = arguments[_key];
@@ -2651,7 +3153,7 @@ var Smart = function () {
          * @param {Smart} target 
          */
         value: function MakeShortcut(category, target) {
-            __WEBPACK_IMPORTED_MODULE_1__Config__["default"].MakeShortcut(category, target.label, function () {
+            _Config3.default.MakeShortcut(category, target.label, function () {
                 if (target.visible) {
                     target.Hide();
                 } else {
@@ -2705,14 +3207,19 @@ var Smart = function () {
     return Smart;
 }();
 
-/* harmony default export */ __webpack_exports__["default"] = (Smart);
+exports.default = Smart;
 
 /***/ }),
-/* 14 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2844,21 +3351,32 @@ var Control3D = function () {
     return Control3D;
 }();
 
-/* harmony default export */ __webpack_exports__["default"] = (Control3D);
+exports.default = Control3D;
 
 /***/ }),
-/* 15 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_common_CargoEntry__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Cargo__ = __webpack_require__(51);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _CargoEntry = __webpack_require__(5);
+
+var _CargoEntry2 = _interopRequireDefault(_CargoEntry);
+
+var _Cargo = __webpack_require__(53);
+
+var _Cargo2 = _interopRequireDefault(_Cargo);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
 
 var CargoGroup = function () {
     /**
@@ -2871,7 +3389,7 @@ var CargoGroup = function () {
         this.entry = entry;
         this.cargoes = [];
 
-        this.template = new __WEBPACK_IMPORTED_MODULE_1__Cargo__["a" /* default */](this);
+        this.template = new _Cargo2.default(this);
         this.quantity = this.entry.quantity;
     }
 
@@ -2903,25 +3421,36 @@ var CargoGroup = function () {
     return CargoGroup;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (CargoGroup);
+exports.default = CargoGroup;
 
 /***/ }),
-/* 16 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__container_Container__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Signaler__ = __webpack_require__(2);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Container = __webpack_require__(6);
+
+var _Container2 = _interopRequireDefault(_Container);
+
+var _Signaler2 = __webpack_require__(2);
+
+var _Signaler3 = _interopRequireDefault(_Signaler2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
 
 var signals = {
     containerAdded: 'containerAdded'
@@ -2975,43 +3504,21 @@ var PackingSpace = function (_Signaler) {
     }]);
 
     return PackingSpace;
-}(__WEBPACK_IMPORTED_MODULE_1__utils_cik_Signaler__["default"]);
+}(_Signaler3.default);
 
-/* harmony default export */ __webpack_exports__["a"] = (PackingSpace);
-
-/***/ }),
-/* 17 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Container =
-/**
- * @param {Object} id 
- * @param {Number} width 
- * @param {Number} length 
- * @param {Number} height 
- */
-function Container(id, width, length, height) {
-    _classCallCheck(this, Container);
-
-    this.ID = id;
-
-    this.Width = length || 0;
-    this.Length = width || 0;
-    this.Height = height || 0;
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (Container);
+exports.default = PackingSpace;
 
 /***/ }),
 /* 18 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3095,19 +3602,213 @@ var Item = function () {
     return Item;
 }();
 
-/* harmony default export */ __webpack_exports__["default"] = (Item);
+exports.default = Item;
 
 /***/ }),
 /* 19 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_common_CargoEntry__ = __webpack_require__(5);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Container =
+/**
+ * @param {Object} id 
+ * @param {Number} width 
+ * @param {Number} length 
+ * @param {Number} height 
+ */
+function Container(id, width, length, height) {
+    _classCallCheck(this, Container);
+
+    this.ID = id;
+
+    this.Width = length || 0;
+    this.Length = width || 0;
+    this.Height = height || 0;
+};
+
+exports.default = Container;
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var orientations = ['xyz', 'zyx', 'yxz', 'yzx', 'zxy', 'xzy'];
+var dimensions = [0, 0, 0];
 
+var Item = function () {
+    /**
+     * @param {string} id 
+     * @param {Number} width 
+     * @param {Number} height 
+     * @param {Number} length 
+     * @param {Number} weight 
+     * @param {Number} quantity 
+     */
+    function Item(id, width, height, length, weight, quantity) {
+        _classCallCheck(this, Item);
+
+        this.id = id;
+        this.width = width;
+        this.height = height;
+        this.length = length;
+        this.weight = weight;
+        this.volume = width * height * length;
+        this.quantity = quantity;
+    }
+
+    _createClass(Item, [{
+        key: 'GetOrientedDimensions',
+
+
+        /** @param {Number} orientation */
+        value: function GetOrientedDimensions(orientation) {
+            switch (orientation) {
+                case 0:
+                    return this.xyz;
+                case 1:
+                    return this.zyx;
+                case 2:
+                    return this.yxz;
+                case 3:
+                    return this.yzx;
+                case 4:
+                    return this.zxy;
+                case 5:
+                    return this.xzy;
+            }
+        }
+
+        /** @param {Item} item */
+
+    }, {
+        key: 'Copy',
+        value: function Copy(item) {
+            this.id = item.id;
+            this.width = item.width;
+            this.height = item.height;
+            this.length = item.length;
+            this.weight = item.weight;
+            this.volume = item.volume;
+            this.quantity = item.quantity;
+
+            return this;
+        }
+
+        /** @param {Number} orientation */
+
+    }, {
+        key: 'xyz',
+        get: function get() {
+            dimensions[0] = this.width;dimensions[1] = this.height;dimensions[2] = this.length;return dimensions;
+        }
+    }, {
+        key: 'zyx',
+        get: function get() {
+            dimensions[0] = this.length;dimensions[1] = this.height;dimensions[2] = this.width;return dimensions;
+        }
+    }, {
+        key: 'yxz',
+        get: function get() {
+            dimensions[0] = this.height;dimensions[1] = this.width;dimensions[2] = this.length;return dimensions;
+        }
+    }, {
+        key: 'yzx',
+        get: function get() {
+            dimensions[0] = this.height;dimensions[1] = this.length;dimensions[2] = this.width;return dimensions;
+        }
+    }, {
+        key: 'zxy',
+        get: function get() {
+            dimensions[0] = this.length;dimensions[1] = this.width;dimensions[2] = this.height;return dimensions;
+        }
+    }, {
+        key: 'xzy',
+        get: function get() {
+            dimensions[0] = this.width;dimensions[1] = this.length;dimensions[2] = this.height;return dimensions;
+        }
+    }], [{
+        key: 'ResolveOrientation',
+        value: function ResolveOrientation(orientation) {
+            return orientations[orientation];
+        }
+
+        /**
+         * @param {Item} a 
+         * @param {Item} b 
+         */
+
+    }, {
+        key: 'VolumeSort',
+        value: function VolumeSort(a, b) {
+            if (a.volume < b.volume) return -1;
+            if (a.volume > b.volume) return 1;
+            return 0;
+        }
+    }]);
+
+    return Item;
+}();
+
+var Container =
+/**
+ * @param {string} id 
+ * @param {Number} width 
+ * @param {Number} height 
+ * @param {Number} length 
+ * @param {Number} weightCapacity 
+ */
+function Container(id, width, height, length, weightCapacity) {
+    _classCallCheck(this, Container);
+
+    this.id = id;
+    this.width = width;
+    this.height = height;
+    this.length = length;
+    this.weightCapacity = weightCapacity;
+};
+
+exports.Item = Item;
+exports.Container = Container;
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _CargoEntry = __webpack_require__(5);
+
+var _CargoEntry2 = _interopRequireDefault(_CargoEntry);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var dummyGeometry = new THREE.SphereBufferGeometry(1, 4, 4);
 var dummyMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000, transparent: true, opacity: .5 });
@@ -3170,10 +3871,10 @@ var CargoView = function () {
     return CargoView;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (CargoView);
+exports.default = CargoView;
 
 /***/ }),
-/* 20 */
+/* 22 */
 /***/ (function(module, exports) {
 
 var g;
@@ -3200,28 +3901,49 @@ module.exports = g;
 
 
 /***/ }),
-/* 21 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view_SceneSetup__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__packer_Packer__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__view_View__ = __webpack_require__(57);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_CargoInput__ = __webpack_require__(40);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_PackingSpaceInput__ = __webpack_require__(41);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__UX__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__utils_cik_Logger__ = __webpack_require__(3);
+
+
+Object.defineProperty(exports, "__esModule", {
+        value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _SceneSetup = __webpack_require__(12);
+
+var _SceneSetup2 = _interopRequireDefault(_SceneSetup);
+
+var _Packer = __webpack_require__(7);
+
+var _Packer2 = _interopRequireDefault(_Packer);
+
+var _View = __webpack_require__(62);
+
+var _View2 = _interopRequireDefault(_View);
+
+var _CargoInput = __webpack_require__(42);
+
+var _CargoInput2 = _interopRequireDefault(_CargoInput);
+
+var _PackingSpaceInput = __webpack_require__(43);
+
+var _PackingSpaceInput2 = _interopRequireDefault(_PackingSpaceInput);
+
+var _UX = __webpack_require__(13);
+
+var _UX2 = _interopRequireDefault(_UX);
+
+var _Logger = __webpack_require__(3);
+
+var _Logger2 = _interopRequireDefault(_Logger);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-
-
-
-
-
 
 /**
  * @typedef AppComponents
@@ -3245,9 +3967,9 @@ var App = function () {
 
                 /** @type {import('./packer/Packer').PackerParams} */
                 var packerParams = { ux: this.ux };
-                this.packer = new __WEBPACK_IMPORTED_MODULE_1__packer_Packer__["a" /* default */](packerParams);
+                this.packer = new _Packer2.default(packerParams);
 
-                this.sceneSetup = new __WEBPACK_IMPORTED_MODULE_0__view_SceneSetup__["default"](containerDiv, this.ux);
+                this.sceneSetup = new _SceneSetup2.default(containerDiv, this.ux);
                 this.sceneSetup.Init().then(this.Start.bind(this));
         }
 
@@ -3258,36 +3980,42 @@ var App = function () {
 
                         /** @type {import('./view/View').ViewParams} */
                         var viewParams = { ux: this.ux };
-                        this.view = new __WEBPACK_IMPORTED_MODULE_2__view_View__["a" /* default */](packer, this.sceneSetup, viewParams);
+                        this.view = new _View2.default(packer, this.sceneSetup, viewParams);
                         this.sceneSetup.Start();
 
-                        this.components.cargoInput.On(__WEBPACK_IMPORTED_MODULE_3__components_CargoInput__["a" /* default */].signals.completed, function (boxEntry) {
+                        this.components.cargoInput.On(_CargoInput2.default.signals.completed, function (boxEntry) {
                                 packer.cargoList.Add(boxEntry);
                         });
 
-                        this.components.packingSpaceInput.On(__WEBPACK_IMPORTED_MODULE_4__components_PackingSpaceInput__["a" /* default */].signals.containerLoaded, function (container) {
+                        this.components.packingSpaceInput.On(_PackingSpaceInput2.default.signals.containerLoaded, function (container) {
                                 packer.packingSpace.AddContainer(container);
                         });
 
                         /** @param {import('./packer/Packer').PackingResult} packingResult */
                         function onPackUpdate(packingResult) {
-                                __WEBPACK_IMPORTED_MODULE_6__utils_cik_Logger__["a" /* default */].Log('Packing result', packingResult);
+                                _Logger2.default.Log('Packing result:', packingResult);
                         }
 
-                        packer.On(__WEBPACK_IMPORTED_MODULE_1__packer_Packer__["a" /* default */].signals.packUpdate, onPackUpdate);
+                        packer.On(_Packer2.default.signals.packUpdate, onPackUpdate);
                 }
         }]);
 
         return App;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (App);
+exports.default = App;
 
 /***/ }),
-/* 22 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3333,13 +4061,19 @@ var UpdateComponent = function () {
     return UpdateComponent;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (UpdateComponent);
+exports.default = UpdateComponent;
 
 /***/ }),
-/* 23 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3398,13 +4132,19 @@ var Controller = function () {
     return Controller;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (Controller);
+exports.default = Controller;
 
 /***/ }),
-/* 24 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3617,16 +4357,19 @@ var Camera = function () {
     return Camera;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (Camera);
+exports.default = Camera;
 
 /***/ }),
-/* 25 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return styles; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return Element; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Draggable; });
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -3925,18 +4668,20 @@ var Draggable = function (_Element) {
     return Draggable;
 }(Element);
 
-
+exports.styles = styles;
+exports.Element = Element;
+exports.Draggable = Draggable;
 
 /***/ }),
-/* 26 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__UIUtils__ = __webpack_require__(25);
 
 
-__WEBPACK_IMPORTED_MODULE_0__UIUtils__["b" /* Element */].CreateCSS(['.tooltip .tooltiptext {', '    visibility: hidden;', '    position: absolute;', '    width: 120px;', '    background-color: #111;', '    color: #fff;', '    text-align: center;', '    padding: 2px 0;', '    border-radius: 2px;', '    z-index: 1;', '    opacity: 0;', '    transition: opacity .6s;', '}', '.tooltip-top {', '    bottom: 125%;', '    left: 50%;', '    margin-left: -60px;', '}', '.tooltip:hover .tooltiptext {', '    visibility: visible;', '    opacity: 1;', '}']);
+var _UIUtils = __webpack_require__(27);
+
+_UIUtils.Element.CreateCSS(['.tooltip .tooltiptext {', '    visibility: hidden;', '    position: absolute;', '    width: 120px;', '    background-color: #111;', '    color: #fff;', '    text-align: center;', '    padding: 2px 0;', '    border-radius: 2px;', '    z-index: 1;', '    opacity: 0;', '    transition: opacity .6s;', '}', '.tooltip-top {', '    bottom: 125%;', '    left: 50%;', '    margin-left: -60px;', '}', '.tooltip:hover .tooltiptext {', '    visibility: visible;', '    opacity: 1;', '}']);
 
 var styles = {
     datDisabled: 'color: #606060 !important; cursor: not-allowed !important;'
@@ -4024,11 +4769,11 @@ Object.defineProperty((window.dat || __webpack_require__(1).default).controllers
         if (value) {
             this.domElement.setAttribute("disabled", "disabled");
             this.domElement.addEventListener("click", blockEvent, true);
-            __WEBPACK_IMPORTED_MODULE_0__UIUtils__["b" /* Element */].AddStyle(this.domElement.parentElement.parentElement, styles.datDisabled);
+            _UIUtils.Element.AddStyle(this.domElement.parentElement.parentElement, styles.datDisabled);
         } else {
             this.domElement.removeAttribute("disabled");
             this.domElement.removeEventListener("click", blockEvent, true);
-            __WEBPACK_IMPORTED_MODULE_0__UIUtils__["b" /* Element */].RemoveStyle(this.domElement.parentElement.parentElement, styles.datDisabled);
+            _UIUtils.Element.RemoveStyle(this.domElement.parentElement.parentElement, styles.datDisabled);
         }
     },
 
@@ -4072,24 +4817,37 @@ Object.defineProperty((window.dat || __webpack_require__(1).default).controllers
 };
 
 /***/ }),
-/* 27 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_Signaler__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_common_CargoEntry__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CargoGroup__ = __webpack_require__(15);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Signaler2 = __webpack_require__(2);
+
+var _Signaler3 = _interopRequireDefault(_Signaler2);
+
+var _CargoEntry = __webpack_require__(5);
+
+var _CargoEntry2 = _interopRequireDefault(_CargoEntry);
+
+var _CargoGroup = __webpack_require__(16);
+
+var _CargoGroup2 = _interopRequireDefault(_CargoGroup);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-
 
 var stringType = 'string';
 
@@ -4119,7 +4877,7 @@ var CargoList = function (_Signaler) {
     _createClass(CargoList, [{
         key: "Add",
         value: function Add(entry) {
-            var group = new __WEBPACK_IMPORTED_MODULE_2__CargoGroup__["a" /* default */](entry);
+            var group = new _CargoGroup2.default(entry);
 
             this.groups.set(entry.uid, group);
             this.Dispatch(signals.groupAdded, group);
@@ -4146,15 +4904,21 @@ var CargoList = function (_Signaler) {
     }]);
 
     return CargoList;
-}(__WEBPACK_IMPORTED_MODULE_0__utils_cik_Signaler__["default"]);
+}(_Signaler3.default);
 
-/* harmony default export */ __webpack_exports__["a"] = (CargoList);
+exports.default = CargoList;
 
 /***/ }),
-/* 28 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -4204,21 +4968,32 @@ var TextField = function () {
     return TextField;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (TextField);
+exports.default = TextField;
 
 /***/ }),
-/* 29 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_Container__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Item__ = __webpack_require__(18);
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _Container = __webpack_require__(19);
+
+var _Container2 = _interopRequireDefault(_Container);
+
+var _Item = __webpack_require__(18);
+
+var _Item2 = _interopRequireDefault(_Item);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
 
 var epsilon = Math.pow(2, -52);
 
@@ -4815,7 +5590,7 @@ var AFit = function () {
 
 			// The original code uses 1-based indexing everywhere. This fake entry is added to the beginning
 			// of the list to make that possible.
-			itemsToPack.push(new __WEBPACK_IMPORTED_MODULE_1__components_Item__["default"](0, 0, 0, 0, 0, 0));
+			itemsToPack.push(new _Item2.default(0, 0, 0, 0, 0, 0));
 
 			layers = [];
 			itemsToPackCount = 0;
@@ -4823,14 +5598,14 @@ var AFit = function () {
 			for (var iItems = 0, numItems = items.length; iItems < numItems; iItems++) {
 				var item = items[iItems];
 				for (var i = 1; i <= item.Quantity; i++) {
-					var newItem = new __WEBPACK_IMPORTED_MODULE_1__components_Item__["default"](item.ID, item.Dim1, item.Dim2, item.Dim3, item.Quantity);
+					var newItem = new _Item2.default(item.ID, item.Dim1, item.Dim2, item.Dim3, item.Quantity);
 					itemsToPack.push(newItem);
 				}
 
 				itemsToPackCount += item.Quantity;
 			}
 
-			itemsToPack.push(new __WEBPACK_IMPORTED_MODULE_1__components_Item__["default"](0, 0, 0, 0, 0));
+			itemsToPack.push(new _Item2.default(0, 0, 0, 0, 0));
 
 			totalContainerVolume = container.Length * container.Height * container.Width;
 			totalItemVolume = 0;
@@ -5358,27 +6133,471 @@ var AFit = function () {
 	return AFit;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (AFit);
+exports.default = AFit;
 
 /***/ }),
-/* 30 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Execute", function() { return CLP_Solver; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SolutionData", function() { return solution_data; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ContainerItem", function() { return item_in_container; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "signaler", function() { return signaler; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "signals", function() { return signals; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Workbook__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Signaler__ = __webpack_require__(2);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Application = exports.Range = exports.CheckWorksheetExistence = exports.Cells = exports.ThisWorkbook = undefined;
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Signaler = __webpack_require__(2);
+
+var _Signaler2 = _interopRequireDefault(_Signaler);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var typeofString = 'string';
+var colLabels = '0ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
+var signals = {
+    updated: 'u'
+};
+
+var CellEntry /*extends Signaler*/ = function () {
+    function CellEntry(value) {
+        _classCallCheck(this, CellEntry);
+
+        this.Value = value;
+        this.col = 0;
+        this.row = 0;
+
+        /** @type {Function} */
+        this.calculate = undefined;
+    }
+
+    _createClass(CellEntry, [{
+        key: 'toString',
+        value: function toString() {
+            return this.Value.toString();
+        }
+    }, {
+        key: 'Value',
+        get: function get() {
+            if (this.calculate) this._value = this.calculate();
+            return this._value;
+        },
+        set: function set(value) {
+            this._value = value;
+            //this.Dispatch(signals.updated, this);
+        }
+    }, {
+        key: 'Select',
+        get: function get() {
+            console.log('Select: ', this.Value);
+        }
+    }], [{
+        key: 'signals',
+        get: function get() {
+            return signals;
+        }
+    }]);
+
+    return CellEntry;
+}();
+
+/**
+ * 
+ * @param {Number} row 
+ * @param {Number} col 
+ * @param {*} [value]
+ */
 
 
+function Cells(row, col, value) {
+    return new CellEntry('default');
+}
+
+/** @type {Worksheet} */
+var active;
+
+var Worksheet = function () {
+    /** @param {string} label */
+    function Worksheet(label) {
+        _classCallCheck(this, Worksheet);
+
+        this.label = label.toLowerCase();
+        /** @type {Map<Number, Map<Number, CellEntry>>} */
+        this.data = new Map();
+
+        this.cellsFN = this.Cells.bind(this);
+    }
+
+    /**
+     * 
+     * @param {CellEntry} cell1 
+     * @param {CellEntry} cell2 
+     */
+
+
+    _createClass(Worksheet, [{
+        key: 'Sum',
+        value: function Sum(cell1, cell2) {
+            var cells = Range(cell1, cell2).cells;
+            var total = 0;
+            cells.forEach(function (cell) {
+                var value = Number.parseFloat(cell.Value);
+                if (!isNaN(value)) total += value;
+            });
+            return total;
+        }
+    }, {
+        key: 'Cells',
+        value: function Cells(row, col, value) {
+            if ((typeof col === 'undefined' ? 'undefined' : _typeof(col)) === typeofString) col = colLabels.indexOf(col);
+
+            if (!this.data.has(row) || !this.data.get(row).has(col)) {
+                if (!this.data.has(row)) this.data.set(row, new Map());
+
+                var newEntry = new CellEntry(0);
+                newEntry.row = row;
+                newEntry.col = col;
+                this.data.get(row).set(col, newEntry);
+            }
+
+            if (value) this.data.get(row).get(col).Value = value;
+
+            return this.data.get(row).get(col);
+        }
+    }, {
+        key: 'Find',
+        value: function Find(value) {
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = this.data.values()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var row = _step.value;
+                    var _iteratorNormalCompletion2 = true;
+                    var _didIteratorError2 = false;
+                    var _iteratorError2 = undefined;
+
+                    try {
+                        for (var _iterator2 = row.values()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                            var cell = _step2.value;
+
+                            if (cell.Value === value) {
+                                return cell;
+                            }
+                        }
+                    } catch (err) {
+                        _didIteratorError2 = true;
+                        _iteratorError2 = err;
+                    } finally {
+                        try {
+                            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                                _iterator2.return();
+                            }
+                        } finally {
+                            if (_didIteratorError2) {
+                                throw _iteratorError2;
+                            }
+                        }
+                    }
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+        }
+    }, {
+        key: 'Print',
+        value: function Print() {
+            console.group(this.label);
+            var rows = [];
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
+
+            try {
+                for (var _iterator3 = this.data[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var _step3$value = _slicedToArray(_step3.value, 2),
+                        row = _step3$value[0],
+                        rowData = _step3$value[1];
+
+                    var rowResult = [row + ':'];
+                    var _iteratorNormalCompletion4 = true;
+                    var _didIteratorError4 = false;
+                    var _iteratorError4 = undefined;
+
+                    try {
+                        for (var _iterator4 = rowData[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                            var _step4$value = _slicedToArray(_step4.value, 2),
+                                col = _step4$value[0],
+                                colData = _step4$value[1];
+
+                            rowResult.push(colData.Value);
+                        }
+                    } catch (err) {
+                        _didIteratorError4 = true;
+                        _iteratorError4 = err;
+                    } finally {
+                        try {
+                            if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                                _iterator4.return();
+                            }
+                        } finally {
+                            if (_didIteratorError4) {
+                                throw _iteratorError4;
+                            }
+                        }
+                    }
+
+                    rows[row] = rowResult;
+                }
+            } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                        _iterator3.return();
+                    }
+                } finally {
+                    if (_didIteratorError3) {
+                        throw _iteratorError3;
+                    }
+                }
+            }
+
+            rows.forEach(function (row) {
+                var _console;
+
+                (_console = console).log.apply(_console, _toConsumableArray(row));
+            });
+            console.groupEnd();
+        }
+    }, {
+        key: 'Activate',
+        get: function get() {
+            active = this;
+            exports.Cells = Cells = this.cellsFN;
+        }
+    }]);
+
+    return Worksheet;
+}();
+
+var Workbook = function () {
+    function Workbook() {
+        _classCallCheck(this, Workbook);
+
+        /** @type {Map<string, Worksheet>} */
+        this.worksheets = new Map();
+    }
+
+    /** @param {Worksheet} worksheet */
+
+
+    _createClass(Workbook, [{
+        key: 'Add',
+        value: function Add(worksheet) {
+            this.worksheets.set(worksheet.label.toLowerCase(), worksheet);
+        }
+
+        /** @param {string} label */
+
+    }, {
+        key: 'Worksheets',
+        value: function Worksheets(label) {
+            return this.worksheets.get(label.toLowerCase());
+        }
+    }, {
+        key: 'Print',
+        value: function Print() {
+            var _iteratorNormalCompletion5 = true;
+            var _didIteratorError5 = false;
+            var _iteratorError5 = undefined;
+
+            try {
+                for (var _iterator5 = this.worksheets.values()[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                    var worksheet = _step5.value;
+
+                    worksheet.Print();
+                }
+            } catch (err) {
+                _didIteratorError5 = true;
+                _iteratorError5 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                        _iterator5.return();
+                    }
+                } finally {
+                    if (_didIteratorError5) {
+                        throw _iteratorError5;
+                    }
+                }
+            }
+        }
+    }, {
+        key: 'print',
+        get: function get() {
+            this.Print();
+        }
+    }]);
+
+    return Workbook;
+}();
+
+var solverSheet = new Worksheet('CLP Solver Console');
+var itemsSheet = new Worksheet('1.Items');
+var containersSheet = new Worksheet('2.Containers');
+var solutionSheet = new Worksheet('3.Solution');
+
+var ThisWorkbook = new Workbook();
+ThisWorkbook.Add(solverSheet);
+ThisWorkbook.Add(itemsSheet);
+ThisWorkbook.Add(containersSheet);
+ThisWorkbook.Add(solutionSheet);
+
+/**
+ * @param {string} label 
+ * @returns {Boolean}
+ */
+function CheckWorksheetExistence(label) {
+    return ThisWorkbook.Worksheets(label) !== undefined;
+}
+
+var CellsRange = function () {
+    function CellsRange() {
+        _classCallCheck(this, CellsRange);
+
+        /** @type {Array<CellEntry>} */
+        this.cells = [];
+    }
+
+    _createClass(CellsRange, [{
+        key: 'Value',
+        set: function set(value) {
+            this.cells.forEach(function (cell) {
+                cell.Value = value;
+            });
+        }
+    }, {
+        key: 'Clear',
+        get: function get() {
+            this.cells.forEach(function (cell) {
+                cell.Value = null;
+            });
+        }
+    }, {
+        key: 'ClearContents',
+        get: function get() {
+            this.Clear;
+        }
+    }]);
+
+    return CellsRange;
+}();
+
+var _range = new CellsRange();
+
+/**
+ * @param {CellEntry} cell1 
+ * @param {CellEntry} cell2 
+ */
+function Range(cell1, cell2) {
+    var minCol = Math.min(cell1.col, cell2.col);
+    var maxCol = Math.max(cell1.col, cell2.col);
+    var minRow = Math.min(cell1.row, cell2.row);
+    var maxRow = Math.max(cell1.row, cell2.row);
+
+    _range.cells.length = 0;
+    for (var c = minCol; c < maxCol; c++) {
+        for (var r = minRow; r < maxRow; r++) {
+            _range.cells.push(Cells(r, c));
+        }
+    }
+
+    return _range;
+}
+
+var Application = function () {
+    function Application() {
+        _classCallCheck(this, Application);
+    }
+
+    _createClass(Application, null, [{
+        key: 'Alert',
+        value: function Alert(msg) {
+            console.log('CLP alert:', msg);
+        }
+    }, {
+        key: 'Confirm',
+        value: function Confirm(msg, defaultValue) {
+            console.log('CLP confirm (' + defaultValue + '):', msg);
+            return defaultValue;
+        }
+    }, {
+        key: 'StatusBar',
+        set: function set(value) {
+            console.log(value);
+        }
+    }, {
+        key: 'ScreenUpdating',
+        set: function set(value) {}
+    }]);
+
+    return Application;
+}();
+
+exports.ThisWorkbook = ThisWorkbook;
+exports.Cells = Cells;
+exports.CheckWorksheetExistence = CheckWorksheetExistence;
+exports.Range = Range;
+exports.Application = Application;
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.signals = exports.signaler = exports.ContainerItem = exports.SolutionData = exports.Execute = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Workbook = __webpack_require__(32);
+
+var _Signaler = __webpack_require__(2);
+
+var _Signaler2 = _interopRequireDefault(_Signaler);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /** Javascript port by chadiik 2018
  * 
@@ -6291,25 +7510,25 @@ function GetSolverOptions(options) {
         solver_options.show_progress = options.showProgress;
         solver_options.CPU_time_limit = options.cpuTimeLimit;
     } else {
-        __WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */].Worksheets("CLP Solver Console").Activate;
+        _Workbook.ThisWorkbook.Worksheets("CLP Solver Console").Activate;
 
         //With solver_options
 
-        if (Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(12, 3).Value === "Volume") {
+        if ((0, _Workbook.Cells)(12, 3).Value === "Volume") {
             solver_options.item_sort_criterion = 1;
-        } else if (Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(12, 3).Value === "Weight") {
+        } else if ((0, _Workbook.Cells)(12, 3).Value === "Weight") {
             solver_options.item_sort_criterion = 2;
         } else {
             solver_options.item_sort_criterion = 3;
         }
 
-        if (Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(13, 3).Value === "Yes") {
+        if ((0, _Workbook.Cells)(13, 3).Value === "Yes") {
             solver_options.show_progress = true;
         } else {
             solver_options.show_progress = false;
         }
 
-        solver_options.CPU_time_limit = Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(14, 3).Value;
+        solver_options.CPU_time_limit = (0, _Workbook.Cells)(14, 3).Value;
     }
 }
 
@@ -6334,8 +7553,8 @@ function GetItemData(itemsData) {
     if (itemsData) {
         numItemTypes = itemsData.length;
     } else {
-        numItemTypes = __WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */].Worksheets("CLP Solver Console").Cells(2, 3).Value;
-        __WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */].Worksheets("1.Items").Activate;
+        numItemTypes = _Workbook.ThisWorkbook.Worksheets("CLP Solver Console").Cells(2, 3).Value;
+        _Workbook.ThisWorkbook.Worksheets("1.Items").Activate;
     }
     item_list.num_item_types = numItemTypes;
     item_list.total_number_of_items = 0;
@@ -6392,23 +7611,23 @@ function GetItemData(itemsData) {
         for (i = 1; i <= item_list.num_item_types; i++) {
             item_list.item_typesGet(i).id = i;
 
-            item_list.item_typesGet(i).width = Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(2 + i, 4).Value;
-            item_list.item_typesGet(i).height = Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(2 + i, 5).Value;
-            item_list.item_typesGet(i).length = Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(2 + i, 6).Value;
+            item_list.item_typesGet(i).width = (0, _Workbook.Cells)(2 + i, 4).Value;
+            item_list.item_typesGet(i).height = (0, _Workbook.Cells)(2 + i, 5).Value;
+            item_list.item_typesGet(i).length = (0, _Workbook.Cells)(2 + i, 6).Value;
 
-            item_list.item_typesGet(i).volume = Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(2 + i, 7).Value;
+            item_list.item_typesGet(i).volume = (0, _Workbook.Cells)(2 + i, 7).Value;
 
             if (max_volume < item_list.item_typesGet(i).volume) {
                 max_volume = item_list.item_typesGet(i).volume;
             }
 
-            if (Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(2 + i, 9).Value === "Yes") {
+            if ((0, _Workbook.Cells)(2 + i, 9).Value === "Yes") {
                 item_list.item_typesGet(i).xy_rotatable = true;
             } else {
                 item_list.item_typesGet(i).xy_rotatable = false;
             }
 
-            if (Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(2 + i, 10).Value === "Yes") {
+            if ((0, _Workbook.Cells)(2 + i, 10).Value === "Yes") {
                 item_list.item_typesGet(i).yz_rotatable = true;
             } else {
                 item_list.item_typesGet(i).yz_rotatable = false;
@@ -6419,23 +7638,23 @@ function GetItemData(itemsData) {
                 item_list.item_typesGet(i).yz_rotatable = false;
             }
 
-            item_list.item_typesGet(i).weight = Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(2 + i, 11).Value;
+            item_list.item_typesGet(i).weight = (0, _Workbook.Cells)(2 + i, 11).Value;
 
             if (max_weight < item_list.item_typesGet(i).weight) {
                 max_weight = item_list.item_typesGet(i).weight;
             }
 
-            if (Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(2 + i, 12).Value === "Must be packed") {
+            if ((0, _Workbook.Cells)(2 + i, 12).Value === "Must be packed") {
                 item_list.item_typesGet(i).mandatory = 1;
-            } else if (Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(2 + i, 12).Value === "May be packed") {
+            } else if ((0, _Workbook.Cells)(2 + i, 12).Value === "May be packed") {
                 item_list.item_typesGet(i).mandatory = 0;
-            } else if (Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(2 + i, 12).Value === "Don't pack") {
+            } else if ((0, _Workbook.Cells)(2 + i, 12).Value === "Don't pack") {
                 item_list.item_typesGet(i).mandatory = -1;
             }
 
-            item_list.item_typesGet(i).profit = Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(2 + i, 13).Value;
+            item_list.item_typesGet(i).profit = (0, _Workbook.Cells)(2 + i, 13).Value;
 
-            item_list.item_typesGet(i).number_requested = Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(2 + i, 14).Value;
+            item_list.item_typesGet(i).number_requested = (0, _Workbook.Cells)(2 + i, 14).Value;
 
             item_list.total_number_of_items = item_list.total_number_of_items + item_list.item_typesGet(i).number_requested;
         }
@@ -6479,8 +7698,8 @@ function GetContainerData(containersData) {
     if (containersData) {
         numContainerTypes = containersData.length;
     } else {
-        numContainerTypes = __WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */].Worksheets("CLP Solver Console").Cells(4, 3).Value;
-        __WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */].Worksheets("2.Containers").Activate;
+        numContainerTypes = _Workbook.ThisWorkbook.Worksheets("CLP Solver Console").Cells(4, 3).Value;
+        _Workbook.ThisWorkbook.Worksheets("2.Containers").Activate;
     }
 
     container_list.num_container_types = numContainerTypes;
@@ -6517,24 +7736,24 @@ function GetContainerData(containersData) {
 
             container_list.container_typesGet(i).type_id = i;
 
-            container_list.container_typesGet(i).width = Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(1 + i, 3).Value;
-            container_list.container_typesGet(i).height = Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(1 + i, 4).Value;
-            container_list.container_typesGet(i).length = Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(1 + i, 5).Value;
+            container_list.container_typesGet(i).width = (0, _Workbook.Cells)(1 + i, 3).Value;
+            container_list.container_typesGet(i).height = (0, _Workbook.Cells)(1 + i, 4).Value;
+            container_list.container_typesGet(i).length = (0, _Workbook.Cells)(1 + i, 5).Value;
 
-            container_list.container_typesGet(i).volume_capacity = Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(1 + i, 6).Value;
-            container_list.container_typesGet(i).weight_capacity = Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(1 + i, 7).Value;
+            container_list.container_typesGet(i).volume_capacity = (0, _Workbook.Cells)(1 + i, 6).Value;
+            container_list.container_typesGet(i).weight_capacity = (0, _Workbook.Cells)(1 + i, 7).Value;
 
-            if (Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(1 + i, 8).Value === "Must be used") {
+            if ((0, _Workbook.Cells)(1 + i, 8).Value === "Must be used") {
                 container_list.container_typesGet(i).mandatory = 1;
-            } else if (Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(1 + i, 8).Value === "May be used") {
+            } else if ((0, _Workbook.Cells)(1 + i, 8).Value === "May be used") {
                 container_list.container_typesGet(i).mandatory = 0;
-            } else if (Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(1 + i, 8).Value === "Do not use") {
+            } else if ((0, _Workbook.Cells)(1 + i, 8).Value === "Do not use") {
                 container_list.container_typesGet(i).mandatory = -1;
             }
 
-            container_list.container_typesGet(i).cost = Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(1 + i, 9).Value;
+            container_list.container_typesGet(i).cost = (0, _Workbook.Cells)(1 + i, 9).Value;
 
-            container_list.container_typesGet(i).number_available = Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(1 + i, 10).Value;
+            container_list.container_typesGet(i).number_available = (0, _Workbook.Cells)(1 + i, 10).Value;
         }
     }
 }
@@ -6700,19 +7919,19 @@ function InitializeSolution(solution) {
 
 function GetInstanceData() {
 
-    if (__WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */].Worksheets("CLP Solver Console").Cells(6, 3).Value === "Yes") {
+    if (_Workbook.ThisWorkbook.Worksheets("CLP Solver Console").Cells(6, 3).Value === "Yes") {
         instance.front_side_support = true;
     } else {
         instance.front_side_support = false;
     }
 
-    if (Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["c" /* CheckWorksheetExistence */])("1.3.Item-Item Compatibility") === true) {
+    if ((0, _Workbook.CheckWorksheetExistence)("1.3.Item-Item Compatibility") === true) {
         instance.item_item_compatibility_worksheet = true;
     } else {
         instance.item_item_compatibility_worksheet = false;
     }
 
-    if (Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["c" /* CheckWorksheetExistence */])("2.3.Container-ItemCompatibility") === true) {
+    if ((0, _Workbook.CheckWorksheetExistence)("2.3.Container-ItemCompatibility") === true) {
         instance.container_item_compatibility_worksheet = true;
     } else {
         instance.container_item_compatibility_worksheet = false;
@@ -6748,13 +7967,13 @@ function WriteSolution(solution) {
         }
     }
 
-    __WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */].Worksheets("3.Solution").Activate;
+    _Workbook.ThisWorkbook.Worksheets("3.Solution").Activate;
 
     if (solution.feasible === false) {
-        Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(2, 1).Value = "Warning: Last solution returned by the solver does not satisfy all constraints.";
+        (0, _Workbook.Cells)(2, 1).Value = "Warning: Last solution returned by the solver does not satisfy all constraints.";
         //Range(Cells(2, 1), Cells(2, 10)).Interior.ColorIndex = 45;
     } else {
-        Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(2, 1).Value = 0;
+        (0, _Workbook.Cells)(2, 1).Value = 0;
         //Range(Cells(2, 1), Cells(2, 10)).Interior.Pattern = xlNone;
         //Range(Cells(2, 1), Cells(2, 10)).Interior.TintAndShade = 0;
         //Range(Cells(2, 1), Cells(2, 10)).Interior.PatternTintAndShade = 0;
@@ -6771,29 +7990,29 @@ function WriteSolution(solution) {
 
         for (j = 1; j <= container_list.container_typesGet(i).number_available; j++) {
 
-            Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["d" /* Range */])(Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(6, offset + 2), Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(5 + 2 * item_list.total_number_of_items, offset + 2)).Value = 0;
-            Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["d" /* Range */])(Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(6, offset + 3), Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(5 + 2 * item_list.total_number_of_items, offset + 5)).ClearContents;
-            Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["d" /* Range */])(Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(6, offset + 6), Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(5 + 2 * item_list.total_number_of_items, offset + 6)).Value = 0;
+            (0, _Workbook.Range)((0, _Workbook.Cells)(6, offset + 2), (0, _Workbook.Cells)(5 + 2 * item_list.total_number_of_items, offset + 2)).Value = 0;
+            (0, _Workbook.Range)((0, _Workbook.Cells)(6, offset + 3), (0, _Workbook.Cells)(5 + 2 * item_list.total_number_of_items, offset + 5)).ClearContents;
+            (0, _Workbook.Range)((0, _Workbook.Cells)(6, offset + 6), (0, _Workbook.Cells)(5 + 2 * item_list.total_number_of_items, offset + 6)).Value = 0;
 
             if (container_list.container_typesGet(i).mandatory >= 0) {
-                Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(3, 'B', solution.containerGet(container_index).item_cnt);
+                (0, _Workbook.Cells)(3, 'B', solution.containerGet(container_index).item_cnt);
                 for (k = 1; k <= solution.containerGet(container_index).item_cnt; k++) {
-                    Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(5 + k, offset + 2).Value = __WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */].Worksheets("1.Items").Cells(2 + item_list.item_typesGet(solution.containerGet(container_index).itemsGet(k).item_type).id, 2).Value;
-                    Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(5 + k, offset + 3).Value = solution.containerGet(container_index).itemsGet(k).origin_x;
-                    Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(5 + k, offset + 4).Value = solution.containerGet(container_index).itemsGet(k).origin_y;
-                    Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(5 + k, offset + 5).Value = solution.containerGet(container_index).itemsGet(k).origin_z;
+                    (0, _Workbook.Cells)(5 + k, offset + 2).Value = _Workbook.ThisWorkbook.Worksheets("1.Items").Cells(2 + item_list.item_typesGet(solution.containerGet(container_index).itemsGet(k).item_type).id, 2).Value;
+                    (0, _Workbook.Cells)(5 + k, offset + 3).Value = solution.containerGet(container_index).itemsGet(k).origin_x;
+                    (0, _Workbook.Cells)(5 + k, offset + 4).Value = solution.containerGet(container_index).itemsGet(k).origin_y;
+                    (0, _Workbook.Cells)(5 + k, offset + 5).Value = solution.containerGet(container_index).itemsGet(k).origin_z;
                     if (solution.containerGet(container_index).itemsGet(k).rotation === 1) {
-                        Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(5 + k, offset + 6).Value = "xyz";
+                        (0, _Workbook.Cells)(5 + k, offset + 6).Value = "xyz";
                     } else if (solution.containerGet(container_index).itemsGet(k).rotation === 2) {
-                        Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(5 + k, offset + 6).Value = "zyx";
+                        (0, _Workbook.Cells)(5 + k, offset + 6).Value = "zyx";
                     } else if (solution.containerGet(container_index).itemsGet(k).rotation === 3) {
-                        Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(5 + k, offset + 6).Value = "xzy";
+                        (0, _Workbook.Cells)(5 + k, offset + 6).Value = "xzy";
                     } else if (solution.containerGet(container_index).itemsGet(k).rotation === 4) {
-                        Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(5 + k, offset + 6).Value = "yzx";
+                        (0, _Workbook.Cells)(5 + k, offset + 6).Value = "yzx";
                     } else if (solution.containerGet(container_index).itemsGet(k).rotation === 5) {
-                        Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(5 + k, offset + 6).Value = "yxz";
+                        (0, _Workbook.Cells)(5 + k, offset + 6).Value = "yxz";
                     } else if (solution.containerGet(container_index).itemsGet(k).rotation === 6) {
-                        Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["b" /* Cells */])(5 + k, offset + 6).Value = "zxy";
+                        (0, _Workbook.Cells)(5 + k, offset + 6).Value = "zxy";
                     }
                 }
 
@@ -6826,14 +8045,14 @@ function CLP_Solver(solverOptions, itemsData, containersData) {
 
     GetSolverOptions(solverOptions);
 
-    WorksheetExists = Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["c" /* CheckWorksheetExistence */])("1.Items") && Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["c" /* CheckWorksheetExistence */])("2.Containers") && Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["c" /* CheckWorksheetExistence */])("3.Solution");
+    WorksheetExists = (0, _Workbook.CheckWorksheetExistence)("1.Items") && (0, _Workbook.CheckWorksheetExistence)("2.Containers") && (0, _Workbook.CheckWorksheetExistence)("3.Solution");
     if ((!solverOptions || !itemsData || !containersData) && WorksheetExists === false) {
-        __WEBPACK_IMPORTED_MODULE_0__Workbook__["a" /* Application */].Alert("Worksheets 1.Items, 2.Containers, and 3.Solution must exist for the CLP Spreadsheet Solver to function.");
+        _Workbook.Application.Alert("Worksheets 1.Items, 2.Containers, and 3.Solution must exist for the CLP Spreadsheet Solver to function.");
         //Application.ScreenUpdating = true
         //Application.Calculation = xlCalculationAutomatic
         return;
     } else {
-        reply = __WEBPACK_IMPORTED_MODULE_0__Workbook__["a" /* Application */].Confirm("This will take " + solver_options.CPU_time_limit + " seconds. Do you want to continue?", true); //, vbYesNo, "CLP Spreadsheet Solver")
+        reply = _Workbook.Application.Confirm("This will take " + solver_options.CPU_time_limit + " seconds. Do you want to continue?", true); //, vbYesNo, "CLP Spreadsheet Solver")
         if (reply === false) {
             //Application.ScreenUpdating = true
             //Application.Calculation = xlCalculationAutomatic
@@ -6883,7 +8102,7 @@ function CLP_Solver(solverOptions, itemsData, containersData) {
     var infeasibility_string = fcData.infeasibility_string;
 
     if (infeasibility_count > 0) {
-        reply = __WEBPACK_IMPORTED_MODULE_0__Workbook__["a" /* Application */].Confirm("Infeasibilities detected. " + infeasibility_string + " Do you want to continue?", true); //, vbYesNo, "CLP Spreadsheet Solver")
+        reply = _Workbook.Application.Confirm("Infeasibilities detected. " + infeasibility_string + " Do you want to continue?", true); //, vbYesNo, "CLP Spreadsheet Solver")
         if (reply === false) {
             //Application.ScreenUpdating = true
             //Application.Calculation = xlCalculationAutomatic
@@ -6897,13 +8116,13 @@ function CLP_Solver(solverOptions, itemsData, containersData) {
     // constructive phase
 
     if (solver_options.show_progress === true) {
-        __WEBPACK_IMPORTED_MODULE_0__Workbook__["a" /* Application */].ScreenUpdating = true;
-        __WEBPACK_IMPORTED_MODULE_0__Workbook__["a" /* Application */].StatusBar = "Constructive phase...";
-        __WEBPACK_IMPORTED_MODULE_0__Workbook__["a" /* Application */].ScreenUpdating = false;
+        _Workbook.Application.ScreenUpdating = true;
+        _Workbook.Application.StatusBar = "Constructive phase...";
+        _Workbook.Application.ScreenUpdating = false;
     } else {
-        __WEBPACK_IMPORTED_MODULE_0__Workbook__["a" /* Application */].ScreenUpdating = true;
-        __WEBPACK_IMPORTED_MODULE_0__Workbook__["a" /* Application */].StatusBar = "LNS algorithm running...";
-        __WEBPACK_IMPORTED_MODULE_0__Workbook__["a" /* Application */].ScreenUpdating = false;
+        _Workbook.Application.ScreenUpdating = true;
+        _Workbook.Application.StatusBar = "LNS algorithm running...";
+        _Workbook.Application.ScreenUpdating = false;
     }
 
     SortContainers(incumbent, 0);
@@ -6991,11 +8210,11 @@ function CLP_Solver(solverOptions, itemsData, containersData) {
         if (solver_options.show_progress === true && iteration % 100 === 0) {
             //Application.ScreenUpdating = true
             if (best_known.feasible === true) {
-                __WEBPACK_IMPORTED_MODULE_0__Workbook__["a" /* Application */].StatusBar = "Starting iteration " + iteration + ". Best net profit found so far: " + best_known.net_profit + " Dispersion: " + best_known.total_distance;
+                _Workbook.Application.StatusBar = "Starting iteration " + iteration + ". Best net profit found so far: " + best_known.net_profit + " Dispersion: " + best_known.total_distance;
             } else {
-                __WEBPACK_IMPORTED_MODULE_0__Workbook__["a" /* Application */].StatusBar = "Starting iteration " + iteration + ". Best net profit found so far: N/A" + " Dispersion: " + best_known.total_distance;
+                _Workbook.Application.StatusBar = "Starting iteration " + iteration + ". Best net profit found so far: N/A" + " Dispersion: " + best_known.total_distance;
             }
-            __WEBPACK_IMPORTED_MODULE_0__Workbook__["a" /* Application */].ScreenUpdating = false;
+            _Workbook.Application.ScreenUpdating = false;
         }
 
         if (Math.random() < 0.5) {
@@ -7062,13 +8281,13 @@ function CLP_Solver(solverOptions, itemsData, containersData) {
     }
 
     for (container_id = 1; container_id <= best_known.num_containers; container_id++) {
-        __WEBPACK_IMPORTED_MODULE_0__Workbook__["a" /* Application */].ScreenUpdating = true;
+        _Workbook.Application.ScreenUpdating = true;
         if (best_known.feasible === true) {
-            __WEBPACK_IMPORTED_MODULE_0__Workbook__["a" /* Application */].StatusBar = "Reorganizing container " + container_id + ". Best net profit found so far: " + best_known.net_profit + " Distance: " + best_known.total_distance;
+            _Workbook.Application.StatusBar = "Reorganizing container " + container_id + ". Best net profit found so far: " + best_known.net_profit + " Distance: " + best_known.total_distance;
         } else {
-            __WEBPACK_IMPORTED_MODULE_0__Workbook__["a" /* Application */].StatusBar = "Reorganizing container " + container_id + ". Best net profit found so far: N/A" + " Distance: " + best_known.total_distance;
+            _Workbook.Application.StatusBar = "Reorganizing container " + container_id + ". Best net profit found so far: N/A" + " Distance: " + best_known.total_distance;
         }
-        __WEBPACK_IMPORTED_MODULE_0__Workbook__["a" /* Application */].ScreenUpdating = false;
+        _Workbook.Application.ScreenUpdating = false;
 
         if (best_known.containerGet(container_id).item_cnt > 0) {
 
@@ -7217,7 +8436,7 @@ function CLP_Solver(solverOptions, itemsData, containersData) {
                 container.items[selected_item_index] = container.itemsGet(j);
                 container.items[j] = swap_item;
             } else {
-                __WEBPACK_IMPORTED_MODULE_0__Workbook__["a" /* Application */].Alert("Loading order could not be constructed.");
+                _Workbook.Application.Alert("Loading order could not be constructed.");
             }
         }
     }
@@ -7227,14 +8446,14 @@ function CLP_Solver(solverOptions, itemsData, containersData) {
     // MsgBox best_known.total_distance
 
     if (best_known.feasible === true) {
-        reply = __WEBPACK_IMPORTED_MODULE_0__Workbook__["a" /* Application */].Confirm("CLP Spreadsheet Solver performed " + iteration + " LNS iterations and found a solution with a net profit of " + best_known.net_profit + ". Do you want to overwrite the current solution with the best found solution?", true); //, vbYesNo, "CLP Spreadsheet Solver")
+        reply = _Workbook.Application.Confirm("CLP Spreadsheet Solver performed " + iteration + " LNS iterations and found a solution with a net profit of " + best_known.net_profit + ". Do you want to overwrite the current solution with the best found solution?", true); //, vbYesNo, "CLP Spreadsheet Solver")
         if (reply) {
             WriteSolution(best_known);
         }
     } else if (infeasibility_count > 0) {
         WriteSolution(best_known);
     } else {
-        reply = __WEBPACK_IMPORTED_MODULE_0__Workbook__["a" /* Application */].Confirm("The best found solution after " + iteration + " LNS iterations does not satisfy all constraints. Do you want to overwrite the current solution with the best found solution?", true); //, vbYesNo, "CLP Spreadsheet Solver")
+        reply = _Workbook.Application.Confirm("The best found solution after " + iteration + " LNS iterations does not satisfy all constraints. Do you want to overwrite the current solution with the best found solution?", true); //, vbYesNo, "CLP Spreadsheet Solver")
         if (reply) {
             WriteSolution(best_known);
         }
@@ -7261,8 +8480,8 @@ function CLP_Solver(solverOptions, itemsData, containersData) {
     }
     delete best_known.unpacked_item_count;
     */
-    __WEBPACK_IMPORTED_MODULE_0__Workbook__["a" /* Application */].StatusBar = false;
-    __WEBPACK_IMPORTED_MODULE_0__Workbook__["a" /* Application */].ScreenUpdating = true;
+    _Workbook.Application.StatusBar = false;
+    _Workbook.Application.ScreenUpdating = true;
     //Application.Calculation = xlCalculationAutomatic
 
     //ThisWorkbook.Worksheets("3.Solution").Activate;
@@ -7278,7 +8497,7 @@ function FeasibilityCheckData() {
     var infeasibility_count = 0;
     var infeasibility_string = '';
 
-    Object(__WEBPACK_IMPORTED_MODULE_0__Workbook__["d" /* Range */])(__WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */].Worksheets("3.Solution").Cells(item_list.total_number_of_items + 9, 1), __WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */].Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + 4 * item_list.total_number_of_items, 1)).Clear;
+    (0, _Workbook.Range)(_Workbook.ThisWorkbook.Worksheets("3.Solution").Cells(item_list.total_number_of_items + 9, 1), _Workbook.ThisWorkbook.Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + 4 * item_list.total_number_of_items, 1)).Clear;
 
     var volume_capacity_required = 0;
     var volume_capacity_available = 0;
@@ -7313,13 +8532,13 @@ function FeasibilityCheckData() {
     if (volume_capacity_required > volume_capacity_available + epsilon) {
         infeasibility_count = infeasibility_count + 1;
         infeasibility_string = infeasibility_string + "The amount of available volume is not enough to pack the mandatory items.\n";
-        __WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */].Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + infeasibility_count, 1).Value = "The amount of available volume is not enough to pack the mandatory items.";
+        _Workbook.ThisWorkbook.Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + infeasibility_count, 1).Value = "The amount of available volume is not enough to pack the mandatory items.";
     }
 
     if (weight_capacity_required > weight_capacity_available + epsilon) {
         infeasibility_count = infeasibility_count + 1;
         infeasibility_string = infeasibility_string + "The amount of available weight capacity is not enough to pack the mandatory items.\n";
-        __WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */].Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + infeasibility_count, 1).Value = "The amount of available weight capacity is not enough to pack the mandatory items.";
+        _Workbook.ThisWorkbook.Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + infeasibility_count, 1).Value = "The amount of available weight capacity is not enough to pack the mandatory items.";
     }
 
     //With item_list
@@ -7334,7 +8553,7 @@ function FeasibilityCheckData() {
             if (infeasibility_count === 5) {
                 infeasibility_string = infeasibility_string + "More can be found in the list of detected infeasibilities in the solution worksheet." + "\n";
             }
-            __WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */].Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + infeasibility_count, 1).Value = "Item type " + i + " is too large to fit into any container.";
+            _Workbook.ThisWorkbook.Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + infeasibility_count, 1).Value = "Item type " + i + " is too large to fit into any container.";
         }
 
         if (itemType.mandatory === 1 && itemType.width > max_width + epsilon && itemType.width > max_heigth + epsilon && itemType.width > max_length + epsilon) {
@@ -7345,7 +8564,7 @@ function FeasibilityCheckData() {
             if (infeasibility_count === 5) {
                 infeasibility_string = infeasibility_string + "More can be found in the list of detected infeasibilities in the solution worksheet." + "\n";
             }
-            __WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */].Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + infeasibility_count, 1).Value = "Item type " + i + " is too wide to fit into any container.";
+            _Workbook.ThisWorkbook.Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + infeasibility_count, 1).Value = "Item type " + i + " is too wide to fit into any container.";
         }
 
         if (itemType.mandatory === 1 && itemType.height > max_width + epsilon && itemType.height > max_heigth + epsilon && itemType.height > max_length + epsilon) {
@@ -7356,7 +8575,7 @@ function FeasibilityCheckData() {
             if (infeasibility_count === 5) {
                 infeasibility_string = infeasibility_string + "More can be found in the list of detected infeasibilities in the solution worksheet." + "\n";
             }
-            __WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */].Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + infeasibility_count, 1).Value = "Item type " + i + " is too tall to fit into any container.";
+            _Workbook.ThisWorkbook.Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + infeasibility_count, 1).Value = "Item type " + i + " is too tall to fit into any container.";
         }
 
         if (itemType.mandatory === 1 && itemType.length > max_width + epsilon && itemType.length > max_heigth + epsilon && itemType.length > max_length + epsilon) {
@@ -7367,7 +8586,7 @@ function FeasibilityCheckData() {
             if (infeasibility_count === 5) {
                 infeasibility_string = infeasibility_string + "More can be found in the list of detected infeasibilities in the solution worksheet." + "\n";
             }
-            __WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */].Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + infeasibility_count, 1).Value = "Item type " + i + " is too long to fit into any container.";
+            _Workbook.ThisWorkbook.Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + infeasibility_count, 1).Value = "Item type " + i + " is too long to fit into any container.";
         }
     }
 
@@ -7393,7 +8612,7 @@ function FeasibilityCheckData() {
                 if (infeasibility_count === 5) {
                     infeasibility_string = infeasibility_string + "More can be found in the list of detected infeasibilities in the solution worksheet." + "\n";
                 }
-                __WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */].Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + infeasibility_count, 1).Value = "Item type " + i + " is not compatible with any container.";
+                _Workbook.ThisWorkbook.Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + infeasibility_count, 1).Value = "Item type " + i + " is not compatible with any container.";
             }
         }
     }
@@ -7508,456 +8727,28 @@ function CalculateDispersion(solution) {
     }
 }
 
-var signaler = new __WEBPACK_IMPORTED_MODULE_1__utils_cik_Signaler__["default"]();
+var signaler = new _Signaler2.default();
 var signals = {
     solution: 'solution'
 };
 
-
+exports.Execute = CLP_Solver;
+exports.SolutionData = solution_data;
+exports.ContainerItem = item_in_container;
+exports.signaler = signaler;
+exports.signals = signals;
 
 /***/ }),
-/* 31 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return ThisWorkbook; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return Cells; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return CheckWorksheetExistence; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return Range; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Application; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_Signaler__ = __webpack_require__(2);
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-var typeofString = 'string';
-var colLabels = '0ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-
-var signals = {
-    updated: 'u'
-};
-
-var CellEntry /*extends Signaler*/ = function () {
-    function CellEntry(value) {
-        _classCallCheck(this, CellEntry);
-
-        this.Value = value;
-        this.col = 0;
-        this.row = 0;
-
-        /** @type {Function} */
-        this.calculate = undefined;
-    }
-
-    _createClass(CellEntry, [{
-        key: 'toString',
-        value: function toString() {
-            return this.Value.toString();
-        }
-    }, {
-        key: 'Value',
-        get: function get() {
-            if (this.calculate) this._value = this.calculate();
-            return this._value;
-        },
-        set: function set(value) {
-            this._value = value;
-            //this.Dispatch(signals.updated, this);
-        }
-    }, {
-        key: 'Select',
-        get: function get() {
-            console.log('Select: ', this.Value);
-        }
-    }], [{
-        key: 'signals',
-        get: function get() {
-            return signals;
-        }
-    }]);
-
-    return CellEntry;
-}();
-
-/**
- * 
- * @param {Number} row 
- * @param {Number} col 
- * @param {*} [value]
- */
-
-
-function Cells(row, col, value) {
-    return new CellEntry('default');
-}
-
-/** @type {Worksheet} */
-var active;
-
-var Worksheet = function () {
-    /** @param {string} label */
-    function Worksheet(label) {
-        _classCallCheck(this, Worksheet);
-
-        this.label = label.toLowerCase();
-        /** @type {Map<Number, Map<Number, CellEntry>>} */
-        this.data = new Map();
-
-        this.cellsFN = this.Cells.bind(this);
-    }
-
-    /**
-     * 
-     * @param {CellEntry} cell1 
-     * @param {CellEntry} cell2 
-     */
-
-
-    _createClass(Worksheet, [{
-        key: 'Sum',
-        value: function Sum(cell1, cell2) {
-            var cells = Range(cell1, cell2).cells;
-            var total = 0;
-            cells.forEach(function (cell) {
-                var value = Number.parseFloat(cell.Value);
-                if (!isNaN(value)) total += value;
-            });
-            return total;
-        }
-    }, {
-        key: 'Cells',
-        value: function Cells(row, col, value) {
-            if ((typeof col === 'undefined' ? 'undefined' : _typeof(col)) === typeofString) col = colLabels.indexOf(col);
-
-            if (!this.data.has(row) || !this.data.get(row).has(col)) {
-                if (!this.data.has(row)) this.data.set(row, new Map());
-
-                var newEntry = new CellEntry(0);
-                newEntry.row = row;
-                newEntry.col = col;
-                this.data.get(row).set(col, newEntry);
-            }
-
-            if (value) this.data.get(row).get(col).Value = value;
-
-            return this.data.get(row).get(col);
-        }
-    }, {
-        key: 'Find',
-        value: function Find(value) {
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
-
-            try {
-                for (var _iterator = this.data.values()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var row = _step.value;
-                    var _iteratorNormalCompletion2 = true;
-                    var _didIteratorError2 = false;
-                    var _iteratorError2 = undefined;
-
-                    try {
-                        for (var _iterator2 = row.values()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                            var cell = _step2.value;
-
-                            if (cell.Value === value) {
-                                return cell;
-                            }
-                        }
-                    } catch (err) {
-                        _didIteratorError2 = true;
-                        _iteratorError2 = err;
-                    } finally {
-                        try {
-                            if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                                _iterator2.return();
-                            }
-                        } finally {
-                            if (_didIteratorError2) {
-                                throw _iteratorError2;
-                            }
-                        }
-                    }
-                }
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
-                }
-            }
-        }
-    }, {
-        key: 'Print',
-        value: function Print() {
-            console.group(this.label);
-            var rows = [];
-            var _iteratorNormalCompletion3 = true;
-            var _didIteratorError3 = false;
-            var _iteratorError3 = undefined;
-
-            try {
-                for (var _iterator3 = this.data[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                    var _ref = _step3.value;
-
-                    var _ref2 = _slicedToArray(_ref, 2);
-
-                    var row = _ref2[0];
-                    var rowData = _ref2[1];
-
-                    var rowResult = [row + ':'];
-                    var _iteratorNormalCompletion4 = true;
-                    var _didIteratorError4 = false;
-                    var _iteratorError4 = undefined;
-
-                    try {
-                        for (var _iterator4 = rowData[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-                            var _ref3 = _step4.value;
-
-                            var _ref4 = _slicedToArray(_ref3, 2);
-
-                            var col = _ref4[0];
-                            var colData = _ref4[1];
-
-                            rowResult.push(colData.Value);
-                        }
-                    } catch (err) {
-                        _didIteratorError4 = true;
-                        _iteratorError4 = err;
-                    } finally {
-                        try {
-                            if (!_iteratorNormalCompletion4 && _iterator4.return) {
-                                _iterator4.return();
-                            }
-                        } finally {
-                            if (_didIteratorError4) {
-                                throw _iteratorError4;
-                            }
-                        }
-                    }
-
-                    rows[row] = rowResult;
-                }
-            } catch (err) {
-                _didIteratorError3 = true;
-                _iteratorError3 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                        _iterator3.return();
-                    }
-                } finally {
-                    if (_didIteratorError3) {
-                        throw _iteratorError3;
-                    }
-                }
-            }
-
-            rows.forEach(function (row) {
-                var _console;
-
-                (_console = console).log.apply(_console, _toConsumableArray(row));
-            });
-            console.groupEnd();
-        }
-    }, {
-        key: 'Activate',
-        get: function get() {
-            active = this;
-            Cells = this.cellsFN;
-        }
-    }]);
-
-    return Worksheet;
-}();
-
-var Workbook = function () {
-    function Workbook() {
-        _classCallCheck(this, Workbook);
-
-        /** @type {Map<string, Worksheet>} */
-        this.worksheets = new Map();
-    }
-
-    /** @param {Worksheet} worksheet */
-
-
-    _createClass(Workbook, [{
-        key: 'Add',
-        value: function Add(worksheet) {
-            this.worksheets.set(worksheet.label.toLowerCase(), worksheet);
-        }
-
-        /** @param {string} label */
-
-    }, {
-        key: 'Worksheets',
-        value: function Worksheets(label) {
-            return this.worksheets.get(label.toLowerCase());
-        }
-    }, {
-        key: 'Print',
-        value: function Print() {
-            var _iteratorNormalCompletion5 = true;
-            var _didIteratorError5 = false;
-            var _iteratorError5 = undefined;
-
-            try {
-                for (var _iterator5 = this.worksheets.values()[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-                    var worksheet = _step5.value;
-
-                    worksheet.Print();
-                }
-            } catch (err) {
-                _didIteratorError5 = true;
-                _iteratorError5 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion5 && _iterator5.return) {
-                        _iterator5.return();
-                    }
-                } finally {
-                    if (_didIteratorError5) {
-                        throw _iteratorError5;
-                    }
-                }
-            }
-        }
-    }, {
-        key: 'print',
-        get: function get() {
-            this.Print();
-        }
-    }]);
-
-    return Workbook;
-}();
-
-var solverSheet = new Worksheet('CLP Solver Console');
-var itemsSheet = new Worksheet('1.Items');
-var containersSheet = new Worksheet('2.Containers');
-var solutionSheet = new Worksheet('3.Solution');
-
-var ThisWorkbook = new Workbook();
-ThisWorkbook.Add(solverSheet);
-ThisWorkbook.Add(itemsSheet);
-ThisWorkbook.Add(containersSheet);
-ThisWorkbook.Add(solutionSheet);
-
-/**
- * @param {string} label 
- * @returns {Boolean}
- */
-function CheckWorksheetExistence(label) {
-    return ThisWorkbook.Worksheets(label) !== undefined;
-}
-
-var CellsRange = function () {
-    function CellsRange() {
-        _classCallCheck(this, CellsRange);
-
-        /** @type {Array<CellEntry>} */
-        this.cells = [];
-    }
-
-    _createClass(CellsRange, [{
-        key: 'Value',
-        set: function set(value) {
-            this.cells.forEach(function (cell) {
-                cell.Value = value;
-            });
-        }
-    }, {
-        key: 'Clear',
-        get: function get() {
-            this.cells.forEach(function (cell) {
-                cell.Value = null;
-            });
-        }
-    }, {
-        key: 'ClearContents',
-        get: function get() {
-            this.Clear;
-        }
-    }]);
-
-    return CellsRange;
-}();
-
-var _range = new CellsRange();
-
-/**
- * @param {CellEntry} cell1 
- * @param {CellEntry} cell2 
- */
-function Range(cell1, cell2) {
-    var minCol = Math.min(cell1.col, cell2.col);
-    var maxCol = Math.max(cell1.col, cell2.col);
-    var minRow = Math.min(cell1.row, cell2.row);
-    var maxRow = Math.max(cell1.row, cell2.row);
-
-    _range.cells.length = 0;
-    for (var c = minCol; c < maxCol; c++) {
-        for (var r = minRow; r < maxRow; r++) {
-            _range.cells.push(Cells(r, c));
-        }
-    }
-
-    return _range;
-}
-
-var Application = function () {
-    function Application() {
-        _classCallCheck(this, Application);
-    }
-
-    _createClass(Application, null, [{
-        key: 'Alert',
-        value: function Alert(msg) {
-            console.log('CLP alert:', msg);
-        }
-    }, {
-        key: 'Confirm',
-        value: function Confirm(msg, defaultValue) {
-            console.log('CLP confirm (' + defaultValue + '):', msg);
-            return defaultValue;
-        }
-    }, {
-        key: 'StatusBar',
-        set: function set(value) {
-            console.log(value);
-        }
-    }, {
-        key: 'ScreenUpdating',
-        set: function set(value) {}
-    }]);
-
-    return Application;
-}();
-
-
-
-/***/ }),
-/* 32 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -8061,26 +8852,19 @@ var Bin = function () {
   return Bin;
 }();
 
-/* harmony default export */ __webpack_exports__["default"] = (Bin);
+exports.default = Bin;
 
 /***/ }),
-/* 33 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RotationType_WHD", function() { return RotationType_WHD; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RotationType_HWD", function() { return RotationType_HWD; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RotationType_HDW", function() { return RotationType_HDW; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RotationType_DHW", function() { return RotationType_DHW; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RotationType_DWH", function() { return RotationType_DWH; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RotationType_WDH", function() { return RotationType_WDH; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WidthAxis", function() { return WidthAxis; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HeightAxis", function() { return HeightAxis; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DepthAxis", function() { return DepthAxis; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "StartPosition", function() { return StartPosition; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RotationTypeStrings", function() { return RotationTypeStrings; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "rectIntersect", function() { return rectIntersect; });
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _RotationTypeStrings;
@@ -8089,20 +8873,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var RotationType_WHD = 0;
-var RotationType_HWD = 1;
-var RotationType_HDW = 2;
-var RotationType_DHW = 3;
-var RotationType_DWH = 4;
-var RotationType_WDH = 5;
+var RotationType_WHD = exports.RotationType_WHD = 0;
+var RotationType_HWD = exports.RotationType_HWD = 1;
+var RotationType_HDW = exports.RotationType_HDW = 2;
+var RotationType_DHW = exports.RotationType_DHW = 3;
+var RotationType_DWH = exports.RotationType_DWH = 4;
+var RotationType_WDH = exports.RotationType_WDH = 5;
 
-var WidthAxis = 0;
-var HeightAxis = 1;
-var DepthAxis = 2;
+var WidthAxis = exports.WidthAxis = 0;
+var HeightAxis = exports.HeightAxis = 1;
+var DepthAxis = exports.DepthAxis = 2;
 
-var StartPosition = [0, 0, 0];
+var StartPosition = exports.StartPosition = [0, 0, 0];
 
-var RotationTypeStrings = (_RotationTypeStrings = {}, _defineProperty(_RotationTypeStrings, RotationType_WHD, 'xyz'), _defineProperty(_RotationTypeStrings, RotationType_HWD, 'yxz'), _defineProperty(_RotationTypeStrings, RotationType_HDW, 'yzx'), _defineProperty(_RotationTypeStrings, RotationType_DHW, 'zyx'), _defineProperty(_RotationTypeStrings, RotationType_DWH, 'zxy'), _defineProperty(_RotationTypeStrings, RotationType_WDH, 'xzy'), _RotationTypeStrings);
+var RotationTypeStrings = exports.RotationTypeStrings = (_RotationTypeStrings = {}, _defineProperty(_RotationTypeStrings, RotationType_WHD, 'xyz'), _defineProperty(_RotationTypeStrings, RotationType_HWD, 'yxz'), _defineProperty(_RotationTypeStrings, RotationType_HDW, 'yzx'), _defineProperty(_RotationTypeStrings, RotationType_DHW, 'zyx'), _defineProperty(_RotationTypeStrings, RotationType_DWH, 'zxy'), _defineProperty(_RotationTypeStrings, RotationType_WDH, 'xzy'), _RotationTypeStrings);
 
 var Item = function () {
   function Item(name, w, h, d, wg) {
@@ -8188,10 +8972,8 @@ var Item = function () {
   return Item;
 }();
 
-/* harmony default export */ __webpack_exports__["default"] = (Item);
-
-
-var rectIntersect = function rectIntersect(i1, i2, x, y) {
+exports.default = Item;
+var rectIntersect = exports.rectIntersect = function rectIntersect(i1, i2, x, y) {
   var d1 = void 0,
       d2 = void 0,
       cx1 = void 0,
@@ -8216,18 +8998,47 @@ var rectIntersect = function rectIntersect(i1, i2, x, y) {
 };
 
 /***/ }),
-/* 34 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_Logger__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__CargoBoxView__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CargoView__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils_cik_Signaler__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__packer_CargoGroup__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_cik_Utils__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_common_CargoEntry__ = __webpack_require__(5);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Logger = __webpack_require__(3);
+
+var _Logger2 = _interopRequireDefault(_Logger);
+
+var _CargoBoxView = __webpack_require__(37);
+
+var _CargoBoxView2 = _interopRequireDefault(_CargoBoxView);
+
+var _CargoView = __webpack_require__(21);
+
+var _CargoView2 = _interopRequireDefault(_CargoView);
+
+var _Signaler2 = __webpack_require__(2);
+
+var _Signaler3 = _interopRequireDefault(_Signaler2);
+
+var _CargoGroup = __webpack_require__(16);
+
+var _CargoGroup2 = _interopRequireDefault(_CargoGroup);
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+var _CargoEntry = __webpack_require__(5);
+
+var _CargoEntry2 = _interopRequireDefault(_CargoEntry);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -8236,14 +9047,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-
-
-
-
-
 
 /**
  * @typedef {Object} CargoListViewParams
@@ -8278,7 +9081,7 @@ var CargoListView = function (_Signaler) {
 
         var _this = _possibleConstructorReturn(this, (CargoListView.__proto__ || Object.getPrototypeOf(CargoListView)).call(this));
 
-        _this.params = __WEBPACK_IMPORTED_MODULE_5__utils_cik_Utils__["default"].AssignUndefined(params, defaultParams);
+        _this.params = _Utils2.default.AssignUndefined(params, defaultParams);
 
         _this.view;
         _this.templatesView = new THREE.Object3D();
@@ -8304,14 +9107,14 @@ var CargoListView = function (_Signaler) {
             switch (group.entry.type) {
                 case 'BoxEntry':
                     {
-                        templateCargoView = new __WEBPACK_IMPORTED_MODULE_1__CargoBoxView__["a" /* default */](group.entry);
+                        templateCargoView = new _CargoBoxView2.default(group.entry);
 
                         break;
                     }
 
                 default:
-                    templateCargoView = __WEBPACK_IMPORTED_MODULE_2__CargoView__["a" /* default */].Dummy(group.entry);
-                    __WEBPACK_IMPORTED_MODULE_0__utils_cik_Logger__["a" /* default */].Warn('group.entry.type not supported by viewer,', group);
+                    templateCargoView = _CargoView2.default.Dummy(group.entry);
+                    _Logger2.default.Warn('group.entry.type not supported by viewer,', group);
                     break;
             }
 
@@ -8347,9 +9150,9 @@ var CargoListView = function (_Signaler) {
         key: "GetTemplate",
         value: function GetTemplate(id) {
             var group;
-            if (id instanceof __WEBPACK_IMPORTED_MODULE_4__packer_CargoGroup__["a" /* default */]) {
+            if (id instanceof _CargoGroup2.default) {
                 group = id;
-            } else if (id instanceof __WEBPACK_IMPORTED_MODULE_6__components_common_CargoEntry__["a" /* default */]) {
+            } else if (id instanceof _CargoEntry2.default) {
                 var _iteratorNormalCompletion = true;
                 var _didIteratorError = false;
                 var _iteratorError = undefined;
@@ -8492,33 +9295,46 @@ var CargoListView = function (_Signaler) {
     }]);
 
     return CargoListView;
-}(__WEBPACK_IMPORTED_MODULE_3__utils_cik_Signaler__["default"]);
+}(_Signaler3.default);
 
-/* harmony default export */ __webpack_exports__["a"] = (CargoListView);
+exports.default = CargoListView;
 
 /***/ }),
-/* 35 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CargoView__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Utils__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_box_BoxEntry__ = __webpack_require__(10);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _set = function set(object, property, value, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent !== null) { set(parent, property, value, receiver); } } else if ("value" in desc && desc.writable) { desc.value = value; } else { var setter = desc.set; if (setter !== undefined) { setter.call(receiver, value); } } return value; };
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
+var _CargoView2 = __webpack_require__(21);
+
+var _CargoView3 = _interopRequireDefault(_CargoView2);
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+var _BoxEntry = __webpack_require__(10);
+
+var _BoxEntry2 = _interopRequireDefault(_BoxEntry);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-
 
 var unitCubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 1, 1, 1);
 var materialTemplate = new THREE.MeshStandardMaterial();
@@ -8528,7 +9344,7 @@ var hueBase = Math.random();
 function nextColor() {
     var color = new THREE.Color();
     color.setHSL(hueBase, 1, brightnessRange[0] + Math.random() * (brightnessRange[1] - brightnessRange[0]));
-    hueBase = __WEBPACK_IMPORTED_MODULE_1__utils_cik_Utils__["default"].GoldenSeries(hueBase);
+    hueBase = _Utils2.default.GoldenSeries(hueBase);
     return color;
 }
 
@@ -8594,29 +9410,44 @@ var CargoBoxView = function (_CargoView) {
     }]);
 
     return CargoBoxView;
-}(__WEBPACK_IMPORTED_MODULE_0__CargoView__["a" /* default */]);
+}(_CargoView3.default);
 
-/* harmony default export */ __webpack_exports__["a"] = (CargoBoxView);
+exports.default = CargoBoxView;
 
 /***/ }),
-/* 36 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__packer_container_Container__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ContainerView__ = __webpack_require__(37);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_cik_Logger__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__packer_container_ContainingVolume__ = __webpack_require__(8);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _Container = __webpack_require__(6);
+
+var _Container2 = _interopRequireDefault(_Container);
+
+var _ContainerView = __webpack_require__(39);
+
+var _ContainerView2 = _interopRequireDefault(_ContainerView);
+
+var _Logger = __webpack_require__(3);
+
+var _Logger2 = _interopRequireDefault(_Logger);
+
+var _ContainingVolume = __webpack_require__(8);
+
+var _ContainingVolume2 = _interopRequireDefault(_ContainingVolume);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-
-
 
 var typeofString = 'string';
 
@@ -8643,8 +9474,8 @@ var PackingSpaceView = function () {
     _createClass(PackingSpaceView, [{
         key: "Add",
         value: function Add(container) {
-            __WEBPACK_IMPORTED_MODULE_2__utils_cik_Logger__["a" /* default */].Log('Adding container: ' + container.ToString() + ' to view', container);
-            var containerView = __WEBPACK_IMPORTED_MODULE_1__ContainerView__["a" /* default */].Request(container);
+            _Logger2.default.Log('Adding container: ' + container.ToString() + ' to view', container);
+            var containerView = _ContainerView2.default.Request(container);
             this.view.add(containerView.view);
             this.containerViews.push(containerView);
         }
@@ -8693,27 +9524,42 @@ var PackingSpaceView = function () {
     return PackingSpaceView;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (PackingSpaceView);
+exports.default = PackingSpaceView;
 
 /***/ }),
-/* 37 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__packer_container_Container__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_assets_Asset__ = __webpack_require__(38);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_cik_Logger__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__packer_container_ContainingVolume__ = __webpack_require__(8);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _Container = __webpack_require__(6);
+
+var _Container2 = _interopRequireDefault(_Container);
+
+var _Asset = __webpack_require__(40);
+
+var _Asset2 = _interopRequireDefault(_Asset);
+
+var _Logger = __webpack_require__(3);
+
+var _Logger2 = _interopRequireDefault(_Logger);
+
+var _ContainingVolume = __webpack_require__(8);
+
+var _ContainingVolume2 = _interopRequireDefault(_ContainingVolume);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-
-
 
 /**
  * 
@@ -8726,7 +9572,7 @@ function createContainerBoxes(container) {
     var meshes = new Map();
 
     container.volumes.forEach(function (cv) {
-        var mesh = __WEBPACK_IMPORTED_MODULE_1__components_assets_Asset__["a" /* default */].CreateMesh();
+        var mesh = _Asset2.default.CreateMesh();
 
         var extent = cv.dimensions.vec3;
         mesh.scale.copy(extent);
@@ -8764,7 +9610,7 @@ var ContainerView = function () {
         this.view = new THREE.Object3D();
         this.view.add(view);
 
-        __WEBPACK_IMPORTED_MODULE_1__components_assets_Asset__["a" /* default */].StandardSceneObject(this.view);
+        _Asset2.default.StandardSceneObject(this.view);
 
         var containerBoxes = createContainerBoxes(container);
         var _iteratorNormalCompletion = true;
@@ -8773,12 +9619,9 @@ var ContainerView = function () {
 
         try {
             for (var _iterator = containerBoxes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                var _ref = _step.value;
-
-                var _ref2 = _slicedToArray(_ref, 2);
-
-                var cv = _ref2[0];
-                var mesh = _ref2[1];
+                var _step$value = _slicedToArray(_step.value, 2),
+                    cv = _step$value[0],
+                    mesh = _step$value[1];
 
                 mesh.position.add(cv.position);
                 this.view.add(mesh);
@@ -8825,12 +9668,9 @@ var ContainerView = function () {
 
                 try {
                     for (var _iterator2 = meshes[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                        var _ref3 = _step2.value;
-
-                        var _ref4 = _slicedToArray(_ref3, 2);
-
-                        var cv = _ref4[0];
-                        var mesh = _ref4[1];
+                        var _step2$value = _slicedToArray(_step2.value, 2),
+                            cv = _step2$value[0],
+                            mesh = _step2$value[1];
 
                         mesh.position.add(cv.position);
                         _view.add(mesh);
@@ -8851,7 +9691,7 @@ var ContainerView = function () {
                 }
 
                 containerView = new ContainerView(container, _view);
-                __WEBPACK_IMPORTED_MODULE_2__utils_cik_Logger__["a" /* default */].Warn('View not found for:', container);
+                _Logger2.default.Warn('View not found for:', container);
             }
             return view;
         }
@@ -8860,13 +9700,19 @@ var ContainerView = function () {
     return ContainerView;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (ContainerView);
+exports.default = ContainerView;
 
 /***/ }),
-/* 38 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 40 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -8946,13 +9792,19 @@ var Asset = function () {
     return Asset;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (Asset);
+exports.default = Asset;
 
 /***/ }),
-/* 39 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -9016,29 +9868,44 @@ var Pool = function () {
     return Pool;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (Pool);
+exports.default = Pool;
 
 /***/ }),
-/* 40 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_Logger__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Signaler__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__box_BoxEntry__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__box_Dimensions__ = __webpack_require__(9);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Logger = __webpack_require__(3);
+
+var _Logger2 = _interopRequireDefault(_Logger);
+
+var _Signaler2 = __webpack_require__(2);
+
+var _Signaler3 = _interopRequireDefault(_Signaler2);
+
+var _BoxEntry = __webpack_require__(10);
+
+var _BoxEntry2 = _interopRequireDefault(_BoxEntry);
+
+var _Dimensions = __webpack_require__(9);
+
+var _Dimensions2 = _interopRequireDefault(_Dimensions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-
-
 
 var epsilon = Math.pow(2, -52);
 var numberType = 'number';
@@ -9073,7 +9940,7 @@ var CargoInput = function (_Signaler) {
     _createClass(CargoInput, [{
         key: 'CreateBoxEntry',
         value: function CreateBoxEntry() {
-            return new __WEBPACK_IMPORTED_MODULE_2__box_BoxEntry__["a" /* default */]();
+            return new _BoxEntry2.default();
         }
 
         /** Shows/updates entry 3D display
@@ -9084,18 +9951,18 @@ var CargoInput = function (_Signaler) {
     }, {
         key: 'Show',
         value: function Show(entry) {
-            if (__WEBPACK_IMPORTED_MODULE_2__box_BoxEntry__["a" /* default */].Assert(entry)) {
+            if (_BoxEntry2.default.Assert(entry)) {
                 try {
                     this.Dispatch(signals.updated, entry);
                     return true;
                 } catch (error) {
-                    __WEBPACK_IMPORTED_MODULE_0__utils_cik_Logger__["a" /* default */].Warn('Error in Cargo.Input.Show, error/entry:', error, entry);
+                    _Logger2.default.Warn('Error in Cargo.Input.Show, error/entry:', error, entry);
                 }
 
                 return false;
             }
 
-            __WEBPACK_IMPORTED_MODULE_0__utils_cik_Logger__["a" /* default */].Warn('BoxEntry.Assert failed in Cargo.Input.Show, entry:', entry);
+            _Logger2.default.Warn('BoxEntry.Assert failed in Cargo.Input.Show, entry:', entry);
             return false;
         }
 
@@ -9115,10 +9982,10 @@ var CargoInput = function (_Signaler) {
     }, {
         key: 'Add',
         value: function Add(entry) {
-            if (__WEBPACK_IMPORTED_MODULE_2__box_BoxEntry__["a" /* default */].Assert(entry)) {
+            if (_BoxEntry2.default.Assert(entry)) {
 
-                if (__WEBPACK_IMPORTED_MODULE_3__box_Dimensions__["a" /* default */].IsVolume(entry.dimensions.Abs()) === false) {
-                    __WEBPACK_IMPORTED_MODULE_0__utils_cik_Logger__["a" /* default */].Warn('Cargo.Input.Add, entry rejected, dimensions != Volume:', entry);
+                if (_Dimensions2.default.IsVolume(entry.dimensions.Abs()) === false) {
+                    _Logger2.default.Warn('Cargo.Input.Add, entry rejected, dimensions != Volume:', entry);
                     return false;
                 }
 
@@ -9129,13 +9996,13 @@ var CargoInput = function (_Signaler) {
                     this.Dispatch(signals.completed, commitedEntry);
                     return uid;
                 } catch (error) {
-                    __WEBPACK_IMPORTED_MODULE_0__utils_cik_Logger__["a" /* default */].Warn('Error in Cargo.Input.Add, error/entry:', error, entry);
+                    _Logger2.default.Warn('Error in Cargo.Input.Add, error/entry:', error, entry);
                 }
 
                 return false;
             }
 
-            __WEBPACK_IMPORTED_MODULE_0__utils_cik_Logger__["a" /* default */].Warn('BoxEntry.Assert failed in Cargo.Input.Add, entry:', entry);
+            _Logger2.default.Warn('BoxEntry.Assert failed in Cargo.Input.Add, entry:', entry);
             return false;
         }
     }], [{
@@ -9146,33 +10013,50 @@ var CargoInput = function (_Signaler) {
     }]);
 
     return CargoInput;
-}(__WEBPACK_IMPORTED_MODULE_1__utils_cik_Signaler__["default"]);
+}(_Signaler3.default);
 
-/* harmony default export */ __webpack_exports__["a"] = (CargoInput);
+exports.default = CargoInput;
 
 /***/ }),
-/* 41 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_Signaler__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__packer_container_Container__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__packer_PackingSpace__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__view_ContainerView__ = __webpack_require__(37);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__assets_Asset__ = __webpack_require__(38);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Signaler2 = __webpack_require__(2);
+
+var _Signaler3 = _interopRequireDefault(_Signaler2);
+
+var _Container = __webpack_require__(6);
+
+var _Container2 = _interopRequireDefault(_Container);
+
+var _PackingSpace = __webpack_require__(17);
+
+var _PackingSpace2 = _interopRequireDefault(_PackingSpace);
+
+var _ContainerView = __webpack_require__(39);
+
+var _ContainerView2 = _interopRequireDefault(_ContainerView);
+
+var _Asset = __webpack_require__(40);
+
+var _Asset2 = _interopRequireDefault(_Asset);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-
-
-
 
 /**
  * @typedef PackingSpaceJSON
@@ -9192,7 +10076,7 @@ var PackingSpaceInput = function (_Signaler) {
 
         var _this = _possibleConstructorReturn(this, (PackingSpaceInput.__proto__ || Object.getPrototypeOf(PackingSpaceInput)).call(this));
 
-        _this.packingSpace = new __WEBPACK_IMPORTED_MODULE_2__packer_PackingSpace__["a" /* default */]();
+        _this.packingSpace = new _PackingSpace2.default();
         return _this;
     }
 
@@ -9208,12 +10092,12 @@ var PackingSpaceInput = function (_Signaler) {
             var data = typeof jsonObject === 'string' ? JSON.parse(jsonObject) : jsonObject;
             console.log(data);
             if (data.container) {
-                var container = __WEBPACK_IMPORTED_MODULE_1__packer_container_Container__["a" /* default */].FromJSON(data.container);
+                var container = _Container2.default.FromJSON(data.container);
 
                 if (data.view) {
-                    var model = __WEBPACK_IMPORTED_MODULE_4__assets_Asset__["a" /* default */].FromJSON(data.view);
+                    var model = _Asset2.default.FromJSON(data.view);
                     //var model = Asset.CreateMesh(geometry);
-                    var containerView = new __WEBPACK_IMPORTED_MODULE_3__view_ContainerView__["a" /* default */](container, model);
+                    var containerView = new _ContainerView2.default(container, model);
                 }
 
                 this.packingSpace.AddContainer(container);
@@ -9229,53 +10113,81 @@ var PackingSpaceInput = function (_Signaler) {
     }]);
 
     return PackingSpaceInput;
-}(__WEBPACK_IMPORTED_MODULE_0__utils_cik_Signaler__["default"]);
+}(_Signaler3.default);
 
-/* harmony default export */ __webpack_exports__["a"] = (PackingSpaceInput);
-
-/***/ }),
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(43);
-
-
-/***/ }),
-/* 43 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* WEBPACK VAR INJECTION */(function(global) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__FreightPacker__ = __webpack_require__(44);
-
-global.FreightPacker = __WEBPACK_IMPORTED_MODULE_0__FreightPacker__["a" /* default */];
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(20)))
+exports.default = PackingSpaceInput;
 
 /***/ }),
 /* 44 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(45);
+
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(global) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api_utils_Capabilities__ = __webpack_require__(45);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__api_App__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api_components_CargoInput__ = __webpack_require__(40);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__api_utils_cik_Logger__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__api_utils_cik_Utils__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__api_components_PackingSpaceInput__ = __webpack_require__(41);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__api_UX__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__api_components_PackerInterface__ = __webpack_require__(62);
+/* WEBPACK VAR INJECTION */(function(global) {
+
+var _FreightPacker = __webpack_require__(46);
+
+var _FreightPacker2 = _interopRequireDefault(_FreightPacker);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+global.FreightPacker = _FreightPacker2.default;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22)))
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _Capabilities = __webpack_require__(47);
+
+var _Capabilities2 = _interopRequireDefault(_Capabilities);
+
+var _App = __webpack_require__(23);
+
+var _App2 = _interopRequireDefault(_App);
+
+var _CargoInput = __webpack_require__(42);
+
+var _CargoInput2 = _interopRequireDefault(_CargoInput);
+
+var _Logger = __webpack_require__(3);
+
+var _Logger2 = _interopRequireDefault(_Logger);
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+var _PackingSpaceInput = __webpack_require__(43);
+
+var _PackingSpaceInput2 = _interopRequireDefault(_PackingSpaceInput);
+
+var _UX = __webpack_require__(13);
+
+var _UX2 = _interopRequireDefault(_UX);
+
+var _PackerInterface = __webpack_require__(67);
+
+var _PackerInterface2 = _interopRequireDefault(_PackerInterface);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-
-
-
-
-
-
 
 /**
  * @typedef InitializationParams
@@ -9295,7 +10207,7 @@ var utils = {
 	dat: window.dat || __webpack_require__(1).default,
 	Signaler: __webpack_require__(2).default,
 	Utils: __webpack_require__(0).default,
-	Debug: __webpack_require__(63).default,
+	Debug: __webpack_require__(11).default,
 	Config: __webpack_require__(4).default
 };
 
@@ -9308,24 +10220,24 @@ var FreightPacker = function () {
 	function FreightPacker(containerDiv, params) {
 		_classCallCheck(this, FreightPacker);
 
-		this.params = __WEBPACK_IMPORTED_MODULE_4__api_utils_cik_Utils__["default"].AssignUndefined(params, defaultParams);
+		this.params = _Utils2.default.AssignUndefined(params, defaultParams);
 		FreightPacker.DevSetup(this);
 
-		this.ux = new __WEBPACK_IMPORTED_MODULE_6__api_UX__["a" /* default */](this.params.ux);
+		this.ux = new _UX2.default(this.params.ux);
 
 		/**
    * Handles input of: description fields (label, etc.), dimensions and constraints
    * @type {CargoInput}
    */
-		this.cargoInput = new __WEBPACK_IMPORTED_MODULE_2__api_components_CargoInput__["a" /* default */]();
+		this.cargoInput = new _CargoInput2.default();
 
 		/**
    * Handles input of: packing spaces configurations and assets
    * @type {PackingSpaceInput}
    */
-		this.packingSpaceInput = new __WEBPACK_IMPORTED_MODULE_5__api_components_PackingSpaceInput__["a" /* default */]();
+		this.packingSpaceInput = new _PackingSpaceInput2.default();
 
-		var app = new __WEBPACK_IMPORTED_MODULE_1__api_App__["a" /* default */](containerDiv, this.ux, {
+		var app = new _App2.default(containerDiv, this.ux, {
 			cargoInput: this.cargoInput,
 			packingSpaceInput: this.packingSpaceInput
 		});
@@ -9336,7 +10248,7 @@ var FreightPacker = function () {
    * Manual solving and notification
    * @type {PackerInterface}
    */
-		this.packer = new __WEBPACK_IMPORTED_MODULE_7__api_components_PackerInterface__["a" /* default */](app);
+		this.packer = new _PackerInterface2.default(app);
 
 		if (this.params.debug) {
 			FreightPacker.Auto(this);
@@ -9352,7 +10264,7 @@ var FreightPacker = function () {
 	_createClass(FreightPacker, null, [{
 		key: 'CheckRequirements',
 		value: function CheckRequirements() {
-			var webgl = __WEBPACK_IMPORTED_MODULE_0__api_utils_Capabilities__["a" /* default */].IsWebGLReady();
+			var webgl = _Capabilities2.default.IsWebGLReady();
 
 			return new Promise(function (resolve, reject) {
 				if (webgl) {
@@ -9372,22 +10284,24 @@ var FreightPacker = function () {
 			if (domain instanceof FreightPacker) {
 				var fp = domain;
 				global.fp = fp;
+				FreightPacker.utils.Debug.api = fp;
 				var params = fp.params;
 				if (params.debug) {
-					__WEBPACK_IMPORTED_MODULE_3__api_utils_cik_Logger__["a" /* default */].active = true;
-					__WEBPACK_IMPORTED_MODULE_3__api_utils_cik_Logger__["a" /* default */].toConsole = true;
-					__WEBPACK_IMPORTED_MODULE_3__api_utils_cik_Logger__["a" /* default */].traceToConsole = true;
+					_Logger2.default.active = true;
+					_Logger2.default.toConsole = true;
+					_Logger2.default.traceToConsole = true;
 				}
 
 				//require('./api/debug/Tester').testPool();
 				//utils.Debug.CLPTest.Test1();
 			}
 
-			if (domain instanceof __WEBPACK_IMPORTED_MODULE_1__api_App__["a" /* default */]) {
-				var SceneSetup = __webpack_require__(11).default;
+			if (domain instanceof _App2.default) {
+				var SceneSetup = __webpack_require__(12).default;
 				var app = domain;
-				app.sceneSetup.On(SceneSetup.signals.init, function () {
-					FreightPacker.utils.Debug.Viz.scene = app.sceneSetup.sceneController.scene;
+				FreightPacker.utils.Debug.app = app;
+				app.sceneSetup.BackListen(SceneSetup.signals.init, function () {
+					FreightPacker.utils.Debug.Viz.SetViewParent(app.sceneSetup.sceneController.scene);
 				});
 			}
 		}
@@ -9407,14 +10321,20 @@ var FreightPacker = function () {
 	return FreightPacker;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (FreightPacker);
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(20)))
+exports.default = FreightPacker;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22)))
 
 /***/ }),
-/* 45 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -9436,19 +10356,28 @@ var Capabilities = function () {
   return Capabilities;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (Capabilities);
+exports.default = Capabilities;
 
 /***/ }),
-/* 46 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__UpdateComponent__ = __webpack_require__(22);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _UpdateComponent = __webpack_require__(24);
+
+var _UpdateComponent2 = _interopRequireDefault(_UpdateComponent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
 
 /**
  * @typedef {Object} IScreen
@@ -9525,7 +10454,7 @@ var Input = function () {
         this.clock.start();
 
         this._raycastGroups = { Update: {}, Update25: {}, Update10: {}, OnMouseDown: {}, OnDoubleClick: {}, OnMouseUp: {}, OnRightClick: {}, OnClick: {} };
-        this.updateComponents = [new __WEBPACK_IMPORTED_MODULE_0__UpdateComponent__["a" /* default */](true, 1 / 25, this.Update25.bind(this)), new __WEBPACK_IMPORTED_MODULE_0__UpdateComponent__["a" /* default */](true, 1 / 10, this.Update10.bind(this))];
+        this.updateComponents = [new _UpdateComponent2.default(true, 1 / 25, this.Update25.bind(this)), new _UpdateComponent2.default(true, 1 / 10, this.Update10.bind(this))];
 
         this.fireOnce = [];
 
@@ -9953,13 +10882,19 @@ var Input = function () {
     return Input;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (Input);
+exports.default = Input;
 
 /***/ }),
-/* 47 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 49 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -10006,19 +10941,28 @@ var Quality = function () {
     return Quality;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (Quality);
+exports.default = Quality;
 
 /***/ }),
-/* 48 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_Utils__ = __webpack_require__(0);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
 
 /**
  * @typedef RendererParams
@@ -10047,7 +10991,7 @@ var Renderer = function () {
     function Renderer(params) {
         _classCallCheck(this, Renderer);
 
-        this.params = __WEBPACK_IMPORTED_MODULE_0__utils_cik_Utils__["default"].AssignUndefined(params, defaultParams);
+        this.params = _Utils2.default.AssignUndefined(params, defaultParams);
         this.renderer = new THREE.WebGLRenderer({ antialias: this.params.antialias });
 
         if (this.params.shadows) {
@@ -10142,27 +11086,42 @@ var Renderer = function () {
     return Renderer;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (Renderer);
+exports.default = Renderer;
 
 /***/ }),
-/* 49 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 51 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scene_Controller__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__scene_Camera__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scene_Transform__ = __webpack_require__(50);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils_cik_Utils__ = __webpack_require__(0);
+
+
+Object.defineProperty(exports, "__esModule", {
+        value: true
+});
+
+var _Controller2 = __webpack_require__(25);
+
+var _Controller3 = _interopRequireDefault(_Controller2);
+
+var _Camera = __webpack_require__(26);
+
+var _Camera2 = _interopRequireDefault(_Camera);
+
+var _Transform = __webpack_require__(52);
+
+var _Transform2 = _interopRequireDefault(_Transform);
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-
-
 
 /**
  * @typedef {Object} HUDViewParams
@@ -10173,7 +11132,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var defaultParams = {};
 
 // -11.3, 23.9, 215.5
-var defaultCamTRS = new __WEBPACK_IMPORTED_MODULE_2__scene_Transform__["a" /* default */](new THREE.Vector3(0, 80, 400), new THREE.Euler(-0.1, 0, 0));
+var defaultCamTRS = new _Transform2.default(new THREE.Vector3(0, 80, 400), new THREE.Euler(-0.1, 0, 0));
 
 var HUDView = function (_Controller) {
         _inherits(HUDView, _Controller);
@@ -10187,11 +11146,11 @@ var HUDView = function (_Controller) {
 
                 var _this = _possibleConstructorReturn(this, (HUDView.__proto__ || Object.getPrototypeOf(HUDView)).call(this, params));
 
-                _this.params = __WEBPACK_IMPORTED_MODULE_3__utils_cik_Utils__["default"].AssignUndefined(params, defaultParams);
+                _this.params = _Utils2.default.AssignUndefined(params, defaultParams);
 
                 var units = _this.params.ux.params.units;
 
-                _this.cameraController = new __WEBPACK_IMPORTED_MODULE_1__scene_Camera__["a" /* default */](cameraParams);
+                _this.cameraController = new _Camera2.default(cameraParams);
 
                 _this.cameraTransform = defaultCamTRS.Clone();
                 _this.cameraTransform.position.multiplyScalar(units);
@@ -10204,15 +11163,21 @@ var HUDView = function (_Controller) {
         }
 
         return HUDView;
-}(__WEBPACK_IMPORTED_MODULE_0__scene_Controller__["a" /* default */]);
+}(_Controller3.default);
 
-/* harmony default export */ __webpack_exports__["a"] = (HUDView);
+exports.default = HUDView;
 
 /***/ }),
-/* 50 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -10282,23 +11247,32 @@ var Transform = function () {
     return Transform;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (Transform);
+exports.default = Transform;
 
 /***/ }),
-/* 51 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 53 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CargoGroup__ = __webpack_require__(15);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _CargoGroup = __webpack_require__(16);
+
+var _CargoGroup2 = _interopRequireDefault(_CargoGroup);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
 
 var _position = Symbol('position');
 var _rotation = Symbol('rotation');
@@ -10377,19 +11351,28 @@ var Cargo = function (_PackingItem) {
     return Cargo;
 }(PackingItem);
 
-/* harmony default export */ __webpack_exports__["a"] = (Cargo);
+exports.default = Cargo;
 
 /***/ }),
-/* 52 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 54 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_box_Dimensions__ = __webpack_require__(9);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _Dimensions = __webpack_require__(9);
+
+var _Dimensions2 = _interopRequireDefault(_Dimensions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
 
 var type = 'Volume';
 var _box3 = Symbol('box3');
@@ -10406,7 +11389,7 @@ var Volume = function () {
         /**
          * @type {Dimensions}
          */
-        this.dimensions = new __WEBPACK_IMPORTED_MODULE_0__components_box_Dimensions__["a" /* default */]();
+        this.dimensions = new _Dimensions2.default();
 
         this[_box3] = new THREE.Box3();
     }
@@ -10446,7 +11429,7 @@ var Volume = function () {
             }
 
             volume.position = new THREE.Vector3(data.position.x, data.position.y, data.position.z);
-            volume.dimensions = __WEBPACK_IMPORTED_MODULE_0__components_box_Dimensions__["a" /* default */].FromJSON(data.dimensions);
+            volume.dimensions = _Dimensions2.default.FromJSON(data.dimensions);
 
             return volume;
         }
@@ -10455,17 +11438,19 @@ var Volume = function () {
     return Volume;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (Volume);
+exports.default = Volume;
 
 /***/ }),
-/* 53 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 55 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* unused harmony export PackingProperty */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return SupportsStacking; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RotationConstraint; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return TranslationConstraint; });
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -10636,15 +11621,1211 @@ var TranslationConstraint = function (_Constraint2) {
     return TranslationConstraint;
 }(Constraint);
 
-
+exports.PackingProperty = PackingProperty;
+exports.SupportsStacking = SupportsStacking;
+exports.RotationConstraint = RotationConstraint;
+exports.TranslationConstraint = TranslationConstraint;
 
 /***/ }),
-/* 54 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 56 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resolve", function() { return resolve; });
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Item = __webpack_require__(18);
+
+var _Item2 = _interopRequireDefault(_Item);
+
+var _AFit = __webpack_require__(31);
+
+var _AFit2 = _interopRequireDefault(_AFit);
+
+var _Container = __webpack_require__(19);
+
+var _Container2 = _interopRequireDefault(_Container);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/** @param {Array<Item>} items */
+function sumOfVolumes(items) {
+    var sum = 0;
+    for (var i = 0, len = items.length; i < len; i++) {
+        sum += items[i].Volume;
+    }return sum;
+}
+
+/**
+ * @param {Array<Object>} objects 
+ * @param {Array<string>} m - mapping to Item.constructor, ie: [ID, Length, ...]
+ */
+function toItems(objects, m) {
+    var items = [];
+    objects.forEach(function (o) {
+        items.push(new _Item2.default(o[m[0]], o[m[1]], o[m[2]], o[m[3]], o[m[4]]));
+    });
+    return items;
+}
+
+var TestData =
+/**
+ * @param {Container} container 
+ * @param {Array<Item>} items 
+ */
+function TestData(container, items) {
+    _classCallCheck(this, TestData);
+
+    this.container = container;
+    this.items = items;
+};
+
+var AFitTest = function () {
+    function AFitTest() {
+        _classCallCheck(this, AFitTest);
+
+        this.aFitPacker = new _AFit2.default();
+    }
+
+    /**
+     * @param {Container} container 
+     * @param {Array<Item>} items 
+     */
+
+
+    _createClass(AFitTest, [{
+        key: "T1",
+        value: function T1(container, items) {
+
+            var startTime = performance.now();
+            var result = this.aFitPacker.Solve(container, items);
+            result.PackTimeInMilliseconds = Math.ceil(performance.now() - startTime);
+
+            var containerVolume = container.Length * container.Width * container.Height;
+            var itemVolumePacked = sumOfVolumes(result.PackedItems);
+            var itemVolumeUnpacked = sumOfVolumes(result.UnpackedItems);
+
+            result.PercentContainerVolumePacked = Math.floor(itemVolumePacked / containerVolume * 100 * 100) / 100;
+            result.PercentItemVolumePacked = Math.floor(itemVolumePacked / (itemVolumePacked + itemVolumeUnpacked) * 100 * 100) / 100;
+
+            return result;
+        }
+    }], [{
+        key: "GenerateDataSample1",
+        value: function GenerateDataSample1() {
+            var containerData = { ID: 1000, Name: 'Box1', Length: 15, Width: 13, Height: 9 };
+            var itemsData = [{ ID: 1000, Name: 'Item1', Length: 5, Width: 4, Height: 2, Quantity: 1 }, { ID: 1001, Name: 'Item2', Length: 2, Width: 1, Height: 1, Quantity: 3 }, { ID: 1002, Name: 'Item3', Length: 9, Width: 7, Height: 3, Quantity: 4 }, { ID: 1003, Name: 'Item4', Length: 13, Width: 6, Height: 3, Quantity: 8 }, { ID: 1004, Name: 'Item5', Length: 17, Width: 8, Height: 6, Quantity: 1 }, { ID: 1005, Name: 'Item6', Length: 3, Width: 3, Height: 2, Quantity: 2 }];
+
+            var container = Object.assign(new _Container2.default(), containerData);
+            var items = toItems(itemsData, ['ID', 'Length', 'Width', 'Height', 'Quantity']);
+
+            var data = new TestData(container, items);
+            return data;
+        }
+    }, {
+        key: "GenerateDataSample2",
+        value: function GenerateDataSample2() {
+            var containerData = { ID: 1000, Name: 'Box1', Length: 60, Width: 35, Height: 25 };
+            var itemsData = [{ ID: 1000, Name: 'Item1', Length: 30, Width: 50, Height: 20, Quantity: 1 }, { ID: 1003, Name: 'Item4', Length: 13, Width: 6, Height: 3, Quantity: 6 }, { ID: 1004, Name: 'Item5', Length: 17, Width: 8, Height: 6, Quantity: 3 }, { ID: 1005, Name: 'Item6', Length: 5, Width: 5, Height: 2, Quantity: 16 }];
+
+            var container = Object.assign(new _Container2.default(), containerData);
+            var items = toItems(itemsData, ['ID', 'Length', 'Width', 'Height', 'Quantity']);
+
+            var data = new TestData(container, items);
+            return data;
+        }
+    }, {
+        key: "GenerateDataSampleFlatdeck",
+        value: function GenerateDataSampleFlatdeck() {
+            var containerData = { ID: 1000, Name: 'Box1', Length: 576, Width: 102, Height: 102 };
+            var itemsData = [{ ID: 1000, Name: 'Item1', Length: 100, Width: 70, Height: 90, Quantity: 3 }, { ID: 1003, Name: 'Item4', Length: 60, Width: 60, Height: 60, Quantity: 7 }, { ID: 1004, Name: 'Item5', Length: 40, Width: 20, Height: 30, Quantity: 4 }, { ID: 1005, Name: 'Item6', Length: 30, Width: 20, Height: 30, Quantity: 20 }];
+
+            var container = Object.assign(new _Container2.default(), containerData);
+            var items = toItems(itemsData, ['ID', 'Length', 'Width', 'Height', 'Quantity']);
+
+            var data = new TestData(container, items);
+            return data;
+        }
+    }, {
+        key: "GenerateDataSampleFlatdeck2",
+        value: function GenerateDataSampleFlatdeck2() {
+            var containerData = { ID: 1000, Name: 'Box1', Length: 576, Width: 102, Height: 102 };
+            var itemsData = [{ ID: 1000, Name: 'Item1', Length: 100, Width: 70, Height: 90, Quantity: 3 }, { ID: 1003, Name: 'Item4', Length: 60, Width: 60, Height: 60, Quantity: 7 }, { ID: 1004, Name: 'Item5', Length: 40, Width: 20, Height: 30, Quantity: 4 }, { ID: 1005, Name: 'Item6', Length: 30, Width: 20, Height: 30, Quantity: 20 }, { ID: 1005, Name: 'Item6', Length: 50, Width: 20, Height: 30, Quantity: 20 }];
+
+            var container = Object.assign(new _Container2.default(), containerData);
+            var items = toItems(itemsData, ['ID', 'Length', 'Width', 'Height', 'Quantity']);
+
+            var data = new TestData(container, items);
+            return data;
+        }
+    }]);
+
+    return AFitTest;
+}();
+
+exports.default = AFitTest;
+
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.test1Data = exports.Test1 = undefined;
+
+var _Workbook = __webpack_require__(32);
+
+var solverSheet = _Workbook.ThisWorkbook.Worksheets('CLP Solver Console');
+var itemsSheet = _Workbook.ThisWorkbook.Worksheets('1.Items');
+var containersSheet = _Workbook.ThisWorkbook.Worksheets('2.Containers');
+var solutionSheet = _Workbook.ThisWorkbook.Worksheets('3.Solution');
+
+var noYes = ['No', 'Yes'];
+var sortCriterion = [null, 'Volume', 'Weight', 'MaxDim'];
+
+/** @type {import('./CLPSolver').SolverOptions} */
+var solverOptions = {
+    itemSortCriterion: 1,
+    showProgress: false,
+    cpuTimeLimit: 3
+};
+
+// First-Fit-Decreasing based on:
+solverSheet.Cells(12, 3, sortCriterion[solverOptions.itemSortCriterion]);
+// Show progress on status bar?
+solverSheet.Cells(13, 3, noYes[Number(solverOptions.showProgress)]);
+// CPU time limit (seconds)
+solverSheet.Cells(14, 3, solverOptions.cpuTimeLimit);
+
+// Front side support required?
+solverSheet.Cells(6, 3, noYes[0]);
+
+function packPriority(p) {
+    switch (p) {
+        case 1:
+            return 'Must be packed';
+        case 0:
+            return 'May be packed';
+        case -1:
+            return 'Don\'t pack';
+    }
+}
+function fillPriority(p) {
+    switch (p) {
+        case 1:
+            return 'Must be used';
+        case 0:
+            return 'May be used';
+        case -1:
+            return 'Do not use';
+    }
+}
+
+var containersDataSrc = [{ ID: 1000, Name: 'Box1', Length: 576, Width: 102, Height: 102 }];
+var containersData = [];
+var itemsDataSrc = [{ ID: 1001, Name: 'Item1', Length: 100, Width: 70, Height: 90, Quantity: 3 }, { ID: 1002, Name: 'Item4', Length: 60, Width: 60, Height: 60, Quantity: 7 }, { ID: 1003, Name: 'Item5', Length: 40, Width: 20, Height: 30, Quantity: 4 }, { ID: 1004, Name: 'Item6', Length: 30, Width: 20, Height: 30, Quantity: 20 }];
+var itemsData = [];
+
+var numItems = itemsDataSrc.length;
+// Number of types of items
+solverSheet.Cells(2, 3, numItems);
+
+for (var i = 1; i <= numItems; i++) {
+    var item = itemsDataSrc[i - 1];
+
+    var volume = item.Length * item.Width * item.Height;
+
+    /** @type {import('./CLPSolver').ItemData} */
+    var itemData = {
+        length: item.Length,
+        width: item.Width,
+        height: item.Height,
+        xyRotatable: true,
+        yzRotatable: true,
+        mandatory: 1,
+        profit: 0,
+        weight: volume / 1000,
+        quantity: item.Quantity
+    };
+    itemsData.push(itemData);
+    continue;
+    // 1 id, 2 name, 4 width, 5 height, 6 length, 7 volume, 9 xy, 10 yz, 11 weight, 12 packPriority = MustBePacked, 13 profit = 0, 14 quantity
+
+    itemsSheet.Cells(2 + i, 1, i);
+    itemsSheet.Cells(2 + i, 2, item.ID);
+
+    itemsSheet.Cells(2 + i, 4, itemData.width);
+    itemsSheet.Cells(2 + i, 5, itemData.height);
+    itemsSheet.Cells(2 + i, 6, itemData.length);
+    itemsSheet.Cells(2 + i, 7, volume);
+
+    itemsSheet.Cells(2 + i, 9, noYes[Number(itemData.xyRotatable)]);
+    itemsSheet.Cells(2 + i, 10, noYes[Number(itemData.yzRotatable)]);
+
+    itemsSheet.Cells(2 + i, 11, itemData.weight);
+
+    itemsSheet.Cells(2 + i, 12, packPriority(itemData.mandatory));
+
+    itemsSheet.Cells(2 + i, 13, itemData.profit);
+
+    itemsSheet.Cells(2 + i, 14, itemData.quantity);
+}
+
+var numContainers = containersDataSrc.length;
+// Number of types of containers
+solverSheet.Cells(4, 3, numContainers);
+for (var i = 1; i <= numContainers; i++) {
+    var container = containersDataSrc[i - 1];
+
+    var _volume = container.Width * container.Height * container.Length;
+
+    /** @type {import('./CLPSolver').ContainerData} */
+    var containerData = {
+        length: container.Length,
+        width: container.Width,
+        height: container.Height,
+        quantity: 1,
+        mandatory: 1,
+        cost: 0,
+        weightCapacity: _volume / 1000
+    };
+    containersData.push(containerData);
+    continue;
+    // 1 id, 2 name, 3 width, 4 height, 5, length, 6 volume_capacity, 7 weight_capacity, 8 fillPriority = 1, 9 cost = 1, 10 quantity
+
+    containersSheet.Cells(1 + i, 1, i);
+    containersSheet.Cells(1 + i, 2, container.ID);
+
+    containersSheet.Cells(1 + i, 3, containerData.width);
+    containersSheet.Cells(1 + i, 4, containerData.height);
+    containersSheet.Cells(1 + i, 5, containerData.length);
+    containersSheet.Cells(1 + i, 6, _volume);
+
+    containersSheet.Cells(1 + i, 7, containerData.weightCapacity);
+
+    containersSheet.Cells(1 + i, 8, fillPriority(containerData.mandatory));
+
+    containersSheet.Cells(1 + i, 9, containerData.cost);
+
+    containersSheet.Cells(1 + i, 10, containerData.quantity);
+}
+
+solutionSheet.Cells(1, 'B').calculate = function () {
+    return Math.abs(solutionSheet.Cells(4, 'J').Value);
+}; // =+$J$4
+solutionSheet.Cells(4, 'G').calculate = function () {
+    return solutionSheet.Sum(solutionSheet.Cells(6, 'G'), solutionSheet.Cells(6 + solutionSheet.Cells(3, 'B'), 'G'));
+}; // =SUM($G$6:$G$39)
+solutionSheet.Cells(4, 'H').calculate = function () {
+    return solutionSheet.Sum(solutionSheet.Cells(6, 'H'), solutionSheet.Cells(6 + solutionSheet.Cells(3, 'B'), 'H'));
+}; // =SUM($H$6:$H$39)
+solutionSheet.Cells(4, 'I').calculate = function () {
+    return solutionSheet.Sum(solutionSheet.Cells(6, 'I'), solutionSheet.Cells(6 + solutionSheet.Cells(3, 'B'), 'I'));
+}; // =SUM($I$6:$I$39)
+solutionSheet.Cells(4, 'J').calculate = function () {
+    return solutionSheet.Sum(solutionSheet.Cells(6, 'J'), solutionSheet.Cells(6 + solutionSheet.Cells(3, 'B'), 'J'));
+}; // =SUM($J$6:$J$39)
+
+for (var i = 1; i <= 100 /*solutionSheet.Cells(3, 'B')*/; i++) {
+    solutionSheet.Cells(5 + i, 'G').calculate = function () {
+        var itemName = solutionSheet.Cells(6, 'B').Value;
+        return itemsSheet.Cells(itemsSheet.Find(itemName).row, 1).Value;
+    }; // itemIndex
+
+    solutionSheet.Cells(5 + i, 'H').calculate = function () {
+        return itemsSheet.Cells(2 + solutionSheet.Cells(5 + i, 'G'), 7).Value;
+    }; // volume
+    solutionSheet.Cells(5 + i, 'I').calculate = function () {
+        return itemsSheet.Cells(2 + solutionSheet.Cells(5 + i, 'G'), 11).Value;
+    }; // weight
+    solutionSheet.Cells(5 + i, 'J').calculate = function () {
+        return itemsSheet.Cells(2 + solutionSheet.Cells(5 + i, 'G'), 13).Value;
+    }; // profit
+}
+
+console.log('CLP setup complete');
+console.log(_Workbook.ThisWorkbook);
+
+var CLPSolver = __webpack_require__(33);
+
+var test1Data = {
+    solverOptions: solverOptions,
+    items: itemsData,
+    container: containersData[0]
+};
+
+function Test1() {
+
+    /** @param {CLPSolver.SolutionData} solution */
+    function onSolution(solution) {
+        console.log(solution);
+        var packedItems = solution.container.filter(function (container) {
+            return container !== null;
+        })[0].items;
+        console.log(packedItems);
+    }
+    CLPSolver.signaler.On(CLPSolver.signals.solution, onSolution);
+    CLPSolver.Execute(test1Data.solverOptions, test1Data.items, [test1Data.container]);
+}
+
+exports.Test1 = Test1;
+exports.test1Data = test1Data;
+
+/***/ }),
+/* 58 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.pack = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var debugUser = function () {
+    var _ref = _asyncToGenerator(function* () {
+        yield sleep(16);
+        var input = _Debug2.default.app.sceneSetup.input;
+        if (input.keys['right']) running = false;
+        if (input.keys['space']) running = true;
+        while (!running) {
+            yield sleep(200);
+            if (input.keys['right']) break;
+        }
+    });
+
+    return function debugUser() {
+        return _ref.apply(this, arguments);
+    };
+}();
+
+/**
+ * 
+ * @param {Container} container 
+ * @param {Array<Item>} items // this array (and content) will be changed/emptied
+ * @param {CUBParams} params 
+ */
+var pack = function () {
+    var _ref9 = _asyncToGenerator(function* (container, items, params) {
+
+        _Debug2.default.Viz.SetPackingSpaceVisibility(false);
+
+        var assistant = new PackingAssistant(container, items);
+        var packedContainer = new PackedContainer(container, assistant);
+
+        var iItem = items.length - 1;
+
+        // Helper function
+        function unpackItem(index) {
+            var item = items[index];
+            packedContainer.SetUnpacked(item);
+            items.splice(index, 1);
+            iItem--;
+        }
+
+        // Helper function
+        /** @param {Number} index * @param {PackedItem} item */
+        function packItem(index, item) {
+            packedContainer.SetPacked(item);
+
+            item.ref.quantity--;
+            if (item.ref.quantity === 0) {
+                items.splice(index, 1);
+                iItem--;
+            }
+        }
+
+        while (items.length > 0) {
+            var item = items[iItem];
+
+            // Check if container supports this item's weight
+            var weightPass = packedContainer.WeightPass(item.weight);
+            if (weightPass === false) {
+
+                /**/debugLog('weight pass failed.');
+                /**/yield sleep(200);
+                unpackItem(iItem);
+            } else {
+
+                // Try to pack item
+                var packedItem = /**/yield packedContainer.Fit(item);
+                if (packedItem === false) {
+
+                    /**/debugLog('item fitting failed.');
+                    /**/yield sleep(200);
+                    unpackItem(iItem);
+                } else {
+
+                    packItem(iItem, packedItem);
+                }
+            }
+
+            /**/yield sleep(50);
+        }
+
+        packedContainer.packedItems.sort(PackedItem.DepthSort);
+
+        debugClear();
+        _Debug2.default.Viz.SetPackingSpaceVisibility(true);
+
+        return packedContainer;
+    });
+
+    return function pack(_x6, _x7, _x8) {
+        return _ref9.apply(this, arguments);
+    };
+}();
+
+var _Components = __webpack_require__(20);
+
+var _Debug = __webpack_require__(11);
+
+var _Debug2 = _interopRequireDefault(_Debug);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+var debugging = true;
+
+var running = true;
+if (debugging) {
+    _Debug2.default.app.sceneSetup.input.ListenKeys(['right', 'space']);
+}
+
+function sleep(ms) {
+    return new Promise(function (resolve) {
+        if (debugging) setTimeout(resolve, ms);else resolve();
+    });
+}
+
+function click(ms) {
+    return new Promise(function (resolve) {
+        if (debugging) {
+            var execute = function execute() {
+                if (tid !== undefined) clearTimeout(tid);
+                removeEventListener('mouseup', execute);
+                resolve();
+            };
+
+            var tid = undefined;
+
+            if (ms && ms > 0) tid = setTimeout(execute, ms);
+            addEventListener('mouseup', execute);
+        } else {
+            resolve();
+        }
+    });
+}
+
+function debugLog() {
+    var _console;
+
+    (_console = console).log.apply(_console, arguments);
+}
+
+/**
+ * @param {Region} region * @param {Number} color 
+ */
+function debugRegion(region, color, solid, duration, checkered) {
+    var x = region.x,
+        y = region.y,
+        z = region.z,
+        w = region.width,
+        h = region.height,
+        l = region.length;
+    var debugUID = _Debug2.default.Viz.DrawVolume(x + w / 2, y + h / 2, z + l / 2, w, h, l, color || 0xaaffff, duration || -1, !Boolean(solid), checkered);
+    return debugUID;
+}
+
+/** @param {Array<string>} */
+function debugClear(uids) {
+    if (uids) {
+        uids.forEach(function (uid) {
+            _Debug2.default.Viz.RemoveObjectByUID(uid);
+        });
+    } else {
+        _Debug2.default.Viz.ClearAll();
+    }
+}
+
+var smallValue = .000001;
+
+var Wall =
+/**
+ * @param {Number} axis 0, 1 or 2 for x, y or z
+ * @param {Number} distance 
+ * @param {Number} x 
+ * @param {Number} y 
+ * @param {Number} width 
+ * @param {Number} height 
+ */
+function Wall(axis, distance, x, y, width, height) {
+    _classCallCheck(this, Wall);
+
+    this.axis = axis;
+    this.distance = distance;
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+};
+
+var Region = function () {
+    /**
+     * @param {Number} x * @param {Number} y * @param {Number} z * @param {Number} width * @param {Number} height * @param {Number} length * @param {Number} preferredX 
+     */
+    function Region(x, y, z, width, height, length, preferredX) {
+        _classCallCheck(this, Region);
+
+        this.Set(x, y, z, width, height, length, preferredX);
+    }
+
+    /**
+     * @param {Number} x * @param {Number} y * @param {Number} z * @param {Number} width * @param {Number} height * @param {Number} length * @param {Number} preferredX 
+     */
+
+
+    _createClass(Region, [{
+        key: "Set",
+        value: function Set(x, y, z, width, height, length, preferredX) {
+            this.x = x;this.y = y;this.z = z;
+            this.width = width;this.height = height;this.length = length;
+            this.preferredX = preferredX;
+            return this;
+        }
+    }, {
+        key: "GetCorners",
+
+
+        /**
+         * @param {Number} offset offsets the region by this before calculating corners 
+         */
+        value: function GetCorners(offset) {
+            var x = this.x - offset,
+                y = this.y - offset,
+                z = this.z - offset,
+                w = this.width + offset * 2,
+                h = this.height + offset * 2,
+                l = this.length + offset * 2;
+
+            tempCorners[0] = x;tempCorners[1] = y;tempCorners[2] = z; // 0:
+            tempCorners[3] = x + w;tempCorners[4] = y;tempCorners[5] = z; // 0:w
+            tempCorners[6] = x;tempCorners[7] = y + h;tempCorners[8] = z; // 0:h
+            tempCorners[9] = x + w;tempCorners[10] = y + h;tempCorners[11] = z; // 0:wh
+
+            tempCorners[12] = x;tempCorners[13] = y;tempCorners[14] = z + l; // 1:
+            tempCorners[15] = x + w;tempCorners[16] = y;tempCorners[17] = z + l; // 1:w
+            tempCorners[18] = x;tempCorners[19] = y + h;tempCorners[20] = z + l; // 1:h
+            tempCorners[21] = x + w;tempCorners[22] = y + h;tempCorners[23] = z + l; // 1:wh
+
+            tempCorners[24] = x + w / 2;tempCorners[25] = y + h / 2;tempCorners[26] = z + l / 2; // center
+
+            return tempCorners;
+        }
+
+        /**
+         * @param {Number} offset offsets the region by this before checking * @param {Number} px * @param {Number} py * @param {Number} pz 
+         */
+
+    }, {
+        key: "ContainsPoint",
+        value: function ContainsPoint(offset, px, py, pz) {
+            var x = this.x - offset,
+                y = this.y - offset,
+                z = this.z - offset,
+                w = this.width + offset * 2,
+                h = this.height + offset * 2,
+                l = this.length + offset * 2;
+            return px > x && px < x + w && py > y && py < y + h && pz > z && pz < z + l;
+        }
+
+        /** @param {Number} offset offsets the region by this before checking * @param {Region} subRegion */
+
+    }, {
+        key: "ContainsRegion",
+        value: function ContainsRegion(offset, subRegion) {
+            var x = this.x - offset,
+                y = this.y - offset,
+                z = this.z - offset,
+                w = this.width + offset * 2,
+                h = this.height + offset * 2,
+                l = this.length + offset * 2;
+            var rx = subRegion.x,
+                ry = subRegion.y,
+                rz = subRegion.z,
+                rw = subRegion.width,
+                rh = subRegion.height,
+                rl = subRegion.length;
+            return rx > x && rx + rw < x + w && ry > y && ry + rh < y + h && rz > z && rz + rl < z + l;
+        }
+
+        /** @param {Number} offset offsets the region by this before checking * @param {Region} other */
+
+    }, {
+        key: "Intersects",
+        value: function Intersects(offset, other) {
+            var x = this.x - offset,
+                y = this.y - offset,
+                z = this.z - offset,
+                w = this.width + offset * 2,
+                h = this.height + offset * 2,
+                l = this.length + offset * 2;
+
+            return x <= other.x + other.width && x + w >= other.x && y <= other.y + other.height && y + h >= other.y && z <= other.z + other.length && z + l >= other.z;
+        }
+
+        /** @param {Number} offset offsets the region by this before checking * @param {Number} width * @param {Number} height * @param {Number} length */
+
+    }, {
+        key: "FitTest",
+        value: function FitTest(offset, width, height, length) {
+            // Check that all dimensions fit
+            var fit = width < this.width + offset * 2 && height < this.height + offset * 2 && length < this.length + offset * 2;
+            if (fit) {
+                // Calculate x based on preferred side
+                var x = this.preferredX !== 0 ? this.x + this.width - width : this.x;
+                tempRegion.Set(x, this.y, this.z, width, height, length, this.preferredX);
+                return tempRegion;
+            }
+
+            return false;
+        }
+
+        /** @param {Region} region * @param {Number} minRegionAxis */
+
+    }, {
+        key: "Subtract",
+        value: function () {
+            var _ref2 = _asyncToGenerator(function* (region, minRegionAxis) {
+                var newRegions;
+
+                /**/var debugUIDs = [];
+                /**/debugUIDs.push(debugRegion(region, 0xff000000));
+
+                // Calculate a new east region
+                var axis = region.x + region.width;
+                var size = this.x + this.width - axis;
+                if (size > minRegionAxis) {
+                    var east = new Region(axis, this.y, this.z, size, this.height, this.length, 0);
+                    if (newRegions === undefined) newRegions = [];
+                    newRegions.push(east);
+
+                    /**/debugUIDs.push(debugRegion(east, 0x7fff0000, true));
+                }
+
+                // Calculate a new west region
+                axis = this.x;
+                size = region.x - axis;
+                if (size > minRegionAxis) {
+                    var west = new Region(axis, this.y, this.z, size, this.height, this.length, 1);
+                    if (newRegions === undefined) newRegions = [];
+                    newRegions.push(west);
+
+                    /**/debugUIDs.push(debugRegion(west, 0x7f00ff00, true));
+                }
+
+                // Calculate a new over/up region
+                axis = region.y + region.height;
+                size = this.y + this.height - axis;
+                if (size > minRegionAxis) {
+                    var over = new Region(region.x, axis, region.z, region.width, size, region.length, 0); // add overhang var? // togglePreferredX based on pre-packed weight distribution?
+                    if (newRegions === undefined) newRegions = [];
+                    newRegions.push(over);
+
+                    /**/debugUIDs.push(debugRegion(over, 0x7f0000ff, true));
+                }
+
+                /*
+                // Calculate a new south region
+                axis = this.z;
+                size = region.z - axis;
+                if(size > minRegionAxis){
+                    let south = new Region(this.x, this.y, axis, this.width, this.height, size, 0); // togglePreferredX based on pre-packed weight distribution?
+                    if(newRegions === undefined) newRegions = [];
+                    newRegions.push(south);
+                      /** /debugUIDs.push(debugRegion(south, 0x7f0000ff, true, 100));
+                    /** /await sleep(200);
+                    /** /debugUIDs.push(debugRegion(south, 0x7f0000ff, true, 100));
+                    /** /await sleep(200);
+                    /** /debugUIDs.push(debugRegion(south, 0x7f0000ff, true));
+                    /** /debugLog('south region created');
+                    /** /await click();
+                }
+                */
+
+                // Set this as new north/front region
+                axis = region.z + region.length;
+                size = this.z + this.length - axis;
+                this.z = axis;
+                this.length = size;
+
+                if (size > minRegionAxis) {
+                    /**/debugUIDs.push(debugRegion(this, 0x7faaffff, true));
+                }
+
+                //**/await click();
+
+                /**/debugClear(debugUIDs);
+
+                return newRegions;
+            });
+
+            function Subtract(_x, _x2) {
+                return _ref2.apply(this, arguments);
+            }
+
+            return Subtract;
+        }()
+
+        /**
+         * Deepest to front, smallest to largest
+         * @param {Region} a * @param {Region} b 
+         */
+
+    }, {
+        key: "volume",
+        get: function get() {
+            return this.width * this.height * this.length;
+        }
+    }], [{
+        key: "SortDeepestSmallest",
+        value: function SortDeepestSmallest(a, b) {
+            if (a.z < b.z) return -1;
+            if (a.z > b.z) return 1;
+            if (a.volume < b.volume) return -1;
+            if (a.volume > b.volume) return 1;
+            return 0;
+        }
+    }]);
+
+    return Region;
+}();
+
+var tempRegion = new Region();
+var tempRegion2 = new Region();
+var tempCorners = [0, 0, 0];
+
+var PackedItem = function () {
+
+    /**
+     * @param {Item} ref 
+     * @param {Number} x
+     * @param {Number} y
+     * @param {Number} z
+     * @param {Number} packedWidth
+     * @param {Number} packedHeight
+     * @param {Number} packedLength
+     * @param {Number} orientation 
+     */
+    function PackedItem(ref, x, y, z, packedWidth, packedHeight, packedLength, orientation) {
+        _classCallCheck(this, PackedItem);
+
+        this.ref = ref;
+        this.x = x;this.y = y;this.z = z;
+        this.packedWidth = packedWidth;this.packedHeight = packedHeight;this.packedLength = packedLength;
+        this.orientation = orientation;
+    }
+
+    /** @param {PackedItem} a * @param {PackedItem} b */
+
+
+    _createClass(PackedItem, null, [{
+        key: "DepthSort",
+        value: function DepthSort(a, b) {
+            if (a.z + smallValue < b.z) return -1;
+            if (a.z > b.z + smallValue) return 1;
+            if (a.y < b.y) return -1;
+            if (a.y > b.y) return 1;
+            if (a.ref.volume > b.ref.volume + smallValue) return -1;
+            if (a.ref.volume + smallValue < b.ref.volume) return 1;
+            return 0;
+        }
+    }]);
+
+    return PackedItem;
+}();
+
+var PackedContainer = function () {
+    /**
+     * @param {Container} container 
+     * @param {PackingAssistant} assistant
+     */
+    function PackedContainer(container, assistant) {
+        _classCallCheck(this, PackedContainer);
+
+        this.container = container;
+        this.assistant = assistant;
+
+        /** @type {Array<PackedItem>} */
+        this.packedItems = [];
+        /** @type {Array<Item>} */
+        this.unpackedItems = [];
+
+        var firstRegion = new Region(0, 0, 0, container.width, container.height, container.length, 0);
+        /** @type {Array<Region>} */
+        this.regions = [firstRegion];
+
+        this.cumulatedWeight = 0;
+    }
+
+    /** @param {PackedItem} item */
+
+
+    _createClass(PackedContainer, [{
+        key: "SetPacked",
+        value: function SetPacked(item) {
+            this.cumulatedWeight += item.ref.weight;
+            this.packedItems.push(item);
+        }
+
+        /** @param {Item} item */
+
+    }, {
+        key: "SetUnpacked",
+        value: function SetUnpacked(item) {
+            this.unpackedItems.push(item);
+        }
+
+        /** @param {Number} weight */
+
+    }, {
+        key: "WeightPass",
+        value: function WeightPass(weight) {
+            return this.cumulatedWeight + weight <= this.container.weightCapacity;
+        }
+
+        /** @param {Region} region * @param {Region} fit * @returns {Boolean} false if region has been deleted */
+
+    }, {
+        key: "Occupy",
+        value: function () {
+            var _ref3 = _asyncToGenerator(function* (region, fit) {
+                var _regions;
+
+                // Subtracts fit from region and calculates new bounding regions
+                var newRegions = /**/yield region.Subtract(fit, this.assistant.minRegionAxis);
+
+                // Add new bounding regions if any
+                if (newRegions) (_regions = this.regions).push.apply(_regions, _toConsumableArray(newRegions));
+
+                // Check that region is still valid, otherwise remove it
+                if (region.length < this.assistant.minRegionAxis) {
+                    var regionIndex = this.regions.indexOf(region);
+                    this.regions.splice(regionIndex, 1);
+                    return false;
+                }
+
+                return true;
+            });
+
+            function Occupy(_x3, _x4) {
+                return _ref3.apply(this, arguments);
+            }
+
+            return Occupy;
+        }()
+
+        /** @param {Item} item */
+
+    }, {
+        key: "Fit",
+        value: function () {
+            var _ref4 = _asyncToGenerator(function* (item) {
+                var numRegions = this.regions.length;
+                var numPackedItems = this.packedItems.length;
+
+                // Try orientations 'xyz', 'zyx', 'yxz', 'yzx', 'zxy', 'xzy'
+                for (var iOrient = 0; iOrient < 6; iOrient++) {
+                    var dimensions = item.GetOrientedDimensions(iOrient);
+
+                    // Check if orientation is permitted
+                    if (dimensions) {
+
+                        // Try to fit in sorted regions
+                        for (var iRegion = 0; iRegion < numRegions; iRegion++) {
+                            var region = this.regions[iRegion];
+
+                            // Fit test (success: Region, failure: false)
+                            var regionFitTest = region.FitTest(smallValue, dimensions[0], dimensions[1], dimensions[2]);
+                            if (regionFitTest !== false) {
+
+                                for (var iPacked = 0; iPacked < numPackedItems; iPacked++) {
+                                    var _packedItem = this.packedItems[iPacked];
+                                    // Creates temporary region for following calculations
+                                    var packedRegion = tempRegion2.Set(_packedItem.x, _packedItem.y, _packedItem.z, _packedItem.packedWidth, _packedItem.packedHeight, _packedItem.packedLength, 0);
+
+                                    var intersects = packedRegion.Intersects(-smallValue, regionFitTest);
+                                    if (intersects) {
+                                        continue;
+                                    }
+                                }
+
+                                //**/debugLog('regionFitTest:', regionFitTest);
+
+                                // Create a new packed item
+                                var packedItem = new PackedItem(item, regionFitTest.x, regionFitTest.y, regionFitTest.z, regionFitTest.width, regionFitTest.height, regionFitTest.length, iOrient);
+                                /**/var debugUID = debugRegion(regionFitTest, 0xffff0000, true);
+
+                                // Reserve the tested sub region: regionFitTest from the containing region: region
+                                var regionRemains = /**/yield this.Occupy(region, regionFitTest);
+
+                                // Clean-up regions
+                                /**/yield this.ProcessRegions();
+                                /**/debugClear([debugUID]);
+                                debugRegion(regionFitTest, 0xffffffff, false);
+
+                                return packedItem;
+                            }
+                        }
+                    }
+                }
+
+                return false;
+            });
+
+            function Fit(_x5) {
+                return _ref4.apply(this, arguments);
+            }
+
+            return Fit;
+        }()
+    }, {
+        key: "ProcessRegionsForZeroRegions",
+        value: function () {
+            var _ref5 = _asyncToGenerator(function* () {
+                var regions = this.regions;
+                var minRegionAxis = this.assistant.minRegionAxis;
+                for (var iRegion = 0; iRegion < regions.length; iRegion++) {
+                    var region = regions[iRegion];
+                    if (region.width < minRegionAxis || region.height < minRegionAxis || region.length < minRegionAxis) {
+                        regions.splice(iRegion, 1);
+                        iRegion--;
+                    }
+                }
+            });
+
+            function ProcessRegionsForZeroRegions() {
+                return _ref5.apply(this, arguments);
+            }
+
+            return ProcessRegionsForZeroRegions;
+        }()
+    }, {
+        key: "ProcessRegionsForPackedItems",
+        value: function () {
+            var _ref6 = _asyncToGenerator(function* () {
+                var regions = this.regions;
+                var packedItems = this.packedItems;
+
+                for (var iRegion = 0; iRegion < regions.length; iRegion++) {
+                    var region = regions[iRegion];
+                    var volumeRegion = region.volume;
+
+                    for (var iPacked = 0; iPacked < packedItems.length; iPacked++) {
+                        var packedItem = packedItems[iPacked];
+
+                        // Calculate preferred packing side based on center point relative to container
+                        var preferredX = packedItem.x + packedItem.packedWidth / 2 < this.container.width / 2 ? 0 : 1;
+                        // Creates temporary region for following calculations
+                        var packedRegion = tempRegion.Set(packedItem.x, packedItem.y, packedItem.z, packedItem.packedWidth, packedItem.packedHeight, packedItem.packedLength, preferredX);
+
+                        var volumePacked = packedRegion.volume;
+                        // Checks if packedRegion is larger then region, as it could be completely contained within
+                        if (volumePacked > volumeRegion) {
+                            // If the region is completely contained within the packed volume, remove the region
+                            if (packedRegion.ContainsRegion(smallValue, region)) {
+                                /**/debugRegion(region, 0xff0000, true, 100);
+                                /**/yield sleep(50);
+                                regions.splice(iRegion, 1);
+                                iRegion--;
+                                break;
+                            }
+                        }
+
+                        // Checks if the region and packedRegion intersects
+                        /*let corners = packedRegion.GetCorners(-smallValue * 10);
+                        let intersects = false, iCorner = 0;
+                        while(iCorner < 27 && intersects === false){
+                            intersects = region.ContainsPoint(-smallValue, corners[iCorner], corners[iCorner + 1], corners[iCorner + 2]);
+                            iCorner += 3;
+                        }
+                        */
+
+                        var intersects = packedRegion.Intersects(-smallValue, region);
+
+                        if (intersects) {
+                            /**/debugLog('intersects');
+                            /**/yield click();
+
+                            regions.splice(iRegion, 1);
+                            iRegion--;
+                            break;
+
+                            // Reserve the packedRegion from the containing region
+                            var regionRemains = /**/yield this.Occupy(region, packedRegion);
+
+                            iRegion--;
+                            // If the containing region: region, has been removed, then break
+                            if (regionRemains === false) {
+                                break;
+                            }
+                        }
+
+                        // also merge walls?
+                    }
+                }
+            });
+
+            function ProcessRegionsForPackedItems() {
+                return _ref6.apply(this, arguments);
+            }
+
+            return ProcessRegionsForPackedItems;
+        }()
+    }, {
+        key: "ProcessRegionsEnclosed",
+        value: function () {
+            var _ref7 = _asyncToGenerator(function* () {
+                var regions = this.regions;
+
+                for (var iRegion = 0; iRegion < regions.length; iRegion++) {
+                    var regionA = regions[iRegion];
+                    var volumeA = regionA.volume;
+
+                    for (var jRegion = iRegion + 1; jRegion < regions.length; jRegion++) {
+                        var regionB = regions[jRegion];
+                        var volumeB = regionB.volume;
+
+                        if (volumeA < volumeB) {
+                            // If a A is completely contained within B, remove the A
+                            if (regionB.ContainsRegion(smallValue, regionA)) {
+                                /**/debugRegion(regionA, 0xff0000, true, 100);
+                                /**/yield sleep(50);
+                                regions.splice(iRegion, 1);
+                                iRegion--;
+                                break;
+                            }
+                        } else {
+                            // If a B is completely contained within A, remove the B
+                            if (regionA.ContainsRegion(smallValue, regionB)) {
+                                /**/debugRegion(regionB, 0xff0000, true, 100);
+                                /**/yield sleep(50);
+                                regions.splice(jRegion, 1);
+                                jRegion--;
+                            }
+                        }
+                    }
+                }
+            });
+
+            function ProcessRegionsEnclosed() {
+                return _ref7.apply(this, arguments);
+            }
+
+            return ProcessRegionsEnclosed;
+        }()
+    }, {
+        key: "ProcessRegions",
+        value: function () {
+            var _ref8 = _asyncToGenerator(function* () {
+                console.log('>>> ProcessRegions()');
+                var regions = this.regions;
+
+                // Removes unuseable regions
+                /**/yield this.ProcessRegionsForZeroRegions();
+
+                // Removes regions that are completely enclosed in packed volumes, and correct any intersecting ones
+                /**/yield this.ProcessRegionsForPackedItems();
+
+                // Removes regions that are completely enclosed in larger regions
+                /**/yield this.ProcessRegionsEnclosed();
+
+                // Sort by z (first) and volume (second)
+                regions.sort(Region.SortDeepestSmallest);
+
+                this.packedItems.sort(PackedItem.DepthSort);
+                /**/yield this.ProcessRegionsForPackedItems();
+
+                /**/var debugUIDs = [];
+                for (var iRegion = 0; iRegion < regions.length; iRegion++) {
+                    var region = regions[iRegion];
+                    /**/debugUIDs.push(debugRegion(region, 0xff0000, true, 100, true));
+                    /**/yield sleep(16);
+                    /**/debugUIDs.push(debugRegion(region, 0xff0000, true, -1, true));
+                }
+
+                //**/await click();
+                /**/yield debugUser();
+
+                /**/debugClear(debugUIDs);
+            });
+
+            function ProcessRegions() {
+                return _ref8.apply(this, arguments);
+            }
+
+            return ProcessRegions;
+        }()
+    }]);
+
+    return PackedContainer;
+}();
+
+/**
+ * @typedef CUBParams
+ */
+
+var PackingAssistant =
+/**
+ * @param {Container} container 
+ * @param {Array<Item>} items 
+ */
+function PackingAssistant(container, items) {
+    _classCallCheck(this, PackingAssistant);
+
+    this.container = container;
+    this.workingArray = items;
+
+    this.minRegionAxis = smallValue;
+
+    // Sort items by volume ascending
+    this.workingArray.sort(_Components.Item.VolumeSort);
+
+    var smallestItem = this.workingArray[0];
+    this.minItemSize = Math.min(smallestItem.width, smallestItem.height, smallestItem.length); // Should take valid orientations into consideration
+};
+
+exports.pack = pack;
+
+/***/ }),
+/* 59 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
 function almost(n1, n2) {
     return Math.abs(n1 - n2) < .01;
@@ -10688,22 +12869,30 @@ function resolve(w, l, h, dimensions) {
     return 'xyz';
 }
 
-
+exports.resolve = resolve;
 
 /***/ }),
-/* 55 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 60 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Bin__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Item__ = __webpack_require__(33);
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _Bin = __webpack_require__(34);
+
+var _Bin2 = _interopRequireDefault(_Bin);
+
+var _Item = __webpack_require__(35);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
 
 var Packer = function () {
   function Packer(bins, items) {
@@ -10730,7 +12919,7 @@ var Packer = function () {
       for (var _i = 0; _i < this.bins.length; _i++) {
         var b = this.bins[_i];
 
-        if (!b.weighItem(i) || !b.putItem(i, __WEBPACK_IMPORTED_MODULE_1__Item__["StartPosition"])) {
+        if (!b.weighItem(i) || !b.putItem(i, _Item.StartPosition)) {
           continue;
         }
 
@@ -10768,7 +12957,7 @@ var Packer = function () {
     value: function packToBin(b, items) {
       var b2 = null;
       var unpacked = [];
-      var fit = b.weighItem(items[0]) && b.putItem(items[0], __WEBPACK_IMPORTED_MODULE_1__Item__["StartPosition"]);
+      var fit = b.weighItem(items[0]) && b.putItem(items[0], _Item.StartPosition);
 
       if (!fit) {
         var _b = this.getBiggerBinThan(b);
@@ -10791,13 +12980,13 @@ var Packer = function () {
               var pv = void 0;
               var ib = b.items[_j];
               switch (_pt) {
-                case __WEBPACK_IMPORTED_MODULE_1__Item__["WidthAxis"]:
+                case _Item.WidthAxis:
                   pv = [ib.position[0] + ib.getWidth(), ib.position[1], ib.position[2]];
                   break;
-                case __WEBPACK_IMPORTED_MODULE_1__Item__["HeightAxis"]:
+                case _Item.HeightAxis:
                   pv = [ib.position[0], ib.position[1] + ib.getHeight(), ib.position[2]];
                   break;
-                case __WEBPACK_IMPORTED_MODULE_1__Item__["DepthAxis"]:
+                case _Item.DepthAxis:
                   pv = [ib.position[0], ib.position[1], ib.position[2] + ib.getDepth()];
                   break;
               }
@@ -10862,216 +13051,149 @@ var Packer = function () {
   return Packer;
 }();
 
-/* harmony default export */ __webpack_exports__["default"] = (Packer);
+exports.default = Packer;
 
 /***/ }),
-/* 56 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "pack", function() { return pack; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resolveOrientation", function() { return resolveOrientation; });
 
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.setDebugMatrix = exports.resolveOrientation = exports.pack = undefined;
 
 /**
  * @param {Container} container 
  * @param {Array<Item>} items 
  */
 var pack = function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(container, items) {
-        var packings, unpacked, iItem, item, packed, iPacking, _packing, iSpace, _packing$spaces, _space, _placement, space, placement, packing;
+    var _ref = _asyncToGenerator(function* (container, items) {
+        /** @type {Array<Packing>} */
+        var packings = [];
+        /** @type {Array<Item>} */
+        var unpacked = [];
 
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-                switch (_context.prev = _context.next) {
-                    case 0:
-                        /** @type {Array<Packing>} */
-                        packings = [];
-                        /** @type {Array<Item>} */
+        items.sort(volumeSort);
 
-                        unpacked = [];
+        //for(let iItem = 0; iItem < items.length; iItem++){
+        var iItem = 0;
+        while (items.length > 0) {
+            var item = items[iItem];
 
+            if (item.weight > container.weight) {
+                return { failed: 'Item is too big' };
+            }
 
-                        items.sort(volumeSort);
+            var packed = false;
 
-                        //for(let iItem = 0; iItem < items.length; iItem++){
-                        iItem = 0;
+            for (var iPacking = 0; iPacking < packings.length && !packed; iPacking++) {
+                var _packing = packings[iPacking];
+                yield debugAs('Packing', _packing);
 
-                    case 4:
-                        if (!(items.length > 0)) {
-                            _context.next = 59;
-                            break;
-                        }
+                // If this packing's going to be too big with this item as well then skip on to the next packing
+                if (_packing.weight + item.weight > container.weight) {
+                    yield debugAs('Log', 'Packing ' + iPacking + ' is overweight');
+                    continue;
+                }
 
-                        item = items[iItem];
+                for (var iSpace = 0; iSpace < _packing.spaces.length; iSpace++) {
+                    var _packing$spaces;
 
-                        if (!(item.weight > container.weight)) {
-                            _context.next = 8;
-                            break;
-                        }
+                    var _space = _packing.spaces[iSpace];
+                    yield debugAs('Space', _space);
 
-                        return _context.abrupt('return', { failed: 'Item is too big' });
+                    // Try placing the item in this space, if it doesn't fit skip on the next space
+                    var _placement = place(item, _space);
+                    if (!_placement) {
+                        yield debugAs('Log', 'Placing item in Space ' + iSpace + ' of Packing ' + iPacking + ' failed');
+                        continue;
+                    }
 
-                    case 8:
-                        packed = false;
-                        iPacking = 0;
+                    yield debugAs('Placement', _placement);
 
-                    case 10:
-                        if (!(iPacking < packings.length && !packed)) {
-                            _context.next = 45;
-                            break;
-                        }
+                    // Add the item to the packing and break up the surrounding spaces
+                    _packing.placements.push(_placement);
+                    _packing.weight += item.weight;
+                    _packing.spaces.splice(iSpace, 1);
+                    (_packing$spaces = _packing.spaces).push.apply(_packing$spaces, _toConsumableArray(breakUpSpace(_space, _placement)));
 
-                        _packing = packings[iPacking];
-                        _context.next = 14;
-                        return debugAs('Packing', _packing);
-
-                    case 14:
-                        if (!(_packing.weight + item.weight > container.weight)) {
-                            _context.next = 18;
-                            break;
-                        }
-
-                        _context.next = 17;
-                        return debugAs('Log', 'Packing ' + iPacking + ' is overweight');
-
-                    case 17:
-                        return _context.abrupt('continue', 42);
-
-                    case 18:
-                        iSpace = 0;
-
-                    case 19:
-                        if (!(iSpace < _packing.spaces.length)) {
-                            _context.next = 42;
-                            break;
-                        }
-
-                        _space = _packing.spaces[iSpace];
-                        _context.next = 23;
-                        return debugAs('Space', _space);
-
-                    case 23:
-
-                        // Try placing the item in this space, if it doesn't fit skip on the next space
-                        _placement = place(item, _space);
-
-                        if (_placement) {
-                            _context.next = 28;
-                            break;
-                        }
-
-                        _context.next = 27;
-                        return debugAs('Log', 'Placing item in Space ' + iSpace + ' of Packing ' + iPacking + ' failed');
-
-                    case 27:
-                        return _context.abrupt('continue', 39);
-
-                    case 28:
-                        _context.next = 30;
-                        return debugAs('Placement', 'placement');
-
-                    case 30:
-
-                        // Add the item to the packing and break up the surrounding spaces
-                        _packing.placements.push(_placement);
-                        _packing.weight += item.weight;
-                        _packing.spaces.splice(iSpace, 1);
-                        (_packing$spaces = _packing.spaces).push.apply(_packing$spaces, _toConsumableArray(breakUpSpace(_space, _placement)));
-
-                        packed = true;
-                        items.splice(iItem, 1);
-                        _context.next = 38;
-                        return debugAs('Log', 'Item packed successfully in Space ' + iSpace + ' of Packing ' + iPacking);
-
-                    case 38:
-                        return _context.abrupt('break', 42);
-
-                    case 39:
-                        iSpace++;
-                        _context.next = 19;
-                        break;
-
-                    case 42:
-                        iPacking++;
-                        _context.next = 10;
-                        break;
-
-                    case 45:
-                        if (!packed) {
-                            _context.next = 47;
-                            break;
-                        }
-
-                        return _context.abrupt('continue', 4);
-
-                    case 47:
-
-                        // Can't fit in any of the spaces for the current packings so lets try a new space the size of the container
-                        /** @type {Space} */
-                        space = {
-                            dimensions: container.dimensions.sort(rnsort),
-                            position: [0, 0, 0]
-                        };
-                        placement = place(item, space);
-
-                        // If it can't be placed in this space, then it's just too big for the container and we should abandon hope
-
-                        if (placement) {
-                            _context.next = 54;
-                            break;
-                        }
-
-                        unpacked.push.apply(unpacked, _toConsumableArray(items.splice(iItem, 1)));
-                        _context.next = 53;
-                        return debugAs('Log', 'Placing item of dimensions' + str(item.dimensions) + ' abandoned');
-
-                    case 53:
-                        return _context.abrupt('continue', 4);
-
-                    case 54:
-
-                        // Otherwise lets put the item in a new packing and break up the remaing free space around it
-                        /** @type {Packing} */
-                        packing = {
-                            placements: [placement],
-                            weight: item.weight,
-                            spaces: breakUpSpace(space, placement)
-                        };
-
-                        packings.push(packing);
-
-                        items.splice(iItem, 1);
-                        _context.next = 4;
-                        break;
-
-                    case 59:
-                        return _context.abrupt('return', {
-                            packings: packings,
-                            unpacked: unpacked
-                        });
-
-                    case 60:
-                    case 'end':
-                        return _context.stop();
+                    packed = true;
+                    items.splice(iItem, 1);
+                    yield debugAs('Packed', _placement);
+                    yield debugAs('Log', 'Item packed successfully in Space ' + iSpace + ' of Packing ' + iPacking);
+                    break;
                 }
             }
-        }, _callee, this);
-    }));
+
+            if (packed) {
+                continue;
+            }
+
+            // Can't fit in any of the spaces for the current packings so lets try a new space the size of the container
+            /** @type {Space} */
+            var space = {
+                dimensions: container.dimensions.sort(rnsort),
+                position: [0, 0, 0]
+            };
+
+            var placement = place(item, space);
+
+            // If it can't be placed in this space, then it's just too big for the container and we should abandon hope
+            if (!placement) {
+                unpacked.push.apply(unpacked, _toConsumableArray(items.splice(iItem, 1)));
+                yield debugAs('Log', 'Placing item of dimensions' + str(item.dimensions) + ' abandoned');
+                continue;
+            }
+
+            // Otherwise lets put the item in a new packing and break up the remaing free space around it
+            /** @type {Packing} */
+            var packing = {
+                placements: [placement],
+                weight: item.weight,
+                spaces: breakUpSpace(space, placement)
+            };
+            packings.push(packing);
+            items.splice(iItem, 1);
+            yield debugAs('Packed', placement);
+            yield debugAs('Log', 'Item packed successfully in new Space.');
+        }
+
+        return {
+            packings: packings,
+            unpacked: unpacked
+        };
+    });
 
     return function pack(_x, _x2) {
         return _ref.apply(this, arguments);
     };
 }();
 
+var _Debug = __webpack_require__(11);
+
+var _Debug2 = _interopRequireDefault(_Debug);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
+var offset = new THREE.Vector3();
+var orientation = new THREE.Quaternion();
+var scale = new THREE.Vector3();
+function setDebugMatrix(matrix) {
+    matrix.decompose(offset, orientation, scale);
+}
+
+var debugging = false;
+
 function sleep(ms) {
     return new Promise(function (resolve) {
-        return setTimeout(resolve, ms);
+        if (debugging) setTimeout(resolve, ms);else resolve();
     });
 }
 
@@ -11091,27 +13213,52 @@ function debugLog() {
     var _console;
 
     (_console = console).log.apply(_console, arguments);
-    return sleep(200);
+    return sleep(50);
 }
 
 function debugPacking() {
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+    }
 
-    return sleep(200);
+    /** @type {Packing} */
+    var packing = args[0];
+    packing.spaces.forEach(function (space) {
+        var p = space.position;
+        var d = space.dimensions;
+        _Debug2.default.Viz.DrawVolume(p[0], p[1], p[2], d[0], d[1], d[2], args[1] || 0xaaffff, args[2] || 500);
+    });
+    return sleep(500);
 }
 
 function debugSpace() {
-
-    return sleep(200);
+    /** @type {Space} */
+    var space = arguments.length <= 0 ? undefined : arguments[0];
+    var p = space.position;
+    var d = space.dimensions;
+    _Debug2.default.Viz.DrawVolume(p[0], p[1], p[2], d[0], d[1], d[2], (arguments.length <= 1 ? undefined : arguments[1]) || 0xaaffff, (arguments.length <= 2 ? undefined : arguments[2]) || 500);
+    return sleep(300);
 }
 
 function debugPlacement() {
+    /** @type {Placement} */
+    var placement = arguments.length <= 0 ? undefined : arguments[0];
+    var p = placement.position;
+    var d = placement.dimensions;
+    _Debug2.default.Viz.DrawVolume(p[0], p[1], p[2], d[0], d[1], d[2], (arguments.length <= 1 ? undefined : arguments[1]) || 0xaaffaa, (arguments.length <= 2 ? undefined : arguments[2]) || 500);
+    return sleep(300);
+}
 
-    return sleep(200);
+function debugPacked() {
+    /** @type {Placement} */
+    var placement = arguments.length <= 0 ? undefined : arguments[0];
+
+    debugPlacement(placement, 0x8888ff, 100000);
 }
 
 function debugAs(type) {
-    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
+    for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+        args[_key2 - 1] = arguments[_key2];
     }
 
     switch (type) {
@@ -11123,6 +13270,8 @@ function debugAs(type) {
             return debugSpace.apply(undefined, args);
         case 'Placement':
             return debugPlacement.apply(undefined, args);
+        case 'Packed':
+            return debugPacked.apply(undefined, args);
     }
     return true;
 }
@@ -11265,39 +13414,70 @@ function resolveOrientation(packedDimensions, itemDimensions) {
     return 'xyz';
 }
 
-
+exports.pack = pack;
+exports.resolveOrientation = resolveOrientation;
+exports.setDebugMatrix = setDebugMatrix;
 
 /***/ }),
-/* 57 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 62 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CargoListView__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__packer_Packer__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__packer_CargoList__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__PackingSpaceView__ = __webpack_require__(36);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__packer_PackingSpace__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__view_SceneSetup__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__ = __webpack_require__(58);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__PackResultView__ = __webpack_require__(59);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__utils_cik_input_UpdateComponent__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__packer_container_Container__ = __webpack_require__(6);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _CargoListView = __webpack_require__(36);
+
+var _CargoListView2 = _interopRequireDefault(_CargoListView);
+
+var _Packer = __webpack_require__(7);
+
+var _Packer2 = _interopRequireDefault(_Packer);
+
+var _CargoList = __webpack_require__(29);
+
+var _CargoList2 = _interopRequireDefault(_CargoList);
+
+var _PackingSpaceView = __webpack_require__(38);
+
+var _PackingSpaceView2 = _interopRequireDefault(_PackingSpaceView);
+
+var _PackingSpace = __webpack_require__(17);
+
+var _PackingSpace2 = _interopRequireDefault(_PackingSpace);
+
+var _SceneSetup = __webpack_require__(12);
+
+var _SceneSetup2 = _interopRequireDefault(_SceneSetup);
+
+var _Utils3D = __webpack_require__(63);
+
+var _Utils3D2 = _interopRequireDefault(_Utils3D);
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+var _PackResultView = __webpack_require__(64);
+
+var _PackResultView2 = _interopRequireDefault(_PackResultView);
+
+var _UpdateComponent = __webpack_require__(24);
+
+var _UpdateComponent2 = _interopRequireDefault(_UpdateComponent);
+
+var _Container = __webpack_require__(6);
+
+var _Container2 = _interopRequireDefault(_Container);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-
-
-
-
-
-
-
-
-
 
 /**
  * @typedef {Object} ViewParams
@@ -11334,7 +13514,7 @@ var View = function () {
         _classCallCheck(this, View);
 
         this.sceneSetup = sceneSetup;
-        this.params = __WEBPACK_IMPORTED_MODULE_7__utils_cik_Utils__["default"].AssignUndefined(params, defaultParams);
+        this.params = _Utils2.default.AssignUndefined(params, defaultParams);
 
         var scope = this;
 
@@ -11355,7 +13535,7 @@ var View = function () {
         }
 
         // Packing space
-        this.packingSpaceView = new __WEBPACK_IMPORTED_MODULE_3__PackingSpaceView__["a" /* default */]();
+        this.packingSpaceView = new _PackingSpaceView2.default();
         this.sceneSetup.sceneController.AddDefault(this.packingSpaceView.view);
         /** @param {Container} container */
         function onContainerAdded(container) {
@@ -11367,15 +13547,15 @@ var View = function () {
             scope.sceneSetup.cameraController.Frame(box3, .7);
             scope.packingSpaceView.Add(container);
         }
-        packer.packingSpace.On(__WEBPACK_IMPORTED_MODULE_4__packer_PackingSpace__["a" /* default */].signals.containerAdded, onContainerAdded);
+        packer.packingSpace.On(_PackingSpace2.default.signals.containerAdded, onContainerAdded);
 
         // Cargo list
         this.params.cargoListView.params.ux = this.params.ux;
-        this.cargoListView = new __WEBPACK_IMPORTED_MODULE_0__CargoListView__["a" /* default */](this.params.cargoListView.params);
+        this.cargoListView = new _CargoListView2.default(this.params.cargoListView.params);
         var onCargoGroupAdded = this.cargoListView.Add.bind(this.cargoListView);
-        packer.cargoList.On(__WEBPACK_IMPORTED_MODULE_2__packer_CargoList__["a" /* default */].signals.groupAdded, onCargoGroupAdded);
+        packer.cargoList.On(_CargoList2.default.signals.groupAdded, onCargoGroupAdded);
         var onCargoRemoved = this.cargoListView.Remove.bind(this.cargoListView);
-        packer.cargoList.On(__WEBPACK_IMPORTED_MODULE_2__packer_CargoList__["a" /* default */].signals.groupRemoved, onCargoRemoved);
+        packer.cargoList.On(_CargoList2.default.signals.groupRemoved, onCargoRemoved);
 
         // Cargo list display
         if (this.params.ux.params.hud) {
@@ -11385,13 +13565,13 @@ var View = function () {
 
         // Packing result
         this.params.packResultView.params.ux = this.params.ux;
-        this.packResultView = new __WEBPACK_IMPORTED_MODULE_8__PackResultView__["a" /* default */](this.cargoListView, this.packingSpaceView, this.params.packResultView.params);
+        this.packResultView = new _PackResultView2.default(this.cargoListView, this.packingSpaceView, this.params.packResultView.params);
         this.sceneSetup.sceneController.AddDefault(this.packResultView.view);
 
         var onPackUpdate = this.packResultView.DisplayPackingResult.bind(this.packResultView);
-        packer.On(__WEBPACK_IMPORTED_MODULE_1__packer_Packer__["a" /* default */].signals.packUpdate, onPackUpdate);
+        packer.On(_Packer2.default.signals.packUpdate, onPackUpdate);
 
-        var updateComponent = new __WEBPACK_IMPORTED_MODULE_9__utils_cik_input_UpdateComponent__["a" /* default */](true, 1 / 30, this.Update.bind(this));
+        var updateComponent = new _UpdateComponent2.default(true, 1 / 30, this.Update.bind(this));
         this.sceneSetup.input.updateComponents.push(updateComponent);
 
         if (this.params.ux.params.configure) {
@@ -11416,7 +13596,7 @@ var View = function () {
             var clv = this.cargoListView;
             var scope = this;
 
-            var cargoListViewRect = new __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__["a" /* default */].Rect(0, 0, 150, input.screen.height);
+            var cargoListViewRect = new _Utils3D2.default.Rect(0, 0, 150, input.screen.height);
             var clvRectIgnore = cargoListViewRect.Clone();
             clvRectIgnore.Offset(input.screen.left, input.screen.top);
 
@@ -11434,8 +13614,8 @@ var View = function () {
              */
             function onSort(sortResult) {
                 if (sortResult.cargoes > 0) {
-                    __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__["a" /* default */].Project(v.set(0, sortResult.min, 0), hud.cameraController.camera, input.screen, viewportPointA);
-                    __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__["a" /* default */].Project(v.set(0, sortResult.max, 0), hud.cameraController.camera, input.screen, viewportPointB);
+                    _Utils3D2.default.Project(v.set(0, sortResult.min, 0), hud.cameraController.camera, input.screen, viewportPointA);
+                    _Utils3D2.default.Project(v.set(0, sortResult.max, 0), hud.cameraController.camera, input.screen, viewportPointB);
 
                     var distance = viewportPointA.sub(viewportPointB).length();
                     var ratio = .8 / distance;
@@ -11447,7 +13627,7 @@ var View = function () {
                 min = v.set(0, sortResult.min, 0).applyMatrix4(clv.templatesView.matrixWorld).y;
                 max = v.set(0, sortResult.max, 0).applyMatrix4(clv.templatesView.matrixWorld).y;
             }
-            this.cargoListView.On(__WEBPACK_IMPORTED_MODULE_0__CargoListView__["a" /* default */].signals.sort, onSort);
+            this.cargoListView.On(_CargoListView2.default.signals.sort, onSort);
 
             /**
              * @param {import('../utils/cik/input/Input').DragEvent} dragEvent 
@@ -11459,8 +13639,8 @@ var View = function () {
                     var offset = dragEvent.dy * .5 * units;
                     var clvMin = min + offset,
                         clvMax = max + offset;
-                    __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__["a" /* default */].Project(v.set(0, clvMin, 0), hud.cameraController.camera, input.screen, viewportPointA);
-                    __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__["a" /* default */].Project(v.set(0, clvMax, 0), hud.cameraController.camera, input.screen, viewportPointB);
+                    _Utils3D2.default.Project(v.set(0, clvMin, 0), hud.cameraController.camera, input.screen, viewportPointA);
+                    _Utils3D2.default.Project(v.set(0, clvMax, 0), hud.cameraController.camera, input.screen, viewportPointB);
                     //console.log(viewportPointA, viewportPointB);
                     if (offset > 0 && viewportPointA.y < -.7 || offset < 0 && viewportPointB.y > .8) {
                         dragOffset += offset;
@@ -11486,8 +13666,8 @@ var View = function () {
                 var bottomLeft = scope.params.cargoListView.bottomLeft; // offset in pixels
                 tempVec.set(bottomLeft.x, bottomLeft.y); // viewport point in pixels
 
-                __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__["a" /* default */].ToNDC(tempVec, screen); // NDC point
-                __WEBPACK_IMPORTED_MODULE_6__utils_cik_Utils3D__["a" /* default */].Unproject(tempVec, hud.cameraController.camera, tempVec, 'z'); // worldPos on z plane
+                _Utils3D2.default.ToNDC(tempVec, screen); // NDC point
+                _Utils3D2.default.Unproject(tempVec, hud.cameraController.camera, tempVec, 'z'); // worldPos on z plane
                 tempVec.y += dragOffset;
                 clv.templatesView.position.copy(tempVec); // set view position
 
@@ -11503,9 +13683,9 @@ var View = function () {
         key: "Configure",
         value: function Configure() {
 
-            var Smart = __webpack_require__(13).default;
+            var Smart = __webpack_require__(14).default;
             var Config = __webpack_require__(4).default;
-            var Control3D = __webpack_require__(14).default;
+            var Control3D = __webpack_require__(15).default;
 
             var scope = this;
             var input = this.sceneSetup.input;
@@ -11523,13 +13703,19 @@ var View = function () {
     return View;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (View);
+exports.default = View;
 
 /***/ }),
-/* 58 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -11713,35 +13899,60 @@ var Rect = function () {
 
 Utils3D.Rect = Rect;
 
-/* harmony default export */ __webpack_exports__["a"] = (Utils3D);
+exports.default = Utils3D;
 
 /***/ }),
-/* 59 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 64 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cik_Utils__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__CargoListView__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CargoView__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils_cik_Pool__ = __webpack_require__(39);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__PackedCargoBoxView__ = __webpack_require__(60);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__PackingSpaceView__ = __webpack_require__(36);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__utils_cik_Logger__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__utils_cik_Tween__ = __webpack_require__(61);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__packer_Packer__ = __webpack_require__(7);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+var _CargoListView = __webpack_require__(36);
+
+var _CargoListView2 = _interopRequireDefault(_CargoListView);
+
+var _CargoView = __webpack_require__(21);
+
+var _CargoView2 = _interopRequireDefault(_CargoView);
+
+var _Pool = __webpack_require__(41);
+
+var _Pool2 = _interopRequireDefault(_Pool);
+
+var _PackedCargoBoxView = __webpack_require__(65);
+
+var _PackedCargoBoxView2 = _interopRequireDefault(_PackedCargoBoxView);
+
+var _PackingSpaceView = __webpack_require__(38);
+
+var _PackingSpaceView2 = _interopRequireDefault(_PackingSpaceView);
+
+var _Logger = __webpack_require__(3);
+
+var _Logger2 = _interopRequireDefault(_Logger);
+
+var _Tween = __webpack_require__(66);
+
+var _Tween2 = _interopRequireDefault(_Tween);
+
+var _Packer = __webpack_require__(7);
+
+var _Packer2 = _interopRequireDefault(_Packer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-
-
-
-
-
-
-
 
 /**
  * @typedef {Object} PackResultViewParams
@@ -11757,7 +13968,7 @@ var defaultParams = {};
  */
 function poolNewFN(cargoView) {
     //console.log('pool new', cargoView);
-    var packedCargoView = new __WEBPACK_IMPORTED_MODULE_4__PackedCargoBoxView__["a" /* default */](cargoView.entry);
+    var packedCargoView = new _PackedCargoBoxView2.default(cargoView.entry);
     packedCargoView.Extend(cargoView);
     return packedCargoView;
 }
@@ -11810,11 +14021,11 @@ var PackResultView = function () {
 
         this.cargoListView = cargoListView;
         this.packingSpaceView = packingSpaceView;
-        this.params = __WEBPACK_IMPORTED_MODULE_0__utils_cik_Utils__["default"].AssignUndefined(params, defaultParams);
+        this.params = _Utils2.default.AssignUndefined(params, defaultParams);
 
         this.view = new THREE.Object3D();
 
-        this.pool = new __WEBPACK_IMPORTED_MODULE_3__utils_cik_Pool__["a" /* default */](poolNewFN, poolResetFN);
+        this.pool = new _Pool2.default(poolNewFN, poolResetFN);
 
         /** @type {Array<Tween>} */
         this.animatingViews = [];
@@ -11841,14 +14052,14 @@ var PackResultView = function () {
 
             var animatingViews = this.animatingViews;
             var view = this.view;
-            var onTweenCompleted = this.OnTweenCompleted.bind(this);
+            var onTweenComplete = this.OnTweenComplete.bind(this);
 
             var _loop = function _loop() {
                 var item = packingResult.packed[i];
                 var cargoViewTemplate = _this.cargoListView.GetTemplate(item.entry);
                 var packedCargoView = _this.pool.Request(cargoViewTemplate);
 
-                __WEBPACK_IMPORTED_MODULE_6__utils_cik_Logger__["a" /* default */].WarnOnce('PackResultView.DisplayPackingResult', 'packedCargoView should be rotated instead of re-scaling');
+                _Logger2.default.WarnOnce('PackResultView.DisplayPackingResult', 'packedCargoView should be rotated instead of re-scaling');
                 var rotation = getOrientationEuler(item.orientation);
                 packedCargoView.SetRotationAngles(rotation.x, rotation.y, rotation.z);
 
@@ -11858,15 +14069,15 @@ var PackResultView = function () {
 
                 var zEntry = containingVolume.dimensions.length;
                 setTimeout(function () {
-                    var posTweenCombo = __WEBPACK_IMPORTED_MODULE_7__utils_cik_Tween__["a" /* default */].Combo.Request3(__WEBPACK_IMPORTED_MODULE_7__utils_cik_Tween__["a" /* default */].functions.linear, x, y, zEntry, 0, 0, z - zEntry, .5);
+                    var posTweenCombo = _Tween2.default.Combo.Request3(_Tween2.default.functions.linear, x, y, zEntry, 0, 0, z - zEntry, .75);
 
                     posTweenCombo.Hook(packedCargoView.position, 'x', 'y', 'z');
-                    posTweenCombo.onComplete = onTweenCompleted;
+                    posTweenCombo.onComplete = onTweenComplete;
                     posTweenCombo.Update(0);
                     animatingViews.push(posTweenCombo);
 
                     view.add(packedCargoView.view);
-                }, 100 * i);
+                }, 200 * i);
             };
 
             for (var i = 0, numPackedItems = packingResult.packed.length; i < numPackedItems; i++) {
@@ -11880,8 +14091,8 @@ var PackResultView = function () {
          */
 
     }, {
-        key: 'OnTweenCompleted',
-        value: function OnTweenCompleted(tween) {
+        key: 'OnTweenComplete',
+        value: function OnTweenComplete(tween) {
             var index = this.animatingViews.indexOf(tween);
             if (index != -1) {
                 this.animatingViews.splice(index, 1);
@@ -11901,29 +14112,40 @@ var PackResultView = function () {
     return PackResultView;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (PackResultView);
+exports.default = PackResultView;
 
 /***/ }),
-/* 60 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 65 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CargoBoxView__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_box_BoxEntry__ = __webpack_require__(10);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _set = function set(object, property, value, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent !== null) { set(parent, property, value, receiver); } } else if ("value" in desc && desc.writable) { desc.value = value; } else { var setter = desc.set; if (setter !== undefined) { setter.call(receiver, value); } } return value; };
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
+var _CargoBoxView2 = __webpack_require__(37);
+
+var _CargoBoxView3 = _interopRequireDefault(_CargoBoxView2);
+
+var _BoxEntry = __webpack_require__(10);
+
+var _BoxEntry2 = _interopRequireDefault(_BoxEntry);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
 
 var unitCubeEdgeGeometry = new THREE.EdgesGeometry(new THREE.BoxBufferGeometry(1, 1, 1, 1, 1, 1));
 var wireframeMaterialTemplate = new THREE.LineBasicMaterial({ color: 0xffffff });
@@ -12008,21 +14230,30 @@ var PackedCargoBoxView = function (_CargoBoxView) {
     }]);
 
     return PackedCargoBoxView;
-}(__WEBPACK_IMPORTED_MODULE_0__CargoBoxView__["a" /* default */]);
+}(_CargoBoxView3.default);
 
-/* harmony default export */ __webpack_exports__["a"] = (PackedCargoBoxView);
+exports.default = PackedCargoBoxView;
 
 /***/ }),
-/* 61 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 66 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Pool__ = __webpack_require__(39);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _Pool = __webpack_require__(41);
+
+var _Pool2 = _interopRequireDefault(_Pool);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
 
 /** 
  * Tween update function
@@ -12049,7 +14280,7 @@ function poolNewFN() {
 function poolResetFN(tween) {
     return tween;
 }
-var pool = new __WEBPACK_IMPORTED_MODULE_0__Pool__["a" /* default */](poolNewFN, poolResetFN);
+var pool = new _Pool2.default(poolNewFN, poolResetFN);
 
 var functions = {
     /** @type {TweenCallback} */
@@ -12300,27 +14531,40 @@ var Tween = function () {
 
 Tween.Combo = TweenCombo;
 
-/* harmony default export */ __webpack_exports__["a"] = (Tween);
+exports.default = Tween;
 
 /***/ }),
-/* 62 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 67 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__App__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_cik_Signaler__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__packer_Packer__ = __webpack_require__(7);
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _App = __webpack_require__(23);
+
+var _App2 = _interopRequireDefault(_App);
+
+var _Signaler2 = __webpack_require__(2);
+
+var _Signaler3 = _interopRequireDefault(_Signaler2);
+
+var _Packer = __webpack_require__(7);
+
+var _Packer2 = _interopRequireDefault(_Packer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-
 
 var _app = Symbol('app');
 
@@ -12344,7 +14588,7 @@ var PackerInterface = function (_Signaler) {
             scope.Dispatch(signals.packUpdate);
         }
 
-        app.packer.On(__WEBPACK_IMPORTED_MODULE_2__packer_Packer__["a" /* default */].signals.packUpdate, onPackUpdate);
+        app.packer.On(_Packer2.default.signals.packUpdate, onPackUpdate);
         _this[_app] = app;
         return _this;
     }
@@ -12364,524 +14608,9 @@ var PackerInterface = function (_Signaler) {
     }]);
 
     return PackerInterface;
-}(__WEBPACK_IMPORTED_MODULE_1__utils_cik_Signaler__["default"]);
+}(_Signaler3.default);
 
-/* harmony default export */ __webpack_exports__["a"] = (PackerInterface);
-
-/***/ }),
-/* 63 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__packer_afit_AFitTest__ = __webpack_require__(64);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-function delay(time, callback) {
-    setTimeout(callback, time);
-}
-
-var debugGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 1, 1, 1);
-var debugMaterial = new THREE.MeshStandardMaterial({ color: 0xff7f00, transparent: true, opacity: .35 });
-var debugBox = new THREE.Mesh(debugGeometry, debugMaterial);
-
-var tempVec = new THREE.Vector3();
-
-var DebugBox = function () {
-    function DebugBox() {
-        _classCallCheck(this, DebugBox);
-    }
-
-    _createClass(DebugBox, null, [{
-        key: 'FromCenterSize',
-
-
-        /**
-         * @param {THREE.Vector3} center 
-         * @param {Number|THREE.Vector3} size 
-         */
-        value: function FromCenterSize(center, size) {
-            var box = debugBox.clone();
-            box.position.copy(center);
-
-            if (size instanceof THREE.Vector3) box.scale.copy(size);else box.scale.set(size, size, size);
-
-            return box;
-        }
-
-        /**
-         * @param {THREE.Box3} box3 
-         */
-
-    }, {
-        key: 'FromBox3',
-        value: function FromBox3(box3) {
-            var box = debugBox.clone();
-
-            box3.getCenter(tempVec);
-            box.position.copy(tempVec);
-            box3.getSize(tempVec);
-            box.scale.copy(tempVec);
-
-            return box;
-        }
-    }]);
-
-    return DebugBox;
-}();
-
-/**
- * DebugViz
- */
-
-/** @type {THREE.Object3D} */
-
-
-var view;
-
-/** @type {Map<string, *>} */
-var debugObjects = new Map();
-
-var tVec3 = new THREE.Vector3(),
-    tPos = new THREE.Vector3(),
-    tScale = new THREE.Vector3();
-
-var DebugViz = function () {
-    function DebugViz() {
-        _classCallCheck(this, DebugViz);
-    }
-
-    _createClass(DebugViz, null, [{
-        key: 'SetViewParent',
-
-
-        /**
-         * @param {THREE.Object3D} parent
-         */
-        value: function SetViewParent(parent) {
-            view = new THREE.Object3D();
-            view.name = 'DebugViz view';
-            view.renderOrder = Number.MAX_SAFE_INTEGER - 10;
-            parent.add(view);
-        }
-    }, {
-        key: 'DrawVolume',
-
-
-        /**
-         * @param {Number} x center x * @param {Number} y center y * @param {Number} z center z * @param {Number} w * @param {Number} h * @param {Number} l
-         * @param {Number} [color] hex color
-         * @param {Number} [duration] in milliseconds
-         */
-        value: function DrawVolume(x, y, z, w, h, l, color, duration) {
-            tPos.set(x, y, z);
-            tScale.set(w, h, l);
-
-            /** @type {THREE.Mesh} */
-            var volume = debugBox.clone();
-            view.add(volume);
-
-            volume.position.copy(center);
-
-            if (color) {
-                /** @type {THREE.MeshStandardMaterial} */
-                var material = volume.material;
-                material.color.setHex(color);
-            }
-
-            var uid = THREE.Math.generateUUID();
-            debugObjects.set(uid, volume);
-
-            if (duration) {
-                delay(duration, function () {
-                    DebugViz.RemoveObjectByUID(uid);
-                });
-            }
-
-            return uid;
-        }
-
-        /**
-         * @param {string} uid 
-         */
-
-    }, {
-        key: 'RemoveObjectByUID',
-        value: function RemoveObjectByUID(uid) {
-            var object = debugObjects.get(uid);
-            if (object instanceof THREE.Object3D && object.parent) {
-                object.parent.remove(object);
-            }
-        }
-    }, {
-        key: 'view',
-        get: function get() {
-            return view;
-        }
-    }]);
-
-    return DebugViz;
-}();
-
-/**
- * DebugViz
- */
-
-var Debug = function () {
-    function Debug() {
-        _classCallCheck(this, Debug);
-    }
-
-    _createClass(Debug, null, [{
-        key: 'AFitTest',
-        get: function get() {
-            return __WEBPACK_IMPORTED_MODULE_0__packer_afit_AFitTest__["a" /* default */];
-        }
-    }, {
-        key: 'CLPTest',
-        get: function get() {
-            return __webpack_require__(65);
-        }
-    }]);
-
-    return Debug;
-}();
-
-Debug.Box = DebugBox;
-Debug.Viz = DebugViz;
-
-/* harmony default export */ __webpack_exports__["default"] = (Debug);
-
-/***/ }),
-/* 64 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_Item__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__AFit__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Container__ = __webpack_require__(17);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-
-
-/** @param {Array<Item>} items */
-function sumOfVolumes(items) {
-    var sum = 0;
-    for (var i = 0, len = items.length; i < len; i++) {
-        sum += items[i].Volume;
-    }return sum;
-}
-
-/**
- * @param {Array<Object>} objects 
- * @param {Array<string>} m - mapping to Item.constructor, ie: [ID, Length, ...]
- */
-function toItems(objects, m) {
-    var items = [];
-    objects.forEach(function (o) {
-        items.push(new __WEBPACK_IMPORTED_MODULE_0__components_Item__["default"](o[m[0]], o[m[1]], o[m[2]], o[m[3]], o[m[4]]));
-    });
-    return items;
-}
-
-var TestData =
-/**
- * @param {Container} container 
- * @param {Array<Item>} items 
- */
-function TestData(container, items) {
-    _classCallCheck(this, TestData);
-
-    this.container = container;
-    this.items = items;
-};
-
-var AFitTest = function () {
-    function AFitTest() {
-        _classCallCheck(this, AFitTest);
-
-        this.aFitPacker = new __WEBPACK_IMPORTED_MODULE_1__AFit__["a" /* default */]();
-    }
-
-    /**
-     * @param {Container} container 
-     * @param {Array<Item>} items 
-     */
-
-
-    _createClass(AFitTest, [{
-        key: "T1",
-        value: function T1(container, items) {
-
-            var startTime = performance.now();
-            var result = this.aFitPacker.Solve(container, items);
-            result.PackTimeInMilliseconds = Math.ceil(performance.now() - startTime);
-
-            var containerVolume = container.Length * container.Width * container.Height;
-            var itemVolumePacked = sumOfVolumes(result.PackedItems);
-            var itemVolumeUnpacked = sumOfVolumes(result.UnpackedItems);
-
-            result.PercentContainerVolumePacked = Math.floor(itemVolumePacked / containerVolume * 100 * 100) / 100;
-            result.PercentItemVolumePacked = Math.floor(itemVolumePacked / (itemVolumePacked + itemVolumeUnpacked) * 100 * 100) / 100;
-
-            return result;
-        }
-    }], [{
-        key: "GenerateDataSample1",
-        value: function GenerateDataSample1() {
-            var containerData = { ID: 1000, Name: 'Box1', Length: 15, Width: 13, Height: 9 };
-            var itemsData = [{ ID: 1000, Name: 'Item1', Length: 5, Width: 4, Height: 2, Quantity: 1 }, { ID: 1001, Name: 'Item2', Length: 2, Width: 1, Height: 1, Quantity: 3 }, { ID: 1002, Name: 'Item3', Length: 9, Width: 7, Height: 3, Quantity: 4 }, { ID: 1003, Name: 'Item4', Length: 13, Width: 6, Height: 3, Quantity: 8 }, { ID: 1004, Name: 'Item5', Length: 17, Width: 8, Height: 6, Quantity: 1 }, { ID: 1005, Name: 'Item6', Length: 3, Width: 3, Height: 2, Quantity: 2 }];
-
-            var container = Object.assign(new __WEBPACK_IMPORTED_MODULE_2__components_Container__["default"](), containerData);
-            var items = toItems(itemsData, ['ID', 'Length', 'Width', 'Height', 'Quantity']);
-
-            var data = new TestData(container, items);
-            return data;
-        }
-    }, {
-        key: "GenerateDataSample2",
-        value: function GenerateDataSample2() {
-            var containerData = { ID: 1000, Name: 'Box1', Length: 60, Width: 35, Height: 25 };
-            var itemsData = [{ ID: 1000, Name: 'Item1', Length: 30, Width: 50, Height: 20, Quantity: 1 }, { ID: 1003, Name: 'Item4', Length: 13, Width: 6, Height: 3, Quantity: 6 }, { ID: 1004, Name: 'Item5', Length: 17, Width: 8, Height: 6, Quantity: 3 }, { ID: 1005, Name: 'Item6', Length: 5, Width: 5, Height: 2, Quantity: 16 }];
-
-            var container = Object.assign(new __WEBPACK_IMPORTED_MODULE_2__components_Container__["default"](), containerData);
-            var items = toItems(itemsData, ['ID', 'Length', 'Width', 'Height', 'Quantity']);
-
-            var data = new TestData(container, items);
-            return data;
-        }
-    }, {
-        key: "GenerateDataSampleFlatdeck",
-        value: function GenerateDataSampleFlatdeck() {
-            var containerData = { ID: 1000, Name: 'Box1', Length: 576, Width: 102, Height: 102 };
-            var itemsData = [{ ID: 1000, Name: 'Item1', Length: 100, Width: 70, Height: 90, Quantity: 3 }, { ID: 1003, Name: 'Item4', Length: 60, Width: 60, Height: 60, Quantity: 7 }, { ID: 1004, Name: 'Item5', Length: 40, Width: 20, Height: 30, Quantity: 4 }, { ID: 1005, Name: 'Item6', Length: 30, Width: 20, Height: 30, Quantity: 20 }];
-
-            var container = Object.assign(new __WEBPACK_IMPORTED_MODULE_2__components_Container__["default"](), containerData);
-            var items = toItems(itemsData, ['ID', 'Length', 'Width', 'Height', 'Quantity']);
-
-            var data = new TestData(container, items);
-            return data;
-        }
-    }]);
-
-    return AFitTest;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (AFitTest);
-
-/***/ }),
-/* 65 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Test1", function() { return Test1; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "test1Data", function() { return test1Data; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Workbook__ = __webpack_require__(31);
-
-
-var solverSheet = __WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */].Worksheets('CLP Solver Console');
-var itemsSheet = __WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */].Worksheets('1.Items');
-var containersSheet = __WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */].Worksheets('2.Containers');
-var solutionSheet = __WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */].Worksheets('3.Solution');
-
-var noYes = ['No', 'Yes'];
-var sortCriterion = [null, 'Volume', 'Weight', 'MaxDim'];
-
-/** @type {import('./CLPSolver').SolverOptions} */
-var solverOptions = {
-    itemSortCriterion: 1,
-    showProgress: false,
-    cpuTimeLimit: 3
-};
-
-// First-Fit-Decreasing based on:
-solverSheet.Cells(12, 3, sortCriterion[solverOptions.itemSortCriterion]);
-// Show progress on status bar?
-solverSheet.Cells(13, 3, noYes[Number(solverOptions.showProgress)]);
-// CPU time limit (seconds)
-solverSheet.Cells(14, 3, solverOptions.cpuTimeLimit);
-
-// Front side support required?
-solverSheet.Cells(6, 3, noYes[0]);
-
-function packPriority(p) {
-    switch (p) {
-        case 1:
-            return 'Must be packed';
-        case 0:
-            return 'May be packed';
-        case -1:
-            return 'Don\'t pack';
-    }
-}
-function fillPriority(p) {
-    switch (p) {
-        case 1:
-            return 'Must be used';
-        case 0:
-            return 'May be used';
-        case -1:
-            return 'Do not use';
-    }
-}
-
-var containersDataSrc = [{ ID: 1000, Name: 'Box1', Length: 576, Width: 102, Height: 102 }];
-var containersData = [];
-var itemsDataSrc = [{ ID: 1001, Name: 'Item1', Length: 100, Width: 70, Height: 90, Quantity: 3 }, { ID: 1002, Name: 'Item4', Length: 60, Width: 60, Height: 60, Quantity: 7 }, { ID: 1003, Name: 'Item5', Length: 40, Width: 20, Height: 30, Quantity: 4 }, { ID: 1004, Name: 'Item6', Length: 30, Width: 20, Height: 30, Quantity: 20 }];
-var itemsData = [];
-
-var numItems = itemsDataSrc.length;
-// Number of types of items
-solverSheet.Cells(2, 3, numItems);
-
-for (var i = 1; i <= numItems; i++) {
-    var item = itemsDataSrc[i - 1];
-
-    var volume = item.Length * item.Width * item.Height;
-
-    /** @type {import('./CLPSolver').ItemData} */
-    var itemData = {
-        length: item.Length,
-        width: item.Width,
-        height: item.Height,
-        xyRotatable: true,
-        yzRotatable: true,
-        mandatory: 1,
-        profit: 0,
-        weight: volume / 1000,
-        quantity: item.Quantity
-    };
-    itemsData.push(itemData);
-    continue;
-    // 1 id, 2 name, 4 width, 5 height, 6 length, 7 volume, 9 xy, 10 yz, 11 weight, 12 packPriority = MustBePacked, 13 profit = 0, 14 quantity
-
-    itemsSheet.Cells(2 + i, 1, i);
-    itemsSheet.Cells(2 + i, 2, item.ID);
-
-    itemsSheet.Cells(2 + i, 4, itemData.width);
-    itemsSheet.Cells(2 + i, 5, itemData.height);
-    itemsSheet.Cells(2 + i, 6, itemData.length);
-    itemsSheet.Cells(2 + i, 7, volume);
-
-    itemsSheet.Cells(2 + i, 9, noYes[Number(itemData.xyRotatable)]);
-    itemsSheet.Cells(2 + i, 10, noYes[Number(itemData.yzRotatable)]);
-
-    itemsSheet.Cells(2 + i, 11, itemData.weight);
-
-    itemsSheet.Cells(2 + i, 12, packPriority(itemData.mandatory));
-
-    itemsSheet.Cells(2 + i, 13, itemData.profit);
-
-    itemsSheet.Cells(2 + i, 14, itemData.quantity);
-}
-
-var numContainers = containersDataSrc.length;
-// Number of types of containers
-solverSheet.Cells(4, 3, numContainers);
-for (var i = 1; i <= numContainers; i++) {
-    var container = containersDataSrc[i - 1];
-
-    var _volume = container.Width * container.Height * container.Length;
-
-    /** @type {import('./CLPSolver').ContainerData} */
-    var containerData = {
-        length: container.Length,
-        width: container.Width,
-        height: container.Height,
-        quantity: 1,
-        mandatory: 1,
-        cost: 0,
-        weightCapacity: _volume / 1000
-    };
-    containersData.push(containerData);
-    continue;
-    // 1 id, 2 name, 3 width, 4 height, 5, length, 6 volume_capacity, 7 weight_capacity, 8 fillPriority = 1, 9 cost = 1, 10 quantity
-
-    containersSheet.Cells(1 + i, 1, i);
-    containersSheet.Cells(1 + i, 2, container.ID);
-
-    containersSheet.Cells(1 + i, 3, containerData.width);
-    containersSheet.Cells(1 + i, 4, containerData.height);
-    containersSheet.Cells(1 + i, 5, containerData.length);
-    containersSheet.Cells(1 + i, 6, _volume);
-
-    containersSheet.Cells(1 + i, 7, containerData.weightCapacity);
-
-    containersSheet.Cells(1 + i, 8, fillPriority(containerData.mandatory));
-
-    containersSheet.Cells(1 + i, 9, containerData.cost);
-
-    containersSheet.Cells(1 + i, 10, containerData.quantity);
-}
-
-solutionSheet.Cells(1, 'B').calculate = function () {
-    return Math.abs(solutionSheet.Cells(4, 'J').Value);
-}; // =+$J$4
-solutionSheet.Cells(4, 'G').calculate = function () {
-    return solutionSheet.Sum(solutionSheet.Cells(6, 'G'), solutionSheet.Cells(6 + solutionSheet.Cells(3, 'B'), 'G'));
-}; // =SUM($G$6:$G$39)
-solutionSheet.Cells(4, 'H').calculate = function () {
-    return solutionSheet.Sum(solutionSheet.Cells(6, 'H'), solutionSheet.Cells(6 + solutionSheet.Cells(3, 'B'), 'H'));
-}; // =SUM($H$6:$H$39)
-solutionSheet.Cells(4, 'I').calculate = function () {
-    return solutionSheet.Sum(solutionSheet.Cells(6, 'I'), solutionSheet.Cells(6 + solutionSheet.Cells(3, 'B'), 'I'));
-}; // =SUM($I$6:$I$39)
-solutionSheet.Cells(4, 'J').calculate = function () {
-    return solutionSheet.Sum(solutionSheet.Cells(6, 'J'), solutionSheet.Cells(6 + solutionSheet.Cells(3, 'B'), 'J'));
-}; // =SUM($J$6:$J$39)
-
-for (var i = 1; i <= 100 /*solutionSheet.Cells(3, 'B')*/; i++) {
-    solutionSheet.Cells(5 + i, 'G').calculate = function () {
-        var itemName = solutionSheet.Cells(6, 'B').Value;
-        return itemsSheet.Cells(itemsSheet.Find(itemName).row, 1).Value;
-    }; // itemIndex
-
-    solutionSheet.Cells(5 + i, 'H').calculate = function () {
-        return itemsSheet.Cells(2 + solutionSheet.Cells(5 + i, 'G'), 7).Value;
-    }; // volume
-    solutionSheet.Cells(5 + i, 'I').calculate = function () {
-        return itemsSheet.Cells(2 + solutionSheet.Cells(5 + i, 'G'), 11).Value;
-    }; // weight
-    solutionSheet.Cells(5 + i, 'J').calculate = function () {
-        return itemsSheet.Cells(2 + solutionSheet.Cells(5 + i, 'G'), 13).Value;
-    }; // profit
-}
-
-console.log('CLP setup complete');
-console.log(__WEBPACK_IMPORTED_MODULE_0__Workbook__["e" /* ThisWorkbook */]);
-
-var CLPSolver = __webpack_require__(30);
-
-var test1Data = {
-    solverOptions: solverOptions,
-    items: itemsData,
-    container: containersData[0]
-};
-
-function Test1() {
-
-    /** @param {CLPSolver.SolutionData} solution */
-    function onSolution(solution) {
-        console.log(solution);
-        var packedItems = solution.container.filter(function (container) {
-            return container !== null;
-        })[0].items;
-        console.log(packedItems);
-    }
-    CLPSolver.signaler.On(CLPSolver.signals.solution, onSolution);
-    CLPSolver.Execute(test1Data.solverOptions, test1Data.items, [test1Data.container]);
-}
-
-
+exports.default = PackerInterface;
 
 /***/ })
 /******/ ]);
