@@ -1,8 +1,15 @@
 
 // enable vscode intellisense
 if(false){ var FreightPacker = require('../src/FreightPacker').default; }
+// expose typedef s for intellisense
+/** @typedef {import('../src/api/Types').InitializationParams} InitializationParams */
+/** @typedef {import('../src/api/Types').SolverParams} SolverParams */
+/** @typedef {import('../src/api/Types').CUBParams} CUBParams */
+/** @typedef {import('../src/api/Types').BoxEntry} BoxEntry */
 
 /**
+ * Parameters and data obtained from the UI mockup
+ * 
  * @typedef UIEntry
  * @property {string} label
  * @property {Number} weight
@@ -12,14 +19,29 @@ if(false){ var FreightPacker = require('../src/FreightPacker').default; }
  * @property {Number} height
  */
 
-const stringType = 'string',
-    numberType = 'number';
+/**
+ * Custom data related to cargo entries
+ * 
+ * @typedef CustomBoxEntry
+ * @property {BoxEntry} entry
+ * @property {string} extraData
+ */
+
+/**
+ * Custom data related to packing space configs
+ * 
+ * @typedef CustomPackingSpaceData
+ * @property {string} extraData
+ */
+
+const typeofString = 'string',
+    typeofNumber = 'number';
 
 class Example {
     constructor(){
         console.log('Freight Packer API Example');
 
-        var scope = this;
+        let scope = this;
         FreightPacker.CheckRequirements().then(
             () => { // success
                 scope.Start();
@@ -30,79 +52,115 @@ class Example {
         );
     }
 
+    Feedback(...args){
+        console.log(' >> UI ', ...args);
+    }
+
     Start(){
-        /** @type {import('../src/FreightPacker').InitializationParams} */
-        var params = {
+        /** @type {InitializationParams} */
+        let params = {
             debug: true,
-            ux: {
-                hud: false,
-                configure: true
+            uxParams: {
+                hud: true,
+                configure: false,
+                units: 1,
+                autoUpdatePack: true
             }
         };
-        var containerDiv = document.getElementById('fp-view');
+        let containerDiv = document.getElementById('fp-view');
         
         this.api = new FreightPacker(containerDiv, params);
+        this.api.On(FreightPacker.signals.ready, this.OnAPIReady.bind(this));
         this.boxEntry = this.api.cargoInput.CreateBoxEntry();
 
-        /** @type {Map<Object, string>} */
+        /** @type {Map<string, CustomBoxEntry>} */
         this.boxEntries = new Map();
 
-        var b = this.boxEntry;
+        /** @type {Map<string, CustomPackingSpaceData>} */
+        this.packingSpaces = new Map();
+
         /** @type {UIEntry} */
-        var initEntryData = {
-            label: b.label, weight: b.weight, quantity: b.quantity
+        let initEntryData = {
+            label: this.boxEntry.label, weight: this.boxEntry.weight, quantity: this.boxEntry.quantity
         };
-        var ui = new ExampleUI(initEntryData);
-        var signals = ExampleUI.signals;
+        let ui = new ExampleUI(initEntryData);
+        let signals = ExampleUI.signals;
 
         ui.On(signals.packRequest, this.SolvePacking.bind(this));
+        ui.On(signals.sliceResults, this.SliceResults.bind(this));
 
         ui.On(signals.loadPSConfig, this.SetPackingSpace.bind(this));
 
         ui.On(signals.boxInputUpdate, this.BoxInputUpdate.bind(this));
         ui.On(signals.boxInputComplete, this.BoxInputComplete.bind(this));
         ui.On(signals.boxInputAbort, this.BoxInputAbort.bind(this));
+
+        ui.On(signals.boxEntryRequest, this.OnBoxEntryRequest.bind(this));
+        ui.On(signals.boxInputModify, this.OnBoxEntryModify.bind(this));
+        ui.On(signals.boxInputRemove, this.OnBoxEntryRemove.bind(this));
     }
 
-    SolvePacking(algorithm){
-        console.log('Packing request using ' + algorithm);
-        this.api.packer.Solve(algorithm);
+    OnAPIReady(){
+        let scope = this;
+
+        // Bind to user selection of an entry
+        this.api.ux.user.On(FreightPacker.UX.User.signals.boxEntryInteract, this.OnBoxEntryInteract.bind(this));
+
+        // Bind to packing events
+        this.api.packer.On(FreightPacker.Packer.signals.solved, (result) => scope.Feedback('Packing solved:', result));
+        this.api.packer.On(FreightPacker.Packer.signals.failed, (error) => scope.Feedback('Packing failed:', error));
+
+        // Update some parameters
+        this.api.ux.visualization.packResults.animationDuration = .5;
     }
 
     // Packing space
     SetPackingSpace(jsonObject){
-        this.api.packingSpaceInput.Load(jsonObject);
+        // Load packing config, get an uid for later changes (or false on error)
+        let uid = this.api.packingSpaceInput.Load(jsonObject);
+        if(uid){
+            // Map data to some values, using its uid
+            /** @type {CustomPackingSpaceData} */
+            let someData = {
+                extraData: 'Example packing space: ' + uid
+            };
+            this.packingSpaces.set(uid, someData);
+        }
     }
 
     // Box input
     /** @param {UIEntry} uiEntry */
     BoxInputUpdate(uiEntry){
 
-        // Copy values into entry
+        // Copy values into local boxEntry
         if(uiEntry){
-            if(typeof uiEntry.label === stringType) this.boxEntry.label = uiEntry.label;
-            if(isNaN(uiEntry.weight) === false) this.boxEntry.weight = uiEntry.weight;
-            if(isNaN(uiEntry.quantity) === false) this.boxEntry.quantity = uiEntry.quantity;
+            if(typeof uiEntry.label === typeofString) this.boxEntry.label = uiEntry.label;
+            if(typeof uiEntry.weight === typeofNumber) this.boxEntry.weight = uiEntry.weight;
+            if(typeof uiEntry.quantity === typeofNumber) this.boxEntry.quantity = uiEntry.quantity;
 
-            if( isNaN(uiEntry.width) === false
-                && isNaN(uiEntry.length) === false
-                && isNaN(uiEntry.height) === false
+            if( typeof uiEntry.width === typeofNumber
+                && typeof uiEntry.length === typeofNumber
+                && typeof uiEntry.height === typeofNumber
             ){
                 this.boxEntry.dimensions.Set(uiEntry.width, uiEntry.length, uiEntry.height);
             }
         }
 
         // Shows/updates input in viewer
-        var success = this.api.cargoInput.Show(this.boxEntry);
+        let success = this.api.cargoInput.Show(this.boxEntry);
     }
 
     BoxInputComplete(){
         // Add entry, get an uid for later changes (or false on error)
-        var uid = this.api.cargoInput.Add(this.boxEntry);
+        let uid = this.api.cargoInput.Add(this.boxEntry);
         if(uid){
-            // Saves a copy of that entry (should be treated as read-only)
-            var snapshot = this.boxEntry.Clone();
-            this.boxEntries.set(snapshot, uid);
+            // Map entry to some values, using its uid
+            /** @type {CustomBoxEntry} */
+            let someData = {
+                entry: this.boxEntry.Clone(), // copy of values
+                extraData: 'Example item: ' + uid
+            };
+            this.boxEntries.set(uid, someData);
         }
 
         // Start new entry 'session' with same values
@@ -112,5 +170,75 @@ class Example {
     BoxInputAbort(){
         // Hides input in viewer
         this.api.cargoInput.Hide();
+    }
+
+    /** @param {string} entryUID */
+    OnBoxEntryRequest(entryUID, uiCallback){
+        let boxEntry = this.api.cargoInput.GetEntry(entryUID);
+        if(boxEntry){
+            uiCallback(boxEntry);
+        }
+    }
+
+    /** @param {string} entryUID @param {UIEntry} uiEntry */
+    OnBoxEntryModify(entryUID, uiEntry){
+
+        // Copy values into local boxEntry
+        if(typeof uiEntry.label === typeofString) this.boxEntry.label = uiEntry.label;
+        if(typeof uiEntry.weight === typeofNumber) this.boxEntry.weight = uiEntry.weight;
+        if(typeof uiEntry.quantity === typeofNumber) this.boxEntry.quantity = uiEntry.quantity;
+
+        if( typeof uiEntry.width === typeofNumber
+            && typeof uiEntry.length === typeofNumber
+            && typeof uiEntry.height === typeofNumber
+        ){
+            this.boxEntry.dimensions.Set(uiEntry.width, uiEntry.length, uiEntry.height);
+        }
+        
+        // Modify entry
+        this.api.cargoInput.Modify(entryUID, this.boxEntry);
+    }
+
+    /** @param {string} entryUID */
+    OnBoxEntryRemove(entryUID){
+        this.api.cargoInput.Remove(entryUID);
+    }
+
+    /** @param {string} entryUID */
+    OnBoxEntryInteract(entryUID){
+
+        // Get CustomBoxEntry using uid
+        let someData = this.boxEntries.get(entryUID);
+
+        // If same as previous selection, deselect (or anything else)
+        if(entryUID === this.selectedBoxEntryUID){
+            this.selectedBoxEntryUID = false;
+            this.api.ux.visualization.SelectEntry(false);
+            this.Feedback('Deselected -> ' + someData.extraData);
+        }
+        else{
+            this.selectedBoxEntryUID = entryUID;
+            // Select entry in scene
+            this.api.ux.visualization.SelectEntry(entryUID);
+            this.Feedback('Selected -> ' + someData.extraData);
+        }
+    }
+
+    /** @param {string} algorithm @param {CUBParams} algorithmParams */
+    SolvePacking(algorithm, algorithmParams){
+
+        /** @type {SolverParams} */
+        let solverParams = {
+            algorithm: algorithm,
+            algorithmParams: algorithmParams
+        };
+
+        this.Feedback('Packing request using:', solverParams);
+        this.api.packer.Solve(solverParams);
+    }
+
+    SliceResults(sliceValue){
+        sliceValue = Math.max(0, Math.min(1, sliceValue));
+        this.api.ux.visualization.packResults.SliceResults(sliceValue);
     }
 }

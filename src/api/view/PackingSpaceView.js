@@ -18,31 +18,30 @@ class PackingSpaceView{
         this.containerViews = [];
     }
 
-    /**
-     * @param {Container} container 
+    /** 
+     * @param {Container} container
      */
     Add(container){
-        Logger.Log('Adding container: ' + container.ToString() + ' to view', container);
-        var containerView = ContainerView.Request(container);
+        let containerView = ContainerView.Request(container);
         this.view.add(containerView.view);
         this.containerViews.push(containerView);
     }
 
-    /**
-     * 
-     * @param {Container} container 
-     */
-    Remove(container){
-
+    Clear(){
+        for(let i = 0; i < this.containerViews.length; i++){
+            let cv = this.containerViews[i];
+            this.view.remove(cv.view);
+        }
+        this.containerViews.length = 0;
     }
 
     /**
      * @param {string} containingVolumeUID 
      */
     FindContainingVolume(containingVolumeUID){
-        for(var iCView = 0; iCView < this.containerViews.length; iCView++){
+        for(let iCView = 0; iCView < this.containerViews.length; iCView++){
             let volumes = this.containerViews[iCView].container.volumes;
-            for(var iCVolume = 0; iCVolume < volumes.length; iCVolume++){
+            for(let iCVolume = 0; iCVolume < volumes.length; iCVolume++){
                 if(volumes[iCVolume].uid === containingVolumeUID){
                     return volumes[iCVolume];
                 }

@@ -72,17 +72,24 @@ class RaycastGroup {
         }
     }
 
+    UpdateRaycastItems(){
+        this.raycastItems.length = 0;
+        for(var i = 0; i < this.items.length; i++){
+            let raycastItem = this.collectionQuery(this.items[i]);
+            if(raycastItem) this.raycastItems.push(raycastItem);
+        }
+    }
+
     Raycast(raycaster){
         if(this.enabled === false) return;
 
-        var raycastItems;
+        
         if(this.updateProperty){
-            raycastItems = [];
-            for(var i = 0; i < this.raycastItems.length; i++) raycastItems[i] = this.collectionQuery(this.items[i]);
+            UpdateRaycastItems();
         }
-        else{
-            raycastItems = this.raycastItems;
-        }
+        
+        var raycastItems = this.raycastItems;
+        
         // if ( object.visible === false || object.parent === null) return; in THREE.Raycaster.intersectObject()
         var intersects = raycaster.intersectObjects(raycastItems, this.recursive);
         if (intersects.length > 0) {

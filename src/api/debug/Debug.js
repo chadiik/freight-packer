@@ -154,12 +154,17 @@ class DebugViz {
 
 class Debug {
 
-    static get AFitTest(){
-        return AFitTest;
+    static MaterialEdit(callback){
+        let objects = Debug.app.view.packResultView.cargoViews;
+        objects.forEach(o => {
+            let material = o.mesh.material;
+            callback(material);
+            material.needsUpdate = true;
+        });
     }
 
-    static get CLPTest(){
-        return require('../packer/clp/CLPTest');
+    static get AFitTest(){
+        return AFitTest;
     }
 }
 

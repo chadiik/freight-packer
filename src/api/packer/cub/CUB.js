@@ -1,34 +1,27 @@
+/** @author chadiik <http://chadiik.com/> */
+
 import { Container, Item } from "./Components";
 import Debug from "../../debug/Debug";
+import { rectanglesFromPoints, linesIntersect, rectangleContainsPoint, rectangleContainsRectangle, reduceRectangles } from "./Math2D";
+import Utils from "../../utils/cik/Utils";
 
-const debugging = true;
+const debugging = false;
 
 var running = true;
 if(debugging){
     Debug.app.sceneSetup.input.ListenKeys(['right', 'space']);
 }
 
-async function debugUser(){
-    await sleep(16);
-    var input = Debug.app.sceneSetup.input;
-    if(input.keys['right']) running = false;
-    if(input.keys['space']) running = true;
-    while(!running){
-        await sleep(200);
-        if(input.keys['right']) break;
-    }
-}
-
-function sleep(ms) {
+function sleep(ms, force) {
     return new Promise(resolve => {
-        if(debugging) setTimeout(resolve, ms);
+        if(debugging || force) setTimeout(resolve, ms);
         else resolve();
     });
 }
 
-function click(ms) {
+function click(ms, force) {
     return new Promise(resolve => {
-        if(debugging){
+        if(debugging || force){
             let tid = undefined;
             function execute(){
                 if(tid !== undefined) clearTimeout(tid);
@@ -37,6 +30,24 @@ function click(ms) {
             }
             if(ms && ms > 0) tid = setTimeout(execute, ms);
             addEventListener('mouseup', execute);
+        }
+        else{
+            resolve();
+        }
+    });
+}
+
+function keypress(ms, force) {
+    return new Promise(resolve => {
+        if(debugging || force){
+            let tid = undefined;
+            function execute(){
+                if(tid !== undefined) clearTimeout(tid);
+                removeEventListener('keydown', execute);
+                resolve();
+            }
+            if(ms && ms > 0) tid = setTimeout(execute, ms);
+            addEventListener('keydown', execute);
         }
         else{
             resolve();
@@ -57,6 +68,16 @@ function debugRegion(region, color, solid, duration, checkered){
     return debugUID;
 }
 
+/**
+ * @param {Region} region * @param {Number} color 
+ */
+async function debugRegionBlink(region, color, solid, checkered, blinks, onDuration, offDuration){
+    for(let i = 0; i < blinks; i++){
+        debugRegion(region, color, solid, onDuration, checkered);
+        await sleep(onDuration + offDuration);
+    }
+}
+
 /** @param {Array<string>} */
 function debugClear(uids){
     if(uids){
@@ -69,26 +90,9 @@ function debugClear(uids){
     }
 }
 
+const epsilon = Math.pow(2, -52);
 const smallValue = .000001;
-
-class Wall{
-    /**
-     * @param {Number} axis 0, 1 or 2 for x, y or z
-     * @param {Number} distance 
-     * @param {Number} x 
-     * @param {Number} y 
-     * @param {Number} width 
-     * @param {Number} height 
-     */
-    constructor(axis, distance, x, y, width, height){
-        this.axis = axis;
-        this.distance = distance;
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-    }
-}
+const smallValueSqrt = .001;
 
 class Region{
     /**
@@ -108,12 +112,19 @@ class Region{
         return this;
     }
 
+    /** @param {Region} region */
+    Copy(region){
+        this.Set(region.x, region.y, region.z, region.width, region.height, region.length, region.preferredX);
+        return this;
+    }
+
     get volume(){
         return this.width * this.height * this.length;
     }
 
     /**
      * @param {Number} offset offsets the region by this before calculating corners 
+     * @returns {Array<Number>} 8 corners, length = 24 + center point [24, 25, 26]
      */
     GetCorners(offset){
         var x = this.x - offset, y = this.y - offset, z = this.z - offset, w = this.width + offset * 2, h = this.height + offset * 2, l = this.length + offset * 2;
@@ -131,6 +142,22 @@ class Region{
         tempCorners[24] = x + w/2;tempCorners[25] = y + h/2;tempCorners[26] = z + l/2;  // center
 
         return tempCorners;
+    }
+
+    /**
+     * @param {Array} result
+     * @returns {Array<Number>} 4 corners, length = 12
+     */
+    GetFloorPoints(result){
+        if(result === undefined) result = tempPoints;
+        var x = this.x, y = this.y, z = this.z, w = this.width, l = this.length;
+
+        result[0] = x;         result[1] = y;     result[2] = z;
+        result[3] = x + w;     result[4] = y;     result[5] = z;
+        result[6] = x + w;     result[7] = y;     result[8] = z + l;
+        result[9] = x;         result[10] = y;    result[11] = z + l;
+
+        return result;
     }
 
     /**
@@ -161,26 +188,26 @@ class Region{
                 && z <= other.z + other.length && z + l >= other.z;
     }
 
-    /** @param {Number} offset offsets the region by this before checking * @param {Number} width * @param {Number} height * @param {Number} length */
-    FitTest(offset, width, height, length){
+    /** @param {Number} offset offsets the region by this before checking * @param {Number} width * @param {Number} height * @param {Number} length
+     * @param {Region} [result]
+     */
+    FitTest(offset, width, height, length, result){
+        if(!result) result = tempRegion;
         // Check that all dimensions fit
         var fit = width < this.width + offset * 2 && height < this.height + offset * 2 && length < this.length + offset * 2;
         if(fit){
             // Calculate x based on preferred side
             let x = this.preferredX !== 0 ? this.x + this.width - width : this.x;
-            tempRegion.Set(x, this.y, this.z, width, height, length, this.preferredX);
-            return tempRegion;
+            result.Set(x, this.y, this.z, width, height, length, this.preferredX);
+            return result;
         }
 
         return false;
     }
 
-    /** @param {Region} region * @param {Number} minRegionAxis */
-    async Subtract(region, minRegionAxis){
+    /** @param {Region} region * @param {Number} minRegionAxis @param {Boolean} skipTop */
+    Subtract(region, minRegionAxis, skipTop){
         var newRegions;
-
-        /**/var debugUIDs = [];
-        /**/debugUIDs.push(debugRegion(region, 0xff000000));
         
         // Calculate a new east region
         let axis = region.x + region.width;
@@ -189,8 +216,6 @@ class Region{
             let east = new Region(axis, this.y, this.z, size, this.height, this.length, 0);
             if(newRegions === undefined) newRegions = [];
             newRegions.push(east);
-
-            /**/debugUIDs.push(debugRegion(east, 0x7fff0000, true));
         }
 
         // Calculate a new west region
@@ -200,39 +225,27 @@ class Region{
             let west = new Region(axis, this.y, this.z, size, this.height, this.length, 1);
             if(newRegions === undefined) newRegions = [];
             newRegions.push(west);
-
-            /**/debugUIDs.push(debugRegion(west, 0x7f00ff00, true));
         }
 
-        // Calculate a new over/up region
-        axis = region.y + region.height;
-        size = this.y + this.height - axis;
-        if(size > minRegionAxis){
-            let over = new Region(region.x, axis, region.z, region.width, size, region.length, 0); // add overhang var? // togglePreferredX based on pre-packed weight distribution?
-            if(newRegions === undefined) newRegions = [];
-            newRegions.push(over);
-
-            /**/debugUIDs.push(debugRegion(over, 0x7f0000ff, true));
+        if( !skipTop ){
+            // Calculate a new over/up region
+            axis = region.y + region.height;
+            size = this.y + this.height - axis;
+            if(size > minRegionAxis){
+                let over = new Region(region.x, axis, region.z, region.width, size, region.length, 0); // todo: add overhang var? // togglePreferredX based on pre-packed weight distribution?
+                if(newRegions === undefined) newRegions = [];
+                newRegions.push(over);
+            }
         }
 
-        /*
         // Calculate a new south region
         axis = this.z;
         size = region.z - axis;
-        if(size > minRegionAxis){
-            let south = new Region(this.x, this.y, axis, this.width, this.height, size, 0); // togglePreferredX based on pre-packed weight distribution?
+        if(false && size > minRegionAxis){
+            let south = new Region(this.x, this.y, axis, this.width, this.height, size, 0); // todo togglePreferredX based on pre-packed weight distribution?
             if(newRegions === undefined) newRegions = [];
             newRegions.push(south);
-
-            /** /debugUIDs.push(debugRegion(south, 0x7f0000ff, true, 100));
-            /** /await sleep(200);
-            /** /debugUIDs.push(debugRegion(south, 0x7f0000ff, true, 100));
-            /** /await sleep(200);
-            /** /debugUIDs.push(debugRegion(south, 0x7f0000ff, true));
-            /** /debugLog('south region created');
-            /** /await click();
         }
-        */
 
         // Set this as new north/front region
         axis = region.z + region.length;
@@ -240,15 +253,59 @@ class Region{
         this.z = axis;
         this.length = size;
 
-        if(size > minRegionAxis){
-            /**/debugUIDs.push(debugRegion(this, 0x7faaffff, true));
+        return newRegions;
+    }
+
+    /** @param {Region} other */
+    ConnectFloorRects(other){
+        var ptsA = this.GetFloorPoints(tempPoints),
+            ptsB = other.GetFloorPoints(tempPoints2);
+
+        var adjacent = 0;
+        var intersections = [];
+        for(let iA = 0; iA < 12; iA += 3){
+            let nextA = iA + 3 === 12 ? 0 : iA + 3;
+            let ax = ptsA[iA], az = ptsA[iA + 2], nax = ptsA[nextA], naz = ptsA[nextA + 2];
+
+            for(let iB = 0; iB < 12; iB += 3){
+                let nextB = iB + 3 === 12 ? 0 : iB + 3;
+                let bx = ptsB[iB], bz = ptsB[iB + 2], nbx = ptsB[nextB], nbz = ptsB[nextB + 2];
+
+                if(
+                    rectangleContainsPoint(smallValue, ptsA[0], ptsA[2], ptsA[6] - ptsA[0], ptsA[8] - ptsA[2], bx, bz)
+                    || rectangleContainsPoint(smallValue, ptsB[0], ptsB[2], ptsB[6] - ptsB[0], ptsB[8] - ptsB[2], ax, az)
+                ){
+                    adjacent++;
+                }
+
+                let intersection = linesIntersect(ax, az, nax, naz, bx, bz, nbx, nbz);
+                if(intersection &&
+                    (
+                        rectangleContainsPoint(smallValue, ptsA[0], ptsA[2], ptsA[6] - ptsA[0], ptsA[8] - ptsA[2], intersection.x, intersection.y)
+                        || rectangleContainsPoint(smallValue, ptsB[0], ptsB[2], ptsB[6] - ptsB[0], ptsB[8] - ptsB[2], intersection.x, intersection.y)
+                    )
+                ){
+                    intersections.push(intersection);
+                }
+            }
         }
 
-        //**/await click();
+        if(adjacent > 1){
+            for(let i = 0; i < 12; i += 3) intersections.push({x: ptsA[i], y: ptsA[i + 2]}, {x: ptsB[i], y: ptsB[i + 2]});
+        }
+        else{
+            intersections.length = 0;
+        }
 
-        /**/debugClear(debugUIDs);
+        var rectangles = rectanglesFromPoints(intersections);
 
-        return newRegions;
+        let rectA = { p1: {x: ptsA[0], y: ptsA[2]}, p2: {x: ptsA[3], y: ptsA[5]}, p3: {x: ptsA[6], y: ptsA[8]}, p4: {x: ptsA[9], y: ptsA[11]} };
+        let rectB = { p1: {x: ptsB[0], y: ptsB[2]}, p2: {x: ptsB[3], y: ptsB[5]}, p3: {x: ptsB[6], y: ptsB[8]}, p4: {x: ptsB[9], y: ptsB[11]} };
+        rectangles.push(rectA, rectB);
+
+        reduceRectangles(rectangles);
+        
+        return rectangles;
     }
 
     /**
@@ -266,7 +323,10 @@ class Region{
 
 var tempRegion = new Region();
 var tempRegion2 = new Region();
-var tempCorners = [0, 0, 0];
+var tempRegion3 = new Region();
+var tempCorners = [0];
+var tempPoints = [0];
+var tempPoints2 = [0];
 
 class PackedItem{
 
@@ -289,8 +349,27 @@ class PackedItem{
 
     /** @param {PackedItem} a * @param {PackedItem} b */
     static DepthSort(a, b){
-        if(a.z + smallValue < b.z) return -1;
-        if(a.z > b.z + smallValue) return 1;
+        let az = a.z + a.packedLength,
+            bz = b.z + b.packedLength;
+        if(az + smallValue < bz) return -1;
+        if(az > bz + smallValue) return 1;
+        if(a.y < b.y) return -1;
+        if(a.y > b.y) return 1;
+        if(a.ref.volume > b.ref.volume + smallValue) return -1;
+        if(a.ref.volume + smallValue < b.ref.volume) return 1;
+        return 0;
+    }
+
+    /** @param {PackedItem} a * @param {PackedItem} b */
+    static Sort(a, b){
+        if(a.z + smallValue < b.z){
+            if(a.z + a.packedLength > b.z && a.y > b.y) return 1;
+            return -1;
+        }
+        if(b.z + smallValue < a.z){
+            if(b.z + b.packedLength > a.z && b.y > a.y) return 1;
+            return 1;
+        }
         if(a.y < b.y) return -1;
         if(a.y > b.y) return 1;
         if(a.ref.volume > b.ref.volume + smallValue) return -1;
@@ -302,9 +381,11 @@ class PackedItem{
 class PackedContainer{
     /**
      * @param {Container} container 
+     * @param {CUBParams} params
      */
-    constructor(container){
+    constructor(container, params){
         this.container = container;
+        this.params = params;
         
         /** @type {Array<PackedItem>} */
         this.packedItems = [];
@@ -315,18 +396,22 @@ class PackedContainer{
         /** @type {Array<Region>} */
         this.regions = [firstRegion];
 
+        /** @type {Array<PackedItem>} */
+        this.tops = [];
+
         this.cumulatedWeight = 0;
     }
 
     /** @param {Array<Item>} items */
     set items(items){
-        this.assistant = new PackingAssistant(this.regions, items);
+        this.assistant = new PackingAssistant(items, this);
     }
 
     /** @param {PackedItem} item */
     SetPacked(item){
         this.cumulatedWeight += item.ref.weight;
         this.packedItems.push(item);
+        this.tops.push(item);
     }
 
     /** @param {Item} item */
@@ -340,9 +425,10 @@ class PackedContainer{
     }
 
     /** @param {Region} region * @param {Region} fit * @returns {Boolean} false if region has been deleted */
-    async Occupy(region, fit){
+    Occupy(region, fit){
+
         // Subtracts fit from region and calculates new bounding regions
-        var newRegions = /**/await region.Subtract(fit, this.assistant.minRegionAxis);
+        var newRegions = region.Subtract(fit, this.assistant.minRegionAxis, this.params.skipTop);
 
         // Add new bounding regions if any
         if(newRegions) this.regions.push(...newRegions);
@@ -354,57 +440,128 @@ class PackedContainer{
             return false;
         }
 
+        var debugUIDs = [];
+        if(!newRegions) newRegions = [];
+        newRegions.push(region);
+        newRegions.forEach(region => {
+            debugUIDs.push(debugRegion(region, 0xffff0000, true, -1, true));
+        });
+
+        debugClear(debugUIDs);
+
         return true;
     }
 
+    static SortByN(a, b){
+        if(isNaN(a.n) || isNaN(b.n)) return 0;
+
+        if(a.n < b.n) return -1;
+        if(a.n > b.n) return 1;
+        return 0;
+    }
+
     /** @param {Item} item */
-    async Fit(item){
+    GetPlacementWithHighestScore(item){
         var numRegions = this.regions.length;
-        var numPackedItems = this.packedItems.length;
+        var volumeItem = item.volume;
+        var validOrientations = item.validOrientations;
 
-        // Try orientations 'xyz', 'zyx', 'yxz', 'yzx', 'zxy', 'xzy'
-        for(let iOrient = 0; iOrient < 6; iOrient++){
-            let dimensions = item.GetOrientedDimensions(iOrient);
+        /** @typedef PlacementScore @property {Number} region region index @property {Number} orientation orientation index @property {Number} n score */
+        /** @type {Array<PlacementScore>} */
+        var regionScoreTable = [],
+            orientationScoreTable = [];
+        var testSuccessfulRegions = 4;
+        // Try to fit in sorted regions
+        for(let iRegion = 0; iRegion < numRegions && testSuccessfulRegions > 0; iRegion++){
+            let region = this.regions[iRegion];
 
-            // Check if orientation is permitted
-            if(dimensions){
+            if(region.volume > volumeItem){
+                let dummyRegion = tempRegion2.Copy(region);
 
-                // Try to fit in sorted regions
-                for(let iRegion = 0; iRegion < numRegions; iRegion++){
-                    let region = this.regions[iRegion];
+                orientationScoreTable.length = 0;
+                for(let iOrient = 0; iOrient < validOrientations.length; iOrient++){
+                    let orientation = validOrientations[iOrient];
 
-                    // Fit test (success: Region, failure: false)
+                    let dimensions = item.GetOrientedDimensions(orientation);
                     let regionFitTest = region.FitTest(smallValue, dimensions[0], dimensions[1], dimensions[2]);
-                    this.assistant.Something(item, region, regionFitTest);
                     if(regionFitTest !== false){
 
-                        for(let iPacked = 0; iPacked < numPackedItems; iPacked++){
-                            let packedItem = this.packedItems[iPacked];
-                            // Creates temporary region for following calculations
-                            let packedRegion = tempRegion2.Set(packedItem.x, packedItem.y, packedItem.z, packedItem.packedWidth, packedItem.packedHeight, packedItem.packedLength, 0);
-                            
-                            let intersects = packedRegion.Intersects(-smallValue, regionFitTest);
-                            if(intersects){
-                                continue;
-                            }
-                        }
+                        testSuccessfulRegions--;
 
-                        //**/debugLog('regionFitTest:', regionFitTest);
+                        // Subtracts fit from region and calculates new bounding regions
+                        let newRegions = dummyRegion.Subtract(regionFitTest, this.assistant.minRegionAxis, this.params.skipTop);
+                        if(newRegions === undefined) newRegions = [];
+                        if(dummyRegion.length > this.assistant.minRegionAxis)
+                            newRegions.push(dummyRegion);
 
-                        // Create a new packed item
-                        let packedItem = new PackedItem(item, regionFitTest.x, regionFitTest.y, regionFitTest.z, regionFitTest.width, regionFitTest.height, regionFitTest.length, iOrient);
-                        /**/let debugUID = debugRegion(regionFitTest, 0xffff0000, true);
-
-                        // Reserve the tested sub region: regionFitTest from the containing region: region
-                        let regionRemains = /**/await this.Occupy(region, regionFitTest);
-
-                        // Clean-up regions
-                        /**/await this.ProcessRegions();
-                        /**/debugClear([debugUID]);
-                        debugRegion(regionFitTest, 0xffffffff, false);
-
-                        return packedItem;
+                        let orientationScore = {
+                            region: iRegion,
+                            orientation: orientation, 
+                            n: this.assistant.RateFit(item, regionFitTest, newRegions)
+                        };
+                        orientationScoreTable.push(orientationScore);
                     }
+                }
+
+                if(orientationScoreTable.length > 0){
+                    orientationScoreTable.sort(PackedContainer.SortByN);
+                    let regionScore = orientationScoreTable.pop();
+                    regionScoreTable.push(regionScore);
+                }
+            }
+        }
+
+        if(regionScoreTable.length === 0){
+            return false;
+        }
+
+        regionScoreTable.sort(PackedContainer.SortByN);
+        let highestScore = regionScoreTable.pop();
+        return highestScore;
+    }
+
+    /** @param {Item} item */
+    FitLessWaste(item){
+        
+        let highestScore = this.GetPlacementWithHighestScore(item);
+
+        if(highestScore === false){
+            console.log('revertedToRegular');
+            return this.FitRegular(item);
+        }
+
+        let region = this.regions[highestScore.region];
+        let orientation = item.validOrientations[highestScore.orientation];
+        let dimensions = item.GetOrientedDimensions(orientation);
+        let regionFitTest = region.FitTest(smallValue, dimensions[0], dimensions[1], dimensions[2]);
+        if(regionFitTest !== false){
+            return this.CommitFit(item, region, regionFitTest, orientation);
+        }
+
+        return false;
+    }
+
+    /** @param {Item} item */
+    GetFirstFit(item){
+        var validOrientations = item.validOrientations;
+        var numRegions = this.regions.length;
+
+        // Try to fit in sorted regions
+        for(let iRegion = 0; iRegion < numRegions; iRegion++){
+            let region = this.regions[iRegion];
+
+            for(let iOrient = 0; iOrient < validOrientations.length; iOrient++){
+                let orientation = validOrientations[iOrient];
+
+                let dimensions = item.GetOrientedDimensions(orientation);
+
+                // Fit test (success: Region, failure: false)
+                let regionFitTest = region.FitTest(smallValue, dimensions[0], dimensions[1], dimensions[2]);
+                if(regionFitTest !== false){
+                    /** @typedef Placement @property {Number} region region index @property {Number} orientation orientation index */
+                    /** @type {Placement} */
+                    let result = {region: iRegion, orientation: orientation};
+                    return result;
                 }
             }
         }
@@ -412,7 +569,145 @@ class PackedContainer{
         return false;
     }
 
-    async ProcessRegionsForZeroRegions(){
+    /** @param {Item} item */
+    FitRegular(item){
+
+        var firstFit = this.GetFirstFit(item);
+        if(firstFit){
+
+            let region = this.regions[firstFit.region];
+            let orientation = item.validOrientations[firstFit.orientation];
+            let dimensions = item.GetOrientedDimensions(orientation);
+
+            let regionFitTest = region.FitTest(smallValue, dimensions[0], dimensions[1], dimensions[2]);
+            if(regionFitTest !== false){
+
+                return this.CommitFit(item, region, regionFitTest, orientation);
+            }
+        }
+
+        return false;
+    }
+
+    /** @param {Item} item @param {Region} containingRegion @param {Region} placement @param {Number} orientation */
+    CommitFit(item, containingRegion, placement, orientation){
+        
+        let numPackedItems = this.packedItems.length;
+
+        // Make sure that the new 'packed item to be' does not collide with a previous one
+        for(let iPacked = 0; iPacked < numPackedItems; iPacked++){
+            let packedItem = this.packedItems[iPacked];
+            // Creates temporary region for following calculations
+            let packedRegion = tempRegion2.Set(packedItem.x, packedItem.y, packedItem.z, packedItem.packedWidth, packedItem.packedHeight, packedItem.packedLength, 0);
+            
+            let intersects = packedRegion.Intersects(-smallValue, placement);
+            if(intersects){
+                console.log('revertedToRegular');
+                return this.FitRegular(item);
+            }
+        }
+
+        // Create a new packed item
+        let packedItem = new PackedItem(item, placement.x, placement.y, placement.z, placement.width, placement.height, placement.length, orientation);
+        /**/let debugUID = debugRegion(placement, 0xffff0000, true);
+
+        // Reserve the tested sub region: regionFitTest from the containing region: region
+        let regionRemains = this.Occupy(containingRegion, placement);
+
+        /**/debugClear([debugUID]);
+        debugRegion(placement, 0xffffffff, false);
+
+        return packedItem;
+    }
+
+    ProcessRegionsPreferredX(){
+        var regions = this.regions,
+            numRegions = regions.length;
+        var containerWidth = this.container.width;
+
+        for(let iRegion = 0; iRegion < numRegions; iRegion++){
+            let region = regions[iRegion];
+
+            if(Math.abs(region.x) < smallValue) region.preferredX = 0;
+            else if(Math.abs(region.x + region.width - containerWidth) < smallValue) region.preferredX = 1;
+        }
+    }
+
+    ProcessRegionsMergeExpand(){
+        var regions = this.regions,
+            numRegions = regions.length;
+
+        var toInt = 1 / smallValue;
+        function coordID(value){
+            return Math.floor(value * toInt);
+        }
+
+        /** @typedef Level @property {Number} y @property {Array<import('./Math2D').Rectangle>} rectangles */
+        /** @type {Array<Level>} */
+        var levels = {};
+
+        var neighbours = [], rectangles = [];
+        for(let iRegion = 0; iRegion < numRegions; iRegion++){
+            let regionA = regions[iRegion];
+            neighbours.length = 0;
+            neighbours.push(iRegion);
+            
+            for(let jRegion = iRegion + 1; jRegion < numRegions; jRegion++){
+                let regionB = regions[jRegion];
+
+                if(Math.abs(regionA.y - regionB.y) < smallValue){
+                    let intersects = regionA.Intersects(smallValue, regionB);
+                    if(intersects){
+                        neighbours.push(jRegion);
+                    }
+                }
+            }
+
+            let numNeighbours = neighbours.length;
+            if(numNeighbours > 1){
+                rectangles.length = 0;
+
+                for(let iNeighbour = 0; iNeighbour < numNeighbours; iNeighbour++){
+                    let neighbourA = regions[neighbours[iNeighbour]];
+
+                    for(let jNeighbour = iNeighbour + 1; jNeighbour < numNeighbours; jNeighbour++){
+                        let neighbourB = regions[neighbours[jNeighbour]];
+
+                        rectangles.push(...neighbourA.ConnectFloorRects(neighbourB));
+                    }
+                }
+
+                if(rectangles.length > 0){
+                    let yCat = coordID(regionA.y);
+                    if(levels[yCat] === undefined) levels[yCat] = {y: regionA.y, rectangles: []};
+                    levels[yCat].rectangles.push(...rectangles);
+                }
+            }
+        }
+
+        var levelsYCats = Object.keys(levels);
+        for(let iYCat = 0, numYCats = levelsYCats.length; iYCat < numYCats; iYCat++){
+            /** @type {Level} */
+            let level = levels[levelsYCats[iYCat]];
+            let rectangles = level.rectangles;
+            let regionY = level.y;
+            let regionHeight = this.container.height - regionY;
+            
+            reduceRectangles(rectangles);
+            for(let iRect = 0, numRects = rectangles.length; iRect < numRects; iRect++){
+                let rect = rectangles[iRect];
+                let rx = rect.p1.x, ry = rect.p1.y;
+                let rw = rect.p3.x - rx, rh = rect.p3.y - ry;
+
+                // Calculate preferred packing side based on center point relative to container
+                let preferredX = (rx.x + rw / 2) < (this.container.width / 2) ? 0 : 1;
+                let newRegion = new Region(rx, regionY, ry, rw, regionHeight, rh, preferredX);
+                this.regions.push(newRegion);
+            }
+        }
+    }
+
+    ProcessRegionsForZeroRegions(){
         var regions = this.regions;
         var minRegionAxis = this.assistant.minRegionAxis;
         for(let iRegion = 0; iRegion < regions.length; iRegion++){
@@ -424,70 +719,49 @@ class PackedContainer{
         }
     }
 
-    async ProcessRegionsForPackedItems(){
+    ProcessRegionsPerPackedItem(packedItem, harsh){
         var regions = this.regions;
-        var packedItems = this.packedItems;
+        let itemVolume = packedItem.ref.volume;
+        
+        // Creates temporary region for following calculations
+        let packedRegion = tempRegion.Set(packedItem.x, packedItem.y, packedItem.z, packedItem.packedWidth, packedItem.packedHeight, packedItem.packedLength, 0);
 
         for(let iRegion = 0; iRegion < regions.length; iRegion++){
             let region = regions[iRegion];
-            let volumeRegion = region.volume;
 
-            for(let iPacked = 0; iPacked < packedItems.length; iPacked++){
-                let packedItem = packedItems[iPacked];
+            if(itemVolume > region.volume && packedRegion.ContainsRegion(smallValue, region)){
+                regions.splice(iRegion, 1);
+                iRegion--;
+                console.log('Contained region' + iRegion + ' deleted');
+                continue;
+            }
 
-                // Calculate preferred packing side based on center point relative to container
-                let preferredX = (packedItem.x + packedItem.packedWidth / 2) < (this.container.width / 2) ? 0 : 1;
-                // Creates temporary region for following calculations
-                let packedRegion = tempRegion.Set(packedItem.x, packedItem.y, packedItem.z, packedItem.packedWidth, packedItem.packedHeight, packedItem.packedLength, preferredX);
+            if(packedRegion.Intersects(-smallValue, region)){
+
+                if(harsh){
+                    console.log('\tIntersecting region' + iRegion + ' deleted (!)');
+                    regions.slice(iRegion, 1);
+                    iRegion--;
+                    continue;
+                }
                 
-                let volumePacked = packedRegion.volume;
-                // Checks if packedRegion is larger then region, as it could be completely contained within
-                if(volumePacked > volumeRegion){
-                    // If the region is completely contained within the packed volume, remove the region
-                    if(packedRegion.ContainsRegion(smallValue, region)){
-                        /**/debugRegion(region, 0xff0000, true, 100);
-                        /**/await sleep(50);
-                        regions.splice(iRegion, 1);
-                        iRegion--;
-                        break;
-                    }
-                }
-
-                // Checks if the region and packedRegion intersects
-                /*let corners = packedRegion.GetCorners(-smallValue * 10);
-                let intersects = false, iCorner = 0;
-                while(iCorner < 27 && intersects === false){
-                    intersects = region.ContainsPoint(-smallValue, corners[iCorner], corners[iCorner + 1], corners[iCorner + 2]);
-                    iCorner += 3;
-                }
-                */
-
-                let intersects = packedRegion.Intersects(-smallValue, region);
-
-                if(intersects){
-                    /**/debugLog('intersects');
-                    /**/await click();
-
-                    regions.splice(iRegion, 1);
-                    iRegion--;
-                    break;
-                    
-                    // Reserve the packedRegion from the containing region
-                    let regionRemains = /**/await this.Occupy(region, packedRegion);
-
-                    iRegion--;
-                    // If the containing region: region, has been removed, then break
-                    if(regionRemains === false){
-                        break;
-                    }
-                }
-
-                // also merge walls?
+                let regionRemains = this.Occupy(region, packedRegion);
+                iRegion --;
             }
         }
     }
 
-    async ProcessRegionsEnclosed(){
+    ProcessRegionsForPackedItems(harsh){
+        var packedItems = this.packedItems,
+            numPackedItems = packedItems.length;
+
+        for(let iItem = 0; iItem < numPackedItems; iItem++){
+            let packedItem = packedItems[iItem];
+            this.ProcessRegionsPerPackedItem(packedItem, harsh);
+        }
+    }
+
+    ProcessRegionsEnclosed(){
         var regions = this.regions;
 
         for(let iRegion = 0; iRegion < regions.length; iRegion++){
@@ -501,8 +775,6 @@ class PackedContainer{
                 if(volumeA < volumeB){
                     // If a A is completely contained within B, remove the A
                     if(regionB.ContainsRegion(smallValue, regionA)){
-                        /**/debugRegion(regionA, 0xff0000, true, 100);
-                        /**/await sleep(50);
                         regions.splice(iRegion, 1);
                         iRegion--;
                         break;
@@ -511,8 +783,6 @@ class PackedContainer{
                 else{
                     // If a B is completely contained within A, remove the B
                     if(regionA.ContainsRegion(smallValue, regionB)){
-                        /**/debugRegion(regionB, 0xff0000, true, 100);
-                        /**/await sleep(50);
                         regions.splice(jRegion, 1);
                         jRegion--;
                     }
@@ -521,66 +791,137 @@ class PackedContainer{
         }
     }
 
-    async ProcessRegions(){
-        console.log('>>> ProcessRegions()');
+    ProcessRegions(){
         var regions = this.regions;
 
-        // Removes unuseable regions
-        /**/await this.ProcessRegionsForZeroRegions();
+        if(global.processRegionsCount === undefined) global.processRegionsCount = 0;
+
+        // Recalculate preferred insertion side per region (left or right)
+        this.ProcessRegionsPreferredX();
 
         // Removes regions that are completely enclosed in packed volumes, and correct any intersecting ones
-        /**/await this.ProcessRegionsForPackedItems();
+        this.ProcessRegionsForPackedItems();
+
+        // Merge and expand free regions (can span several packed item tops)
+        this.ProcessRegionsMergeExpand();
+
+        // Removes unuseable regions
+        this.ProcessRegionsForZeroRegions();
 
         // Removes regions that are completely enclosed in larger regions
-        /**/await this.ProcessRegionsEnclosed();
+        this.ProcessRegionsEnclosed();
 
         // Sort by z (first) and volume (second)
         regions.sort(Region.SortDeepestSmallest);
 
-        this.packedItems.sort(PackedItem.DepthSort);
-        /**/await this.ProcessRegionsForPackedItems();
+        this.packedItems.sort(PackedItem.Sort);
+    }
+}
 
-        /**/var debugUIDs = [];
-        for(let iRegion = 0; iRegion < regions.length; iRegion++){
-            let region = regions[iRegion];
-            /**/debugUIDs.push(debugRegion(region, 0xff0000, true, 100, true));
-            /**/await sleep(16);
-            /**/debugUIDs.push(debugRegion(region, 0xff0000, true, -1, true));
+class PackingAssistant{
+    /**
+     * @param {Array<Item>} items 
+     * @param {PackedContainer} packedContainer 
+     */
+    constructor(items, packedContainer){
+
+        global.assistant = this;
+        this.debugRegion = function(regionIndex){
+
         }
 
-        //**/await click();
-        /**/await debugUser();
+        this.params = {
+            minDimensionsNoWasteFactor: [1, 1, 1]
+        };
 
-        /**/debugClear(debugUIDs);
+        this.workingItems = items;
+        this.packedContainer = packedContainer;
+        this.workingRegions = this.packedContainer.regions;
+
+        this.minRegionAxis = smallValue;
+
+        this.workingItemsSortFunction = Item.VolumeSort;
+
+        // Sort items by volume ascending
+        this.workingItems.sort(this.workingItemsSortFunction);
+
+        var minDimensionsSearchSet = this.workingItems;
+        //minDimensionsSearchSet = [this.workingItems[0]];
+        this.minDimensions = this.GetMinDimensionsOverall(minDimensionsSearchSet);
+    }
+
+    /** @param {Array<Item>} items */
+    GetMinDimensionsOverall(items){
+        var minDimensions = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER];
+
+        for(let iItem = 0, numItems = items.length; iItem < numItems; iItem++){
+            let item = items[iItem];
+            var validOrientations = item.validOrientations;
+            for(let iOrient = 0; iOrient < validOrientations.length; iOrient++){
+                let orientation = validOrientations[iOrient];
+                let dimensions = item.GetOrientedDimensions(orientation);
+                if(dimensions[0] < minDimensions[0]) minDimensions[0] = dimensions[0];
+                if(dimensions[1] < minDimensions[1]) minDimensions[1] = dimensions[1];
+                if(dimensions[2] < minDimensions[2]) minDimensions[2] = dimensions[2];
+            }
+        }
+
+        return minDimensions;
+    }
+
+    /**
+     * 
+     * @param {Item} fittedItem 
+     * @param {Region} fit 
+     * @param {Array<Region>} newRegions 
+     */
+    RateFit(fittedItem, fit, newRegions){
+        
+        // Try out a recursive deep rate fit
+
+        var containerLength = this.packedContainer.container.length;
+        var minDimensions = this.minDimensions;
+        var minDimensionsNoWasteFactor = this.params.minDimensionsNoWasteFactor;
+
+        var minZScore = 1 - (fit.z + fit.length) / containerLength; // 0-1
+
+        // new regions usability score
+        var minWasteScore = 1; // have completely filled the region if newRegions.length === 0
+        if(newRegions.length > 0){
+            minWasteScore = 0;
+            for(let iRegion = 0; iRegion < newRegions.length; iRegion++){
+                let region = newRegions[iRegion];
+                
+                let scoreW = 0, scoreH = 0, scoreL = 0;
+                if(region.width >= minDimensions[0] && (region.width - minDimensions[0]) < minDimensions[0] * minDimensionsNoWasteFactor[0]) scoreW += 1;
+                if(region.height >= minDimensions[1] && (region.width - minDimensions[1]) < minDimensions[1] * minDimensionsNoWasteFactor[1]) scoreH += 1;
+                if(region.length >= minDimensions[2] && (region.width - minDimensions[2]) < minDimensions[2] * minDimensionsNoWasteFactor[2]) scoreL += 1;
+                
+                minWasteScore += scoreW * .5 + scoreH * .3 + scoreL * .2;
+            }
+            minWasteScore /= newRegions.length;
+        }
+
+        var minZ_weight = this.packedContainer.params.minZ_weight;
+        var minWaste_weight = this.packedContainer.params.minWaste_weight;
+        var score = minZScore * minZ_weight + minWasteScore * minWaste_weight;
+        return score;
     }
 }
 
 /**
  * @typedef CUBParams
+ * @property {Number} minZ_weight
+ * @property {Number} minWaste_weight
+ * @property {Boolean} skipTop
  */
 
-class PackingAssistant{
-    /**
-     * @param {Array<Region>} regions 
-     * @param {Array<Item>} items 
-     */
-    constructor(regions, items){
-        this.workingRegions = regions;
-        this.workingItems = items;
-
-        this.minRegionAxis = smallValue;
-
-        // Sort items by volume ascending
-        this.workingItems.sort(Item.VolumeSort);
-
-        var smallestItem = this.workingItems[0];
-        this.minItemSize = Math.min(smallestItem.width, smallestItem.height, smallestItem.length); // Should take valid orientations into consideration
-    }
-
-    Something(){
-        
-    }
-}
+/** @type {CUBParams} */
+const defaultParams = {
+    minZ_weight: .9,
+    minWaste_weight: .1,
+    skipTop: false
+};
 
 /**
  * 
@@ -590,9 +931,12 @@ class PackingAssistant{
  */
 async function pack(container, items, params){
 
+    this.params = Utils.AssignUndefined(params, defaultParams);
+    console.log('CUBParams:', this.params);
+
     Debug.Viz.SetPackingSpaceVisibility(false);
 
-    var packedContainer = new PackedContainer(container);
+    var packedContainer = new PackedContainer(container, this.params);
     packedContainer.items = items;
 
     var iItem = items.length - 1;
@@ -620,22 +964,24 @@ async function pack(container, items, params){
     while(items.length > 0){
         let item = items[iItem];
 
+        // Clean-up regions
+        packedContainer.ProcessRegions();
+        /**/await sleep(16);
+
         // Check if container supports this item's weight
         let weightPass = packedContainer.WeightPass(item.weight);
         if( weightPass === false ){
 
             /**/debugLog('weight pass failed.');
-            /**/await sleep(200);
             unpackItem(iItem);
         }
         else{
 
             // Try to pack item
-            let packedItem = /**/await packedContainer.Fit(item);
+            let packedItem = packedContainer.FitLessWaste(item);
             if( packedItem === false ){
 
                 /**/debugLog('item fitting failed.');
-                /**/await sleep(200);
                 unpackItem(iItem);
             }
             else{
@@ -644,10 +990,10 @@ async function pack(container, items, params){
             }
         }
 
-        /**/await sleep(50);
+        /**/await sleep(16);
     }
 
-    packedContainer.packedItems.sort(PackedItem.DepthSort);
+    packedContainer.packedItems.sort(PackedItem.Sort);
 
     debugClear();
     Debug.Viz.SetPackingSpaceVisibility(true);

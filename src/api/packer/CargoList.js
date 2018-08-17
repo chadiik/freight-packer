@@ -1,12 +1,14 @@
 import Signaler from "../utils/cik/Signaler";
 import CargoEntry from "../components/common/CargoEntry";
 import CargoGroup from "./CargoGroup";
+import BoxEntry from "../components/box/BoxEntry";
 
 const stringType = 'string';
 
 const signals = {
     groupAdded: 'groupAdded',
-    groupRemoved: 'groupRemoved'
+    groupRemoved: 'groupRemoved',
+    groupModified: 'groupModified'
 };
 
 class CargoList extends Signaler{
@@ -27,6 +29,14 @@ class CargoList extends Signaler{
         this.Dispatch(signals.groupAdded, group);
     }
 
+    /** Adds a new CargoGroup
+     * @param {CargoEntry} entry 
+     */
+    Modify(entry){
+        var group = this.groups.get(entry.uid);
+        this.Dispatch(signals.groupModified, group);
+    }
+
     /** Removes the CargoGroup using its uid
      * @param {string} uid 
      */
@@ -36,6 +46,15 @@ class CargoList extends Signaler{
             this.groups.delete(uid);
             this.Dispatch(signals.groupRemoved, group);
         }
+    }
+
+    /** @param {string} entryUID @returns {BoxEntry} the entry if it exists */
+    GetEntry(entryUID){
+        if(this.groups.has(entryUID)) return this.groups.get(entryUID).entry;
+    }
+
+    get ready(){
+        return this.groups.size > 0;
     }
 
     static get signals(){

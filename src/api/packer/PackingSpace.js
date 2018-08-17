@@ -19,6 +19,7 @@ class PackingSpace extends Signaler {
         this.containers = [];
     }
 
+    /** @param {Container} container */
     AddContainer(container){
         this.containers.push(container);
         this[_currentIndex]++;
@@ -26,14 +27,16 @@ class PackingSpace extends Signaler {
         this.Dispatch(signals.containerAdded, container);
     }
 
-    /**
-     * @returns {Container}
-     */
+    /** @returns {Container} */
     get current(){
         var currentIndex = this[_currentIndex];
-        if(currentIndex != -1){
+        if(currentIndex !== -1){
             return this.containers[currentIndex];
         }
+    }
+
+    get ready(){
+        return this[_currentIndex] !== -1;
     }
 
     static get signals(){

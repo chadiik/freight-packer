@@ -1,10 +1,14 @@
 import Volume from "./Volume";
+import Container from "./Container";
 
 const type = 'ContainingVolume';
 
 class ContainingVolume extends Volume {
-    constructor(){
+    /** @param {Container} container */
+    constructor(container){
         super();
+        
+        this.container = container;
 
         this.SetUID();
     }

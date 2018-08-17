@@ -4,6 +4,8 @@ const twopi = 2 * Math.PI;
 const goldenRatio = (1 + Math.sqrt(5)) / 2;
 const goldenRatioConjugate = goldenRatio - 1;
 
+const typeofObject = 'object';
+
 class Utils {
 
     static Redefine(object, constructor){
@@ -35,6 +37,7 @@ class Utils {
 
         var keys = Object.keys(source);
         keys.forEach(key => {
+            if(typeof source[key] === typeofObject) Utils.AssignUndefined(target[key], source[key]);
             if(target[key] === undefined) target[key] = source[key];
         });
         return target;

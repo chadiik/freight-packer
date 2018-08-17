@@ -3,15 +3,22 @@ import Asset from "../components/assets/Asset";
 import Logger from "../utils/cik/Logger";
 import ContainingVolume from "../packer/container/ContainingVolume";
 
+class ContainerBox{
+    /** @param {THREE.Mesh} mesh */
+    constructor(mesh){
+        this.mesh = mesh;
+    }
+}
+
 /**
  * 
  * @param {Container} container 
  */
 function createContainerBoxes(container){
     /**
-     * @type {Map<ContainingVolume, THREE.Mesh>}
+     * @type {Map<ContainingVolume, ContainerBox>}
      */
-    var meshes = new Map();
+    var boxes = new Map();
 
     container.volumes.forEach(cv => {
         let mesh = Asset.CreateMesh();
@@ -29,12 +36,15 @@ function createContainerBoxes(container){
         mesh.material.polygonOffsetFactor = 1;
         mesh.material.polygonOffsetUnits = 1;
 
-        meshes.set(cv, mesh);
+        boxes.set(cv, new ContainerBox(mesh));
     });
 
-    return meshes;
+    return boxes;
 }
 
+var tempVec3 = new THREE.Vector3();
+
+/** @type {WeakMap<Container, ContainerView>} */
 var views = new WeakMap();
 
 class ContainerView {
@@ -45,6 +55,10 @@ class ContainerView {
      */
     constructor(container, view){
 
+        // Store original dimensions
+        this.initializationBox3 = new THREE.Box3();
+        this.initializationBox3.setFromObject(view);
+
         views.set(container, this);
 
         this.container = container;
@@ -52,20 +66,48 @@ class ContainerView {
         this.view.add(view);
 
         Asset.StandardSceneObject(this.view);
+        Asset.ColorTemplates('Containers').Apply(this.view);
 
-        var containerBoxes = createContainerBoxes(container);
-        for(var [cv, mesh] of containerBoxes){
-            mesh.position.add(cv.position);
-            this.view.add(mesh);
+        this.containerBoxes = createContainerBoxes(container);
+        for(var [cv, box] of this.containerBoxes){
+            box.mesh.position.add(cv.position);
+            this.view.add(box.mesh);
         }
 
-        console.log(this);
     }
 
-    /*
-    Set(object3d){
-        this.view = object3d;
+    //** @param {Input} input @param {Camera} cameraController */
+    /*InitSliderBoxes(input, cameraController, changeCallback, stopCallback){
+        for(var box of this.containerBoxes.values()){
+            box.UseInput(input, cameraController);
+            box.On(sliderSignals.change, changeCallback);
+            box.On(sliderSignals.stop, stopCallback);
+        }
     }*/
+
+    /**
+     * @param {Boolean} visible
+     * @param {THREE.Vector3} [padding]
+     */
+    PlatformVisibility(visible, padding){
+
+        if(visible && this.platformMesh === undefined){
+
+            if(padding === undefined) padding = new THREE.Vector3(0, .01, 0);
+        
+            this.initializationBox3.getSize(tempVec3);
+
+            let planeGeom = new THREE.BoxGeometry(tempVec3.x + padding.x * 2, padding.y, tempVec3.z + padding.z * 2, 1, 1, 1);
+            let planeMaterial = new Asset.CreateSolidMaterialMatte(Asset.ColorTemplates('Containers').Apply(0xffffff));
+            this.platformMesh = new THREE.Mesh(planeGeom, planeMaterial);
+            Asset.ReceiveShadow(this.platformMesh);
+
+            this.platformMesh.position.y = .001;
+            this.view.add(this.platformMesh);
+        }
+
+        this.platformMesh.visible = visible;
+    }
 
     /**
      * @param {Container} container
@@ -81,7 +123,8 @@ class ContainerView {
                 view.add(mesh);
             }
 
-            containerView = new ContainerView(container, view);
+            view = new ContainerView(container, view);
+            views.set(container, view);
             Logger.Warn('View not found for:', container);
         }
         return view;

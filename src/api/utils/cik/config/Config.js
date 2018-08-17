@@ -63,7 +63,7 @@ function setKey(obj, key, val){
     key = key.split('.');
     while (key.length > 1) obj = obj[key.shift()];
     var endKey = key.shift();
-    if(obj[endKey].isColor){
+    if(obj[endKey].setHex){
         obj[endKey].setHex(val);
     }
     else{

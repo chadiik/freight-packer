@@ -13,7 +13,8 @@ import Utils from "../utils/cik/Utils";
 /** @type {RendererParams} */
 const defaultParams = {
     antialias: true,
-    shadows: THREE.PCFSoftShadowMap,
+    shadows: true,
+    shadowMapType: THREE.PCFSoftShadowMap,
     shadowsAutoUpdate: true,
     clearColor: 0xcfcfcf,
     renderSizeMul: 1,
@@ -29,16 +30,15 @@ class Renderer {
         this.params = Utils.AssignUndefined(params, defaultParams);
         this.renderer = new THREE.WebGLRenderer({antialias: this.params.antialias});
 
-        if(this.params.shadows){
-            this.renderer.shadowMap.enabled = true;
-            this.renderer.shadowMap.type = this.params.shadows;
-            this.renderer.shadowMap.autoUpdate = this.params.shadowsAutoUpdate;
-        }
+        this.renderer.shadowMap.enabled = this.params.shadows;
+        this.renderer.shadowMap.type = this.params.shadowMapType;
+        this.renderer.shadowMap.autoUpdate = this.params.shadowsAutoUpdate;
 
         this.renderer.physicallyCorrectLights = true;
         this.renderer.gammaInput = true;
         this.renderer.gammaOutput = true;
-        this.renderer.toneMapping = THREE.ReinhardToneMapping;
+        this.renderer.toneMapping = THREE.Uncharted2ToneMapping;
+        this.renderer.toneMappingExposure = 1.4;
         //this.renderer.toneMappingExposure = ;
         
         this.maxTextureSize = this.renderer.context.getParameter(this.renderer.context.MAX_TEXTURE_SIZE);

@@ -1,17 +1,29 @@
 
+/** SignalerCallback 
+ * @callback SignalerCallback
+ * @param {Array<*>} args
+ */
+
 class Signaler {
     constructor(){
+        /** @type {Array<SignalerCallback>} */
         this.signals = {};
+        /** @type {Array<string>} */
         this.dispatches = {};
     }
 
-    BackListen(event, callback){
+    /** @param {string} event @param {SignalerCallback} callback */
+    OnIncludingPrior(event, callback){
         var args = this.dispatches[event];
         if(args){
             callback(...args);
         }
+        else{
+            this.On(event, callback);
+        }
     }
 
+    /** @param {string} event @param {SignalerCallback} callback */
     On(event, callback){
         if(this.signals[event] === undefined){
             this.signals[event] = [];
@@ -19,6 +31,7 @@ class Signaler {
         this.signals[event].push(callback);
     }
 
+    /** @param {string} event @param {SignalerCallback} callback */
     Off(event, callback){
         var callbacks = this.signals[event];
         if(callbacks){
@@ -29,6 +42,7 @@ class Signaler {
         }
     }
 
+    /** @param {string} event @param {Array<*>} [args] */
     Dispatch(event, ...args){
         this.dispatches[event] = args;
         var callbacks = this.signals[event];

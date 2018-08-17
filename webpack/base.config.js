@@ -13,6 +13,14 @@ module.exports = {
             exclude: /node_modules/,
             use: ['babel-loader']
         },
+        {
+            test: /\.txt$/,
+            use: 'raw-loader'
+        },
+        {
+            test: /\.glsl$/,
+            use: 'raw-loader'
+        }
       ],
     },
 

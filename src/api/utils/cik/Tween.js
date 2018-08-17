@@ -39,6 +39,23 @@ const functions = {
             var ts=(t/=d)*t;
             var tc=ts*t;
             return b+c*(33*tc*ts + -106*ts*ts + 126*tc + -67*ts + 15*t);
+        },
+
+        /** @type {TweenCallback} */
+        easeOutQuad: function (t, b, c, d) {
+            return -c *(t/=d)*(t-2) + b;
+        },
+
+        /** @type {TweenCallback} */
+        easeOutCubic: function (t, b, c, d) {
+            return c*((t=t/d-1)*t*t + 1) + b;
+        }
+    },
+
+    special: {
+        /** @type {TweenCallback} */
+        pingPong: function (t, b, c, d) {
+            return Math.sin(t / d * Math.PI) * c + b;
         }
     }
 };

@@ -1,6 +1,11 @@
 
-// enable vscode intellisense on FreightPacker
+// enable vscode intellisense
 if(false){ var FreightPacker = require('../../src/FreightPacker').default; }
+// expose typedef s for intellisense
+/** @typedef {import('../../src/api/Types').InitializationParams} InitializationParams */
+/** @typedef {import('../../src/api/Types').SolverParams} SolverParams */
+/** @typedef {import('../../src/api/Types').CUBParams} CUBParams */
+/** @typedef {import('../../src/api/Types').BoxEntry} BoxEntry */
 
 var fileLoader = new FreightPacker.utils.THREE.FileLoader();
 function loadFile(url){
@@ -16,6 +21,7 @@ const signals = {
 
     // packer
     packRequest: 'packRequest',
+    sliceResults: 'sliceResults',
 
     // packing space
     loadPSConfig: 'loadPSConfig',
@@ -23,7 +29,10 @@ const signals = {
     // box input
     boxInputUpdate: 'boxInputUpdate',
     boxInputComplete: 'boxInputComplete',
-    boxInputAbort: 'boxInputAbort'
+    boxInputAbort: 'boxInputAbort',
+    boxInputModify: 'boxInputModify',
+    boxInputRemove: 'boxInputRemove',
+    boxEntryRequest: 'boxEntryRequest'
 };
 
 class ExampleUI extends FreightPacker.utils.Signaler {
@@ -33,8 +42,8 @@ class ExampleUI extends FreightPacker.utils.Signaler {
         this.domElement = document.getElementById('fp-gui');
 
         var shortcutsGUI = FreightPacker.utils.Config.shortcutsGUI;
+        shortcutsGUI.domElement.style.marginBottom = '40px';
         this.domElement.appendChild(shortcutsGUI.domElement);
-        console.log(shortcutsGUI);
 
         this.gui = new (window.dat || FreightPacker.utils.dat).GUI({
             autoPlace: false
@@ -46,6 +55,7 @@ class ExampleUI extends FreightPacker.utils.Signaler {
         autoFolder.open();
 
         var packerFolder = this.CreatePackerController();
+        packerFolder.open();
 
         var spaceFolder = this.CreateSpaceController();
         //spaceFolder.open();
@@ -57,34 +67,8 @@ class ExampleUI extends FreightPacker.utils.Signaler {
     CreateAutoController(){
         var scope = this;
 
-        var testData1 = FreightPacker.utils.Debug.AFitTest.GenerateDataSample1();
-        var testData2 = FreightPacker.utils.Debug.AFitTest.GenerateDataSample2();
         var testDataFlatdeck = FreightPacker.utils.Debug.AFitTest.GenerateDataSampleFlatdeck2();
         var testData;
-
-        function testDataPSLoad(){
-            return new Promise((resolve, reject) => {
-                var container = testData.container;
-                var data = {
-                    container: {
-                        type: 'Container',
-                        volumes: [{
-                            type: 'ContainingVolume',
-                            position: {x: 0, y: 0, z: 0},
-                            dimensions: {
-                                type:'Dimensions',
-                                width: container.Width,
-                                length: container.Length,
-                                height: container.Height
-                            }
-                        }]
-                    }
-                };
-
-                scope.Dispatch(ExampleUI.signals.loadPSConfig, data);
-                resolve();
-            });
-        }
 
         var itemQttMultiplier = 1;
         function testDataCargoAdd(){
@@ -106,54 +90,23 @@ class ExampleUI extends FreightPacker.utils.Signaler {
                     }
                     else if(items.length <= 0){
                         clearInterval(iid);
-                        resolve();
+                        setTimeout(resolve, 500);
+                        //resolve();
                     }
                 }
             });
         }
 
-        var algorithm = 'afit';
+        var algorithm = 'cub';
+        var algorithmArgs = [];
         function pack(){
-            scope.Dispatch(signals.packRequest, algorithm);
-        }
-
-        function packingTest1(){
-            testData = testData1;
-
-            testDataPSLoad()
-            .then(testDataCargoAdd)
-            .then(pack);
-        }
-
-        function packingTest2(){
-            testData = testData2;
-            
-            testDataPSLoad()
-            .then(testDataCargoAdd)
-            .then(pack);
-        }
-
-        function packingTestFlatdeck48(){
-            testData = testDataFlatdeck;
-            algorithm = 'afit';
-            
-            samplePackingSpace()
-            .then(testDataCargoAdd)
-            .then(pack);
-        }
-
-        function packingTestFlatdeck48Sim(){
-            testData = testDataFlatdeck;
-            algorithm = 'sim';
-
-            samplePackingSpace()
-            .then(testDataCargoAdd)
-            .then(pack);
+            scope.Dispatch(signals.packRequest, algorithm, algorithmArgs);
         }
 
         function packingTestFlatdeck48CUB(){
             testData = testDataFlatdeck;
             algorithm = 'cub';
+            algorithmArgs = ExampleUI.getCUBParams();
 
             samplePackingSpace()
             .then(testDataCargoAdd)
@@ -167,36 +120,23 @@ class ExampleUI extends FreightPacker.utils.Signaler {
                 '../resources/config/flatdeck48-d3.json'
             ];
             return new Promise((resolve, reject) => {
-                loadFile(psConfigs[0])
+                loadFile(psConfigs[1])
                 .then(function(data){
                     scope.Dispatch(ExampleUI.signals.loadPSConfig, data);
-                    resolve();
+                    setTimeout(resolve, 500);
+                    //resolve();
                 });
             });
         }
 
-        function sampleCargo2(){
-            testData = testData2;
-            return testDataCargoAdd();
-        }
-
         var controller = {
-            PackingTest1: packingTest1,
-            PackingTest2: packingTest2,
-            Flatdeck48_T1: packingTestFlatdeck48,
-            Flatdeck48_Sim: packingTestFlatdeck48Sim,
             Flatdeck48_CUB: packingTestFlatdeck48CUB,
             LoadPackingSpace: samplePackingSpace,
-            SampleCargo2: sampleCargo2
         };
 
         var autoFolder = this.gui.addFolder('Automate');
-        autoFolder.add(controller, 'Flatdeck48_T1');
-        autoFolder.add(controller, 'Flatdeck48_Sim');
         autoFolder.add(controller, 'Flatdeck48_CUB');
-        autoFolder.add(controller, 'PackingTest2');
         autoFolder.add(controller, 'LoadPackingSpace');
-        autoFolder.add(controller, 'SampleCargo2');
 
         return autoFolder;
     }
@@ -205,15 +145,40 @@ class ExampleUI extends FreightPacker.utils.Signaler {
         var scope = this;
 
         function pack(){
-            scope.Dispatch(signals.packRequest);
+            let algorithm = 'cub';
+            console.log('controller:', controller);
+            scope.Dispatch(signals.packRequest, algorithm, ExampleUI.getCUBParams());
         }
 
         var controller = {
-            Solve: pack
+            minZToWasteRatio: .9,
+            skipTop: false,
+            Solve: pack,
+            resultSlice: 1
         };
 
+        let resultSlice = 1;
+        Object.defineProperties(controller, {
+            ResultSlice: {
+                get: function(){ return controller.resultSlice;},
+                set: function(value){ 
+                    controller.resultSlice = value;
+                    scope.Dispatch(signals.sliceResults, value);
+                }
+            }
+        });
+
+        function getCUBParams(){
+            return {minZ_weight: controller.minZToWasteRatio, minWaste_weight: (1 - controller.minZToWasteRatio), skipTop: controller.skipTop};
+        }
+
+        ExampleUI.getCUBParams = getCUBParams;
+
         var packerFolder = this.gui.addFolder('Packer');
+        packerFolder.add(controller, 'minZToWasteRatio', 0, 1).step(.1);
+        packerFolder.add(controller, 'skipTop');
         packerFolder.add(controller, 'Solve');
+        packerFolder.add(controller, 'ResultSlice', 0, 1).step(.1);
 
         return packerFolder;
     }
@@ -241,8 +206,11 @@ class ExampleUI extends FreightPacker.utils.Signaler {
     CreateInputController(data){
         var scope = this;
         
-        var boxRange = {w:[4, 20], l:[4, 20], h:[2, 16]};
-        var boxInput = FreightPacker.utils.Utils.AssignUndefined(data || {}, {width:0, length:0, height:0, label: '', weight: 0, quantity: 1});
+        var boxRange = {w:[10, 120], l:[10, 120], h:[10, 120]};
+        var boxInput = FreightPacker.utils.Utils.AssignUndefined(data, {
+            width:0, length:0, height:0, label: '', weight: 0, quantity: 1, 
+            entryUID: ''
+        });
         
         function inputUpdate(){
             scope.Dispatch(ExampleUI.signals.boxInputUpdate, boxInput);
@@ -261,10 +229,37 @@ class ExampleUI extends FreightPacker.utils.Signaler {
             controller.Height   = Math.floor((boxRange.h[0] + Math.random() * (boxRange.h[1] - boxRange.h[0])) * p) / p;
             complete();
         }
+
+        /** @param {BoxEntry} entry */
+        function updateForEntry(entry){
+            controller.Width = entry.dimensions.width;
+            controller.Length = entry.dimensions.length;
+            controller.Height = entry.dimensions.height;
+            controller.Label = entry.label;
+            controller.Quantity = entry.quantity;
+            controller.Weight = entry.weight;
+            
+            inputFolder.updateAll();
+        }
+
+        function getEntryByUID(){
+            scope.Dispatch(ExampleUI.signals.boxEntryRequest, controller.EntryUID, updateForEntry, boxInput);
+        }
+
+        function modifyEntry(){
+            scope.Dispatch(ExampleUI.signals.boxInputModify, controller.EntryUID, boxInput);
+        }
+
+        function removeEntry(){
+            scope.Dispatch(ExampleUI.signals.boxInputRemove, controller.EntryUID);
+        }
+
         var controller = {
             Random: randomInput,
             Insert: complete,
-            Abort: abort
+            Abort: abort,
+            Modify: modifyEntry,
+            Remove: removeEntry
         };
         Object.defineProperties(controller, {
             Width: {
@@ -290,6 +285,11 @@ class ExampleUI extends FreightPacker.utils.Signaler {
             Quantity: {
                 get: function(){ return boxInput.quantity;},
                 set: function(value){ boxInput.quantity = value; inputUpdate();}
+            },
+
+            EntryUID: {
+                get: function(){ return boxInput.entryUID;},
+                set: function(value){ boxInput.entryUID = value; getEntryByUID();}
             }
         });
 
@@ -307,6 +307,12 @@ class ExampleUI extends FreightPacker.utils.Signaler {
         dimensionsFolder.add(controller, 'Width' , boxRange.w[0], boxRange.w[1]).step(1/p).listen();
         dimensionsFolder.add(controller, 'Length', boxRange.l[0], boxRange.l[1]).step(1/p).listen();
         dimensionsFolder.add(controller, 'Height', boxRange.h[0], boxRange.h[1]).step(1/p).listen();
+
+        var modifyFolder = inputFolder.addFolder('Modify entry');
+        var entryUID = modifyFolder.add(controller, 'EntryUID');
+        entryUID.onChange(getEntryByUID);
+        modifyFolder.add(controller, 'Modify');
+        modifyFolder.add(controller, 'Remove');
 
         inputFolder.add(controller, 'Insert');
         inputFolder.add(controller, 'Abort');

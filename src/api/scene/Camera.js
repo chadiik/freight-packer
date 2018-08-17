@@ -73,9 +73,11 @@ class Camera {
                 }
             };
             this.orbitControls.Hold = function(){
+                this.saveState();
                 this.enabled = false;
             };
             this.orbitControls.Release = function(){
+                this.reset();
                 this.enabled = true;
             };
         }
@@ -137,13 +139,13 @@ class Camera {
     }
 
     Hold(){
-        if(this.controls !== undefined && this.controls.Hold){
+        if(this.enabled && this.controls !== undefined && this.controls.Hold){
             this.controls.Hold();
         }
     }
 
     Release(){
-        if(this.controls !== undefined && this.controls.Release){
+        if(!this.enabled && this.controls !== undefined && this.controls.Release){
             this.controls.Release();
         }
     }
@@ -167,6 +169,7 @@ class Camera {
         
         var position = tempVec3;
         position.subVectors(this.camera.position, center).normalize().multiplyScalar(distance).add(center);
+        position.y = Math.abs(position.y);
 
         this.camera.position.copy(position);
         this.SetTarget(center);

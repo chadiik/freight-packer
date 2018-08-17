@@ -1,9 +1,10 @@
 import CargoView from "./CargoView";
 import Utils from "../utils/cik/Utils";
 import BoxEntry from "../components/box/BoxEntry";
+import Asset from "../components/assets/Asset";
 
 const unitCubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 1, 1, 1);
-const materialTemplate = new THREE.MeshStandardMaterial();
+const materialTemplate = new Asset.SolidMaterialType({roughness: 1, metalness: 0, flatShading: true});
 
 const brightnessRange = [.45, .55];
 var hueBase = Math.random();
@@ -13,6 +14,8 @@ function nextColor(){
     hueBase = Utils.GoldenSeries(hueBase);
     return color;
 }
+
+const _materialSettings = Symbol('matSet');
 
 class CargoBoxView extends CargoView {
     /**
@@ -27,7 +30,6 @@ class CargoBoxView extends CargoView {
         this.mesh = new THREE.Mesh(unitCubeGeometry, material);
         this.mesh.scale.copy(boxEntry.dimensions.vec3);
 
-        this.view = new THREE.Object3D();
         this.view.add(this.mesh);
     }
 
@@ -39,6 +41,26 @@ class CargoBoxView extends CargoView {
         this.SetScale(s.x, s.y, s.z);
     }
 
+    /** @param {Number} value */
+    set focus(value){
+        super.focus = value;
+
+        if(this[_materialSettings]) Asset.RestoreMaterial(this.mesh.material, this[_materialSettings]);
+
+        if(Math.abs(1 - value) > .0001){
+            if(this[_materialSettings] === undefined){
+                this.mesh.material = this.mesh.material.clone();
+                this[_materialSettings] = {};
+                Asset.SetMaterialFocus(this.mesh.material, value, this[_materialSettings]);
+            }
+            else{
+                Asset.SetMaterialFocus(this.mesh.material, value);
+            }
+        }
+    }
+
+    get focus(){ return super.focus; }
+
     /**
      * @param {Number} x 
      * @param {Number} y 
@@ -46,6 +68,22 @@ class CargoBoxView extends CargoView {
      */
     SetScale(x, y, z){
         this.mesh.scale.set(x, y, z);
+    }
+
+    ReflectEntry(){
+        this.entry = this.entry;
+    }
+
+    /** 
+     * @param {string} value 
+     * @param {import('./CargoView').CargoViewLabelParams} params */
+    SetLabel(value, params){
+        super.SetLabel(value, params);
+
+        this.labelView.view.scale.y = params.height;
+        this.labelView.view.scale.x = params.width;
+        this.labelView.view.position.z = params.width / 2 + this.entry.dimensions.length / 2;
+        this.labelView.view.position.y = .001;
     }
 
     /**

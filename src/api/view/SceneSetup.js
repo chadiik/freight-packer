@@ -38,9 +38,10 @@ class SceneSetup extends Signaler {
         this.sceneController = new Controller(controllerParams);
 
         /** @type {import('../scene/Renderer').RendererParams} */
-        var rendererParams = {};
+        var rendererParams = {clearColor: 0xefefef};
         Object.assign(rendererParams, quality);
         this.sceneRenderer = new Renderer(rendererParams);
+        this.sceneRenderer.renderer.toneMappingExposure = 1.6;
         this.domElement.appendChild(this.sceneRenderer.renderer.domElement);
 
         /** @type {import('./Camera').CameraParams} */
@@ -80,7 +81,7 @@ class SceneSetup extends Signaler {
 
         // Initial camera move
 		this.cameraController.position.x = 100 * units;
-		this.cameraController.position.y = 40 * units;
+		this.cameraController.position.y = 100 * units;
         this.cameraController.position.z = 100 * units;
         this.cameraController.SetTarget(new THREE.Vector3());
 
@@ -174,13 +175,13 @@ class SceneSetup extends Signaler {
         var ambientLight = new THREE.AmbientLight( 0x404040 );
 
         var directionalLight = new THREE.DirectionalLight(0xfeeedd);
-        directionalLight.position.set(300 * units, 175 * units, 125 * units);
+        directionalLight.position.set(300 * units, 300 * units, 125 * units);
         
         controller.ambientContainer.add(ambientLight);
         controller.ambientContainer.add(directionalLight);
 
         var directionalLightComplem = new THREE.DirectionalLight(0xfeeedd);
-        directionalLightComplem.position.set(-300 * units, 175 * units, 125 * units);
+        directionalLightComplem.position.set(-200 * units, 175 * units, 125 * units);
         
         controller.ambientContainer.add(directionalLightComplem);
 
@@ -206,8 +207,19 @@ class SceneSetup extends Signaler {
                 this.sceneController.AddDefault(dlCameraHelper);
             }
 
+            let sceneRenderer = this.sceneRenderer;
+            global.sceneRenderer = sceneRenderer;
+            let mapSize = dl.shadow.mapSize.clone();
             function onGUIChanged(){
                 dl.shadow.camera.updateProjectionMatrix();
+                sceneRenderer.UpdateShadowMaps();
+                if(dl.shadow.map){
+                    if(dl.shadow.mapSize.manhattanDistanceTo(mapSize) > 0.0001){
+                        mapSize.copy(dl.shadow.mapSize);
+                        dl.shadow.map.dispose();
+                        dl.shadow.map = null;
+                    }
+                }
 
                 if(helpers){
                     dlHelper.update();
@@ -222,7 +234,7 @@ class SceneSetup extends Signaler {
             );
         }
 
-        return [ambientLight, directionalLight];
+        return [ambientLight, directionalLight, directionalLightComplem];
     }
 
     Configure(){

@@ -1,13 +1,6 @@
 import Item from "./components/Item";
-import AFit from "./AFit";
 import Container from "./components/Container";
 
-/** @param {Array<Item>} items */
-function sumOfVolumes(items){
-    var sum = 0;
-    for(var i = 0, len = items.length; i < len; i++) sum += items[i].Volume;
-    return sum;
-}
 
 /**
  * @param {Array<Object>} objects 
@@ -33,29 +26,6 @@ class TestData{
 }
 
 class AFitTest{
-    constructor(){
-        this.aFitPacker = new AFit();
-    }
-
-    /**
-     * @param {Container} container 
-     * @param {Array<Item>} items 
-     */
-    T1(container, items){
-
-        var startTime = performance.now();
-        var result = this.aFitPacker.Solve(container, items);
-        result.PackTimeInMilliseconds = Math.ceil(performance.now() - startTime);
-
-        var containerVolume = container.Length * container.Width * container.Height;
-        var itemVolumePacked = sumOfVolumes(result.PackedItems);
-        var itemVolumeUnpacked = sumOfVolumes(result.UnpackedItems);
-
-        result.PercentContainerVolumePacked = Math.floor(itemVolumePacked / containerVolume * 100 * 100) / 100;
-        result.PercentItemVolumePacked = Math.floor(itemVolumePacked / (itemVolumePacked + itemVolumeUnpacked) * 100 * 100) / 100;
-
-        return result;
-    }
 
     static GenerateDataSample1(){
         var containerData = { ID: 1000, Name: 'Box1', Length: 15, Width: 13, Height: 9 };
@@ -112,9 +82,10 @@ class AFitTest{
         var itemsData = [
             { ID: 1000, Name: 'Item1', Length: 100,  Width: 70, Height: 90, Quantity: 3 },
 		    { ID: 1003, Name: 'Item4', Length: 60, Width: 60, Height: 60, Quantity: 7 },
-		    { ID: 1004, Name: 'Item5', Length: 40, Width: 20, Height: 30, Quantity: 4 },
-            { ID: 1005, Name: 'Item6', Length: 30,  Width: 20, Height: 30, Quantity: 20 },
-            { ID: 1005, Name: 'Item6', Length: 50,  Width: 20, Height: 30, Quantity: 20 }
+		    { ID: 1004, Name: 'Item5', Length: 40, Width: 28, Height: 30, Quantity: 4 },
+            { ID: 1005, Name: 'Item6', Length: 30,  Width: 23, Height: 34, Quantity: 20 },
+            { ID: 1005, Name: 'Item6', Length: 45,  Width: 20, Height: 30, Quantity: 30 },
+            { ID: 1005, Name: 'Item6', Length: 35,  Width: 22, Height: 18, Quantity: 27 }
         ];
 
         var container = Object.assign(new Container(), containerData);

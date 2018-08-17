@@ -9,6 +9,8 @@ class CargoGroup {
      */
     constructor(entry){
         this.entry = entry;
+
+        /** @type {Array<Cargo>} */
         this.cargoes = [];
 
         this.template = new Cargo(this);

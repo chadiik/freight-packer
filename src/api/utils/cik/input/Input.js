@@ -1,4 +1,5 @@
 import UpdateComponent from "./UpdateComponent";
+import RaycastGroup from "./RaycastGroup";
 
 /**
  * @typedef {Object} IScreen
@@ -452,6 +453,11 @@ class Input {
         return undefined;
     }
 
+    /**
+     * @param {string} event Update Update25 Update10 OnMouseDown OnDoubleClick OnMouseUp OnRightClick OnClick
+     * @param {string} groupID 
+     * @param {RaycastGroup} group 
+     */
     AddRaycastGroup(event, groupID, group){
         if(this._raycastGroups[event][groupID] !== undefined) console.log('RaycastGroup ' + groupID + ' is being overwritten.');
         this._raycastGroups[event][groupID] = group;

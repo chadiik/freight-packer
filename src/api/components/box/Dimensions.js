@@ -26,8 +26,11 @@ class Dimensions {
      * @param {Number} height 
      */
     Set(width, length, height){
+        /** @type {Number} */
         this.width = width;
+        /** @type {Number} */
         this.length = length;
+        /** @type {Number} */
         this.height = height;
     }
 

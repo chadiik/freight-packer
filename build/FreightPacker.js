@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 44);
+/******/ 	return __webpack_require__(__webpack_require__.s = 41);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -74,6 +74,8 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -82,6 +84,8 @@ var trimVariableRegex = new RegExp(/(?:\d|_|-)+$/);
 var twopi = 2 * Math.PI;
 var goldenRatio = (1 + Math.sqrt(5)) / 2;
 var goldenRatioConjugate = goldenRatio - 1;
+
+var typeofObject = 'object';
 
 var Utils = function () {
     function Utils() {
@@ -122,6 +126,7 @@ var Utils = function () {
 
             var keys = Object.keys(source);
             keys.forEach(function (key) {
+                if (_typeof(source[key]) === typeofObject) Utils.AssignUndefined(target[key], source[key]);
                 if (target[key] === undefined) target[key] = source[key];
             });
             return target;
@@ -385,80 +390,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Signaler = function () {
-    function Signaler() {
-        _classCallCheck(this, Signaler);
-
-        this.signals = {};
-        this.dispatches = {};
-    }
-
-    _createClass(Signaler, [{
-        key: "BackListen",
-        value: function BackListen(event, callback) {
-            var args = this.dispatches[event];
-            if (args) {
-                callback.apply(undefined, _toConsumableArray(args));
-            }
-        }
-    }, {
-        key: "On",
-        value: function On(event, callback) {
-            if (this.signals[event] === undefined) {
-                this.signals[event] = [];
-            }
-            this.signals[event].push(callback);
-        }
-    }, {
-        key: "Off",
-        value: function Off(event, callback) {
-            var callbacks = this.signals[event];
-            if (callbacks) {
-                var index = callbacks.indexOf(callback);
-                if (index != -1) {
-                    callbacks.splice(index, 1);
-                }
-            }
-        }
-    }, {
-        key: "Dispatch",
-        value: function Dispatch(event) {
-            for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-                args[_key - 1] = arguments[_key];
-            }
-
-            this.dispatches[event] = args;
-            var callbacks = this.signals[event];
-            if (callbacks) {
-                for (var i = 0, len = callbacks.length; i < len; i++) {
-                    callbacks[i].apply(callbacks, args);
-                }
-            }
-        }
-    }]);
-
-    return Signaler;
-}();
-
-exports.default = Signaler;
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 var _Utils = __webpack_require__(0);
 
 var _Utils2 = _interopRequireDefault(_Utils);
@@ -653,1488 +584,7 @@ Logger.active = true;
 exports.default = Logger;
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _Utils = __webpack_require__(0);
-
-var _Utils2 = _interopRequireDefault(_Utils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var serializeModes = {
-    none: 'none',
-    json: 'json'
-};
-
-/**
- * @typedef ConfigParams
- * @property {Boolean} debug
- * @property {Boolean} save
- * @property {serializeModes} serializeMode
- */
-
-var Controller = function () {
-    function Controller(property, min, max, step, onChange) {
-        _classCallCheck(this, Controller);
-
-        this.property = property;
-        this.min = min;
-        this.max = max;
-        this.step = step;
-        this.onChange = onChange;
-    }
-
-    /**
-     * @returns {Array<Controller>}
-     */
-
-
-    _createClass(Controller, null, [{
-        key: 'Multiple',
-        value: function Multiple(properties, min, max, step, onChange) {
-            var controllers = [];
-            properties.forEach(function (property) {
-                controllers.push(new Controller(property, min, max, step, onChange));
-            });
-            return controllers;
-        }
-    }]);
-
-    return Controller;
-}();
-
-function createKeyInfo(obj, key) {
-    var isFolderGrouped = key[0] == "#";
-    if (isFolderGrouped) key = key.substr(1);
-
-    var propertyPath = key;
-
-    key = key.split('.');
-    var folder = isFolderGrouped ? key.slice(0, key.length - 1).join('.') : undefined;
-    while (key.length > 1) {
-        obj = obj[key.shift()];
-    }return {
-        id: (folder ? folder + '.' : '') + key[0],
-        folder: folder,
-        owner: obj,
-        key: key[0],
-        propertyPath: propertyPath
-    };
-}
-
-function getKey(obj, key) {
-    return key.split('.').reduce(function (a, b) {
-        return a && a[b];
-    }, obj);
-}
-
-function setKey(obj, key, val) {
-    key = key.split('.');
-    while (key.length > 1) {
-        obj = obj[key.shift()];
-    }var endKey = key.shift();
-    if (obj[endKey].isColor) {
-        obj[endKey].setHex(val);
-    } else {
-        obj[endKey] = val;
-    }
-    return obj[endKey];
-}
-
-function download(data, filename, type) {
-    // https://stackoverflow.com/a/30832210/1712403
-    var file = new Blob([data], { type: type || 'text/plain' });
-    if (window.navigator.msSaveOrOpenBlob) // IE10+
-        window.navigator.msSaveOrOpenBlob(file, filename);else {
-        // Others
-        var a = document.createElement("a"),
-            url = URL.createObjectURL(file);
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(function () {
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-        }, 0);
-    }
-}
-
-var defaultEditParams = {
-    save: true, debug: true
-};
-
-/** 
- * @typedef GUI
- * @property {HTMLElement} domElement
- */
-
-var Shortcut = function () {
-    /**
-     * @param {string} label 
-     */
-    function Shortcut(label) {
-        _classCallCheck(this, Shortcut);
-
-        this.label = label;
-
-        ///** @type {Map<string, GUI>} */
-        //this.folders = new Map();
-
-        this.controller = {};
-    }
-
-    _createClass(Shortcut, [{
-        key: 'Add',
-        value: function Add(label, target) {
-            label = label.replace(new RegExp(' ', 'g'), '_');
-            this.controller[label] = target;
-            Config.shortcutsGUI.add(this.controller, label);
-            console.log('added ' + label + ' shortcut to ' + this.label);
-        }
-    }]);
-
-    return Shortcut;
-}();
-
-/** @type {GUI} */
-
-
-var shortcutsGUI;
-
-/** @type {Map<string, Shortcut>} */
-var shortcuts = new Map();
-
-/** @type {Map<Object, Config>} */
-var instances = new Map();
-
-var Config = function () {
-    function Config(target) {
-        _classCallCheck(this, Config);
-
-        if (!Config.debug) Config.debug = instances;
-        instances.set(target, this);
-
-        this.target = target;
-        this.keys = [];
-    }
-
-    _createClass(Config, [{
-        key: 'Track',
-        value: function Track() {
-            var keys = this.keys;
-
-            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-                args[_key] = arguments[_key];
-            }
-
-            args.forEach(function (key) {
-                keys.push(key);
-            });
-        }
-    }, {
-        key: 'Snapshot',
-        value: function Snapshot(ignoreKeys) {
-            var data = {};
-            var target = this.target;
-            this.keys.forEach(function (key) {
-                var isController = key instanceof Controller;
-                var keyInfo = createKeyInfo(target, isController ? key.property : key);
-                var keyValue = keyInfo.owner[keyInfo.key];
-                if (typeof keyValue !== 'function') {
-                    data[keyInfo.id] = keyValue;
-                } else if (ignoreKeys !== undefined) {
-                    var warn = true;
-                    ignoreKeys.forEach(function (ignoredKey) {
-                        if (ignoredKey === keyInfo.id) {
-                            warn = false;
-                        }
-                    });
-                    if (warn) console.log('Config.Snapshot warning: "' + keyInfo.id + '" changes will be lost');
-                }
-            });
-            return data;
-        }
-    }, {
-        key: 'Serialize',
-        value: function Serialize() {
-            var _this = this;
-
-            var data = {};
-            this.keys.forEach(function (key) {
-                var isController = key instanceof Controller;
-                var keyInfo = createKeyInfo(_this.target, isController ? key.property : key);
-                var keyValue = keyInfo.owner[keyInfo.key];
-                if (typeof keyValue !== 'function') {
-                    var saveValue = keyInfo.owner[keyInfo.key].isColor ? '0x' + Number.parseInt(keyValue.toJSON()).toString(16) : keyValue;
-                    data[keyInfo.propertyPath] = saveValue;
-                }
-            });
-            return data;
-        }
-    }, {
-        key: 'Save',
-        value: function Save() {
-            if (this.Update) {
-                this.Update();
-                this.data = this.Snapshot();
-            }
-        }
-
-        /**
-         * 
-         * @param {Function} guiChanged 
-         * @param {string} label 
-         * @param {string} gui - or a dat.GUI object
-         * @param {ConfigParams} params 
-         */
-
-    }, {
-        key: 'Edit',
-        value: function Edit(guiChanged, label, gui, params) {
-            var _this2 = this;
-
-            params = _Utils2.default.AssignUndefined(params, defaultEditParams);
-
-            var controllers = [];
-            var target = this.target;
-            if (gui === undefined) {
-
-                gui = new (window.dat || __webpack_require__(1).default).GUI({
-                    autoPlace: true
-                });
-            } else if (label) {
-                gui = gui.addFolder(label);
-            }
-
-            if (this.editing === undefined) {
-                this.editing = {};
-
-                this.Update = function () {
-                    __webpack_require__(28);
-
-                    gui.updateAll();
-                    guiChanged();
-                };
-
-                gui.add(this, 'Update');
-            }
-
-            this.keys.forEach(function (key) {
-                var isController = key instanceof Controller;
-                var keyInfo = createKeyInfo(target, isController ? key.property : key);
-                if (_this2.editing[keyInfo.id] !== true) {
-                    var folder = gui;
-                    if (keyInfo.folder) {
-                        __webpack_require__(28);
-
-                        if (gui.find) folder = gui.find(keyInfo.folder);else console.warn('gui extensions not found!');
-
-                        if (!folder) folder = gui.addFolder(keyInfo.folder);
-                    }
-                    var addFunction = keyInfo.owner[keyInfo.key].isColor ? folder.addColor : folder.add;
-                    controllers.push((isController && key.min !== undefined ? addFunction.call(folder, keyInfo.owner, keyInfo.key, key.min, key.max, key.step) : addFunction.call(folder, keyInfo.owner, keyInfo.key)).onChange(key.onChange === undefined ? guiChanged : function () {
-                        key.onChange.call(keyInfo.owner);
-                        guiChanged();
-                    }));
-                    _this2.editing[keyInfo.id] = true;
-                }
-            });
-
-            var scope = this;
-            var editor = {
-                Save: function Save() {
-                    scope.Save();
-                    var filename = label !== undefined ? label + (label.indexOf('.json') === -1 ? '.json' : '') : 'config.json';
-                    download(scope.data, filename);
-                },
-
-                Debug: function Debug() {
-                    console.log(scope.target);
-                },
-
-                Serialize: function Serialize() {
-                    if (scope.Update) {
-                        scope.Update();
-                        var data = scope.Serialize();
-                        var json = JSON.stringify(data);
-                        console.log(data, json);
-                    }
-                }
-            };
-            if (params.save) {
-                if (this.defaultsFolder === undefined) this.defaultsFolder = gui.addFolder('...');
-                if (this.editing['editor.Save'] !== true) {
-                    this.defaultsFolder.add(editor, 'Save');
-                    this.editing['editor.Save'] = true;
-                }
-            }
-            if (params.debug) {
-                if (this.defaultsFolder === undefined) this.defaultsFolder = gui.addFolder('...');
-                if (this.editing['editor.Debug'] !== true) {
-                    this.defaultsFolder.add(editor, 'Debug');
-                    this.editing['editor.Debug'] = true;
-                }
-            }
-
-            switch (params.serializeMode) {
-                default:
-                    break;
-                case serializeModes.json:
-                    if (this.defaultsFolder === undefined) this.defaultsFolder = gui.addFolder('...');
-                    if (this.editing['editor.Serialize'] !== true) {
-                        this.defaultsFolder.add(editor, 'Serialize');
-                        this.editing['editor.Serialize'] = true;
-                    }
-                    break;
-            }
-
-            this.gui = gui;
-        }
-    }, {
-        key: 'toJSON',
-        value: function toJSON() {
-            if (this.data === undefined) console.warn(this.target, 'is being saved with undefined data.');
-            return this.data;
-        }
-    }], [{
-        key: 'Unroll',
-
-
-        /**
-         * 
-         * @param {string} property - #property marks a folder
-         * @param {Array<string>} subProperties 
-         * @returns returns the subProperties full paths
-         */
-        value: function Unroll(property) {
-            var unrolled = [];
-
-            for (var _len2 = arguments.length, subProperties = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-                subProperties[_key2 - 1] = arguments[_key2];
-            }
-
-            subProperties.forEach(function (subProperty) {
-                unrolled.push(property + '.' + subProperty);
-            });
-            return unrolled;
-        }
-
-        /**
-         * @param {*} target 
-         * @param {*} data 
-         */
-
-    }, {
-        key: 'Load',
-        value: function Load(target, data) {
-            var keys = Object.keys(data);
-            keys.forEach(function (key) {
-                setKey(target, key, data[key]);
-            });
-
-            if (instances.has(target) && instances.get(target).Update) instances.get(target).Update();
-        }
-
-        /**
-         * @param {string} category
-         * @param {string} label 
-         * @param {Function} target 
-         */
-
-    }, {
-        key: 'MakeShortcut',
-        value: function MakeShortcut(category, label, target) {
-            if (shortcuts.has(category) === false) shortcuts.set(category, new Shortcut(category));
-            var shortcut = shortcuts.get(category);
-            shortcut.Add(label, target);
-        }
-    }, {
-        key: 'serializeModes',
-        get: function get() {
-            return serializeModes;
-        }
-    }, {
-        key: 'shortcuts',
-        get: function get() {
-            return shortcuts;
-        }
-    }, {
-        key: 'shortcutsGUI',
-        get: function get() {
-            if (shortcutsGUI === undefined) shortcutsGUI = new (window.dat || __webpack_require__(1).default).GUI({
-                autoPlace: false
-            });
-            return shortcutsGUI;
-        }
-    }]);
-
-    return Config;
-}();
-
-Config.Controller = Controller;
-
-exports.default = Config;
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _TextField = __webpack_require__(30);
-
-var _TextField2 = _interopRequireDefault(_TextField);
-
-var _Logger = __webpack_require__(3);
-
-var _Logger2 = _interopRequireDefault(_Logger);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var _weight = Symbol('weight');
-
-var CargoEntry = function () {
-    function CargoEntry() {
-        _classCallCheck(this, CargoEntry);
-
-        this.type = 'CargoEntry';
-
-        this.quantity = 0;
-        this.properties = {};
-        this.uid = '';
-        this[_weight] = 0;
-
-        /**
-         * @type {Map<string, TextField>}
-         */
-        this.descriptions = new Map();
-    }
-
-    /** @returns {Number} */
-
-
-    _createClass(CargoEntry, [{
-        key: "SetUID",
-
-
-        /**
-         * @param {string} [uid] - You'll rarely need to provide this
-         */
-        value: function SetUID(uid) {
-            this.uid = uid || THREE.Math.generateUUID();
-            return this.uid;
-        }
-    }, {
-        key: "Copy",
-        value: function Copy(entry) {
-            _Logger2.default.Warn('CargoEntry.Copy is not implemented');
-        }
-    }, {
-        key: "Clone",
-        value: function Clone() {
-            _Logger2.default.Warn('CargoEntry.Clone is not implemented');
-        }
-    }, {
-        key: "ToString",
-        value: function ToString() {}
-    }, {
-        key: "weight",
-        get: function get() {
-            return this[_weight];
-        },
-        set: function set(value) {
-            this[_weight] = value;
-        }
-    }]);
-
-    return CargoEntry;
-}();
-
-exports.default = CargoEntry;
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _ContainingVolume = __webpack_require__(8);
-
-var _ContainingVolume2 = _interopRequireDefault(_ContainingVolume);
-
-var _Logger = __webpack_require__(3);
-
-var _Logger2 = _interopRequireDefault(_Logger);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var type = 'Container';
-
-var Container = function () {
-    function Container() {
-        _classCallCheck(this, Container);
-
-        /**
-         * Containing volumes array
-         * @type {Array<ContainingVolume>}
-         */
-        this.volumes = [];
-
-        _Logger2.default.WarnOnce('Container.constructor', 'weight, label not implemented');
-    }
-
-    _createClass(Container, [{
-        key: "Add",
-        value: function Add(volume) {
-            this.volumes.push(volume);
-        }
-    }, {
-        key: "toJSON",
-        value: function toJSON() {
-            return {
-                type: type,
-                volumes: this.volumes
-            };
-        }
-    }, {
-        key: "ToString",
-        value: function ToString() {
-            var result = type + '[';
-            for (var i = 0, numVolumes = this.volumes.length; i < numVolumes; i++) {
-                result += this.volumes[i].ToString() + (i < numVolumes - 1 ? ', ' : ']');
-            }
-            return result;
-        }
-    }, {
-        key: "volume",
-        get: function get() {
-            var index = this.volumes.length - 1;
-            return this.volumes[index];
-        }
-    }], [{
-        key: "FromJSON",
-        value: function FromJSON(data) {
-            if (data.type !== type) console.warn('Data supplied is not: ' + type);
-
-            var container = new Container();
-            for (var i = 0, numVolumes = data.volumes.length; i < numVolumes; i++) {
-                var containingVolume = _ContainingVolume2.default.FromJSON(data.volumes[i]);
-                container.Add(containingVolume);
-            }
-
-            return container;
-        }
-    }]);
-
-    return Container;
-}();
-
-exports.default = Container;
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _CargoList = __webpack_require__(29);
-
-var _CargoList2 = _interopRequireDefault(_CargoList);
-
-var _PackingSpace = __webpack_require__(17);
-
-var _PackingSpace2 = _interopRequireDefault(_PackingSpace);
-
-var _BoxEntry = __webpack_require__(10);
-
-var _BoxEntry2 = _interopRequireDefault(_BoxEntry);
-
-var _Utils = __webpack_require__(0);
-
-var _Utils2 = _interopRequireDefault(_Utils);
-
-var _Signaler2 = __webpack_require__(2);
-
-var _Signaler3 = _interopRequireDefault(_Signaler2);
-
-var _Logger = __webpack_require__(3);
-
-var _Logger2 = _interopRequireDefault(_Logger);
-
-var _ContainingVolume = __webpack_require__(8);
-
-var _ContainingVolume2 = _interopRequireDefault(_ContainingVolume);
-
-var _Dimensions = __webpack_require__(9);
-
-var _Dimensions2 = _interopRequireDefault(_Dimensions);
-
-var _Debug = __webpack_require__(11);
-
-var _Debug2 = _interopRequireDefault(_Debug);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function almost(n1, n2) {
-    return Math.abs(n1 - n2) < .01;
-}
-
-/**
- * @typedef {Object} PackerParams
- * @property {import('../UX').default} ux
- */
-
-var PackedCargo =
-/**
- * @param {BoxEntry} entry 
- * @param {ContainingVolume} containingVolume 
- * @param {THREE.Vector3} position 
- */
-function PackedCargo(entry, containingVolume, position, orientation) {
-    _classCallCheck(this, PackedCargo);
-
-    this.entry = entry;
-    this.containingVolume = containingVolume;
-    this.position = position;
-    this.orientation = orientation;
-};
-
-var PackingResult = function PackingResult(numTotalItems) {
-    _classCallCheck(this, PackingResult);
-
-    /** @type {Array<PackedCargo>} */
-    this.packed = [];
-    this.numTotalItems = numTotalItems || 0;
-};
-
-function sumOfVolumes(items) {
-    var sum = 0;
-    for (var i = 0, len = items.length; i < len; i++) {
-        sum += items[i].Volume;
-    }return sum;
-}
-
-var defaultParams = {};
-var signals = {
-    packUpdate: 'packUpdate'
-};
-
-var Packer = function (_Signaler) {
-    _inherits(Packer, _Signaler);
-
-    /**
-     * @param {PackerParams} params 
-     */
-    function Packer(params) {
-        _classCallCheck(this, Packer);
-
-        var _this = _possibleConstructorReturn(this, (Packer.__proto__ || Object.getPrototypeOf(Packer)).call(this));
-
-        _this.params = _Utils2.default.AssignUndefined(params, defaultParams);
-
-        _this.packingSpace = new _PackingSpace2.default();
-        _this.cargoList = new _CargoList2.default();
-        return _this;
-    }
-
-    _createClass(Packer, [{
-        key: "Solve",
-        value: function Solve(arg) {
-            if (arg === 'sim') this.SolveSim();else if (arg === 'brb') this.SolveBRB();else if (arg === 'cub') this.SolveCUB();else this.SolveAFit();
-        }
-    }, {
-        key: "SolveCUB",
-        value: function () {
-            var _ref = _asyncToGenerator(function* () {
-                var Container = __webpack_require__(20).Container;
-                var Item = __webpack_require__(20).Item;
-
-                var containingVolume = this.packingSpace.current.volume;
-                var d = containingVolume.dimensions;
-                var container = new Container(containingVolume.uid, d.width, d.height, d.length, containingVolume.weightCapacity);
-
-                var numTotalItems = 0;
-
-                /** @type {Array<Item>} */
-                var items = [];
-                var entries = {};
-                var _iteratorNormalCompletion = true;
-                var _didIteratorError = false;
-                var _iteratorError = undefined;
-
-                try {
-                    for (var _iterator = this.cargoList.groups.values()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                        var group = _step.value;
-
-                        /** @type {BoxEntry} */
-                        var entry = group.entry;
-                        entries[entry.uid] = entry;
-                        d = entry.dimensions;
-                        var item = new Item(entry.uid, d.width, d.height, d.length, entry.weight, entry.quantity);
-                        items.push(item);
-                        numTotalItems += entry.quantity;
-                    }
-                } catch (err) {
-                    _didIteratorError = true;
-                    _iteratorError = err;
-                } finally {
-                    try {
-                        if (!_iteratorNormalCompletion && _iterator.return) {
-                            _iterator.return();
-                        }
-                    } finally {
-                        if (_didIteratorError) {
-                            throw _iteratorError;
-                        }
-                    }
-                }
-
-                _Logger2.default.Log('Solving', items, ' in ', container);
-
-                var CUB = __webpack_require__(58);
-                var result = yield CUB.pack(container, items);
-                console.log(result);
-
-                var packingResult = new PackingResult(numTotalItems);
-                result.packedItems.forEach(function (packedItem) {
-                    var entry = entries[packedItem.ref.id];
-                    var position = new THREE.Vector3(packedItem.x + packedItem.packedWidth / 2, packedItem.y + packedItem.packedHeight / 2, packedItem.z + packedItem.packedLength / 2);
-                    var orientation = Item.ResolveOrientation(packedItem.orientation);
-                    var packedCargo = new PackedCargo(entry, containingVolume, position, orientation);
-                    packingResult.packed.push(packedCargo);
-                });
-
-                this.Dispatch(signals.packUpdate, packingResult);
-            });
-
-            function SolveCUB() {
-                return _ref.apply(this, arguments);
-            }
-
-            return SolveCUB;
-        }()
-    }, {
-        key: "SolveAFit",
-        value: function SolveAFit() {
-            var AFit = __webpack_require__(31).default;
-
-            var afit = new AFit();
-
-            var Container = __webpack_require__(19).default;
-            var Item = __webpack_require__(18).default;
-
-            var containingVolume = this.packingSpace.current.volume;
-            console.warn('Currently solves for 1 ContainingVolume', containingVolume);
-
-            var d = containingVolume.dimensions;
-            var container = new Container(containingVolume.uid, d.width, d.length, d.height);
-
-            var numTotalItems = 0;
-
-            /** @type {Array<Box>} */
-            var items = [];
-            var entries = {};
-            var _iteratorNormalCompletion2 = true;
-            var _didIteratorError2 = false;
-            var _iteratorError2 = undefined;
-
-            try {
-                for (var _iterator2 = this.cargoList.groups.values()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                    var group = _step2.value;
-
-                    /** @type {BoxEntry} */
-                    var entry = group.entry;
-                    entries[entry.uid] = entry;
-                    d = entry.dimensions;
-                    var item = new Item(entry.uid, d.width, d.length, d.height, entry.quantity);
-                    numTotalItems += entry.quantity;
-                    items.push(item);
-                }
-            } catch (err) {
-                _didIteratorError2 = true;
-                _iteratorError2 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                        _iterator2.return();
-                    }
-                } finally {
-                    if (_didIteratorError2) {
-                        throw _iteratorError2;
-                    }
-                }
-            }
-
-            _Logger2.default.Log('Solving', items, ' in ', container);
-
-            var startTime = performance.now();
-            var result = afit.Solve(container, items);
-            result.PackTimeInMilliseconds = Math.ceil(performance.now() - startTime);
-
-            var containerVolume = container.Length * container.Width * container.Height;
-            var itemVolumePacked = sumOfVolumes(result.PackedItems);
-            var itemVolumeUnpacked = sumOfVolumes(result.UnpackedItems);
-
-            result.PercentContainerVolumePacked = Math.floor(itemVolumePacked / containerVolume * 100 * 100) / 100;
-            result.PercentItemVolumePacked = Math.floor(itemVolumePacked / (itemVolumePacked + itemVolumeUnpacked) * 100 * 100) / 100;
-
-            var packingResult = new PackingResult(numTotalItems);
-            result.PackedItems.forEach(function (packedItem) {
-                if (packedItem.IsPacked) {
-                    var entry = entries[packedItem.ID];
-                    var position = new THREE.Vector3(packedItem.CoordX + packedItem.PackDimX / 2, packedItem.CoordY + packedItem.PackDimY / 2, packedItem.CoordZ + packedItem.PackDimZ / 2);
-                    var orientation = Item.ResolveOrientation(packedItem);
-                    var packedCargo = new PackedCargo(entry, containingVolume, position, orientation);
-                    packingResult.packed.push(packedCargo);
-                }
-            });
-
-            this.Dispatch(signals.packUpdate, packingResult);
-        }
-    }, {
-        key: "SolveCLP",
-        value: function SolveCLP() {
-
-            var CLPSolver = __webpack_require__(33);
-
-            var containingVolume = this.packingSpace.current.volume;
-            console.warn('Currently solves for 1 ContainingVolume', containingVolume);
-
-            var d = containingVolume.dimensions;
-            /** @type {CLPSolver.ContainerData} */
-            var container = {
-                length: d.length, width: d.width, height: d.height,
-                mandatory: 0, weightCapacity: d.volume / 1000, cost: 1,
-                quantity: 1
-            };
-
-            /** @type {Array<CLPSolver.ItemData>} */
-            var items = [];
-            var entries = {};
-            /** @type {Array<Dimensions>} */
-            var dimensions = [];
-            var itemType = 1;
-            var _iteratorNormalCompletion3 = true;
-            var _didIteratorError3 = false;
-            var _iteratorError3 = undefined;
-
-            try {
-                for (var _iterator3 = this.cargoList.groups.values()[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                    var group = _step3.value;
-
-                    /** @type {BoxEntry} */
-                    var entry = group.entry;
-                    entries[itemType++] = entry;
-                    dimensions.push(entry.dimensions);
-                    d = entry.dimensions;
-
-                    /** @type {CLPSolver.ItemData} */
-                    var item = {
-                        length: d.length, width: d.width, height: d.height,
-                        xyRotatable: true, yzRotatable: true, mandatory: 1, profit: 0, weight: d.volume / 1000,
-                        quantity: entry.quantity
-                    };
-                    items.push(item);
-                }
-            } catch (err) {
-                _didIteratorError3 = true;
-                _iteratorError3 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                        _iterator3.return();
-                    }
-                } finally {
-                    if (_didIteratorError3) {
-                        throw _iteratorError3;
-                    }
-                }
-            }
-
-            console.log('entries:', entries);
-
-            _Logger2.default.Log('Solving', items, ' in ', container);
-
-            var scope = this;
-
-            function findEntry(w, l, h) {
-                var matches = 0,
-                    matched = -1;
-                var volume = w * l * h;
-                for (var i = 0; i < dimensions.length; i++) {
-                    if (almost(volume, dimensions[i].volume)) {
-                        matched = i;
-                        matches++;
-                    }
-                }
-
-                if (matches === 1) {
-                    return entries[matched + 1];
-                }
-
-                return undefined;
-            }
-
-            /** @param {CLPSolver.SolutionData} solution */
-            function onSolution(solution) {
-                console.log(solution);
-                var packedItems = solution.container.filter(function (container) {
-                    return container !== null;
-                })[0].items;
-                var packingResult = new PackingResult();
-                packedItems.forEach(function (packedItem) {
-                    if (packedItem && packedItem.item_type !== 0) {
-                        var w = packedItem.opposite_x - packedItem.origin_x,
-                            h = packedItem.opposite_y - packedItem.origin_y,
-                            l = packedItem.opposite_z - packedItem.origin_z;
-                        var entry = entries[packedItem.item_type];
-                        var position = new THREE.Vector3(packedItem.origin_x + w / 2, packedItem.origin_y + h / 2, packedItem.origin_z + l / 2);
-                        var orientation = CLPSolver.ContainerItem.ResolveOrientation(packedItem.rotation);
-                        var packedCargo = new PackedCargo(entry, containingVolume, position, orientation);
-                        packedCargo.solution = packedItem;
-                        packingResult.packed.push(packedCargo);
-                    }
-                });
-                scope.Dispatch(signals.packUpdate, packingResult);
-            }
-
-            /** @type {CLPSolver.SolverOptions} */
-            var solverOptions = {
-                itemSortCriterion: 1,
-                showProgress: false,
-                cpuTimeLimit: 10
-            };
-
-            CLPSolver.signaler.On(CLPSolver.signals.solution, onSolution);
-            CLPSolver.Execute(solverOptions, items, [container]);
-        }
-    }, {
-        key: "SolveAAS",
-        value: function SolveAAS() {
-            var packedItems = [{ id: "1003", position: { x: 0, y: 0, z: 0 }, dimensions: { width: 60, depth: 60, height: 60 } }, { id: "1004", position: { x: 60, y: 0, z: 0 }, dimensions: { width: 30, depth: 20, height: 40 } }, { id: "1004", position: { x: 60, y: 20, z: 60 }, dimensions: { width: 20, depth: 30, height: 40 } }, { id: "1004", position: { x: 80, y: 20, z: 60 }, dimensions: { width: 20, depth: 30, height: 40 } }, { id: "1003", position: { x: 0, y: 60, z: 60 }, dimensions: { width: 60, depth: 60, height: 60 } }, { id: "1004", position: { x: 60, y: 60, z: 60 }, dimensions: { width: 30, depth: 20, height: 40 } }, { id: "1005", position: { x: 60, y: 80, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 80, y: 80, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1003", position: { x: 0, y: 120, z: 60 }, dimensions: { width: 60, depth: 60, height: 60 } }, { id: "1005", position: { x: 60, y: 120, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 60, y: 150, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 80, y: 120, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 80, y: 150, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1003", position: { x: 0, y: 180, z: 60 }, dimensions: { width: 60, depth: 60, height: 60 } }, { id: "1005", position: { x: 60, y: 180, z: 60 }, dimensions: { width: 30, depth: 20, height: 30 } }, { id: "1005", position: { x: 60, y: 200, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 80, y: 200, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1003", position: { x: 0, y: 240, z: 60 }, dimensions: { width: 60, depth: 60, height: 60 } }, { id: "1005", position: { x: 60, y: 240, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 60, y: 270, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 80, y: 240, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 80, y: 270, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1003", position: { x: 0, y: 300, z: 60 }, dimensions: { width: 60, depth: 60, height: 60 } }, { id: "1005", position: { x: 60, y: 300, z: 60 }, dimensions: { width: 30, depth: 20, height: 30 } }, { id: "1005", position: { x: 60, y: 320, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 80, y: 320, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1003", position: { x: 0, y: 360, z: 60 }, dimensions: { width: 60, depth: 60, height: 60 } }, { id: "1005", position: { x: 0, y: 420, z: 60 }, dimensions: { width: 30, depth: 20, height: 30 } }, { id: "1005", position: { x: 0, y: 440, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 0, y: 470, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 0, y: 500, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 0, y: 530, z: 60 }, dimensions: { width: 30, depth: 20, height: 30 } }, { id: "1005", position: { x: 0, y: 550, z: 60 }, dimensions: { width: 30, depth: 20, height: 30 } }, { id: "1005", position: { x: 30, y: 420, z: 60 }, dimensions: { width: 30, depth: 20, height: 30 } }, { id: "1005", position: { x: 30, y: 440, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 30, y: 470, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 30, y: 500, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 30, y: 530, z: 60 }, dimensions: { width: 30, depth: 20, height: 30 } }, { id: "1005", position: { x: 30, y: 550, z: 60 }, dimensions: { width: 30, depth: 20, height: 30 } }, { id: "1005", position: { x: 60, y: 360, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 60, y: 390, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 60, y: 420, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 60, y: 450, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 60, y: 480, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 60, y: 510, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 60, y: 540, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 80, y: 360, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 80, y: 390, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 80, y: 420, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 80, y: 450, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 80, y: 480, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 80, y: 510, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 80, y: 540, z: 60 }, dimensions: { width: 20, depth: 30, height: 30 } }, { id: "1005", position: { x: 0, y: 0, z: 60 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 30, z: 60 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 60, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 90, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 120, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 150, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 180, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 210, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 240, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 270, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 300, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 330, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 360, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 390, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 420, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 450, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 480, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 510, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 540, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 30, y: 0, z: 60 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 30, y: 30, z: 60 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 30, y: 60, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 30, y: 90, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 30, y: 120, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 30, y: 150, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 30, y: 180, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 30, y: 210, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 30, y: 240, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 30, y: 270, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 30, y: 300, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 30, y: 330, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 30, y: 360, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 30, y: 390, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 30, y: 420, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 30, y: 450, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 30, y: 480, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 30, y: 510, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 30, y: 540, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 60, y: 0, z: 60 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 60, y: 30, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 60, y: 60, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 60, y: 90, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 60, y: 120, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 60, y: 150, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 60, y: 180, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 60, y: 210, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 60, y: 240, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 60, y: 270, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 60, y: 300, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 60, y: 330, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 60, y: 360, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 60, y: 390, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 60, y: 420, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 60, y: 450, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 60, y: 480, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 60, y: 510, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 60, y: 540, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 0, z: 80 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 30, z: 80 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 60, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 90, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 120, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 150, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 180, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 210, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 240, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 270, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 300, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 330, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 360, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 390, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 420, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 450, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 480, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 510, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 0, y: 540, z: 20 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 30, y: 0, z: 80 }, dimensions: { width: 30, depth: 30, height: 20 } }, { id: "1005", position: { x: 60, y: 0, z: 80 }, dimensions: { width: 30, depth: 30, height: 20 } }];
-
-            var containingVolume = this.packingSpace.current.volume;
-            console.warn('Currently solves for 1 ContainingVolume', containingVolume);
-
-            var entries = {};
-            var _iteratorNormalCompletion4 = true;
-            var _didIteratorError4 = false;
-            var _iteratorError4 = undefined;
-
-            try {
-                for (var _iterator4 = this.cargoList.groups.values()[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-                    var group = _step4.value;
-
-                    /** @type {BoxEntry} */
-                    var entry = group.entry;
-                    entries[entry.label] = entry;
-                }
-            } catch (err) {
-                _didIteratorError4 = true;
-                _iteratorError4 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
-                        _iterator4.return();
-                    }
-                } finally {
-                    if (_didIteratorError4) {
-                        throw _iteratorError4;
-                    }
-                }
-            }
-
-            var AASOrientation = __webpack_require__(59);
-
-            console.log('entries:', entries);
-
-            var scope = this;
-            var packingResult = new PackingResult();
-            packedItems.forEach(function (packedItem) {
-                var w = packedItem.dimensions.width,
-                    h = packedItem.dimensions.height,
-                    l = packedItem.dimensions.depth;
-                /** @type {BoxEntry} */
-                var entry = entries[packedItem.id];
-                var position = new THREE.Vector3(packedItem.position.x + w / 2, packedItem.position.z + h / 2, packedItem.position.y + l / 2);
-                var orientation = AASOrientation.resolve(w, l, h, entry.dimensions);
-                var packedCargo = new PackedCargo(entry, containingVolume, position, orientation);
-                packedCargo.solution = packedItem;
-                packingResult.packed.push(packedCargo);
-            });
-            scope.Dispatch(signals.packUpdate, packingResult);
-        }
-    }, {
-        key: "SolveSim",
-        value: function SolveSim() {
-            var Bin = __webpack_require__(34).default;
-            var Item = __webpack_require__(35).default;
-            var SimPacker = __webpack_require__(60).default;
-
-            var containingVolume = this.packingSpace.current.volume;
-            console.warn('Currently solves for 1 ContainingVolume', containingVolume);
-
-            var d = containingVolume.dimensions;
-            var bin = new Bin(containingVolume.uid, d.width, d.height, d.length, containingVolume.weightCapacity);
-
-            /** @type {Array<Box>} */
-            var items = [];
-            var entries = {};
-            var _iteratorNormalCompletion5 = true;
-            var _didIteratorError5 = false;
-            var _iteratorError5 = undefined;
-
-            try {
-                for (var _iterator5 = this.cargoList.groups.values()[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-                    var group = _step5.value;
-
-                    /** @type {BoxEntry} */
-                    var entry = group.entry;
-                    entries[entry.uid] = entry;
-                    d = entry.dimensions;
-                    for (var iQtt = 0; iQtt < entry.quantity; iQtt++) {
-                        var item = new Item(entry.uid, d.width, d.height, d.length, entry.weight);
-                        items.push(item);
-                    }
-                }
-            } catch (err) {
-                _didIteratorError5 = true;
-                _iteratorError5 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion5 && _iterator5.return) {
-                        _iterator5.return();
-                    }
-                } finally {
-                    if (_didIteratorError5) {
-                        throw _iteratorError5;
-                    }
-                }
-            }
-
-            _Logger2.default.Log('Solving', items, ' in ', bin);
-
-            var startTime = performance.now();
-            var simPacker = new SimPacker([bin], items).pack();
-            /** @type {Array<Box>} */
-            var packedItems = simPacker.bins[0].items;
-            _Logger2.default.Log('Solved in ' + Math.ceil(performance.now() - startTime) + ':', packedItems);
-
-            var packingResult = new PackingResult();
-            packedItems.forEach(function (packedItem) {
-                var entry = entries[packedItem.name];
-
-                var d = packedItem.getDimension();
-                var position = new THREE.Vector3(packedItem.position[0] + d[0] / 2, packedItem.position[1] + d[1] / 2, packedItem.position[2] + d[2] / 2);
-
-                var orientation = packedItem.getRotationTypeString();
-
-                var packedCargo = new PackedCargo(entry, containingVolume, position, orientation);
-                packingResult.packed.push(packedCargo);
-            });
-
-            this.Dispatch(signals.packUpdate, packingResult);
-        }
-    }, {
-        key: "SolveBRB",
-        value: function () {
-            var _ref2 = _asyncToGenerator(function* () {
-
-                var BRB = __webpack_require__(61);
-
-                var containingVolume = this.packingSpace.current.volume;
-                console.warn('Currently solves for 1 ContainingVolume', containingVolume);
-
-                var d = containingVolume.dimensions;
-
-                /** @type {import('./brb/BRB').Container} */
-                var container = {
-                    dimensions: [d.width, d.height, d.length],
-                    weight: containingVolume.weightCapacity
-                };
-
-                /** @type {Array<import('./brb/BRB').Item>} */
-                var items = [];
-                var entries = {};
-                var _iteratorNormalCompletion6 = true;
-                var _didIteratorError6 = false;
-                var _iteratorError6 = undefined;
-
-                try {
-                    for (var _iterator6 = this.cargoList.groups.values()[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-                        var group = _step6.value;
-
-                        /** @type {BoxEntry} */
-                        var entry = group.entry;
-                        entries[entry.uid] = entry;
-                        d = entry.dimensions;
-                        for (var iQtt = 0; iQtt < entry.quantity; iQtt++) {
-                            /** @type {import('./brb/BRB').Item} */
-                            var item = {
-                                id: entry.uid,
-                                dimensions: [d.width, d.height, d.length],
-                                weight: entry.weight
-                            };
-                            items.push(item);
-                        }
-                    }
-                } catch (err) {
-                    _didIteratorError6 = true;
-                    _iteratorError6 = err;
-                } finally {
-                    try {
-                        if (!_iteratorNormalCompletion6 && _iterator6.return) {
-                            _iterator6.return();
-                        }
-                    } finally {
-                        if (_didIteratorError6) {
-                            throw _iteratorError6;
-                        }
-                    }
-                }
-
-                _Logger2.default.Log('Solving', items, ' in ', container);
-
-                /** @type {import('../App').default} */
-                var app = _Debug2.default.app;
-                var matrix = app.view.packingSpaceView.GetMatrix(containingVolume);
-                BRB.setDebugMatrix(matrix);
-
-                var startTime = performance.now();
-                var result = yield BRB.pack(container, items);
-
-                if (result.failed) {
-                    console.log('BRB packing failed: ' + result.failed);
-                    return;
-                }
-
-                _Logger2.default.Log('Solved in ' + Math.ceil(performance.now() - startTime) + ':', result);
-
-                var packingResult = new PackingResult();
-                var iPackings = 0;
-                /** @param {import('./brb/BRB').Placement} placement */
-                function collectPlacements(placement) {
-                    /** @type {BoxEntry} */
-                    var entry = entries[placement.id];
-
-                    var containerOffset = iPackings * containingVolume.dimensions.width;
-                    var p = placement.position;
-                    var d = placement.dimensions;
-                    var position = new THREE.Vector3(p[0] + d[0] / 2, p[1] + d[1] / 2, p[2] + d[2] / 2);
-                    position.set(position.z, position.y, position.x);
-                    position.x += containerOffset;
-                    var packedDimensions = d;
-                    packedDimensions = [d[2], d[1], d[0]];
-
-                    var ed = entry.dimensions;
-                    var orientation = BRB.resolveOrientation(packedDimensions, [ed.width, ed.height, ed.length]);
-
-                    var packedCargo = new PackedCargo(entry, containingVolume, position, orientation);
-                    packingResult.packed.push(packedCargo);
-                }
-
-                /** @param {import('./brb/BRB').Packing} packing */
-                function collectPackings(packing) {
-                    packing.placements.forEach(collectPlacements);
-                    iPackings++;
-                }
-                result.packings.forEach(collectPackings);
-
-                this.Dispatch(signals.packUpdate, packingResult);
-            });
-
-            function SolveBRB() {
-                return _ref2.apply(this, arguments);
-            }
-
-            return SolveBRB;
-        }()
-    }], [{
-        key: "signals",
-        get: function get() {
-            return signals;
-        }
-    }]);
-
-    return Packer;
-}(_Signaler3.default);
-
-Packer.PackingResult = PackingResult;
-
-exports.default = Packer;
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-var _Volume2 = __webpack_require__(54);
-
-var _Volume3 = _interopRequireDefault(_Volume2);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var type = 'ContainingVolume';
-
-var ContainingVolume = function (_Volume) {
-    _inherits(ContainingVolume, _Volume);
-
-    function ContainingVolume() {
-        _classCallCheck(this, ContainingVolume);
-
-        var _this = _possibleConstructorReturn(this, (ContainingVolume.__proto__ || Object.getPrototypeOf(ContainingVolume)).call(this));
-
-        _this.SetUID();
-        return _this;
-    }
-
-    _createClass(ContainingVolume, [{
-        key: 'SetUID',
-
-
-        /**
-         * @param {string} [uid] - You'll rarely need to provide this
-         */
-        value: function SetUID(uid) {
-            this.uid = uid || THREE.Math.generateUUID();
-            return this.uid;
-        }
-    }, {
-        key: 'toJSON',
-        value: function toJSON() {
-            var json = _get(ContainingVolume.prototype.__proto__ || Object.getPrototypeOf(ContainingVolume.prototype), 'toJSON', this).call(this);
-            json.type = type;
-            return json;
-        }
-    }, {
-        key: 'ToString',
-        value: function ToString() {
-            return _get(ContainingVolume.prototype.__proto__ || Object.getPrototypeOf(ContainingVolume.prototype), 'ToString', this).call(this);
-        }
-    }, {
-        key: 'weightCapacity',
-        get: function get() {
-            return this.dimensions.volume / 1000;
-        }
-    }], [{
-        key: 'FromJSON',
-        value: function FromJSON(data) {
-            if (data.type !== type) console.warn('Data supplied is not: ' + type);
-
-            var containingVolume = new ContainingVolume();
-            _Volume3.default.FromJSON(data, containingVolume);
-
-            return containingVolume;
-        }
-    }]);
-
-    return ContainingVolume;
-}(_Volume3.default);
-
-exports.default = ContainingVolume;
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var type = 'Dimensions';
-var _vec3 = Symbol('vec3');
-
-var epsilon = Math.pow(2, -52);
-var numberType = 'number';
-
-var Dimensions = function () {
-    /**
-     * @param {Number} width 
-     * @param {Number} length 
-     * @param {Number} height 
-     */
-    function Dimensions(width, length, height) {
-        _classCallCheck(this, Dimensions);
-
-        if (width === undefined) width = 0;
-        if (length === undefined) length = 0;
-        if (height === undefined) height = 0;
-
-        this.Set(width, length, height);
-        this[_vec3] = new THREE.Vector3();
-    }
-
-    /**
-     * @param {Number} width 
-     * @param {Number} length 
-     * @param {Number} height 
-     */
-
-
-    _createClass(Dimensions, [{
-        key: 'Set',
-        value: function Set(width, length, height) {
-            this.width = width;
-            this.length = length;
-            this.height = height;
-        }
-
-        /**
-         * Returns a THREE.Vector3 representation of the dimensions
-         * Beware of ordering: x=width, y=height and z=length
-         * @returns {THREE.Vector3}
-         */
-
-    }, {
-        key: 'Abs',
-        value: function Abs() {
-            if (this.width < 0) this.width = -this.width;
-            if (this.length < 0) this.length = -this.length;
-            if (this.height < 0) this.height = -this.height;
-            return this;
-        }
-    }, {
-        key: 'Compare',
-        value: function Compare(dimensions) {
-            var d = this.volume - dimensions.volume;
-            if (d < -epsilon) return -1;
-            if (d > epsilon) return 1;
-            return 0;
-        }
-    }, {
-        key: 'Copy',
-        value: function Copy(dimensions) {
-            this.Set(dimensions.width, dimensions.length, dimensions.height);
-        }
-    }, {
-        key: 'Clone',
-        value: function Clone() {
-            var dimensions = new Dimensions(this.width, this.length, this.height);
-            return dimensions;
-        }
-    }, {
-        key: 'ToString',
-        value: function ToString() {
-            return this.width.toFixed(2) + 'x' + this.length.toFixed(2) + 'x' + this.height.toFixed(2);
-        }
-    }, {
-        key: 'toJSON',
-        value: function toJSON() {
-            return {
-                type: type,
-                width: this.width,
-                length: this.length,
-                height: this.height
-            };
-        }
-    }, {
-        key: 'vec3',
-        get: function get() {
-            return this[_vec3].set(this.width, this.height, this.length);
-        }
-    }, {
-        key: 'volume',
-        get: function get() {
-            return this.width * this.height * this.length;
-        }
-    }], [{
-        key: 'IsVolume',
-        value: function IsVolume(dimensions) {
-            return Dimensions.Assert(dimensions) && dimensions.width > epsilon && dimensions.length > epsilon && dimensions.height > epsilon;
-        }
-    }, {
-        key: 'FromJSON',
-        value: function FromJSON(data) {
-            if (data.type !== type) console.warn('Data supplied is not: ' + type);
-
-            var dimensions = new Dimensions(data.width, data.length, data.height);
-            return dimensions;
-        }
-    }, {
-        key: 'Assert',
-        value: function Assert(dimensions) {
-            return dimensions instanceof Dimensions && _typeof(dimensions.width) === numberType && _typeof(dimensions.length) === numberType && _typeof(dimensions.height) === numberType;
-        }
-    }]);
-
-    return Dimensions;
-}();
-
-exports.default = Dimensions;
-
-/***/ }),
-/* 10 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2152,9 +602,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _PackingProperty = __webpack_require__(55);
+var _PackingProperty = __webpack_require__(53);
 
-var _Dimensions = __webpack_require__(9);
+var _Dimensions = __webpack_require__(18);
 
 var _Dimensions2 = _interopRequireDefault(_Dimensions);
 
@@ -2162,7 +612,7 @@ var _TextField = __webpack_require__(30);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
-var _CargoEntry2 = __webpack_require__(5);
+var _CargoEntry2 = __webpack_require__(8);
 
 var _CargoEntry3 = _interopRequireDefault(_CargoEntry2);
 
@@ -2367,7 +817,7 @@ var BoxEntry = function (_CargoEntry) {
 exports.default = BoxEntry;
 
 /***/ }),
-/* 11 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2379,247 +829,1271 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _AFitTest = __webpack_require__(56);
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-var _AFitTest2 = _interopRequireDefault(_AFitTest);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/** SignalerCallback 
+ * @callback SignalerCallback
+ * @param {Array<*>} args
+ */
+
+var Signaler = function () {
+    function Signaler() {
+        _classCallCheck(this, Signaler);
+
+        /** @type {Array<SignalerCallback>} */
+        this.signals = {};
+        /** @type {Array<string>} */
+        this.dispatches = {};
+    }
+
+    /** @param {string} event @param {SignalerCallback} callback */
+
+
+    _createClass(Signaler, [{
+        key: "OnIncludingPrior",
+        value: function OnIncludingPrior(event, callback) {
+            var args = this.dispatches[event];
+            if (args) {
+                callback.apply(undefined, _toConsumableArray(args));
+            } else {
+                this.On(event, callback);
+            }
+        }
+
+        /** @param {string} event @param {SignalerCallback} callback */
+
+    }, {
+        key: "On",
+        value: function On(event, callback) {
+            if (this.signals[event] === undefined) {
+                this.signals[event] = [];
+            }
+            this.signals[event].push(callback);
+        }
+
+        /** @param {string} event @param {SignalerCallback} callback */
+
+    }, {
+        key: "Off",
+        value: function Off(event, callback) {
+            var callbacks = this.signals[event];
+            if (callbacks) {
+                var index = callbacks.indexOf(callback);
+                if (index != -1) {
+                    callbacks.splice(index, 1);
+                }
+            }
+        }
+
+        /** @param {string} event @param {Array<*>} [args] */
+
+    }, {
+        key: "Dispatch",
+        value: function Dispatch(event) {
+            for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                args[_key - 1] = arguments[_key];
+            }
+
+            this.dispatches[event] = args;
+            var callbacks = this.signals[event];
+            if (callbacks) {
+                for (var i = 0, len = callbacks.length; i < len; i++) {
+                    callbacks[i].apply(callbacks, args);
+                }
+            }
+        }
+    }]);
+
+    return Signaler;
+}();
+
+exports.default = Signaler;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _ColorTemplate = __webpack_require__(52);
+
+var _ColorTemplate2 = _interopRequireDefault(_ColorTemplate);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function delay(time, callback) {
-    setTimeout(callback, time);
+var SolidMaterialType = THREE.MeshStandardMaterial;
+var TransparentMaterialType = THREE.MeshStandardMaterial;
+var InvisibleMaterialType = THREE.MeshBasicMaterial;
+
+var defaultGeometry = new THREE.CubeGeometry(1, 1, 1);
+var defaultMeshMaterial = new SolidMaterialType({ color: 0xaaaaaa });
+
+var objectLoader = new THREE.ObjectLoader();
+var jsonLoader = new THREE.JSONLoader();
+
+var castShadow = true;
+var receiveShadow = true;
+
+/** @type {Map<string, ColorTemplate>} */
+var colorTemplates = new Map();
+
+var Asset = function () {
+    function Asset() {
+        _classCallCheck(this, Asset);
+    }
+
+    /**
+     * @param {Number} color hex
+     */
+
+
+    _createClass(Asset, null, [{
+        key: "CreateSolidMaterialMatte",
+        value: function CreateSolidMaterialMatte(color) {
+            return new Asset.SolidMaterialType({ color: color, roughness: 1, metalness: .2 });
+        }
+
+        /**
+         * 
+         * @param {THREE.Geometry|THREE.BufferGeometry} geometry 
+         * @param {THREE.Material} [material]
+         */
+
+    }, {
+        key: "CreateMesh",
+        value: function CreateMesh(geometry, material) {
+            geometry = geometry || defaultGeometry;
+            material = material || defaultMeshMaterial;
+
+            var mesh = new THREE.Mesh(geometry, material);
+            return mesh;
+        }
+    }, {
+        key: "RestoreMaterial",
+        value: function RestoreMaterial(material, modified) {
+            if (modified === undefined) return;
+
+            var keys = Object.keys(modified);
+            for (var i = 0; i < keys.length; i++) {
+                var key = keys[i];
+                if (material[key] !== undefined) {
+                    if (material[key].setHex) {
+                        /** @type {THREE.Color} */
+                        var color = material.color;
+                        color.setHex(modified[key]);
+                    } else {
+                        material[key] = modified[key];
+                    }
+                }
+            }
+        }
+    }, {
+        key: "SetMaterialFocus",
+        value: function SetMaterialFocus(material, value, modified) {
+
+            /** @type {THREE.Color} */
+            var color = material.color;
+            if (color !== undefined) {
+                if (modified) modified.color = color.getHex();
+
+                var reduce = (value - 1) / 4;
+                color.r = THREE.Math.clamp(color.r - reduce, 0, 1);
+                color.g = THREE.Math.clamp(color.g - reduce, 0, 1);
+                color.b = THREE.Math.clamp(color.b - reduce, 0, 1);
+            }
+
+            /** @type {Number} */
+            var opacity = material.opacity;
+            if (opacity !== undefined) {
+                if (modified) {
+                    modified.opacity = opacity;
+                    modified.transparent = material.transparent;
+                }
+
+                material.opacity = THREE.Math.clamp(material.opacity * value, 0, 1);;
+                material.transparent = material.opacity < 1;
+            }
+        }
+
+        /**
+         * @typedef GeometryJSONReturn
+         * @property {THREE.Geometry|THREE.BufferGeometry} geometry
+         * @property {Array<THREE.Material>} [materials]
+         * 
+         * @param {Object} json - Representing Geometry or BufferGeometry json data
+         * @param {string} [texturePath] - optional texture url 
+         * @returns {GeometryJSONReturn}
+         */
+
+    }, {
+        key: "FromGeometryJSON",
+        value: function FromGeometryJSON(json, texturePath) {
+            return jsonLoader.parse(json, texturePath);
+        }
+
+        /**
+         * @param {Object} json 
+         * @param {THREE.Object3D} texturePath 
+         */
+
+    }, {
+        key: "FromJSON",
+        value: function FromJSON(json, texturePath) {
+            return objectLoader.parse(json, texturePath);
+        }
+
+        /** @param {THREE.Object3D} object */
+
+    }, {
+        key: "StandardSceneObject",
+        value: function StandardSceneObject(object) {
+            Asset.CastReceiveShadow(object);
+        }
+
+        /** @param {THREE.Object3D} object @param {Boolean} [value] */
+
+    }, {
+        key: "CastReceiveShadow",
+        value: function CastReceiveShadow(object, value) {
+            object.traverse(function (child) {
+                if (child instanceof THREE.Mesh) {
+                    child.castShadow = value === undefined ? castShadow : value;
+                    child.receiveShadow = value === undefined ? receiveShadow : value;
+                }
+            });
+        }
+
+        /** @param {THREE.Object3D} object @param {Boolean} [value] */
+
+    }, {
+        key: "ReceiveShadow",
+        value: function ReceiveShadow(object, value) {
+            if (value === undefined) value = receiveShadow;
+            object.traverse(function (child) {
+                if (child instanceof THREE.Mesh) {
+                    child.receiveShadow = value;
+                }
+            });
+        }
+
+        /** @param {THREE.Object3D} object @param {Boolean} [value] */
+
+    }, {
+        key: "CastShadow",
+        value: function CastShadow(object, value) {
+            if (value === undefined) value = castShadow;
+            object.traverse(function (child) {
+                if (child instanceof THREE.Mesh) {
+                    child.castShadow = value;
+                }
+            });
+        }
+
+        /**
+         * @param {string} key 
+         * @param {Array<string|THREE.Color>} colors 
+         */
+
+    }, {
+        key: "CreateColorTemplate",
+        value: function CreateColorTemplate(key) {
+            for (var _len = arguments.length, colors = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                colors[_key - 1] = arguments[_key];
+            }
+
+            var template = new (Function.prototype.bind.apply(_ColorTemplate2.default, [null].concat(colors)))();
+            colorTemplates.set(key, template);
+        }
+
+        /**
+         * @param {string} key 
+         */
+
+    }, {
+        key: "ColorTemplates",
+        value: function ColorTemplates(key) {
+            return colorTemplates.get(key);
+        }
+    }]);
+
+    return Asset;
+}();
+
+Asset.SolidMaterialType = SolidMaterialType;
+Asset.TransparentMaterialType = TransparentMaterialType;
+Asset.InvisibleMaterialType = InvisibleMaterialType;
+
+Asset.CreateColorTemplate('Containers', 0x020202, 0x7f7f7f, 0xffffff);
+
+exports.default = Asset;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _ContainingVolume = __webpack_require__(13);
+
+var _ContainingVolume2 = _interopRequireDefault(_ContainingVolume);
+
+var _Logger = __webpack_require__(2);
+
+var _Logger2 = _interopRequireDefault(_Logger);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var type = 'Container';
+
+var combinedVolume = new _ContainingVolume2.default();
+
+var Container = function () {
+    function Container() {
+        _classCallCheck(this, Container);
+
+        /**
+         * Containing volumes array
+         * @type {Array<ContainingVolume>}
+         */
+        this.volumes = [];
+
+        _Logger2.default.WarnOnce('Container.constructor', 'weight, label not implemented');
+    }
+
+    /** @param {ContainingVolume} volume */
+
+
+    _createClass(Container, [{
+        key: "Add",
+        value: function Add(volume) {
+            this.volumes.push(volume);
+        }
+
+        /**
+         * @param {string} [uid] - You'll rarely need to provide this
+         */
+
+    }, {
+        key: "SetUID",
+        value: function SetUID(uid) {
+            this.uid = uid || THREE.Math.generateUUID();
+            return this.uid;
+        }
+    }, {
+        key: "toJSON",
+        value: function toJSON() {
+            return {
+                type: type,
+                volumes: this.volumes
+            };
+        }
+    }, {
+        key: "ToString",
+        value: function ToString() {
+            var result = type + '[';
+            for (var i = 0, numVolumes = this.volumes.length; i < numVolumes; i++) {
+                result += this.volumes[i].ToString() + (i < numVolumes - 1 ? ', ' : ']');
+            }
+            return result;
+        }
+    }, {
+        key: "combinedVolume",
+        get: function get() {
+            var minX = Number.MAX_SAFE_INTEGER,
+                minY = Number.MAX_SAFE_INTEGER,
+                minZ = Number.MAX_SAFE_INTEGER;
+
+            var maxX = Number.MIN_SAFE_INTEGER,
+                maxY = Number.MIN_SAFE_INTEGER,
+                maxZ = Number.MIN_SAFE_INTEGER;
+
+            this.volumes.forEach(function (volume) {
+                var pos = volume.position;
+                var dim = volume.dimensions;
+                if (pos.x < minX) minX = pos.x;
+                if (pos.y < minY) minY = pos.y;
+                if (pos.z < minZ) minZ = pos.z;
+                if (pos.x + dim.width > maxX) maxX = pos.x + dim.width;
+                if (pos.y + dim.height > maxY) maxY = pos.y + dim.height;
+                if (pos.z + dim.length > maxZ) maxZ = pos.z + dim.length;
+            });
+
+            combinedVolume.container = this;
+            combinedVolume.dimensions.Set(maxX - minX, maxZ - minZ, maxY - minY);
+            combinedVolume.position.set((maxX + minX) / 2, (maxZ + minZ) / 2, (maxY + minY) / 2);
+
+            return combinedVolume;
+        }
+    }, {
+        key: "volume",
+        get: function get() {
+            var index = this.volumes.length - 1;
+            return this.volumes[index];
+        }
+    }], [{
+        key: "FromJSON",
+        value: function FromJSON(data) {
+            if (data.type !== type) throw 'Data supplied is not: ' + type;
+
+            var container = new Container();
+            for (var i = 0, numVolumes = data.volumes.length; i < numVolumes; i++) {
+                var containingVolume = _ContainingVolume2.default.FromJSON(data.volumes[i]);
+                containingVolume.container = container;
+                container.Add(containingVolume);
+            }
+
+            return container;
+        }
+    }]);
+
+    return Container;
+}();
+
+exports.default = Container;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/** SignalerCallback 
+ * @callback SignalerCallback
+ * @param {Array<*>} args
+ */
+
+var _signals = Symbol('signals');
+var _dispatches = Symbol('dispatches');
+
+var LightDispatcher = function () {
+    function LightDispatcher() {
+        _classCallCheck(this, LightDispatcher);
+
+        this[_signals] = {};
+        this[_dispatches] = {};
+    }
+
+    /** @param {string} event @param {SignalerCallback} callback */
+
+
+    _createClass(LightDispatcher, [{
+        key: 'On',
+        value: function On(event, callback) {
+            if (this[_signals][event] === undefined) {
+                this[_signals][event] = [];
+            }
+            this[_signals][event].push(callback);
+        }
+
+        /** @param {string} event @param {SignalerCallback} callback */
+
+    }, {
+        key: 'Off',
+        value: function Off(event, callback) {
+            var callbacks = this[_signals][event];
+            if (callbacks) {
+                var index = callbacks.indexOf(callback);
+                if (index != -1) {
+                    callbacks.splice(index, 1);
+                }
+            }
+        }
+
+        /** @param {string} event @param {Array<*>} [args] */
+
+    }, {
+        key: 'Dispatch',
+        value: function Dispatch(event) {
+            for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                args[_key - 1] = arguments[_key];
+            }
+
+            this[_dispatches][event] = args;
+            var callbacks = this[_signals][event];
+            if (callbacks) {
+                for (var i = 0, len = callbacks.length; i < len; i++) {
+                    callbacks[i].apply(callbacks, args);
+                }
+            }
+        }
+    }]);
+
+    return LightDispatcher;
+}();
+
+exports.default = LightDispatcher;
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _TextField = __webpack_require__(30);
+
+var _TextField2 = _interopRequireDefault(_TextField);
+
+var _Logger = __webpack_require__(2);
+
+var _Logger2 = _interopRequireDefault(_Logger);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var _weight = Symbol('weight');
+
+var CargoEntry = function () {
+    function CargoEntry() {
+        _classCallCheck(this, CargoEntry);
+
+        this.type = 'CargoEntry';
+
+        this.quantity = 0;
+        this.properties = {};
+        this.uid = '';
+        this[_weight] = 0;
+
+        /**
+         * @type {Map<string, TextField>}
+         */
+        this.descriptions = new Map();
+    }
+
+    /** @returns {Number} */
+
+
+    _createClass(CargoEntry, [{
+        key: "SetUID",
+
+
+        /**
+         * @param {string} [uid] - You'll rarely need to provide this
+         */
+        value: function SetUID(uid) {
+            this.uid = uid || THREE.Math.generateUUID();
+            return this.uid;
+        }
+    }, {
+        key: "Copy",
+        value: function Copy(entry) {
+            _Logger2.default.Warn('CargoEntry.Copy is not implemented');
+        }
+    }, {
+        key: "Clone",
+        value: function Clone() {
+            _Logger2.default.Warn('CargoEntry.Clone is not implemented');
+        }
+    }, {
+        key: "ToString",
+        value: function ToString() {}
+    }, {
+        key: "weight",
+        get: function get() {
+            return this[_weight];
+        },
+        set: function set(value) {
+            this[_weight] = value;
+        }
+    }]);
+
+    return CargoEntry;
+}();
+
+exports.default = CargoEntry;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var serializeModes = {
+    none: 'none',
+    json: 'json'
+};
+
+/**
+ * @typedef ConfigParams
+ * @property {Boolean} debug
+ * @property {Boolean} save
+ * @property {serializeModes} serializeMode
+ */
+
+var Controller = function () {
+    function Controller(property, min, max, step, onChange) {
+        _classCallCheck(this, Controller);
+
+        this.property = property;
+        this.min = min;
+        this.max = max;
+        this.step = step;
+        this.onChange = onChange;
+    }
+
+    /**
+     * @returns {Array<Controller>}
+     */
+
+
+    _createClass(Controller, null, [{
+        key: 'Multiple',
+        value: function Multiple(properties, min, max, step, onChange) {
+            var controllers = [];
+            properties.forEach(function (property) {
+                controllers.push(new Controller(property, min, max, step, onChange));
+            });
+            return controllers;
+        }
+    }]);
+
+    return Controller;
+}();
+
+function createKeyInfo(obj, key) {
+    var isFolderGrouped = key[0] == "#";
+    if (isFolderGrouped) key = key.substr(1);
+
+    var propertyPath = key;
+
+    key = key.split('.');
+    var folder = isFolderGrouped ? key.slice(0, key.length - 1).join('.') : undefined;
+    while (key.length > 1) {
+        obj = obj[key.shift()];
+    }return {
+        id: (folder ? folder + '.' : '') + key[0],
+        folder: folder,
+        owner: obj,
+        key: key[0],
+        propertyPath: propertyPath
+    };
 }
 
-var debugGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 1, 1, 1);
-var debugMaterial = new THREE.MeshStandardMaterial({ color: 0xff7f00, transparent: true, opacity: .35, map: new THREE.TextureLoader().load('../resources/textures/checkers.jpg', function (map) {
-        map.wrapS = map.wrapT = THREE.RepeatWrapping;
-    }) });
-var debugBox = new THREE.Mesh(debugGeometry, debugMaterial);
+function getKey(obj, key) {
+    return key.split('.').reduce(function (a, b) {
+        return a && a[b];
+    }, obj);
+}
 
-var tempVec = new THREE.Vector3();
+function setKey(obj, key, val) {
+    key = key.split('.');
+    while (key.length > 1) {
+        obj = obj[key.shift()];
+    }var endKey = key.shift();
+    if (obj[endKey].setHex) {
+        obj[endKey].setHex(val);
+    } else {
+        obj[endKey] = val;
+    }
+    return obj[endKey];
+}
 
-var DebugBox = function () {
-    function DebugBox() {
-        _classCallCheck(this, DebugBox);
+function download(data, filename, type) {
+    // https://stackoverflow.com/a/30832210/1712403
+    var file = new Blob([data], { type: type || 'text/plain' });
+    if (window.navigator.msSaveOrOpenBlob) // IE10+
+        window.navigator.msSaveOrOpenBlob(file, filename);else {
+        // Others
+        var a = document.createElement("a"),
+            url = URL.createObjectURL(file);
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function () {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }, 0);
+    }
+}
+
+var defaultEditParams = {
+    save: true, debug: true
+};
+
+/** 
+ * @typedef GUI
+ * @property {HTMLElement} domElement
+ */
+
+var Shortcut = function () {
+    /**
+     * @param {string} label 
+     */
+    function Shortcut(label) {
+        _classCallCheck(this, Shortcut);
+
+        this.label = label;
+
+        ///** @type {Map<string, GUI>} */
+        //this.folders = new Map();
+
+        this.controller = {};
     }
 
-    _createClass(DebugBox, null, [{
-        key: 'FromCenterSize',
-
-
-        /**
-         * @param {THREE.Vector3} center 
-         * @param {Number|THREE.Vector3} size 
-         */
-        value: function FromCenterSize(center, size) {
-            var box = debugBox.clone();
-            box.position.copy(center);
-
-            if (size instanceof THREE.Vector3) box.scale.copy(size);else box.scale.set(size, size, size);
-
-            return box;
-        }
-
-        /**
-         * @param {THREE.Box3} box3 
-         */
-
-    }, {
-        key: 'FromBox3',
-        value: function FromBox3(box3) {
-            var box = debugBox.clone();
-
-            box3.getCenter(tempVec);
-            box.position.copy(tempVec);
-            box3.getSize(tempVec);
-            box.scale.copy(tempVec);
-
-            return box;
+    _createClass(Shortcut, [{
+        key: 'Add',
+        value: function Add(label, target) {
+            label = label.replace(new RegExp(' ', 'g'), '_');
+            this.controller[label] = target;
+            Config.shortcutsGUI.add(this.controller, label);
+            console.log('added ' + label + ' shortcut to ' + this.label);
         }
     }]);
 
-    return DebugBox;
+    return Shortcut;
 }();
 
-/**
- * DebugViz
- */
+/** @type {GUI} */
 
-var alphaHexMask = 256 * 256 * 256;
 
-/** @type {THREE.Object3D} */
-var view;
+var shortcutsGUI;
 
-/** @type {Map<string, *>} */
-var debugObjects = new Map();
+/** @type {Map<string, Shortcut>} */
+var shortcuts = new Map();
 
-var tVec3 = new THREE.Vector3(),
-    tPos = new THREE.Vector3(),
-    tScale = new THREE.Vector3();
+/** @type {Map<Object, Config>} */
+var instances = new Map();
 
-var DebugViz = function () {
-    function DebugViz() {
-        _classCallCheck(this, DebugViz);
+var Config = function () {
+    function Config(target) {
+        _classCallCheck(this, Config);
+
+        if (!Config.debug) Config.debug = instances;
+        instances.set(target, this);
+
+        this.target = target;
+        this.keys = [];
     }
 
-    _createClass(DebugViz, null, [{
-        key: 'SetViewParent',
+    _createClass(Config, [{
+        key: 'Track',
+        value: function Track() {
+            var keys = this.keys;
 
-
-        /**
-         * @param {THREE.Object3D} parent
-         */
-        value: function SetViewParent(parent) {
-            view = new THREE.Object3D();
-            view.name = 'DebugViz view';
-            console.log(view.name + ' created...');
-            view.renderOrder = Number.MAX_SAFE_INTEGER - 10;
-            parent.add(view);
-        }
-    }, {
-        key: 'DrawVolume',
-
-
-        /**
-         * @param {Number} x center x * @param {Number} y center y * @param {Number} z center z * @param {Number} w * @param {Number} h * @param {Number} l
-         * @param {Number} [color] hex color
-         * @param {Number} [duration] in milliseconds
-         * @param {Boolean} [checkered] checkers map
-         */
-        value: function DrawVolume(x, y, z, w, h, l, color, duration, wireframe, checkered) {
-            tPos.set(x, y, z);
-            tScale.set(w, h, l);
-
-            /** @type {THREE.Mesh} */
-            var volume = debugBox.clone();
-            view.add(volume);
-
-            volume.position.copy(tPos);
-            volume.scale.copy(tScale);
-
-            if (color) {
-                /** @type {THREE.MeshStandardMaterial} */
-                var material = volume.material.clone();
-                volume.material = material;
-                material.color.setHex(color && 0xffffff);
-                if (wireframe === true) {
-                    material.wireframe = true;
-                } else {
-                    material.opacity = Math.floor(color / alphaHexMask) / 256;
-                    material.transparent = material.opacity > 0 && material.opacity < .99;
-                }
-
-                if (!checkered) {
-                    material.map = null;
-                } else {
-                    material.map.repeat.set(10, 10);
-                }
+            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+                args[_key] = arguments[_key];
             }
 
-            var uid = THREE.Math.generateUUID();
-            debugObjects.set(uid, volume);
+            args.forEach(function (key) {
+                keys.push(key);
+            });
+        }
+    }, {
+        key: 'Snapshot',
+        value: function Snapshot(ignoreKeys) {
+            var data = {};
+            var target = this.target;
+            this.keys.forEach(function (key) {
+                var isController = key instanceof Controller;
+                var keyInfo = createKeyInfo(target, isController ? key.property : key);
+                var keyValue = keyInfo.owner[keyInfo.key];
+                if (typeof keyValue !== 'function') {
+                    data[keyInfo.id] = keyValue;
+                } else if (ignoreKeys !== undefined) {
+                    var warn = true;
+                    ignoreKeys.forEach(function (ignoredKey) {
+                        if (ignoredKey === keyInfo.id) {
+                            warn = false;
+                        }
+                    });
+                    if (warn) console.log('Config.Snapshot warning: "' + keyInfo.id + '" changes will be lost');
+                }
+            });
+            return data;
+        }
+    }, {
+        key: 'Serialize',
+        value: function Serialize() {
+            var _this = this;
 
-            if (duration > 0) {
-                delay(duration, function () {
-                    DebugViz.RemoveObjectByUID(uid);
+            var data = {};
+            this.keys.forEach(function (key) {
+                var isController = key instanceof Controller;
+                var keyInfo = createKeyInfo(_this.target, isController ? key.property : key);
+                var keyValue = keyInfo.owner[keyInfo.key];
+                if (typeof keyValue !== 'function') {
+                    var saveValue = keyInfo.owner[keyInfo.key].isColor ? '0x' + Number.parseInt(keyValue.toJSON()).toString(16) : keyValue;
+                    data[keyInfo.propertyPath] = saveValue;
+                }
+            });
+            return data;
+        }
+    }, {
+        key: 'Save',
+        value: function Save() {
+            if (this.Update) {
+                this.Update();
+                this.data = this.Snapshot();
+            }
+        }
+
+        /**
+         * 
+         * @param {Function} guiChanged 
+         * @param {string} label 
+         * @param {string} gui - or a dat.GUI object
+         * @param {ConfigParams} params 
+         */
+
+    }, {
+        key: 'Edit',
+        value: function Edit(guiChanged, label, gui, params) {
+            var _this2 = this;
+
+            params = _Utils2.default.AssignUndefined(params, defaultEditParams);
+
+            var controllers = [];
+            var target = this.target;
+            if (gui === undefined) {
+
+                gui = new (window.dat || __webpack_require__(1).default).GUI({
+                    autoPlace: true
                 });
+            } else if (label) {
+                gui = gui.addFolder(label);
             }
 
-            return uid;
+            if (this.editing === undefined) {
+                this.editing = {};
+
+                this.Update = function () {
+                    __webpack_require__(33);
+
+                    gui.updateAll();
+                    guiChanged();
+                };
+
+                gui.add(this, 'Update');
+            }
+
+            this.keys.forEach(function (key) {
+                var isController = key instanceof Controller;
+                var keyInfo = createKeyInfo(target, isController ? key.property : key);
+                if (_this2.editing[keyInfo.id] !== true) {
+                    var folder = gui;
+                    if (keyInfo.folder) {
+                        __webpack_require__(33);
+
+                        if (gui.find) folder = gui.find(keyInfo.folder);else console.warn('gui extensions not found!');
+
+                        if (!folder) folder = gui.addFolder(keyInfo.folder);
+                    }
+                    var addFunction = keyInfo.owner[keyInfo.key].isColor ? folder.addColor : folder.add;
+                    controllers.push((isController && key.min !== undefined ? addFunction.call(folder, keyInfo.owner, keyInfo.key, key.min, key.max, key.step) : addFunction.call(folder, keyInfo.owner, keyInfo.key)).onChange(key.onChange === undefined ? guiChanged : function () {
+                        key.onChange.call(keyInfo.owner);
+                        guiChanged();
+                    }));
+                    _this2.editing[keyInfo.id] = true;
+                }
+            });
+
+            var scope = this;
+            var editor = {
+                Save: function Save() {
+                    scope.Save();
+                    var filename = label !== undefined ? label + (label.indexOf('.json') === -1 ? '.json' : '') : 'config.json';
+                    download(scope.data, filename);
+                },
+
+                Debug: function Debug() {
+                    console.log(scope.target);
+                },
+
+                Serialize: function Serialize() {
+                    if (scope.Update) {
+                        scope.Update();
+                        var data = scope.Serialize();
+                        var json = JSON.stringify(data);
+                        console.log(data, json);
+                    }
+                }
+            };
+            if (params.save) {
+                if (this.defaultsFolder === undefined) this.defaultsFolder = gui.addFolder('...');
+                if (this.editing['editor.Save'] !== true) {
+                    this.defaultsFolder.add(editor, 'Save');
+                    this.editing['editor.Save'] = true;
+                }
+            }
+            if (params.debug) {
+                if (this.defaultsFolder === undefined) this.defaultsFolder = gui.addFolder('...');
+                if (this.editing['editor.Debug'] !== true) {
+                    this.defaultsFolder.add(editor, 'Debug');
+                    this.editing['editor.Debug'] = true;
+                }
+            }
+
+            switch (params.serializeMode) {
+                default:
+                    break;
+                case serializeModes.json:
+                    if (this.defaultsFolder === undefined) this.defaultsFolder = gui.addFolder('...');
+                    if (this.editing['editor.Serialize'] !== true) {
+                        this.defaultsFolder.add(editor, 'Serialize');
+                        this.editing['editor.Serialize'] = true;
+                    }
+                    break;
+            }
+
+            this.gui = gui;
+        }
+    }, {
+        key: 'toJSON',
+        value: function toJSON() {
+            if (this.data === undefined) console.warn(this.target, 'is being saved with undefined data.');
+            return this.data;
+        }
+    }], [{
+        key: 'Unroll',
+
+
+        /**
+         * 
+         * @param {string} property - #property marks a folder
+         * @param {Array<string>} subProperties 
+         * @returns returns the subProperties full paths
+         */
+        value: function Unroll(property) {
+            var unrolled = [];
+
+            for (var _len2 = arguments.length, subProperties = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+                subProperties[_key2 - 1] = arguments[_key2];
+            }
+
+            subProperties.forEach(function (subProperty) {
+                unrolled.push(property + '.' + subProperty);
+            });
+            return unrolled;
         }
 
         /**
-         * @param {string} uid 
+         * @param {*} target 
+         * @param {*} data 
          */
 
     }, {
-        key: 'RemoveObjectByUID',
-        value: function RemoveObjectByUID(uid) {
-            var object = debugObjects.get(uid);
-            if (object instanceof THREE.Object3D && object.parent) {
-                object.parent.remove(object);
-            }
-        }
-    }, {
-        key: 'ClearAll',
-        value: function ClearAll() {
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
+        key: 'Load',
+        value: function Load(target, data) {
+            var keys = Object.keys(data);
+            keys.forEach(function (key) {
+                setKey(target, key, data[key]);
+            });
 
-            try {
-                for (var _iterator = debugObjects.keys()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var uid = _step.value;
-
-                    DebugViz.RemoveObjectByUID(uid);
-                }
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
-                }
-            }
+            if (instances.has(target) && instances.get(target).Update) instances.get(target).Update();
         }
 
-        /** @param {Boolean} visible */
+        /**
+         * @param {string} category
+         * @param {string} label 
+         * @param {Function} target 
+         */
 
     }, {
-        key: 'SetPackingSpaceVisibility',
-        value: function SetPackingSpaceVisibility(visible) {
-            Debug.app.view.packingSpaceView.view.visible = visible;
+        key: 'MakeShortcut',
+        value: function MakeShortcut(category, label, target) {
+            if (shortcuts.has(category) === false) shortcuts.set(category, new Shortcut(category));
+            var shortcut = shortcuts.get(category);
+            shortcut.Add(label, target);
         }
     }, {
-        key: 'view',
+        key: 'serializeModes',
         get: function get() {
-            return view;
+            return serializeModes;
+        }
+    }, {
+        key: 'shortcuts',
+        get: function get() {
+            return shortcuts;
+        }
+    }, {
+        key: 'shortcutsGUI',
+        get: function get() {
+            if (shortcutsGUI === undefined) shortcutsGUI = new (window.dat || __webpack_require__(1).default).GUI({
+                autoPlace: false
+            });
+            return shortcutsGUI;
         }
     }]);
 
-    return DebugViz;
+    return Config;
 }();
+
+Config.Controller = Controller;
+
+exports.default = Config;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _SceneSetup = __webpack_require__(14);
+
+var _SceneSetup2 = _interopRequireDefault(_SceneSetup);
+
+var _Packer = __webpack_require__(12);
+
+var _Packer2 = _interopRequireDefault(_Packer);
+
+var _View = __webpack_require__(63);
+
+var _View2 = _interopRequireDefault(_View);
+
+var _CargoInput = __webpack_require__(38);
+
+var _CargoInput2 = _interopRequireDefault(_CargoInput);
+
+var _PackingSpaceInput = __webpack_require__(39);
+
+var _PackingSpaceInput2 = _interopRequireDefault(_PackingSpaceInput);
+
+var _UX = __webpack_require__(15);
+
+var _UX2 = _interopRequireDefault(_UX);
+
+var _Logger = __webpack_require__(2);
+
+var _Logger2 = _interopRequireDefault(_Logger);
+
+var _Signaler2 = __webpack_require__(4);
+
+var _Signaler3 = _interopRequireDefault(_Signaler2);
+
+var _PackerInterface = __webpack_require__(40);
+
+var _PackerInterface2 = _interopRequireDefault(_PackerInterface);
+
+var _BoxEntry = __webpack_require__(3);
+
+var _BoxEntry2 = _interopRequireDefault(_BoxEntry);
+
+var _Container = __webpack_require__(6);
+
+var _Container2 = _interopRequireDefault(_Container);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var signals = {
+    start: 'start'
+};
 
 /**
- * DebugViz
+ * @typedef AppParams
+ * @property {UX} ux
+ * @property {CargoInput} cargoInput
+ * @property {PackingSpaceInput} packingSpaceInput
+ * @property {PackerInterface} packerInterface
  */
 
-var Debug = function () {
-    function Debug() {
-        _classCallCheck(this, Debug);
+var App = function (_Signaler) {
+    _inherits(App, _Signaler);
+
+    /**
+     * 
+     * @param {HTMLDivElement} containerDiv
+     * @param {AppParams} params
+     */
+    function App(containerDiv, params) {
+        _classCallCheck(this, App);
+
+        var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this));
+
+        var scope = _this;
+
+        _this.ux = params.ux;
+        _this.cargoInput = params.cargoInput;
+        _this.packingSpaceInput = params.packingSpaceInput;
+        _this.packerInterface = params.packerInterface;
+
+        /** @type {PackerParams} */
+        var packerParams = { ux: _this.ux };
+        _this.packer = new _Packer2.default(packerParams);
+
+        _this.cargoInput.On(_CargoInput2.default.signals.insert,
+        /** @param {BoxEntry} boxEntry */
+        function (boxEntry) {
+            scope.packer.cargoList.Add(boxEntry);
+        });
+
+        _this.cargoInput.On(_CargoInput2.default.signals.modify,
+        /** @param {BoxEntry} boxEntry */
+        function (boxEntry) {
+            scope.packer.cargoList.Modify(boxEntry);
+            scope.SolveAgain();
+        });
+
+        _this.cargoInput.On(_CargoInput2.default.signals.remove,
+        /** @param {BoxEntry} boxEntry */
+        function (boxEntry) {
+            scope.packer.cargoList.Remove(boxEntry.uid);
+            scope.SolveAgain();
+        });
+
+        _this.packingSpaceInput.On(_PackingSpaceInput2.default.signals.containerLoaded,
+        /** @param {Container} container */
+        function (container) {
+            scope.packer.packingSpace.AddContainer(container);
+        });
+
+        _this.packerInterface.On(_PackerInterface2.default.signals.solveRequest,
+        /** @param {SolverParams} solverParams */
+        function (solverParams) {
+            scope.Solve(solverParams);
+        });
+
+        _this.sceneSetup = new _SceneSetup2.default(containerDiv, _this.ux);
+        _this.sceneSetup.Init().then(_this.Start.bind(_this));
+        return _this;
     }
 
-    _createClass(Debug, null, [{
-        key: 'AFitTest',
-        get: function get() {
-            return _AFitTest2.default;
+    _createClass(App, [{
+        key: 'Start',
+        value: function Start() {
+            var scope = this;
+            var packerInterface = this.packerInterface;
+
+            /** @type {import('./view/View').ViewParams} */
+            var viewParams = { ux: this.ux };
+            this.view = new _View2.default(this.packer, this.sceneSetup, viewParams);
+            this.sceneSetup.Start();
+
+            this.ux._Bind(this);
+            this.cargoInput._Bind(this);
+            this.packingSpaceInput._Bind(this);
+
+            /** @param {Packer.PackingResult} packingResult */
+            function onPackUpdate(packingResult) {
+                _Logger2.default.Log('Packing result:', packingResult);
+                packerInterface._Notify(_PackerInterface2.default.signals.solved, packingResult);
+            }
+            this.packer.On(_Packer2.default.signals.packUpdate, onPackUpdate);
+
+            /** @param {*} error */
+            function onPackFailed(error) {
+                packerInterface._Notify(_PackerInterface2.default.signals.failed, error);
+            }
+            this.packer.On(_Packer2.default.signals.packFailed, onPackFailed);
+
+            this.Dispatch(signals.start);
         }
     }, {
-        key: 'CLPTest',
+        key: 'SolveAgain',
+        value: function SolveAgain() {
+            if (this.ux.params.autoUpdatePack && this.packer.solveAgain) this.Solve();
+        }
+
+        /** @param {SolverParams} [solverParams] */
+
+    }, {
+        key: 'Solve',
+        value: function Solve(solverParams) {
+            this.view.ClearPackingResults();
+            this.packer.Solve(solverParams);
+        }
+    }], [{
+        key: 'signals',
         get: function get() {
-            return __webpack_require__(57);
+            return signals;
         }
     }]);
 
-    return Debug;
-}();
+    return App;
+}(_Signaler3.default);
 
-Debug.Box = DebugBox;
-Debug.Viz = DebugViz;
+exports.default = App;
 
-/** @type {import('../../FreightPacker').default} */
-Debug.api;
-/** @type {import('../App').default} */
-Debug.app;
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
 
-exports.default = Debug;
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
 
 /***/ }),
 /* 12 */
@@ -2634,31 +2108,385 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Input = __webpack_require__(48);
+var _CargoList = __webpack_require__(22);
+
+var _CargoList2 = _interopRequireDefault(_CargoList);
+
+var _PackingSpace = __webpack_require__(23);
+
+var _PackingSpace2 = _interopRequireDefault(_PackingSpace);
+
+var _BoxEntry = __webpack_require__(3);
+
+var _BoxEntry2 = _interopRequireDefault(_BoxEntry);
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+var _Signaler2 = __webpack_require__(4);
+
+var _Signaler3 = _interopRequireDefault(_Signaler2);
+
+var _Logger = __webpack_require__(2);
+
+var _Logger2 = _interopRequireDefault(_Logger);
+
+var _ContainingVolume = __webpack_require__(13);
+
+var _ContainingVolume2 = _interopRequireDefault(_ContainingVolume);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * @typedef {Object} PackerParams
+ * @property {import('../UX').default} ux
+ */
+
+/** @typedef SolverParams
+ * @property {*} algorithmParams
+ * @property {string} algorithm
+ */
+
+var PackedCargo =
+/**
+ * @param {BoxEntry} entry 
+ * @param {ContainingVolume} containingVolume 
+ * @param {THREE.Vector3} position 
+ * @param {Number} orientation 
+ */
+function PackedCargo(entry, containingVolume, position, orientation) {
+    _classCallCheck(this, PackedCargo);
+
+    this.entry = entry;
+    this.containingVolume = containingVolume;
+    this.position = position;
+    this.orientation = orientation;
+};
+
+var UnpackedCargo =
+/**
+ * @param {BoxEntry} entry 
+ * @param {Number} unpackedQuantity
+ */
+function UnpackedCargo(entry, unpackedQuantity) {
+    _classCallCheck(this, UnpackedCargo);
+
+    this.entry = entry;
+    this.unpackedQuantity = unpackedQuantity;
+};
+
+var PackingResult =
+/** @param {Number} numTotalItem @param {Number} runtime */
+function PackingResult(numTotalItems, runtime) {
+    _classCallCheck(this, PackingResult);
+
+    /** @type {Array<PackedCargo>} */
+    this.packed = [];
+
+    /** @type {Array<UnpackedCargo>} */
+    this.unpacked = [];
+
+    this.numTotalItems = numTotalItems || 0;
+
+    this.runtime = runtime || -1;
+};
+
+var defaultParams = {};
+var signals = {
+    packUpdate: 'packUpdate',
+    packFailed: 'packFailed'
+};
+
+var _solverParams = Symbol('solverParams');
+
+var Packer = function (_Signaler) {
+    _inherits(Packer, _Signaler);
+
+    /**
+     * @param {PackerParams} params 
+     */
+    function Packer(params) {
+        _classCallCheck(this, Packer);
+
+        var _this = _possibleConstructorReturn(this, (Packer.__proto__ || Object.getPrototypeOf(Packer)).call(this));
+
+        _this.params = _Utils2.default.AssignUndefined(params, defaultParams);
+
+        _this.packingSpace = new _PackingSpace2.default();
+        _this.cargoList = new _CargoList2.default();
+
+        _this.solverExecutionsCount = 0;
+        return _this;
+    }
+
+    /** @param {SolverParams} params */
+
+
+    _createClass(Packer, [{
+        key: "Solve",
+        value: function Solve(params) {
+            params = params || this[_solverParams];
+            this[_solverParams] = params;
+
+            this.solverExecutionsCount++;
+
+            var algorithm = params.algorithm;
+            var algorithmParams = params.algorithmParams;
+            if (algorithm === 'cub') this.SolveCUB(algorithmParams);
+        }
+
+        /** @param {import('../packer/cub/CUB').CUBParams} params */
+
+    }, {
+        key: "SolveCUB",
+        value: function () {
+            var _ref = _asyncToGenerator(function* (params) {
+
+                if (this.packingSpace.ready === false) {
+                    this.Dispatch(signals.packFailed, 'Packing space not ready');
+                    return;
+                }
+
+                if (this.cargoList.ready === false) {
+                    this.Dispatch(signals.packFailed, 'Cargo list not ready');
+                    return;
+                }
+
+                var Container = __webpack_require__(24).Container;
+                var Item = __webpack_require__(24).Item;
+
+                var containingVolume = this.packingSpace.current.volume;
+                var d = containingVolume.dimensions;
+                var container = new Container(containingVolume.uid, d.width, d.height, d.length, containingVolume.weightCapacity);
+
+                var numTotalItems = 0;
+
+                /** @type {Array<Item>} */
+                var items = [];
+                var entries = {};
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = this.cargoList.groups.values()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var group = _step.value;
+
+                        /** @type {BoxEntry} */
+                        var entry = group.entry;
+                        entries[entry.uid] = entry;
+                        d = entry.dimensions;
+                        var item = new Item(entry.uid, d.width, d.height, d.length, entry.weight, entry.quantity);
+                        items.push(item);
+                        numTotalItems += entry.quantity;
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
+
+                _Logger2.default.Log('Solving', items, ' in ', container);
+
+                var CUB = __webpack_require__(58);
+                var startTime = performance.now();
+                var result = yield CUB.pack(container, items, params);
+                var cubRuntime = performance.now() - startTime;
+
+                var cubRuntime2Dec = Math.round(cubRuntime / 1000 * 100) / 100;
+                var packingResult = new PackingResult(numTotalItems, cubRuntime2Dec);
+                result.packedItems.forEach(function (packedItem) {
+                    var entry = entries[packedItem.ref.id];
+                    var position = new THREE.Vector3(packedItem.x + packedItem.packedWidth / 2, packedItem.y + packedItem.packedHeight / 2, packedItem.z + packedItem.packedLength / 2);
+                    var orientation = Item.ResolveOrientation(packedItem.orientation);
+                    var packedCargo = new PackedCargo(entry, containingVolume, position, orientation);
+                    packingResult.packed.push(packedCargo);
+                });
+
+                result.unpackedItems.forEach(function (unpackedItem) {
+                    var entry = entries[unpackedItem.id];
+                    var unpackedQuantity = unpackedItem.quantity;
+                    var unpackedCargo = new UnpackedCargo(entry, unpackedQuantity);
+                    packingResult.unpacked.push(unpackedCargo);
+                });
+
+                this.Dispatch(signals.packUpdate, packingResult);
+            });
+
+            function SolveCUB(_x) {
+                return _ref.apply(this, arguments);
+            }
+
+            return SolveCUB;
+        }()
+    }, {
+        key: "solveAgain",
+        get: function get() {
+            return this.solverExecutionsCount > 0;
+        }
+    }], [{
+        key: "signals",
+        get: function get() {
+            return signals;
+        }
+    }]);
+
+    return Packer;
+}(_Signaler3.default);
+
+Packer.PackingResult = PackingResult;
+
+exports.default = Packer;
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _Volume2 = __webpack_require__(57);
+
+var _Volume3 = _interopRequireDefault(_Volume2);
+
+var _Container = __webpack_require__(6);
+
+var _Container2 = _interopRequireDefault(_Container);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var type = 'ContainingVolume';
+
+var ContainingVolume = function (_Volume) {
+    _inherits(ContainingVolume, _Volume);
+
+    /** @param {Container} container */
+    function ContainingVolume(container) {
+        _classCallCheck(this, ContainingVolume);
+
+        var _this = _possibleConstructorReturn(this, (ContainingVolume.__proto__ || Object.getPrototypeOf(ContainingVolume)).call(this));
+
+        _this.container = container;
+
+        _this.SetUID();
+        return _this;
+    }
+
+    _createClass(ContainingVolume, [{
+        key: "SetUID",
+
+
+        /**
+         * @param {string} [uid] - You'll rarely need to provide this
+         */
+        value: function SetUID(uid) {
+            this.uid = uid || THREE.Math.generateUUID();
+            return this.uid;
+        }
+    }, {
+        key: "toJSON",
+        value: function toJSON() {
+            var json = _get(ContainingVolume.prototype.__proto__ || Object.getPrototypeOf(ContainingVolume.prototype), "toJSON", this).call(this);
+            json.type = type;
+            return json;
+        }
+    }, {
+        key: "ToString",
+        value: function ToString() {
+            return _get(ContainingVolume.prototype.__proto__ || Object.getPrototypeOf(ContainingVolume.prototype), "ToString", this).call(this);
+        }
+    }, {
+        key: "weightCapacity",
+        get: function get() {
+            return this.dimensions.volume / 1000;
+        }
+    }], [{
+        key: "FromJSON",
+        value: function FromJSON(data) {
+            if (data.type !== type) console.warn('Data supplied is not: ' + type);
+
+            var containingVolume = new ContainingVolume();
+            _Volume3.default.FromJSON(data, containingVolume);
+
+            return containingVolume;
+        }
+    }]);
+
+    return ContainingVolume;
+}(_Volume3.default);
+
+exports.default = ContainingVolume;
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Input = __webpack_require__(45);
 
 var _Input2 = _interopRequireDefault(_Input);
 
-var _Quality = __webpack_require__(49);
+var _Quality = __webpack_require__(46);
 
 var _Quality2 = _interopRequireDefault(_Quality);
 
-var _Controller = __webpack_require__(25);
+var _Controller = __webpack_require__(27);
 
 var _Controller2 = _interopRequireDefault(_Controller);
 
-var _Renderer = __webpack_require__(50);
+var _Renderer = __webpack_require__(47);
 
 var _Renderer2 = _interopRequireDefault(_Renderer);
 
-var _Camera = __webpack_require__(26);
+var _Camera = __webpack_require__(28);
 
 var _Camera2 = _interopRequireDefault(_Camera);
 
-var _HUDView = __webpack_require__(51);
+var _HUDView = __webpack_require__(48);
 
 var _HUDView2 = _interopRequireDefault(_HUDView);
 
-var _UX = __webpack_require__(13);
+var _UX = __webpack_require__(15);
 
 var _UX2 = _interopRequireDefault(_UX);
 
@@ -2666,7 +2494,7 @@ var _Utils = __webpack_require__(0);
 
 var _Utils2 = _interopRequireDefault(_Utils);
 
-var _Signaler2 = __webpack_require__(2);
+var _Signaler2 = __webpack_require__(4);
 
 var _Signaler3 = _interopRequireDefault(_Signaler2);
 
@@ -2716,9 +2544,10 @@ var SceneSetup = function (_Signaler) {
             this.sceneController = new _Controller2.default(controllerParams);
 
             /** @type {import('../scene/Renderer').RendererParams} */
-            var rendererParams = {};
+            var rendererParams = { clearColor: 0xefefef };
             Object.assign(rendererParams, quality);
             this.sceneRenderer = new _Renderer2.default(rendererParams);
+            this.sceneRenderer.renderer.toneMappingExposure = 1.6;
             this.domElement.appendChild(this.sceneRenderer.renderer.domElement);
 
             /** @type {import('./Camera').CameraParams} */
@@ -2757,7 +2586,7 @@ var SceneSetup = function (_Signaler) {
 
                 // Initial camera move
             };this.cameraController.position.x = 100 * units;
-            this.cameraController.position.y = 40 * units;
+            this.cameraController.position.y = 100 * units;
             this.cameraController.position.z = 100 * units;
             this.cameraController.SetTarget(new THREE.Vector3());
 
@@ -2850,19 +2679,27 @@ var SceneSetup = function (_Signaler) {
             var ambientLight = new THREE.AmbientLight(0x404040);
 
             var directionalLight = new THREE.DirectionalLight(0xfeeedd);
-            directionalLight.position.set(300 * units, 175 * units, 125 * units);
+            directionalLight.position.set(300 * units, 300 * units, 125 * units);
 
             controller.ambientContainer.add(ambientLight);
             controller.ambientContainer.add(directionalLight);
 
             var directionalLightComplem = new THREE.DirectionalLight(0xfeeedd);
-            directionalLightComplem.position.set(-300 * units, 175 * units, 125 * units);
+            directionalLightComplem.position.set(-200 * units, 175 * units, 125 * units);
 
             controller.ambientContainer.add(directionalLightComplem);
 
             if (this.ux.params.configure && configure) {
                 var onGUIChanged = function onGUIChanged() {
                     dl.shadow.camera.updateProjectionMatrix();
+                    sceneRenderer.UpdateShadowMaps();
+                    if (dl.shadow.map) {
+                        if (dl.shadow.mapSize.manhattanDistanceTo(mapSize) > 0.0001) {
+                            mapSize.copy(dl.shadow.mapSize);
+                            dl.shadow.map.dispose();
+                            dl.shadow.map = null;
+                        }
+                    }
 
                     if (helpers) {
                         dlHelper.update();
@@ -2870,9 +2707,9 @@ var SceneSetup = function (_Signaler) {
                     }
                 };
 
-                var Smart = __webpack_require__(14).default;
-                var Config = __webpack_require__(4).default;
-                var Control3D = __webpack_require__(15).default;
+                var Smart = __webpack_require__(20).default;
+                var Config = __webpack_require__(9).default;
+                var Control3D = __webpack_require__(21).default;
 
                 var dl = directionalLight;
                 var _smart = new Smart(dl, 'Directional light');
@@ -2892,18 +2729,23 @@ var SceneSetup = function (_Signaler) {
                     this.sceneController.AddDefault(dlCameraHelper);
                 }
 
+                var sceneRenderer = this.sceneRenderer;
+                global.sceneRenderer = sceneRenderer;
+                var mapSize = dl.shadow.mapSize.clone();
+
+
                 _smart.Config.apply(_smart, ['Directional light + shadow', dl, onGUIChanged, Smart.serializeModes.json].concat(lightController, shadowControllers, _toConsumableArray(shadowCameraControllers)));
             }
 
-            return [ambientLight, directionalLight];
+            return [ambientLight, directionalLight, directionalLightComplem];
         }
     }, {
         key: 'Configure',
         value: function Configure() {
 
-            var Smart = __webpack_require__(14).default;
-            var Config = __webpack_require__(4).default;
-            var Control3D = __webpack_require__(15).default;
+            var Smart = __webpack_require__(20).default;
+            var Config = __webpack_require__(9).default;
+            var Control3D = __webpack_require__(21).default;
 
             var scope = this;
 
@@ -2968,53 +2810,10 @@ var SceneSetup = function (_Signaler) {
 }(_Signaler3.default);
 
 exports.default = SceneSetup;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)))
 
 /***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _Utils = __webpack_require__(0);
-
-var _Utils2 = _interopRequireDefault(_Utils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/**
- * @typedef UXParams
- * @property {Boolean} hud - Create a hud controller (Scene, camera, loop, etc.)
- * @property {Boolean} configure - Execute helpers that allow configuration
- * @property {Number} units - Conversion to unit employed, default=1 for inches, for meters: units=0.0254
- */
-var defaultParams = {
-    hud: true,
-    configure: false,
-    units: 1
-};
-
-var UX =
-/**
- * 
- * @param {UXParams} params 
- */
-function UX(params) {
-    _classCallCheck(this, UX);
-
-    this.params = _Utils2.default.AssignUndefined(params, defaultParams);
-};
-
-exports.default = UX;
-
-/***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3026,9 +2825,892 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _UIUtils = __webpack_require__(27);
+var _Utils = __webpack_require__(0);
 
-var _Config2 = __webpack_require__(4);
+var _Utils2 = _interopRequireDefault(_Utils);
+
+var _Visualization = __webpack_require__(50);
+
+var _Visualization2 = _interopRequireDefault(_Visualization);
+
+var _User = __webpack_require__(51);
+
+var _User2 = _interopRequireDefault(_User);
+
+var _App = __webpack_require__(10);
+
+var _App2 = _interopRequireDefault(_App);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * @typedef UXParams
+ * @property {Boolean} hud default = true, create a hud controller (Scene, camera, loop, etc.)
+ * @property {Boolean} configure default = false, execute helpers that allow configuration
+ * @property {Number} units default = 1, conversion to unit employed, default=1 for inches, for meters: units=0.0254
+ * @property {Boolean} autoUpdatePack default = true, will auto-update the packing if entries are modified or deleted
+ */
+var defaultParams = {
+    hud: true,
+    configure: false,
+    units: 1,
+    autoUpdatePack: true
+};
+
+var UX = function () {
+    /**
+     * 
+     * @param {UXParams} params 
+     */
+    function UX(params) {
+        _classCallCheck(this, UX);
+
+        this.params = _Utils2.default.AssignUndefined(params, defaultParams);
+    }
+
+    /** @ignore ignore */
+
+
+    _createClass(UX, [{
+        key: "_Bind",
+        value: function _Bind(value) {
+            /** @type {App} */
+            var app = value;
+
+            /** Interface with visual elements */
+            this.visualization = new _Visualization2.default(app);
+
+            /** Interface with user input/output */
+            this.user = new _User2.default(app);
+        }
+    }]);
+
+    return UX;
+}();
+
+UX.User = _User2.default;
+UX.Visualization = _Visualization2.default;
+
+exports.default = UX;
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Logger = __webpack_require__(2);
+
+var _Logger2 = _interopRequireDefault(_Logger);
+
+var _CargoBoxView = __webpack_require__(29);
+
+var _CargoBoxView2 = _interopRequireDefault(_CargoBoxView);
+
+var _CargoView = __webpack_require__(17);
+
+var _CargoView2 = _interopRequireDefault(_CargoView);
+
+var _Signaler2 = __webpack_require__(4);
+
+var _Signaler3 = _interopRequireDefault(_Signaler2);
+
+var _CargoGroup = __webpack_require__(19);
+
+var _CargoGroup2 = _interopRequireDefault(_CargoGroup);
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+var _CargoEntry = __webpack_require__(8);
+
+var _CargoEntry2 = _interopRequireDefault(_CargoEntry);
+
+var _FloatingShelf = __webpack_require__(55);
+
+var _FloatingShelf2 = _interopRequireDefault(_FloatingShelf);
+
+var _Asset = __webpack_require__(5);
+
+var _Asset2 = _interopRequireDefault(_Asset);
+
+var _BoxEntry = __webpack_require__(3);
+
+var _BoxEntry2 = _interopRequireDefault(_BoxEntry);
+
+var _TextLabelView = __webpack_require__(31);
+
+var _TextLabelView2 = _interopRequireDefault(_TextLabelView);
+
+var _RaycastGroup = __webpack_require__(26);
+
+var _RaycastGroup2 = _interopRequireDefault(_RaycastGroup);
+
+var _Outline = __webpack_require__(56);
+
+var _Outline2 = _interopRequireDefault(_Outline);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * @typedef {Object} CargoListViewParams
+ * @property {import('../UX').default} ux
+ * @property {Number} outlineOffset
+ */
+
+/**
+ * @typedef SortResult
+ * @property {Number} min
+ * @property {Number} max
+ * @property {Number} cargoes
+ */
+
+var typeofString = 'string';
+
+var _selectedEntryUID = Symbol('seUID');
+
+/** @type {Map<CargoView, TextLabelView>} */
+var labels = new Map();
+
+var tempBox = new THREE.Box3();
+var tempVec = new THREE.Vector3();
+
+var signals = {
+    sort: 'sort',
+    select: 'select',
+    deselect: 'deselect',
+    interact: 'interact'
+};
+
+/** @type {CargoListViewParams} */
+var defaultParams = {
+    outlineOffset: 4
+};
+
+var CargoListView = function (_Signaler) {
+    _inherits(CargoListView, _Signaler);
+
+    /**
+     * @param {CargoListViewParams} params 
+     */
+    function CargoListView(params) {
+        _classCallCheck(this, CargoListView);
+
+        var _this = _possibleConstructorReturn(this, (CargoListView.__proto__ || Object.getPrototypeOf(CargoListView)).call(this));
+
+        _this.params = _Utils2.default.AssignUndefined(params, defaultParams);
+
+        _this.view = new THREE.Object3D();
+        _this.templatesView = new THREE.Object3D();
+        _this.view.add(_this.templatesView);
+
+        /**
+         * @type {Map<CargoGroup, CargoView>}
+         */
+        _this.cargoTemplateViews = new Map();
+
+        var units = _this.params.ux.params.units;
+
+        // Shelf
+        /** @type {import('./components/FloatingShelf').FloatingShelfParams} */
+        var fsParams = { padding: new THREE.Vector3(10 * units, (_this.params.outlineOffset * units + 1) * units, 10 * units), colorHex: _Asset2.default.ColorTemplates('Containers').Apply(0x000000) };
+        _this.floatingShelf = new _FloatingShelf2.default(_this.templatesView, fsParams);
+        _this.view.add(_this.floatingShelf.view);
+
+        // Interaction
+        _this.raycastGroupItems = [];
+        _this.raycastGroup = new _RaycastGroup2.default(_this.raycastGroupItems, _this.OnInteract.bind(_this),
+        /** @param {CargoView} item */
+        function (item) {
+            return item.view;
+        }, false, true);
+
+        _this.outline = new _Outline2.default({ color: 0xffffff, opacity: 1, offsetFactor: _this.params.outlineOffset * units });
+        _this.view.add(_this.outline.view);
+        return _this;
+    }
+
+    /**
+     * @param {CargoGroup} group 
+     */
+
+
+    _createClass(CargoListView, [{
+        key: "Add",
+        value: function Add(group) {
+            var units = this.params.ux.params.units;
+
+            var templateCargoView = void 0;
+            switch (group.entry.type) {
+                case 'BoxEntry':
+                    {
+                        templateCargoView = new _CargoBoxView2.default(group.entry);
+
+                        var ticketParams = { width: 50 * units, height: 20 * units };
+
+                        var height = 96;
+                        var width = Math.floor(ticketParams.width / ticketParams.height * height);
+                        /** @type {import('./TextLabelView').TLVParams} */
+                        var tlvParams = { font: '64px sans-serif', backColor: 'rgb(0, 0, 0)', fontColor: 'rgb(255, 255, 255)',
+                            textAlign: 'left', sidePadding: 30, width: width, height: height
+                        };
+
+                        var labelView = new _TextLabelView2.default(tlvParams);
+                        labelView.view.rotateY(90 * Math.PI / 180);
+                        labelView.view.rotateX(-90 * Math.PI / 180);
+                        labelView.view.scale.y = ticketParams.height;
+                        labelView.view.scale.x = ticketParams.width;
+                        /** @type {BoxEntry} */
+                        var boxEntry = group.entry;
+                        labelView.view.position.z = ticketParams.width / 2;
+                        this.view.add(labelView.view);
+
+                        labelView.UpdateText(boxEntry.quantity);
+
+                        labels.set(templateCargoView, labelView);
+
+                        break;
+                    }
+
+                default:
+                    templateCargoView = _CargoView2.default.Dummy(group.entry);
+                    _Logger2.default.Warn('group.entry.type not supported by viewer,', group);
+                    break;
+            }
+
+            this.cargoTemplateViews.set(group, templateCargoView);
+            this.templatesView.add(templateCargoView.view);
+
+            this.raycastGroupItems.push(templateCargoView);
+            this.raycastGroup.UpdateItems(this.raycastGroupItems);
+
+            this.Sort();
+            this.floatingShelf.Update();
+        }
+
+        /**
+         * @param {CargoGroup} group 
+         */
+
+    }, {
+        key: "Update",
+        value: function Update(group) {
+            var templateCargoView = this.cargoTemplateViews.get(group);
+            templateCargoView.ReflectEntry();
+
+            this.Sort();
+            this.floatingShelf.Update();
+
+            if (this[_selectedEntryUID] === group.entry.uid) this.SetOutline(templateCargoView);
+        }
+
+        /**
+         * @param {CargoGroup} group 
+         */
+
+    }, {
+        key: "Remove",
+        value: function Remove(group) {
+            var templateCargoView = this.cargoTemplateViews.get(group);
+            if (templateCargoView) {
+
+                var raycastGroupIndex = this.raycastGroupItems.indexOf(templateCargoView);
+                if (raycastGroupIndex !== -1) this.raycastGroupItems.splice(raycastGroupIndex, 1);
+                this.raycastGroup.UpdateItems(this.raycastGroupItems);
+
+                this.cargoTemplateViews.delete(group);
+                this.templatesView.remove(templateCargoView.view);
+
+                if (this[_selectedEntryUID] === group.entry.uid) this.outline.box = false;
+
+                this.Sort();
+            }
+        }
+
+        /**
+         * RaycastCallback
+         * @param {CargoView} cargoView
+         * @param {THREE.Intersection} intersection
+         */
+
+    }, {
+        key: "OnInteract",
+        value: function OnInteract(cargoView, intersection) {
+            this.Dispatch(signals.interact, cargoView.entry);
+        }
+
+        /** @param {CargoView} cargoView */
+
+    }, {
+        key: "Select",
+        value: function Select(entryUID) {
+
+            this[_selectedEntryUID] = entryUID;
+
+            if (!entryUID) {
+                this.outline.box = false;
+                this.Dispatch(signals.deselect);
+            } else {
+                var cargoView = this.GetTemplate(entryUID);
+                this.SetOutline(cargoView);
+                this.Dispatch(signals.select, cargoView.entry);
+            }
+        }
+
+        /** @param {CargoView} target */
+
+    }, {
+        key: "SetOutline",
+        value: function SetOutline(target) {
+            this.outline.box = target instanceof _CargoBoxView2.default ? target.mesh : target.view;
+        }
+
+        /**
+         * 
+         * @param {CargoGroup|CargoEntry|string|Number} id 
+         */
+
+    }, {
+        key: "GetTemplate",
+        value: function GetTemplate(id) {
+            var group;
+            if (id instanceof _CargoGroup2.default) {
+                group = id;
+            } else if (id instanceof _CargoEntry2.default) {
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = this.cargoTemplateViews.keys()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var cargoGroup = _step.value;
+
+                        if (cargoGroup.entry === id) group = cargoGroup;
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
+            } else {
+                var _iteratorNormalCompletion2 = true;
+                var _didIteratorError2 = false;
+                var _iteratorError2 = undefined;
+
+                try {
+                    for (var _iterator2 = this.cargoTemplateViews.keys()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                        var cargoGroup = _step2.value;
+
+                        if (cargoGroup.entry.uid === id) group = cargoGroup;
+                    }
+                } catch (err) {
+                    _didIteratorError2 = true;
+                    _iteratorError2 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                            _iterator2.return();
+                        }
+                    } finally {
+                        if (_didIteratorError2) {
+                            throw _iteratorError2;
+                        }
+                    }
+                }
+            }
+
+            return this.cargoTemplateViews.get(group);
+        }
+
+        /**
+         * @param {CargoView} cargoView 
+         * @param {string} value 
+         * @param {string} textColor css
+         */
+
+    }, {
+        key: "UpdateLabel",
+        value: function UpdateLabel(cargoView, value, textColor) {
+            var textLabelView = labels.get(cargoView);
+            if (textLabelView) {
+                if (textColor) textLabelView.params.fontColor = textColor;
+                textLabelView.UpdateText(value);
+            }
+        }
+
+        /**
+         * @param {Map<CargoGroup, CargoView>} cargoViews 
+         * @returns {Number}
+         */
+
+    }, {
+        key: "Sort",
+        value: function Sort() {
+
+            this.SortMapBySize();
+
+            var units = this.params.ux.params.units;
+
+            this.view.updateMatrixWorld(true);
+            var worldToLocal = new THREE.Matrix4().getInverse(this.templatesView.matrixWorld);
+            var padding = 5 * units,
+                start = 0;
+
+            var i = 0,
+                offset = 0;
+
+            /**
+             * @type {SortResult}
+             */
+            var result = { min: start, max: start, cargoes: 0 };
+
+            var list = this.cargoTemplateViews.values(),
+                cargoView;
+            while ((cargoView = list.next()).done === false) {
+
+                cargoView.value.position.set(start, 0, 0);
+
+                tempBox.setFromObject(cargoView.value.view);
+                tempBox.applyMatrix4(worldToLocal);
+
+                tempBox.getSize(tempVec);
+                var halfSize = tempVec.x / 2;
+                if (i > 0) offset += halfSize;
+
+                cargoView.value.position.set(start + offset, tempVec.y / 2 + padding, -tempVec.z / 2);
+
+                var labelView = labels.get(cargoView.value);
+                labelView.view.position.x = cargoView.value.position.x;
+                labelView.view.position.y = padding + 1 * units;
+
+                offset += halfSize + padding;
+
+                i++;
+            }
+
+            result.min = start;
+            result.max = offset;
+            result.cargoes = i;
+            this.Dispatch(signals.sort, result);
+        }
+    }, {
+        key: "SortMapBySize",
+        value: function SortMapBySize() {
+            /**
+             * 
+             * @param {[CargoGroup, CargoListView]} a 
+             * @param {[CargoGroup, CargoListView]} b 
+             */
+            function sort(a, b) {
+                return -a[0].entry.dimensions.Compare(b[0].entry.dimensions);
+            }
+
+            var list = [].concat(_toConsumableArray(this.cargoTemplateViews.entries()));
+            list.sort(sort);
+            this.cargoTemplateViews = new Map(list);
+            return;
+        }
+    }], [{
+        key: "signals",
+        get: function get() {
+            return signals;
+        }
+    }]);
+
+    return CargoListView;
+}(_Signaler3.default);
+
+exports.default = CargoListView;
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _CargoEntry = __webpack_require__(8);
+
+var _CargoEntry2 = _interopRequireDefault(_CargoEntry);
+
+var _Asset = __webpack_require__(5);
+
+var _Asset2 = _interopRequireDefault(_Asset);
+
+var _TextLabelView = __webpack_require__(31);
+
+var _TextLabelView2 = _interopRequireDefault(_TextLabelView);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * @typedef CargoViewLabelParams
+ * @property {Number} width
+ * @property {Number} height
+ */
+
+var dummyGeometry = new THREE.SphereBufferGeometry(1, 4, 4);
+var dummyMaterial = new _Asset2.default.TransparentMaterialType({ color: 0xff0000, transparent: true, opacity: .5 });
+
+var _entry = Symbol('entry');
+var _focus = Symbol('focus');
+
+var CargoView = function () {
+    /**
+     * @param {CargoEntry} entry 
+     */
+    function CargoView(entry) {
+        _classCallCheck(this, CargoView);
+
+        this[_entry] = entry;
+
+        /** @type {THREE.Mesh} */
+        this.mesh;
+
+        this.view = new THREE.Object3D();
+
+        this[_focus] = 1;
+    }
+
+    /** @returns {CargoEntry} */
+
+
+    _createClass(CargoView, [{
+        key: "ReflectEntry",
+        value: function ReflectEntry() {}
+
+        /** @param {string} value @param {CargoViewLabelParams} params */
+
+    }, {
+        key: "SetLabel",
+        value: function SetLabel(value, params) {
+            var height = 64;
+            var width = Math.floor(params.width / params.height * height);
+            if (this.labelView === undefined) {
+                /** @type {import('./TextLabelView').TLVParams} */
+                var tlvParams = { font: '32px sans serif', backColor: 'rgb(0, 0, 0)', fontColor: 'rgb(255, 255, 255)',
+                    textAlign: 'right', sidePadding: 16, width: width, height: height
+                };
+                var ratioToX = 64;
+
+                this.labelView = new _TextLabelView2.default(tlvParams);
+                this.labelView.view.rotateY(90 * Math.PI / 180);
+                this.labelView.view.rotateX(-90 * Math.PI / 180);
+                this.view.add(this.labelView.view);
+            }
+
+            this.labelView.UpdateText(value);
+        }
+
+        /**
+         * @param {CargoEntry} entry 
+         */
+
+    }, {
+        key: "entry",
+        get: function get() {
+            return this[_entry];
+        },
+        set: function set(value) {
+            this[_entry] = value;
+        }
+    }, {
+        key: "position",
+        get: function get() {
+            return this.view.position;
+        },
+        set: function set(value) {
+            this.view.position.copy(value);
+        }
+
+        /** @param {Number} value */
+
+    }, {
+        key: "focus",
+        set: function set(value) {
+            this[_focus] = value;
+        },
+        get: function get() {
+            return this[_focus];
+        }
+    }], [{
+        key: "Dummy",
+        value: function Dummy(entry) {
+            var cargoView = new CargoView(entry);
+            cargoView.view = new THREE.Mesh(dummyGeometry, dummyMaterial);
+            return cargoView;
+        }
+    }]);
+
+    return CargoView;
+}();
+
+exports.default = CargoView;
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var type = 'Dimensions';
+var _vec3 = Symbol('vec3');
+
+var epsilon = Math.pow(2, -52);
+var numberType = 'number';
+
+var Dimensions = function () {
+    /**
+     * @param {Number} width 
+     * @param {Number} length 
+     * @param {Number} height 
+     */
+    function Dimensions(width, length, height) {
+        _classCallCheck(this, Dimensions);
+
+        if (width === undefined) width = 0;
+        if (length === undefined) length = 0;
+        if (height === undefined) height = 0;
+
+        this.Set(width, length, height);
+        this[_vec3] = new THREE.Vector3();
+    }
+
+    /**
+     * @param {Number} width 
+     * @param {Number} length 
+     * @param {Number} height 
+     */
+
+
+    _createClass(Dimensions, [{
+        key: 'Set',
+        value: function Set(width, length, height) {
+            /** @type {Number} */
+            this.width = width;
+            /** @type {Number} */
+            this.length = length;
+            /** @type {Number} */
+            this.height = height;
+        }
+
+        /**
+         * Returns a THREE.Vector3 representation of the dimensions
+         * Beware of ordering: x=width, y=height and z=length
+         * @returns {THREE.Vector3}
+         */
+
+    }, {
+        key: 'Abs',
+        value: function Abs() {
+            if (this.width < 0) this.width = -this.width;
+            if (this.length < 0) this.length = -this.length;
+            if (this.height < 0) this.height = -this.height;
+            return this;
+        }
+    }, {
+        key: 'Compare',
+        value: function Compare(dimensions) {
+            var d = this.volume - dimensions.volume;
+            if (d < -epsilon) return -1;
+            if (d > epsilon) return 1;
+            return 0;
+        }
+    }, {
+        key: 'Copy',
+        value: function Copy(dimensions) {
+            this.Set(dimensions.width, dimensions.length, dimensions.height);
+        }
+    }, {
+        key: 'Clone',
+        value: function Clone() {
+            var dimensions = new Dimensions(this.width, this.length, this.height);
+            return dimensions;
+        }
+    }, {
+        key: 'ToString',
+        value: function ToString() {
+            return this.width.toFixed(2) + 'x' + this.length.toFixed(2) + 'x' + this.height.toFixed(2);
+        }
+    }, {
+        key: 'toJSON',
+        value: function toJSON() {
+            return {
+                type: type,
+                width: this.width,
+                length: this.length,
+                height: this.height
+            };
+        }
+    }, {
+        key: 'vec3',
+        get: function get() {
+            return this[_vec3].set(this.width, this.height, this.length);
+        }
+    }, {
+        key: 'volume',
+        get: function get() {
+            return this.width * this.height * this.length;
+        }
+    }], [{
+        key: 'IsVolume',
+        value: function IsVolume(dimensions) {
+            return Dimensions.Assert(dimensions) && dimensions.width > epsilon && dimensions.length > epsilon && dimensions.height > epsilon;
+        }
+    }, {
+        key: 'FromJSON',
+        value: function FromJSON(data) {
+            if (data.type !== type) console.warn('Data supplied is not: ' + type);
+
+            var dimensions = new Dimensions(data.width, data.length, data.height);
+            return dimensions;
+        }
+    }, {
+        key: 'Assert',
+        value: function Assert(dimensions) {
+            return dimensions instanceof Dimensions && _typeof(dimensions.width) === numberType && _typeof(dimensions.length) === numberType && _typeof(dimensions.height) === numberType;
+        }
+    }]);
+
+    return Dimensions;
+}();
+
+exports.default = Dimensions;
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _CargoEntry = __webpack_require__(8);
+
+var _CargoEntry2 = _interopRequireDefault(_CargoEntry);
+
+var _Cargo = __webpack_require__(54);
+
+var _Cargo2 = _interopRequireDefault(_Cargo);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CargoGroup = function () {
+    /**
+     * 
+     * @param {CargoEntry} entry
+     */
+    function CargoGroup(entry) {
+        _classCallCheck(this, CargoGroup);
+
+        this.entry = entry;
+
+        /** @type {Array<Cargo>} */
+        this.cargoes = [];
+
+        this.template = new _Cargo2.default(this);
+        this.quantity = this.entry.quantity;
+    }
+
+    _createClass(CargoGroup, [{
+        key: "ToString",
+        value: function ToString() {
+            var output = 'CargoGroup(' + this.quantity + ' x ' + this.entry.ToString() + ')';
+
+            return output;
+        }
+    }, {
+        key: "quantity",
+        get: function get() {
+            return this.cargoes.length;
+        },
+        set: function set(value) {
+            var currentQuantity = this.cargoes.length;
+            if (value < currentQuantity) {
+                this.cargoes.length = value;
+                this.entry.quantity = value;
+            } else if (value > currentQuantity) {
+                for (var i = currentQuantity; i < value; i++) {
+                    this.cargoes[i] = this.template.Clone();
+                }
+            }
+        }
+    }]);
+
+    return CargoGroup;
+}();
+
+exports.default = CargoGroup;
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _UIUtils = __webpack_require__(32);
+
+var _Config2 = __webpack_require__(9);
 
 var _Config3 = _interopRequireDefault(_Config2);
 
@@ -3210,7 +3892,7 @@ var Smart = function () {
 exports.default = Smart;
 
 /***/ }),
-/* 15 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3354,7 +4036,7 @@ var Control3D = function () {
 exports.default = Control3D;
 
 /***/ }),
-/* 16 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3366,65 +4048,116 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _CargoEntry = __webpack_require__(5);
+var _Signaler2 = __webpack_require__(4);
+
+var _Signaler3 = _interopRequireDefault(_Signaler2);
+
+var _CargoEntry = __webpack_require__(8);
 
 var _CargoEntry2 = _interopRequireDefault(_CargoEntry);
 
-var _Cargo = __webpack_require__(53);
+var _CargoGroup = __webpack_require__(19);
 
-var _Cargo2 = _interopRequireDefault(_Cargo);
+var _CargoGroup2 = _interopRequireDefault(_CargoGroup);
+
+var _BoxEntry = __webpack_require__(3);
+
+var _BoxEntry2 = _interopRequireDefault(_BoxEntry);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var CargoGroup = function () {
-    /**
-     * 
-     * @param {CargoEntry} entry
-     */
-    function CargoGroup(entry) {
-        _classCallCheck(this, CargoGroup);
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-        this.entry = entry;
-        this.cargoes = [];
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-        this.template = new _Cargo2.default(this);
-        this.quantity = this.entry.quantity;
+var stringType = 'string';
+
+var signals = {
+    groupAdded: 'groupAdded',
+    groupRemoved: 'groupRemoved',
+    groupModified: 'groupModified'
+};
+
+var CargoList = function (_Signaler) {
+    _inherits(CargoList, _Signaler);
+
+    function CargoList() {
+        _classCallCheck(this, CargoList);
+
+        /** @type {Map<string, CargoGroup>} */
+        var _this = _possibleConstructorReturn(this, (CargoList.__proto__ || Object.getPrototypeOf(CargoList)).call(this));
+
+        _this.groups = new Map();
+        return _this;
     }
 
-    _createClass(CargoGroup, [{
-        key: "ToString",
-        value: function ToString() {
-            var output = 'CargoGroup(' + this.quantity + ' x ' + this.entry.ToString() + ')';
+    /** Adds a new CargoGroup
+     * @param {CargoEntry} entry 
+     */
 
-            return output;
+
+    _createClass(CargoList, [{
+        key: "Add",
+        value: function Add(entry) {
+            var group = new _CargoGroup2.default(entry);
+
+            this.groups.set(entry.uid, group);
+            this.Dispatch(signals.groupAdded, group);
+        }
+
+        /** Adds a new CargoGroup
+         * @param {CargoEntry} entry 
+         */
+
+    }, {
+        key: "Modify",
+        value: function Modify(entry) {
+            var group = this.groups.get(entry.uid);
+            this.Dispatch(signals.groupModified, group);
+        }
+
+        /** Removes the CargoGroup using its uid
+         * @param {string} uid 
+         */
+
+    }, {
+        key: "Remove",
+        value: function Remove(uid) {
+            var group = this.groups.get(uid);
+            if (group) {
+                this.groups.delete(uid);
+                this.Dispatch(signals.groupRemoved, group);
+            }
+        }
+
+        /** @param {string} entryUID @returns {BoxEntry} the entry if it exists */
+
+    }, {
+        key: "GetEntry",
+        value: function GetEntry(entryUID) {
+            if (this.groups.has(entryUID)) return this.groups.get(entryUID).entry;
         }
     }, {
-        key: "quantity",
+        key: "ready",
         get: function get() {
-            return this.cargoes.length;
-        },
-        set: function set(value) {
-            var currentQuantity = this.cargoes.length;
-            if (value < currentQuantity) {
-                this.cargoes.length = value;
-                this.entry.quantity = value;
-            } else if (value > currentQuantity) {
-                for (var i = currentQuantity; i < value; i++) {
-                    this.cargoes[i] = this.template.Clone();
-                }
-            }
+            return this.groups.size > 0;
+        }
+    }], [{
+        key: "signals",
+        get: function get() {
+            return signals;
         }
     }]);
 
-    return CargoGroup;
-}();
+    return CargoList;
+}(_Signaler3.default);
 
-exports.default = CargoGroup;
+exports.default = CargoList;
 
 /***/ }),
-/* 17 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3440,7 +4173,7 @@ var _Container = __webpack_require__(6);
 
 var _Container2 = _interopRequireDefault(_Container);
 
-var _Signaler2 = __webpack_require__(2);
+var _Signaler2 = __webpack_require__(4);
 
 var _Signaler3 = _interopRequireDefault(_Signaler2);
 
@@ -3475,6 +4208,9 @@ var PackingSpace = function (_Signaler) {
         return _this;
     }
 
+    /** @param {Container} container */
+
+
     _createClass(PackingSpace, [{
         key: "AddContainer",
         value: function AddContainer(container) {
@@ -3484,17 +4220,20 @@ var PackingSpace = function (_Signaler) {
             this.Dispatch(signals.containerAdded, container);
         }
 
-        /**
-         * @returns {Container}
-         */
+        /** @returns {Container} */
 
     }, {
         key: "current",
         get: function get() {
             var currentIndex = this[_currentIndex];
-            if (currentIndex != -1) {
+            if (currentIndex !== -1) {
                 return this.containers[currentIndex];
             }
+        }
+    }, {
+        key: "ready",
+        get: function get() {
+            return this[_currentIndex] !== -1;
         }
     }], [{
         key: "signals",
@@ -3509,7 +4248,7 @@ var PackingSpace = function (_Signaler) {
 exports.default = PackingSpace;
 
 /***/ }),
-/* 18 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3518,138 +4257,17 @@ exports.default = PackingSpace;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function almost(n1, n2) {
-    return Math.abs(n1 - n2) < .01;
-}
+var typeofNumber = 'number';
 
-var Item = function () {
-    /**
-     * @param {Object} id 
-     * @param {Number} dim1 
-     * @param {Number} dim2 
-     * @param {Number} dim3 
-     * @param {Number} quantity 
-     */
-    function Item(id, dim1, dim2, dim3, quantity) {
-        _classCallCheck(this, Item);
-
-        this.ID = id;
-        this.IsPacked = false;
-        this.Dim1 = dim2;
-        this.Dim2 = dim1;
-        this.Dim3 = dim3;
-        this.CoordX = 0;
-        this.CoordY = 0;
-        this.CoordZ = 0;
-        this.Quantity = quantity;
-        this.PackDimX = 0;
-        this.PackDimY = 0;
-        this.PackDimZ = 0;
-        this.Volume = this.Dim1 * this.Dim2 * this.Dim3;
-    }
-
-    /** 
-     * @param {Item} item
-     * @returns {string} - axis order (xyz, xzy, yxz, yzx, zxy or zyx)
-     */
-
-
-    _createClass(Item, null, [{
-        key: 'ResolveOrientation',
-        value: function ResolveOrientation(item) {
-            var w = item.Dim1,
-                l = item.Dim2,
-                h = item.Dim3;
-
-            if (almost(item.PackDimX, w)) {
-                // x
-                if (almost(item.PackDimY, h)) {
-                    // y
-                    return 'xyz';
-                } else if (almost(item.PackDimY, l)) {
-                    // z
-                    return 'xzy';
-                }
-            } else if (almost(item.PackDimX, h)) {
-                // y
-                if (almost(item.PackDimY, w)) {
-                    // x
-                    return 'yxz';
-                } else if (almost(item.PackDimY, l)) {
-                    // z
-                    return 'yzx';
-                }
-            } else if (almost(item.PackDimX, l)) {
-                // z
-                if (almost(item.PackDimY, w)) {
-                    // x
-                    return 'zxy';
-                } else if (almost(item.PackDimY, h)) {
-                    // y
-                    return 'zyx';
-                }
-            }
-
-            return 'xyz';
-        }
-    }]);
-
-    return Item;
-}();
-
-exports.default = Item;
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Container =
-/**
- * @param {Object} id 
- * @param {Number} width 
- * @param {Number} length 
- * @param {Number} height 
- */
-function Container(id, width, length, height) {
-    _classCallCheck(this, Container);
-
-    this.ID = id;
-
-    this.Width = length || 0;
-    this.Length = width || 0;
-    this.Height = height || 0;
-};
-
-exports.default = Container;
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _maxHeight = Symbol('maxHeight');
+var _validOrientations = Symbol('validOrientations');
 
 var orientations = ['xyz', 'zyx', 'yxz', 'yzx', 'zxy', 'xzy'];
 var dimensions = [0, 0, 0];
@@ -3662,8 +4280,9 @@ var Item = function () {
      * @param {Number} length 
      * @param {Number} weight 
      * @param {Number} quantity 
+     * @param {Array<Number|string>} validOrientations
      */
-    function Item(id, width, height, length, weight, quantity) {
+    function Item(id, width, height, length, weight, quantity, validOrientations) {
         _classCallCheck(this, Item);
 
         this.id = id;
@@ -3671,9 +4290,15 @@ var Item = function () {
         this.height = height;
         this.length = length;
         this.weight = weight;
+        /** @type {Number} */
         this.volume = width * height * length;
         this.quantity = quantity;
+
+        this.validOrientations = validOrientations;
     }
+
+    /** @returns {Array<Number>} */
+
 
     _createClass(Item, [{
         key: 'GetOrientedDimensions',
@@ -3697,24 +4322,26 @@ var Item = function () {
             }
         }
 
-        /** @param {Item} item */
-
-    }, {
-        key: 'Copy',
-        value: function Copy(item) {
-            this.id = item.id;
-            this.width = item.width;
-            this.height = item.height;
-            this.length = item.length;
-            this.weight = item.weight;
-            this.volume = item.volume;
-            this.quantity = item.quantity;
-
-            return this;
-        }
-
         /** @param {Number} orientation */
 
+    }, {
+        key: 'validOrientations',
+        get: function get() {
+            return this[_validOrientations];
+        },
+        set: function set(value) {
+            if (value === undefined) value = orientations;
+
+            var validOrientations = [];
+            for (var i = 0; i < value.length; i++) {
+                var vo = value[i];
+                var orientation = (typeof vo === 'undefined' ? 'undefined' : _typeof(vo)) === typeofNumber ? vo : orientations.indexOf(vo.toLowerCase());
+                if (orientation !== -1) validOrientations.push(orientation);
+            }
+
+            this[_validOrientations] = validOrientations;
+            this[_maxHeight] = undefined;
+        }
     }, {
         key: 'xyz',
         get: function get() {
@@ -3745,6 +4372,23 @@ var Item = function () {
         get: function get() {
             dimensions[0] = this.width;dimensions[1] = this.length;dimensions[2] = this.height;return dimensions;
         }
+
+        /** @returns {Number} */
+
+    }, {
+        key: 'maxHeight',
+        get: function get() {
+            if (this[_maxHeight] === undefined) {
+                var maxHeight = 0;
+                for (var i = 0; i < this.validOrientations.length; i++) {
+                    var _dimensions = this.GetOrientedDimensions(this.validOrientations[i]);
+                    if (_dimensions[1] > maxHeight) maxHeight = _dimensions[1];
+                }
+                this[_maxHeight] = maxHeight;
+            }
+
+            return this[_maxHeight];
+        }
     }], [{
         key: 'ResolveOrientation',
         value: function ResolveOrientation(orientation) {
@@ -3759,6 +4403,21 @@ var Item = function () {
     }, {
         key: 'VolumeSort',
         value: function VolumeSort(a, b) {
+            if (a.volume < b.volume) return -1;
+            if (a.volume > b.volume) return 1;
+            return 0;
+        }
+
+        /**
+         * @param {Item} a 
+         * @param {Item} b 
+         */
+
+    }, {
+        key: 'HeightSort',
+        value: function HeightSort(a, b) {
+            if (a.maxHeight < b.maxHeight) return -1;
+            if (a.maxHeight > b.maxHeight) return 1;
             if (a.volume < b.volume) return -1;
             if (a.volume > b.volume) return 1;
             return 0;
@@ -3790,223 +4449,7 @@ exports.Item = Item;
 exports.Container = Container;
 
 /***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _CargoEntry = __webpack_require__(5);
-
-var _CargoEntry2 = _interopRequireDefault(_CargoEntry);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var dummyGeometry = new THREE.SphereBufferGeometry(1, 4, 4);
-var dummyMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000, transparent: true, opacity: .5 });
-
-var _entry = Symbol('entry');
-
-var CargoView = function () {
-    /**
-     * @param {CargoEntry} entry 
-     */
-    function CargoView(entry) {
-        _classCallCheck(this, CargoView);
-
-        this[_entry] = entry;
-
-        /**
-         * @type {THREE.Mesh}
-         */
-        this.mesh;
-
-        /**
-         * @type {THREE.Object3D}
-         */
-        this.view;
-    }
-
-    /** @returns {CargoEntry} */
-
-
-    _createClass(CargoView, [{
-        key: "entry",
-        get: function get() {
-            return this[_entry];
-        },
-        set: function set(value) {
-            this[_entry] = value;
-        }
-    }, {
-        key: "position",
-        get: function get() {
-            return this.view.position;
-        },
-        set: function set(value) {
-            this.view.position.copy(value);
-        }
-
-        /**
-         * @param {CargoEntry} entry 
-         */
-
-    }], [{
-        key: "Dummy",
-        value: function Dummy(entry) {
-            var cargoView = new CargoView(entry);
-            cargoView.view = new THREE.Mesh(dummyGeometry, dummyMaterial);
-            return cargoView;
-        }
-    }]);
-
-    return CargoView;
-}();
-
-exports.default = CargoView;
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-        value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _SceneSetup = __webpack_require__(12);
-
-var _SceneSetup2 = _interopRequireDefault(_SceneSetup);
-
-var _Packer = __webpack_require__(7);
-
-var _Packer2 = _interopRequireDefault(_Packer);
-
-var _View = __webpack_require__(62);
-
-var _View2 = _interopRequireDefault(_View);
-
-var _CargoInput = __webpack_require__(42);
-
-var _CargoInput2 = _interopRequireDefault(_CargoInput);
-
-var _PackingSpaceInput = __webpack_require__(43);
-
-var _PackingSpaceInput2 = _interopRequireDefault(_PackingSpaceInput);
-
-var _UX = __webpack_require__(13);
-
-var _UX2 = _interopRequireDefault(_UX);
-
-var _Logger = __webpack_require__(3);
-
-var _Logger2 = _interopRequireDefault(_Logger);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/**
- * @typedef AppComponents
- * @property {CargoInput} cargoInput
- * @property {PackingSpaceInput} packingSpaceInput
- */
-
-var App = function () {
-
-        /**
-         * 
-         * @param {HTMLDivElement} containerDiv
-         * @param {UX} ux
-         * @param {AppComponents} components 
-         */
-        function App(containerDiv, ux, components) {
-                _classCallCheck(this, App);
-
-                this.ux = ux;
-                this.components = components;
-
-                /** @type {import('./packer/Packer').PackerParams} */
-                var packerParams = { ux: this.ux };
-                this.packer = new _Packer2.default(packerParams);
-
-                this.sceneSetup = new _SceneSetup2.default(containerDiv, this.ux);
-                this.sceneSetup.Init().then(this.Start.bind(this));
-        }
-
-        _createClass(App, [{
-                key: 'Start',
-                value: function Start() {
-                        var packer = this.packer;
-
-                        /** @type {import('./view/View').ViewParams} */
-                        var viewParams = { ux: this.ux };
-                        this.view = new _View2.default(packer, this.sceneSetup, viewParams);
-                        this.sceneSetup.Start();
-
-                        this.components.cargoInput.On(_CargoInput2.default.signals.completed, function (boxEntry) {
-                                packer.cargoList.Add(boxEntry);
-                        });
-
-                        this.components.packingSpaceInput.On(_PackingSpaceInput2.default.signals.containerLoaded, function (container) {
-                                packer.packingSpace.AddContainer(container);
-                        });
-
-                        /** @param {import('./packer/Packer').PackingResult} packingResult */
-                        function onPackUpdate(packingResult) {
-                                _Logger2.default.Log('Packing result:', packingResult);
-                        }
-
-                        packer.On(_Packer2.default.signals.packUpdate, onPackUpdate);
-                }
-        }]);
-
-        return App;
-}();
-
-exports.default = App;
-
-/***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4064,7 +4507,146 @@ var UpdateComponent = function () {
 exports.default = UpdateComponent;
 
 /***/ }),
-/* 25 */
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * RaycastCallback
+ * 
+ * @callback RaycastCallback
+ * @param {Object} obj
+ * @param {THREE.Intersection} intersection
+ */
+
+/**
+ * Mapping function
+ * 
+ * @callback RaycastMapping
+ * @param {Object} obj
+ */
+
+var RaycastGroup = function () {
+
+    /**
+     * 
+     * @param {Array<THREE.Object3D>} items 
+     * @param {RaycastCallback} callback 
+     * @param {RaycastMapping} collectionQuery 
+     * @param {Boolean} updateProperty 
+     * @param {Boolean} recursive 
+     */
+    function RaycastGroup(items, callback, collectionQuery, updateProperty, recursive) {
+        _classCallCheck(this, RaycastGroup);
+
+        /**
+         * @type {Boolean}
+         */
+        this.enabled = true;
+
+        this.items = items;
+        this.callback = callback;
+        this.updateProperty = updateProperty !== undefined ? updateProperty : false;
+        this.recursive = recursive !== undefined ? recursive : false;
+
+        if (collectionQuery === undefined) {
+            this.raycastItems = this.items;
+        } else {
+            this.raycastItems = [];
+            this.collectionQuery = collectionQuery;
+            this.GetRaycastItems(this.collectionQuery);
+        }
+    }
+
+    _createClass(RaycastGroup, [{
+        key: 'GetRaycastItems',
+        value: function GetRaycastItems(collectionQuery) {
+            for (var iItem = 0; iItem < this.items.length; iItem++) {
+                var rItem = collectionQuery(this.items[iItem]);
+                if (rItem !== undefined) {
+                    this.raycastItems.push(rItem);
+                } else {
+                    this.items.splice(iItem, 1);
+                    Cik.Log('raycastItem is undefined, entry removed from .items array');
+                }
+            }
+        }
+    }, {
+        key: 'UpdateItems',
+        value: function UpdateItems(items, collectionQuery) {
+            this.items = items;
+            if (collectionQuery === undefined) collectionQuery = this.collectionQuery;
+
+            if (collectionQuery === undefined) {
+                this.raycastItems = this.items;
+            } else {
+                this.raycastItems.length = 0;
+                this.collectionQuery = collectionQuery;
+                this.GetRaycastItems(this.collectionQuery);
+            }
+        }
+    }, {
+        key: 'UpdateRaycastItems',
+        value: function UpdateRaycastItems() {
+            this.raycastItems.length = 0;
+            for (var i = 0; i < this.items.length; i++) {
+                var raycastItem = this.collectionQuery(this.items[i]);
+                if (raycastItem) this.raycastItems.push(raycastItem);
+            }
+        }
+    }, {
+        key: 'Raycast',
+        value: function Raycast(raycaster) {
+            if (this.enabled === false) return;
+
+            if (this.updateProperty) {
+                UpdateRaycastItems();
+            }
+
+            var raycastItems = this.raycastItems;
+
+            // if ( object.visible === false || object.parent === null) return; in THREE.Raycaster.intersectObject()
+            var intersects = raycaster.intersectObjects(raycastItems, this.recursive);
+            if (intersects.length > 0) {
+                if (this.collectionQuery) {
+                    var raycastItemIndex = this.BubbleUpForIndex(intersects[0].object, raycastItems);
+                    if (raycastItemIndex !== -1) this.callback(this.items[raycastItemIndex], intersects[0]);
+                } else {
+                    this.callback(intersects[0].object, intersects[0]);
+                }
+            }
+        }
+    }, {
+        key: 'BubbleUpForIndex',
+        value: function BubbleUpForIndex(child, collection) {
+            var nestLimit = 100;
+            var numCollection = collection.length;
+            while (child !== null && nestLimit-- > 0) {
+                for (var i = 0; i < numCollection; i++) {
+                    if (collection[i] === child) return i;
+                }child = child.parent;
+            }
+            return -1;
+        }
+    }]);
+
+    return RaycastGroup;
+}();
+
+exports.default = RaycastGroup;
+
+/***/ }),
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4135,7 +4717,7 @@ var Controller = function () {
 exports.default = Controller;
 
 /***/ }),
-/* 26 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4223,9 +4805,11 @@ var Camera = function () {
                     }
                 };
                 this.orbitControls.Hold = function () {
+                    this.saveState();
                     this.enabled = false;
                 };
                 this.orbitControls.Release = function () {
+                    this.reset();
                     this.enabled = true;
                 };
             }
@@ -4288,14 +4872,14 @@ var Camera = function () {
     }, {
         key: 'Hold',
         value: function Hold() {
-            if (this.controls !== undefined && this.controls.Hold) {
+            if (this.enabled && this.controls !== undefined && this.controls.Hold) {
                 this.controls.Hold();
             }
         }
     }, {
         key: 'Release',
         value: function Release() {
-            if (this.controls !== undefined && this.controls.Release) {
+            if (!this.enabled && this.controls !== undefined && this.controls.Release) {
                 this.controls.Release();
             }
         }
@@ -4322,6 +4906,7 @@ var Camera = function () {
 
             var position = tempVec3;
             position.subVectors(this.camera.position, center).normalize().multiplyScalar(distance).add(center);
+            position.y = Math.abs(position.y);
 
             this.camera.position.copy(position);
             this.SetTarget(center);
@@ -4360,7 +4945,430 @@ var Camera = function () {
 exports.default = Camera;
 
 /***/ }),
-/* 27 */
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _set = function set(object, property, value, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent !== null) { set(parent, property, value, receiver); } } else if ("value" in desc && desc.writable) { desc.value = value; } else { var setter = desc.set; if (setter !== undefined) { setter.call(receiver, value); } } return value; };
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _CargoView2 = __webpack_require__(17);
+
+var _CargoView3 = _interopRequireDefault(_CargoView2);
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+var _BoxEntry = __webpack_require__(3);
+
+var _BoxEntry2 = _interopRequireDefault(_BoxEntry);
+
+var _Asset = __webpack_require__(5);
+
+var _Asset2 = _interopRequireDefault(_Asset);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var unitCubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 1, 1, 1);
+var materialTemplate = new _Asset2.default.SolidMaterialType({ roughness: 1, metalness: 0, flatShading: true });
+
+var brightnessRange = [.45, .55];
+var hueBase = Math.random();
+function nextColor() {
+    var color = new THREE.Color();
+    color.setHSL(hueBase, 1, brightnessRange[0] + Math.random() * (brightnessRange[1] - brightnessRange[0]));
+    hueBase = _Utils2.default.GoldenSeries(hueBase);
+    return color;
+}
+
+var _materialSettings = Symbol('matSet');
+
+var CargoBoxView = function (_CargoView) {
+    _inherits(CargoBoxView, _CargoView);
+
+    /**
+     * 
+     * @param {BoxEntry} boxEntry 
+     */
+    function CargoBoxView(boxEntry) {
+        _classCallCheck(this, CargoBoxView);
+
+        var _this = _possibleConstructorReturn(this, (CargoBoxView.__proto__ || Object.getPrototypeOf(CargoBoxView)).call(this, boxEntry));
+
+        var material = materialTemplate.clone();
+        material.color = nextColor();
+        _this.mesh = new THREE.Mesh(unitCubeGeometry, material);
+        _this.mesh.scale.copy(boxEntry.dimensions.vec3);
+
+        _this.view.add(_this.mesh);
+        return _this;
+    }
+
+    /** @returns {BoxEntry} */
+
+
+    _createClass(CargoBoxView, [{
+        key: "SetScale",
+
+
+        /**
+         * @param {Number} x 
+         * @param {Number} y 
+         * @param {Number} z 
+         */
+        value: function SetScale(x, y, z) {
+            this.mesh.scale.set(x, y, z);
+        }
+    }, {
+        key: "ReflectEntry",
+        value: function ReflectEntry() {
+            this.entry = this.entry;
+        }
+
+        /** 
+         * @param {string} value 
+         * @param {import('./CargoView').CargoViewLabelParams} params */
+
+    }, {
+        key: "SetLabel",
+        value: function SetLabel(value, params) {
+            _get(CargoBoxView.prototype.__proto__ || Object.getPrototypeOf(CargoBoxView.prototype), "SetLabel", this).call(this, value, params);
+
+            this.labelView.view.scale.y = params.height;
+            this.labelView.view.scale.x = params.width;
+            this.labelView.view.position.z = params.width / 2 + this.entry.dimensions.length / 2;
+            this.labelView.view.position.y = .001;
+        }
+
+        /**
+         * @param {Number} x in radians
+         * @param {Number} y in radians
+         * @param {Number} z in radians
+         */
+
+    }, {
+        key: "SetRotationAngles",
+        value: function SetRotationAngles(x, y, z) {
+            this.mesh.rotation.set(x, y, z);
+        }
+    }, {
+        key: "entry",
+        get: function get() {
+            return _get(CargoBoxView.prototype.__proto__ || Object.getPrototypeOf(CargoBoxView.prototype), "entry", this);
+        },
+        set: function set(value) {
+            _set(CargoBoxView.prototype.__proto__ || Object.getPrototypeOf(CargoBoxView.prototype), "entry", value, this);
+            var s = value.dimensions.vec3;
+            this.SetScale(s.x, s.y, s.z);
+        }
+
+        /** @param {Number} value */
+
+    }, {
+        key: "focus",
+        set: function set(value) {
+            _set(CargoBoxView.prototype.__proto__ || Object.getPrototypeOf(CargoBoxView.prototype), "focus", value, this);
+
+            if (this[_materialSettings]) _Asset2.default.RestoreMaterial(this.mesh.material, this[_materialSettings]);
+
+            if (Math.abs(1 - value) > .0001) {
+                if (this[_materialSettings] === undefined) {
+                    this.mesh.material = this.mesh.material.clone();
+                    this[_materialSettings] = {};
+                    _Asset2.default.SetMaterialFocus(this.mesh.material, value, this[_materialSettings]);
+                } else {
+                    _Asset2.default.SetMaterialFocus(this.mesh.material, value);
+                }
+            }
+        },
+        get: function get() {
+            return _get(CargoBoxView.prototype.__proto__ || Object.getPrototypeOf(CargoBoxView.prototype), "focus", this);
+        }
+    }]);
+
+    return CargoBoxView;
+}(_CargoView3.default);
+
+exports.default = CargoBoxView;
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TextField = function () {
+    /**
+     * @param {string} label 
+     * @param {string} content 
+     */
+    function TextField(label, content) {
+        _classCallCheck(this, TextField);
+
+        /**
+         * @type {string}
+         */
+        this.label = label;
+        /**
+         * @type {string}
+         */
+        this.content = content;
+    }
+
+    /**
+     * @param {TextField} field 
+     */
+
+
+    _createClass(TextField, [{
+        key: 'Copy',
+        value: function Copy(field) {
+            this.label = field.label;
+            this.content = field.content;
+        }
+    }, {
+        key: 'Clone',
+        value: function Clone() {
+            var field = new TextField(this.label, this.content);
+            return field;
+        }
+    }], [{
+        key: 'defaultContent',
+        get: function get() {
+            return '-';
+        }
+    }]);
+
+    return TextField;
+}();
+
+exports.default = TextField;
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Signaler2 = __webpack_require__(4);
+
+var _Signaler3 = _interopRequireDefault(_Signaler2);
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var tlWatchTimer, tlWatchEntries;
+function tlWatchUpdater() {
+    for (var i = 0; i < tlWatchEntries.length; i++) {
+        var entry = tlWatchEntries[i];
+        var newValue = entry.owner[entry.propertyName];
+        if (newValue !== entry.savedValue) {
+            entry.savedValue = newValue;
+            entry.tl.value = newValue;
+        }
+    };
+}
+function addTLWatch(tl, owner, propertyName) {
+    if (tlWatchTimer === undefined) {
+        tlWatchEntries = [];
+        tlWatchTimer = setInterval(tlWatchUpdater, 200);
+    }
+    tlWatchEntries.push({ tl: tl, owner: owner, propertyName: propertyName, savedValue: null });
+}
+
+var _value = Symbol('value');
+var typeofString = 'string';
+
+var signals = {
+    change: 'change'
+};
+
+var TextLabel = function (_Signaler) {
+    _inherits(TextLabel, _Signaler);
+
+    function TextLabel() {
+        _classCallCheck(this, TextLabel);
+
+        var _this = _possibleConstructorReturn(this, (TextLabel.__proto__ || Object.getPrototypeOf(TextLabel)).call(this));
+
+        _this[_value] = '';
+        return _this;
+    }
+
+    _createClass(TextLabel, [{
+        key: "GetString",
+        value: function GetString(v) {
+            return v.ToString ? v.ToString() : v.toString();
+        }
+    }, {
+        key: "Watch",
+        value: function Watch(owner, propertyName) {
+            addTLWatch(this, owner, propertyName);
+        }
+    }, {
+        key: "value",
+        get: function get() {
+            return this[_value];
+        }
+
+        /** @param {string} v */
+        ,
+        set: function set(v) {
+            if (v !== typeofString) v = this.GetString(v);
+
+            var changed = this[_value] !== v;
+            this[_value] = v;
+            if (changed) this.Dispatch(signals.change, this);
+        }
+    }], [{
+        key: "signals",
+        get: function get() {
+            return signals;
+        }
+    }]);
+
+    return TextLabel;
+}(_Signaler3.default);
+
+var defaultGeometry = new THREE.PlaneGeometry(1, 1, 1, 1);
+
+/**
+ * @typedef TLVParams
+ * @property {string} font css 32px sans-serif
+ * @property {string} textAlign start, end, left, right or center
+ * @property {string} sidePadding px
+ * @property {Number} fontColor css
+ * @property {Number} backColor css
+ * @property {Number} width px
+ * @property {Number} height px
+ */
+/** @type {TLVParams} */
+var defaultParams = {
+    font: '32px sans-serif',
+    textAlign: 'center',
+    sidePadding: 16,
+    fontColor: 0x000000,
+    backColor: 0xffffff,
+    width: 256,
+    height: 64
+};
+
+var TextLabelView = function () {
+
+    /** @param {TLVParams} params */
+    function TextLabelView(params) {
+        _classCallCheck(this, TextLabelView);
+
+        this.params = _Utils2.default.AssignUndefined(params, defaultParams);
+
+        var material = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide });
+        this.view = new THREE.Mesh(defaultGeometry, material);
+    }
+
+    /** @param {TextLabel} value */
+
+
+    _createClass(TextLabelView, [{
+        key: "OnChange",
+
+
+        /** @param {TextLabel} textLabel */
+        value: function OnChange(textLabel) {
+            var text = textLabel.value;
+            this.UpdateText(text);
+        }
+
+        /** @param {string} text */
+
+    }, {
+        key: "UpdateText",
+        value: function UpdateText(text) {
+            if (this.canvas2d === undefined) this.canvas2d = document.createElement('canvas');
+
+            this.canvas2d.width = this.params.width;
+            this.canvas2d.height = this.params.height;
+
+            var context2d = this.canvas2d.getContext('2d');
+            context2d.fillStyle = this.params.backColor;
+            context2d.fillRect(0, 0, this.params.width + 2, this.params.height + 2);
+            context2d.fillStyle = this.params.fontColor;
+            context2d.font = this.params.font;
+            context2d.textAlign = this.params.textAlign;
+            context2d.textBaseline = 'middle';
+
+            var x = this.params.textAlign === 'start' || this.params.textAlign === 'left' ? this.params.sidePadding : this.params.textAlign === 'end' || this.params.textAlign === 'right' ? this.params.width - this.params.sidePadding : this.params.width / 2;
+            context2d.fillText(text, x, this.params.height / 2);
+
+            //
+            var mesh = this.view;
+            /** @type {THREE.MeshBasicMaterial} */
+            var material = mesh.material;
+            if (!material.map) {
+                material.map = new THREE.CanvasTexture(this.canvas2d);
+                material.map.minFilter = THREE.LinearFilter;
+                material.map.anisotropy = 1.4;
+            } else {
+                material.map.image = this.canvas2d;
+            }
+            material.map.needsUpdate = true;
+        }
+    }, {
+        key: "textLabel",
+        set: function set(value) {
+            value.On(TextLabel.signals.change, this.OnChange.bind(this));
+        }
+    }]);
+
+    return TextLabelView;
+}();
+
+TextLabelView.Label = TextLabel;
+
+exports.default = TextLabelView;
+
+/***/ }),
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4673,13 +5681,13 @@ exports.Element = Element;
 exports.Draggable = Draggable;
 
 /***/ }),
-/* 28 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _UIUtils = __webpack_require__(27);
+var _UIUtils = __webpack_require__(32);
 
 _UIUtils.Element.CreateCSS(['.tooltip .tooltiptext {', '    visibility: hidden;', '    position: absolute;', '    width: 120px;', '    background-color: #111;', '    color: #fff;', '    text-align: center;', '    padding: 2px 0;', '    border-radius: 2px;', '    z-index: 1;', '    opacity: 0;', '    transition: opacity .6s;', '}', '.tooltip-top {', '    bottom: 125%;', '    left: 50%;', '    margin-left: -60px;', '}', '.tooltip:hover .tooltiptext {', '    visibility: visible;', '    opacity: 1;', '}']);
 
@@ -4817,7 +5825,7 @@ Object.defineProperty((window.dat || __webpack_require__(1).default).controllers
 };
 
 /***/ }),
-/* 29 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4829,1488 +5837,180 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Signaler2 = __webpack_require__(2);
+var _AFitTest = __webpack_require__(59);
 
-var _Signaler3 = _interopRequireDefault(_Signaler2);
-
-var _CargoEntry = __webpack_require__(5);
-
-var _CargoEntry2 = _interopRequireDefault(_CargoEntry);
-
-var _CargoGroup = __webpack_require__(16);
-
-var _CargoGroup2 = _interopRequireDefault(_CargoGroup);
+var _AFitTest2 = _interopRequireDefault(_AFitTest);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function delay(time, callback) {
+    setTimeout(callback, time);
+}
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+var debugGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 1, 1, 1);
+var debugMaterial = new THREE.MeshStandardMaterial({ color: 0xff7f00, transparent: true, opacity: .35, map: new THREE.TextureLoader().load('../resources/textures/checkers.jpg', function (map) {
+        map.wrapS = map.wrapT = THREE.RepeatWrapping;
+    }) });
+var debugBox = new THREE.Mesh(debugGeometry, debugMaterial);
 
-var stringType = 'string';
+var tempVec = new THREE.Vector3();
 
-var signals = {
-    groupAdded: 'groupAdded',
-    groupRemoved: 'groupRemoved'
-};
-
-var CargoList = function (_Signaler) {
-    _inherits(CargoList, _Signaler);
-
-    function CargoList() {
-        _classCallCheck(this, CargoList);
-
-        /** @type {Map<string, CargoGroup>} */
-        var _this = _possibleConstructorReturn(this, (CargoList.__proto__ || Object.getPrototypeOf(CargoList)).call(this));
-
-        _this.groups = new Map();
-        return _this;
+var DebugBox = function () {
+    function DebugBox() {
+        _classCallCheck(this, DebugBox);
     }
 
-    /** Adds a new CargoGroup
-     * @param {CargoEntry} entry 
-     */
+    _createClass(DebugBox, null, [{
+        key: 'FromCenterSize',
 
 
-    _createClass(CargoList, [{
-        key: "Add",
-        value: function Add(entry) {
-            var group = new _CargoGroup2.default(entry);
+        /**
+         * @param {THREE.Vector3} center 
+         * @param {Number|THREE.Vector3} size 
+         */
+        value: function FromCenterSize(center, size) {
+            var box = debugBox.clone();
+            box.position.copy(center);
 
-            this.groups.set(entry.uid, group);
-            this.Dispatch(signals.groupAdded, group);
+            if (size instanceof THREE.Vector3) box.scale.copy(size);else box.scale.set(size, size, size);
+
+            return box;
         }
 
-        /** Removes the CargoGroup using its uid
+        /**
+         * @param {THREE.Box3} box3 
+         */
+
+    }, {
+        key: 'FromBox3',
+        value: function FromBox3(box3) {
+            var box = debugBox.clone();
+
+            box3.getCenter(tempVec);
+            box.position.copy(tempVec);
+            box3.getSize(tempVec);
+            box.scale.copy(tempVec);
+
+            return box;
+        }
+    }]);
+
+    return DebugBox;
+}();
+
+/**
+ * DebugViz
+ */
+
+var alphaHexMask = 256 * 256 * 256;
+
+/** @type {THREE.Object3D} */
+var view;
+
+/** @type {Map<string, *>} */
+var debugObjects = new Map();
+
+var tVec3 = new THREE.Vector3(),
+    tPos = new THREE.Vector3(),
+    tScale = new THREE.Vector3();
+
+var DebugViz = function () {
+    function DebugViz() {
+        _classCallCheck(this, DebugViz);
+    }
+
+    _createClass(DebugViz, null, [{
+        key: 'SetViewParent',
+
+
+        /**
+         * @param {THREE.Object3D} parent
+         */
+        value: function SetViewParent(parent) {
+            view = new THREE.Object3D();
+            view.name = 'DebugViz view';
+            console.log(view.name + ' created...');
+            view.renderOrder = Number.MAX_SAFE_INTEGER - 10;
+            parent.add(view);
+        }
+    }, {
+        key: 'DrawVolume',
+
+
+        /**
+         * @param {Number} x center x * @param {Number} y center y * @param {Number} z center z * @param {Number} w * @param {Number} h * @param {Number} l
+         * @param {Number} [color] hex color
+         * @param {Number} [duration] in milliseconds
+         * @param {Boolean} [checkered] checkers map
+         */
+        value: function DrawVolume(x, y, z, w, h, l, color, duration, wireframe, checkered) {
+            tPos.set(x, y, z);
+            tScale.set(w, h, l);
+
+            /** @type {THREE.Mesh} */
+            var volume = debugBox.clone();
+            view.add(volume);
+
+            volume.position.copy(tPos);
+            volume.scale.copy(tScale);
+
+            if (color) {
+                /** @type {THREE.MeshStandardMaterial} */
+                var material = volume.material.clone();
+                volume.material = material;
+                material.color.setHex(color && 0xffffff);
+                if (wireframe === true) {
+                    material.wireframe = true;
+                } else {
+                    material.opacity = Math.floor(color / alphaHexMask) / 256;
+                    material.transparent = material.opacity > 0 && material.opacity < .99;
+                }
+
+                if (!checkered) {
+                    material.map = null;
+                } else {
+                    material.map.repeat.set(10, 10);
+                }
+            }
+
+            var uid = THREE.Math.generateUUID();
+            debugObjects.set(uid, volume);
+
+            if (duration > 0) {
+                delay(duration, function () {
+                    DebugViz.RemoveObjectByUID(uid);
+                });
+            }
+
+            return uid;
+        }
+
+        /**
          * @param {string} uid 
          */
 
     }, {
-        key: "Remove",
-        value: function Remove(uid) {
-            var group = this.groups.get(uid);
-            if (group) {
-                this.groups.delete(uid);
-                this.Dispatch(signals.groupRemoved, group);
+        key: 'RemoveObjectByUID',
+        value: function RemoveObjectByUID(uid) {
+            var object = debugObjects.get(uid);
+            if (object instanceof THREE.Object3D && object.parent) {
+                object.parent.remove(object);
             }
         }
-    }], [{
-        key: "signals",
-        get: function get() {
-            return signals;
-        }
-    }]);
-
-    return CargoList;
-}(_Signaler3.default);
-
-exports.default = CargoList;
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var TextField = function () {
-    /**
-     * @param {string} label 
-     * @param {string} content 
-     */
-    function TextField(label, content) {
-        _classCallCheck(this, TextField);
-
-        /**
-         * @type {string}
-         */
-        this.label = label;
-        /**
-         * @type {string}
-         */
-        this.content = content;
-    }
-
-    /**
-     * @param {TextField} field 
-     */
-
-
-    _createClass(TextField, [{
-        key: 'Copy',
-        value: function Copy(field) {
-            this.label = field.label;
-            this.content = field.content;
-        }
     }, {
-        key: 'Clone',
-        value: function Clone() {
-            var field = new TextField(this.label, this.content);
-            return field;
-        }
-    }], [{
-        key: 'defaultContent',
-        get: function get() {
-            return '-';
-        }
-    }]);
-
-    return TextField;
-}();
-
-exports.default = TextField;
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _Container = __webpack_require__(19);
-
-var _Container2 = _interopRequireDefault(_Container);
-
-var _Item = __webpack_require__(18);
-
-var _Item2 = _interopRequireDefault(_Item);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var epsilon = Math.pow(2, -52);
-
-/**
- * From the master's thesis:
- * "The double linked list we use keeps the topology of the edge of the 
- * current layer under construction. We keep the x and z coordinates of 
- * each gap's right corner. The program looks at those gaps and tries to 
- * fill them with boxes one at a time while trying to keep the edge of the
- * layer even" (p. 3-7).
- */
-
-var ScrapPad = function ScrapPad() {
-	_classCallCheck(this, ScrapPad);
-
-	/** The x coordinate of the gap's right corner. */
-	this.CumX = 0;
-	/** The z coordinate of the gap's right corner. */
-	this.CumZ = 0;
-
-	/** The following entry.
-  * @type {ScrapPad}
-  */
-	this.Post;
-
-	/** The previous entry.
-  * @type {ScrapPad}
-  */
-	this.Pre;
-};
-
-/**
- * A list that stores all the different lengths of all item dimensions.
- * From the master's thesis:
- * "Each Layerdim value in this array represents a different layer thickness
- * value with which each iteration can start packing. Before starting iterations,
- * all different lengths of all box dimensions along with evaluation values are
- * stored in this array" (p. 3-6).
- */
-
-
-var Layer = function () {
-	function Layer(layerEval) {
-		_classCallCheck(this, Layer);
-
-		this.LayerDim = 0;
-		this.LayerEval = layerEval !== undefined ? layerEval : 0;
-	}
-
-	/**
-  * @param {Layer} l1 
-  * @param {Layer} l2 
-  */
-
-
-	_createClass(Layer, null, [{
-		key: "SortByEval",
-		value: function SortByEval(l1, l2) {
-			return l1.LayerEval - l2.LayerEval;
-		}
-	}]);
-
-	return Layer;
-}();
-
-/**
- * @typedef PackingResult
- * @property {Container} Container
- * @property {Boolean} IsCompletePack
- * @property {Array<Item>} PackedItems
- * @property {Number} PercentContainerVolumePacked
- * @property {Number} PercentItemVolumePacked
- * @property {Array<Item>} UnpackedItems
- * @property {Number} PackTimeInMilliseconds
- */
-
-var PackingResult = function PackingResult() {
-	_classCallCheck(this, PackingResult);
-
-	/** @type {Container} */
-	this.Container;
-	this.IsCompletePack = false;
-	/** @type {Array<Item>} */
-	this.PackedItems = [];
-	this.PercentContainerVolumePacked = 0;
-	this.PercentItemVolumePacked = 0;
-	/** @type {Array<Item>} */
-	this.UnpackedItems = [];
-	this.PackTimeInMilliseconds = Number.MAX_SAFE_INTEGER;
-};
-
-/** @type {Array<Item>} */
-
-
-var itemsToPack = [];
-/** @type {Array<Item>} */
-var itemsPackedInOrder;
-/** @type {Array<Layer>} */
-var layers;
-
-/** @type {ScrapPad} */
-var scrapfirst;
-/** @type {ScrapPad} */
-var smallestZ;
-/** @type {ScrapPad} */
-var trash;
-
-var evened = false;
-var hundredPercentPacked = false;
-var layerDone = false;
-var packing = false;
-var packingBest = false;
-var quit = false;
-
-var bboxi = 0;
-var bestIteration = 0;
-var bestVariant = 0;
-var boxi = 0;
-var cboxi = 0;
-var layerListLen = 0;
-var packedItemCount = 0;
-var x = 0;
-
-var bbfx = 0;
-var bbfy = 0;
-var bbfz = 0;
-var bboxx = 0;
-var bboxy = 0;
-var bboxz = 0;
-var bfx = 0;
-var bfy = 0;
-var bfz = 0;
-var boxx = 0;
-var boxy = 0;
-var boxz = 0;
-var cboxx = 0;
-var cboxy = 0;
-var cboxz = 0;
-var layerinlayer = 0;
-var layerThickness = 0;
-var lilz = 0;
-var packedVolume = 0;
-var packedy = 0;
-var prelayer = 0;
-var prepackedy = 0;
-var preremainpy = 0;
-var px = 0;
-var py = 0;
-var pz = 0;
-var remainpy = 0;
-var remainpz = 0;
-var itemsToPackCount = 0;
-var totalItemVolume = 0;
-var totalContainerVolume = 0;
-
-/**
- * Current port by chadiik (2018)
- * A 3D bin packing algorithm originally ported from https://github.com/davidmchapman/3DContainerPacking
- * which itself was ported from https://github.com/keremdemirer/3dbinpackingjs,
- * which itself was a JavaScript port of https://github.com/wknechtel/3d-bin-pack/, which is a C reconstruction 
- * of a novel algorithm developed in a U.S. Air Force master's thesis by Erhan Baltacioglu in 2001.
- */
-
-var AFit = function () {
-	function AFit() {
-		_classCallCheck(this, AFit);
-	}
-
-	/**
-  * Runs the algorithm
-  * @param {Container} container 
-  * @param {Array<Item>} items 
-  * @returns {PackingResult}
-  */
-
-
-	_createClass(AFit, [{
-		key: "Solve",
-		value: function Solve(container, items) {
-			this.Initialize(container, items);
-			this.ExecuteIterations(container);
-			this.Report(container);
-
-			var result = new PackingResult();
-			result.Container = container;
-
-			for (var i = 1; i <= itemsToPackCount; i++) {
-				itemsToPack[i].Quantity = 1;
-
-				if (!itemsToPack[i].IsPacked) {
-					result.UnpackedItems.push(itemsToPack[i]);
-				}
-			}
-
-			result.PackedItems = itemsPackedInOrder;
-
-			if (result.UnpackedItems.length == 0) {
-				result.IsCompletePack = true;
-			}
-
-			return result;
-		}
-
-		/**
-   * Analyzes each unpacked box to find the best fitting one to the empty space given.
-   * @param {Number} hmx 
-   * @param {Number} hy 
-   * @param {Number} hmy 
-   * @param {Number} hz 
-   * @param {Number} hmz 
-   * @param {Number} dim1 
-   * @param {Number} dim2 
-   * @param {Number} dim3 
-   */
-
-	}, {
-		key: "AnalyzeBox",
-		value: function AnalyzeBox(hmx, hy, hmy, hz, hmz, dim1, dim2, dim3) {
-			if (dim1 <= hmx && dim2 <= hmy && dim3 <= hmz) {
-				if (dim2 <= hy) {
-					if (hy - dim2 < bfy) {
-						boxx = dim1;
-						boxy = dim2;
-						boxz = dim3;
-						bfx = hmx - dim1;
-						bfy = hy - dim2;
-						bfz = Math.abs(hz - dim3);
-						boxi = x;
-					} else if (hy - dim2 == bfy && hmx - dim1 < bfx) {
-						boxx = dim1;
-						boxy = dim2;
-						boxz = dim3;
-						bfx = hmx - dim1;
-						bfy = hy - dim2;
-						bfz = Math.abs(hz - dim3);
-						boxi = x;
-					} else if (hy - dim2 == bfy && hmx - dim1 == bfx && Math.abs(hz - dim3) < bfz) {
-						boxx = dim1;
-						boxy = dim2;
-						boxz = dim3;
-						bfx = hmx - dim1;
-						bfy = hy - dim2;
-						bfz = Math.abs(hz - dim3);
-						boxi = x;
-					}
-				} else {
-					if (dim2 - hy < bbfy) {
-						bboxx = dim1;
-						bboxy = dim2;
-						bboxz = dim3;
-						bbfx = hmx - dim1;
-						bbfy = dim2 - hy;
-						bbfz = Math.abs(hz - dim3);
-						bboxi = x;
-					} else if (dim2 - hy == bbfy && hmx - dim1 < bbfx) {
-						bboxx = dim1;
-						bboxy = dim2;
-						bboxz = dim3;
-						bbfx = hmx - dim1;
-						bbfy = dim2 - hy;
-						bbfz = Math.abs(hz - dim3);
-						bboxi = x;
-					} else if (dim2 - hy == bbfy && hmx - dim1 == bbfx && Math.abs(hz - dim3) < bbfz) {
-						bboxx = dim1;
-						bboxy = dim2;
-						bboxz = dim3;
-						bbfx = hmx - dim1;
-						bbfy = dim2 - hy;
-						bbfz = Math.abs(hz - dim3);
-						bboxi = x;
-					}
-				}
-			}
-		}
-
-		/**
-   * After finding each box, the candidate boxes and the condition of the layer are examined.
-   */
-
-	}, {
-		key: "CheckFound",
-		value: function CheckFound() {
-			evened = false;
-
-			if (boxi != 0) {
-				cboxi = boxi;
-				cboxx = boxx;
-				cboxy = boxy;
-				cboxz = boxz;
-			} else {
-				if (bboxi > 0 && (layerinlayer != 0 || !smallestZ.Pre && !smallestZ.Post)) {
-					if (layerinlayer == 0) {
-						prelayer = layerThickness;
-						lilz = smallestZ.CumZ;
-					}
-
-					cboxi = bboxi;
-					cboxx = bboxx;
-					cboxy = bboxy;
-					cboxz = bboxz;
-					layerinlayer = layerinlayer + bboxy - layerThickness;
-					layerThickness = bboxy;
-				} else {
-					if (!smallestZ.Pre && !smallestZ.Post) {
-						layerDone = true;
-					} else {
-						evened = true;
-
-						if (!smallestZ.Pre) {
-							trash = smallestZ.Post;
-							smallestZ.CumX = smallestZ.Post.CumX;
-							smallestZ.CumZ = smallestZ.Post.CumZ;
-							smallestZ.Post = smallestZ.Post.Post;
-							if (smallestZ.Post) {
-								smallestZ.Post.Pre = smallestZ;
-							}
-						} else if (!smallestZ.Post) {
-							smallestZ.Pre.Post = undefined;
-							smallestZ.Pre.CumX = smallestZ.CumX;
-						} else {
-							if (smallestZ.Pre.CumZ == smallestZ.Post.CumZ) {
-								smallestZ.Pre.Post = smallestZ.Post.Post;
-
-								if (smallestZ.Post.Post) {
-									smallestZ.Post.Post.Pre = smallestZ.Pre;
-								}
-
-								smallestZ.Pre.CumX = smallestZ.Post.CumX;
-							} else {
-								smallestZ.Pre.Post = smallestZ.Post;
-								smallestZ.Post.Pre = smallestZ.Pre;
-
-								if (smallestZ.Pre.CumZ < smallestZ.Post.CumZ) {
-									smallestZ.Pre.CumX = smallestZ.CumX;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-		/**
-   * Executes the packing algorithm variants.
-   * @param {Container} container 
-   */
-
-	}, {
-		key: "ExecuteIterations",
-		value: function ExecuteIterations(container) {
-			var itelayer = 0;
-			var layersIndex = 0;
-			var bestVolume = 0;
-
-			for (var containerOrientationVariant = 1; containerOrientationVariant <= 6 && !quit; containerOrientationVariant++) {
-				switch (containerOrientationVariant) {
-					case 1:
-						px = container.Length;py = container.Height;pz = container.Width;
-						break;
-
-					case 2:
-						px = container.Width;py = container.Height;pz = container.Length;
-						break;
-
-					case 3:
-						px = container.Width;py = container.Length;pz = container.Height;
-						break;
-
-					case 4:
-						px = container.Height;py = container.Length;pz = container.Width;
-						break;
-
-					case 5:
-						px = container.Length;py = container.Width;pz = container.Height;
-						break;
-
-					case 6:
-						px = container.Height;py = container.Width;pz = container.Length;
-						break;
-				}
-
-				layers.push(new Layer(-1));
-				this.ListCanditLayers();
-				//layers = layers.OrderBy(l => l.LayerEval).ToList();
-				layers.sort(Layer.SortByEval);
-
-				for (layersIndex = 1; layersIndex <= layerListLen && !quit; layersIndex++) {
-					packedVolume = 0;
-					packedy = 0;
-					packing = true;
-					layerThickness = layers[layersIndex].LayerDim;
-					itelayer = layersIndex;
-					remainpy = py;
-					remainpz = pz;
-					packedItemCount = 0;
-
-					for (x = 1; x <= itemsToPackCount; x++) {
-						itemsToPack[x].IsPacked = false;
-					}
-
-					do {
-						layerinlayer = 0;
-						layerDone = false;
-
-						this.PackLayer();
-
-						packedy = packedy + layerThickness;
-						remainpy = py - packedy;
-
-						if (layerinlayer != 0 && !quit) {
-							prepackedy = packedy;
-							preremainpy = remainpy;
-							remainpy = layerThickness - prelayer;
-							packedy = packedy - layerThickness + prelayer;
-							remainpz = lilz;
-							layerThickness = layerinlayer;
-							layerDone = false;
-
-							this.PackLayer();
-
-							packedy = prepackedy;
-							remainpy = preremainpy;
-							remainpz = pz;
-						}
-
-						this.FindLayer(remainpy);
-					} while (packing && !quit);
-
-					if (packedVolume > bestVolume && !quit) {
-						bestVolume = packedVolume;
-						bestVariant = containerOrientationVariant;
-						bestIteration = itelayer;
-					}
-
-					if (hundredPercentPacked) break;
-				}
-
-				if (hundredPercentPacked) break;
-
-				if (container.Length == container.Height && container.Height == container.Width) containerOrientationVariant = 6;
-
-				layers = [];
-			}
-		}
-
-		/**
-   * Finds the most proper boxes by looking at all six possible orientations,
-  * empty space given, adjacent boxes, and pallet limits.
-   * @param {Number} hmx 
-   * @param {Number} hy 
-   * @param {Number} hmy 
-   * @param {Number} hz 
-   * @param {Number} hmz 
-   */
-
-	}, {
-		key: "FindBox",
-		value: function FindBox(hmx, hy, hmy, hz, hmz) {
-			var y = 0;
-
-			bfx = Number.MAX_VALUE;
-			bfy = Number.MAX_VALUE;
-			bfz = Number.MAX_VALUE;
-			bbfx = Number.MAX_VALUE;
-			bbfy = Number.MAX_VALUE;
-			bbfz = Number.MAX_VALUE;
-			boxi = 0;
-			bboxi = 0;
-
-			for (y = 1; y <= itemsToPackCount; y = y + itemsToPack[y].Quantity) {
-				for (x = y; x < x + itemsToPack[y].Quantity - 1; x++) {
-					if (!itemsToPack[x].IsPacked) break;
-				}
-
-				if (itemsToPack[x].IsPacked) continue;
-
-				if (x > itemsToPackCount) return;
-
-				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim1, itemsToPack[x].Dim2, itemsToPack[x].Dim3);
-
-				if (itemsToPack[x].Dim1 == itemsToPack[x].Dim3 && itemsToPack[x].Dim3 == itemsToPack[x].Dim2) continue;
-
-				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim1, itemsToPack[x].Dim3, itemsToPack[x].Dim2);
-				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim2, itemsToPack[x].Dim1, itemsToPack[x].Dim3);
-				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim2, itemsToPack[x].Dim3, itemsToPack[x].Dim1);
-				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim3, itemsToPack[x].Dim1, itemsToPack[x].Dim2);
-				this.AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim3, itemsToPack[x].Dim2, itemsToPack[x].Dim1);
-			}
-		}
-
-		/**
-   * Finds the most proper layer height by looking at the unpacked boxes and the remaining empty space available.
-   * @param {Number} thickness 
-   */
-
-	}, {
-		key: "FindLayer",
-		value: function FindLayer(thickness) {
-			var exdim = 0;
-			var dimdif = 0;
-			var dimen2 = 0;
-			var dimen3 = 0;
-			var y = 0;
-			var z = 0;
-			var layereval = 0;
-			var maxEvaluations = 1000000;
-
-			layerThickness = 0;
-
-			for (x = 1; x <= itemsToPackCount; x++) {
-				if (itemsToPack[x].IsPacked) continue;
-
-				for (y = 1; y <= 3; y++) {
-					switch (y) {
-						case 1:
-							exdim = itemsToPack[x].Dim1;
-							dimen2 = itemsToPack[x].Dim2;
-							dimen3 = itemsToPack[x].Dim3;
-							break;
-
-						case 2:
-							exdim = itemsToPack[x].Dim2;
-							dimen2 = itemsToPack[x].Dim1;
-							dimen3 = itemsToPack[x].Dim3;
-							break;
-
-						case 3:
-							exdim = itemsToPack[x].Dim3;
-							dimen2 = itemsToPack[x].Dim1;
-							dimen3 = itemsToPack[x].Dim2;
-							break;
-					}
-
-					layereval = 0;
-
-					if (exdim <= thickness && (dimen2 <= px && dimen3 <= pz || dimen3 <= px && dimen2 <= pz)) {
-						for (z = 1; z <= itemsToPackCount; z++) {
-							if (!(x == z) && !itemsToPack[z].IsPacked) {
-								dimdif = Math.abs(exdim - itemsToPack[z].Dim1);
-
-								if (Math.abs(exdim - itemsToPack[z].Dim2) < dimdif) {
-									dimdif = Math.abs(exdim - itemsToPack[z].Dim2);
-								}
-
-								if (Math.abs(exdim - itemsToPack[z].Dim3) < dimdif) {
-									dimdif = Math.abs(exdim - itemsToPack[z].Dim3);
-								}
-
-								layereval = layereval + dimdif;
-							}
-						}
-
-						if (layereval < maxEvaluations) {
-							maxEvaluations = layereval;
-							layerThickness = exdim;
-						}
-					}
-				}
-			}
-
-			if (layerThickness == 0 || layerThickness > remainpy) packing = false;
-		}
-
-		/**
-   * Finds the first to be packed gap in the layer edge.
-   */
-
-	}, {
-		key: "FindSmallestZ",
-		value: function FindSmallestZ() {
-			var scrapmemb = scrapfirst;
-			smallestZ = scrapmemb;
-
-			while (scrapmemb.Post) {
-				if (scrapmemb.Post.CumZ < smallestZ.CumZ) {
-					smallestZ = scrapmemb.Post;
-				}
-
-				scrapmemb = scrapmemb.Post;
-			}
-		}
-
-		/**
-   * Initializes everything.
-   * @param {Container} container 
-   * @param {Array<Item>} items 
-   */
-
-	}, {
-		key: "Initialize",
-		value: function Initialize(container, items) {
-			itemsToPack = [];
-			itemsPackedInOrder = [];
-
-			// The original code uses 1-based indexing everywhere. This fake entry is added to the beginning
-			// of the list to make that possible.
-			itemsToPack.push(new _Item2.default(0, 0, 0, 0, 0, 0));
-
-			layers = [];
-			itemsToPackCount = 0;
-
-			for (var iItems = 0, numItems = items.length; iItems < numItems; iItems++) {
-				var item = items[iItems];
-				for (var i = 1; i <= item.Quantity; i++) {
-					var newItem = new _Item2.default(item.ID, item.Dim1, item.Dim2, item.Dim3, item.Quantity);
-					itemsToPack.push(newItem);
-				}
-
-				itemsToPackCount += item.Quantity;
-			}
-
-			itemsToPack.push(new _Item2.default(0, 0, 0, 0, 0));
-
-			totalContainerVolume = container.Length * container.Height * container.Width;
-			totalItemVolume = 0;
-
-			for (x = 1; x <= itemsToPackCount; x++) {
-				totalItemVolume = totalItemVolume + itemsToPack[x].Volume;
-			}
-
-			scrapfirst = new ScrapPad();
-
-			scrapfirst.Pre = undefined;
-			scrapfirst.Post = undefined;
-			packingBest = false;
-			hundredPercentPacked = false;
-			quit = false;
-		}
-
-		/**
-   * Lists all possible layer heights by giving a weight value to each of them.
-   */
-
-	}, {
-		key: "ListCanditLayers",
-		value: function ListCanditLayers() {
-			var same = false;
-			var exdim = 0;
-			var dimdif = 0;
-			var dimen2 = 0;
-			var dimen3 = 0;
-			var y = 0;
-			var z = 0;
-			var k = 0;
-			var layereval = 0;
-
-			layerListLen = 0;
-
-			for (x = 1; x <= itemsToPackCount; x++) {
-				for (y = 1; y <= 3; y++) {
-					switch (y) {
-						case 1:
-							exdim = itemsToPack[x].Dim1;
-							dimen2 = itemsToPack[x].Dim2;
-							dimen3 = itemsToPack[x].Dim3;
-							break;
-
-						case 2:
-							exdim = itemsToPack[x].Dim2;
-							dimen2 = itemsToPack[x].Dim1;
-							dimen3 = itemsToPack[x].Dim3;
-							break;
-
-						case 3:
-							exdim = itemsToPack[x].Dim3;
-							dimen2 = itemsToPack[x].Dim1;
-							dimen3 = itemsToPack[x].Dim2;
-							break;
-					}
-
-					if (exdim > py || (dimen2 > px || dimen3 > pz) && (dimen3 > px || dimen2 > pz)) continue;
-
-					same = false;
-
-					for (k = 1; k <= layerListLen; k++) {
-						if (exdim == layers[k].LayerDim) {
-							same = true;
-							continue;
-						}
-					}
-
-					if (same) continue;
-
-					layereval = 0;
-
-					for (z = 1; z <= itemsToPackCount; z++) {
-						if (!(x == z)) {
-							dimdif = Math.abs(exdim - itemsToPack[z].Dim1);
-
-							if (Math.abs(exdim - itemsToPack[z].Dim2) < dimdif) {
-								dimdif = Math.abs(exdim - itemsToPack[z].Dim2);
-							}
-							if (Math.abs(exdim - itemsToPack[z].Dim3) < dimdif) {
-								dimdif = Math.abs(exdim - itemsToPack[z].Dim3);
-							}
-							layereval = layereval + dimdif;
-						}
-					}
-
-					layerListLen++;
-
-					layers.push(new Layer());
-					layers[layerListLen].LayerEval = layereval;
-					layers[layerListLen].LayerDim = exdim;
-				}
-			}
-		}
-
-		/**
-   * Transforms the found coordinate system to the one entered by the user and writes them to the report file.
-   */
-
-	}, {
-		key: "OutputBoxList",
-		value: function OutputBoxList() {
-			var packCoordX = 0;
-			var packCoordY = 0;
-			var packCoordZ = 0;
-			var packDimX = 0;
-			var packDimY = 0;
-			var packDimZ = 0;
-
-			switch (bestVariant) {
-				case 1:
-					packCoordX = itemsToPack[cboxi].CoordX;
-					packCoordY = itemsToPack[cboxi].CoordY;
-					packCoordZ = itemsToPack[cboxi].CoordZ;
-					packDimX = itemsToPack[cboxi].PackDimX;
-					packDimY = itemsToPack[cboxi].PackDimY;
-					packDimZ = itemsToPack[cboxi].PackDimZ;
-					break;
-
-				case 2:
-					packCoordX = itemsToPack[cboxi].CoordZ;
-					packCoordY = itemsToPack[cboxi].CoordY;
-					packCoordZ = itemsToPack[cboxi].CoordX;
-					packDimX = itemsToPack[cboxi].PackDimZ;
-					packDimY = itemsToPack[cboxi].PackDimY;
-					packDimZ = itemsToPack[cboxi].PackDimX;
-					break;
-
-				case 3:
-					packCoordX = itemsToPack[cboxi].CoordY;
-					packCoordY = itemsToPack[cboxi].CoordZ;
-					packCoordZ = itemsToPack[cboxi].CoordX;
-					packDimX = itemsToPack[cboxi].PackDimY;
-					packDimY = itemsToPack[cboxi].PackDimZ;
-					packDimZ = itemsToPack[cboxi].PackDimX;
-					break;
-
-				case 4:
-					packCoordX = itemsToPack[cboxi].CoordY;
-					packCoordY = itemsToPack[cboxi].CoordX;
-					packCoordZ = itemsToPack[cboxi].CoordZ;
-					packDimX = itemsToPack[cboxi].PackDimY;
-					packDimY = itemsToPack[cboxi].PackDimX;
-					packDimZ = itemsToPack[cboxi].PackDimZ;
-					break;
-
-				case 5:
-					packCoordX = itemsToPack[cboxi].CoordX;
-					packCoordY = itemsToPack[cboxi].CoordZ;
-					packCoordZ = itemsToPack[cboxi].CoordY;
-					packDimX = itemsToPack[cboxi].PackDimX;
-					packDimY = itemsToPack[cboxi].PackDimZ;
-					packDimZ = itemsToPack[cboxi].PackDimY;
-					break;
-
-				case 6:
-					packCoordX = itemsToPack[cboxi].CoordZ;
-					packCoordY = itemsToPack[cboxi].CoordX;
-					packCoordZ = itemsToPack[cboxi].CoordY;
-					packDimX = itemsToPack[cboxi].PackDimZ;
-					packDimY = itemsToPack[cboxi].PackDimX;
-					packDimZ = itemsToPack[cboxi].PackDimY;
-					break;
-			}
-
-			itemsToPack[cboxi].CoordX = packCoordX;
-			itemsToPack[cboxi].CoordY = packCoordY;
-			itemsToPack[cboxi].CoordZ = packCoordZ;
-			itemsToPack[cboxi].PackDimX = packDimX;
-			itemsToPack[cboxi].PackDimY = packDimY;
-			itemsToPack[cboxi].PackDimZ = packDimZ;
-
-			itemsPackedInOrder.push(itemsToPack[cboxi]);
-		}
-
-		/**
-   * Packs the boxes found and arranges all variables and records properly.
-   */
-
-	}, {
-		key: "PackLayer",
-		value: function PackLayer() {
-			var lenx = 0;
-			var lenz = 0;
-			var lpz = 0;
-
-			if (layerThickness == 0) {
-				packing = false;
-				return;
-			}
-
-			scrapfirst.CumX = px;
-			scrapfirst.CumZ = 0;
-
-			//for (; !quit;)
-			while (!quit) {
-				this.FindSmallestZ();
-
-				if (!smallestZ.Pre && !smallestZ.Post) {
-					//*** SITUATION-1: NO BOXES ON THE RIGHT AND LEFT SIDES ***
-
-					lenx = smallestZ.CumX;
-					lpz = remainpz - smallestZ.CumZ;
-					this.FindBox(lenx, layerThickness, remainpy, lpz, lpz);
-					this.CheckFound();
-
-					if (layerDone) break;
-					if (evened) continue;
-
-					itemsToPack[cboxi].CoordX = 0;
-					itemsToPack[cboxi].CoordY = packedy;
-					itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
-					if (cboxx == smallestZ.CumX) {
-						smallestZ.CumZ = smallestZ.CumZ + cboxz;
-					} else {
-						smallestZ.Post = new ScrapPad();
-
-						smallestZ.Post.Post = undefined;
-						smallestZ.Post.Pre = smallestZ;
-						smallestZ.Post.CumX = smallestZ.CumX;
-						smallestZ.Post.CumZ = smallestZ.CumZ;
-						smallestZ.CumX = cboxx;
-						smallestZ.CumZ = smallestZ.CumZ + cboxz;
-					}
-				} else if (!smallestZ.Pre) {
-					//*** SITUATION-2: NO BOXES ON THE LEFT SIDE ***
-
-					lenx = smallestZ.CumX;
-					lenz = smallestZ.Post.CumZ - smallestZ.CumZ;
-					lpz = remainpz - smallestZ.CumZ;
-					this.FindBox(lenx, layerThickness, remainpy, lenz, lpz);
-					this.CheckFound();
-
-					if (layerDone) break;
-					if (evened) continue;
-
-					itemsToPack[cboxi].CoordY = packedy;
-					itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
-					if (cboxx == smallestZ.CumX) {
-						itemsToPack[cboxi].CoordX = 0;
-
-						if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ) {
-							smallestZ.CumZ = smallestZ.Post.CumZ;
-							smallestZ.CumX = smallestZ.Post.CumX;
-							trash = smallestZ.Post;
-							smallestZ.Post = smallestZ.Post.Post;
-
-							if (smallestZ.Post) {
-								smallestZ.Post.Pre = smallestZ;
-							}
-						} else {
-							smallestZ.CumZ = smallestZ.CumZ + cboxz;
-						}
-					} else {
-						itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
-
-						if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ) {
-							smallestZ.CumX = smallestZ.CumX - cboxx;
-						} else {
-							smallestZ.Post.Pre = new ScrapPad();
-
-							smallestZ.Post.Pre.Post = smallestZ.Post;
-							smallestZ.Post.Pre.Pre = smallestZ;
-							smallestZ.Post = smallestZ.Post.Pre;
-							smallestZ.Post.CumX = smallestZ.CumX;
-							smallestZ.CumX = smallestZ.CumX - cboxx;
-							smallestZ.Post.CumZ = smallestZ.CumZ + cboxz;
-						}
-					}
-				} else if (!smallestZ.Post) {
-					//*** SITUATION-3: NO BOXES ON THE RIGHT SIDE ***
-
-					lenx = smallestZ.CumX - smallestZ.Pre.CumX;
-					lenz = smallestZ.Pre.CumZ - smallestZ.CumZ;
-					lpz = remainpz - smallestZ.CumZ;
-					this.FindBox(lenx, layerThickness, remainpy, lenz, lpz);
-					this.CheckFound();
-
-					if (layerDone) break;
-					if (evened) continue;
-
-					itemsToPack[cboxi].CoordY = packedy;
-					itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
-					itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
-
-					if (cboxx == smallestZ.CumX - smallestZ.Pre.CumX) {
-						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
-							smallestZ.Pre.CumX = smallestZ.CumX;
-							smallestZ.Pre.Post = undefined;
-						} else {
-							smallestZ.CumZ = smallestZ.CumZ + cboxz;
-						}
-					} else {
-						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
-							smallestZ.Pre.CumX = smallestZ.Pre.CumX + cboxx;
-						} else {
-							smallestZ.Pre.Post = new ScrapPad();
-
-							smallestZ.Pre.Post.Pre = smallestZ.Pre;
-							smallestZ.Pre.Post.Post = smallestZ;
-							smallestZ.Pre = smallestZ.Pre.Post;
-							smallestZ.Pre.CumX = smallestZ.Pre.Pre.CumX + cboxx;
-							smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
-						}
-					}
-				} else if (smallestZ.Pre.CumZ == smallestZ.Post.CumZ) {
-					//*** SITUATION-4: THERE ARE BOXES ON BOTH OF THE SIDES ***
-
-					//*** SUBSITUATION-4A: SIDES ARE EQUAL TO EACH OTHER ***
-
-					lenx = smallestZ.CumX - smallestZ.Pre.CumX;
-					lenz = smallestZ.Pre.CumZ - smallestZ.CumZ;
-					lpz = remainpz - smallestZ.CumZ;
-
-					this.FindBox(lenx, layerThickness, remainpy, lenz, lpz);
-					this.CheckFound();
-
-					if (layerDone) break;
-					if (evened) continue;
-
-					itemsToPack[cboxi].CoordY = packedy;
-					itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
-
-					if (cboxx == smallestZ.CumX - smallestZ.Pre.CumX) {
-						itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
-
-						if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ) {
-							smallestZ.Pre.CumX = smallestZ.Post.CumX;
-
-							if (smallestZ.Post.Post) {
-								smallestZ.Pre.Post = smallestZ.Post.Post;
-								smallestZ.Post.Post.Pre = smallestZ.Pre;
-							} else {
-								smallestZ.Pre.Post = undefined;
-							}
-						} else {
-							smallestZ.CumZ = smallestZ.CumZ + cboxz;
-						}
-					} else if (smallestZ.Pre.CumX < px - smallestZ.CumX) {
-						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
-							smallestZ.CumX = smallestZ.CumX - cboxx;
-							itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
-						} else {
-							itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
-							smallestZ.Pre.Post = new ScrapPad();
-
-							smallestZ.Pre.Post.Pre = smallestZ.Pre;
-							smallestZ.Pre.Post.Post = smallestZ;
-							smallestZ.Pre = smallestZ.Pre.Post;
-							smallestZ.Pre.CumX = smallestZ.Pre.Pre.CumX + cboxx;
-							smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
-						}
-					} else {
-						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
-							smallestZ.Pre.CumX = smallestZ.Pre.CumX + cboxx;
-							itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
-						} else {
-							itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
-							smallestZ.Post.Pre = new ScrapPad();
-
-							smallestZ.Post.Pre.Post = smallestZ.Post;
-							smallestZ.Post.Pre.Pre = smallestZ;
-							smallestZ.Post = smallestZ.Post.Pre;
-							smallestZ.Post.CumX = smallestZ.CumX;
-							smallestZ.Post.CumZ = smallestZ.CumZ + cboxz;
-							smallestZ.CumX = smallestZ.CumX - cboxx;
-						}
-					}
-				} else {
-					//*** SUBSITUATION-4B: SIDES ARE NOT EQUAL TO EACH OTHER ***
-
-					lenx = smallestZ.CumX - smallestZ.Pre.CumX;
-					lenz = smallestZ.Pre.CumZ - smallestZ.CumZ;
-					lpz = remainpz - smallestZ.CumZ;
-					this.FindBox(lenx, layerThickness, remainpy, lenz, lpz);
-					this.CheckFound();
-
-					if (layerDone) break;
-					if (evened) continue;
-
-					itemsToPack[cboxi].CoordY = packedy;
-					itemsToPack[cboxi].CoordZ = smallestZ.CumZ;
-					itemsToPack[cboxi].CoordX = smallestZ.Pre.CumX;
-
-					if (cboxx == smallestZ.CumX - smallestZ.Pre.CumX) {
-						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
-							smallestZ.Pre.CumX = smallestZ.CumX;
-							smallestZ.Pre.Post = smallestZ.Post;
-							smallestZ.Post.Pre = smallestZ.Pre;
-						} else {
-							smallestZ.CumZ = smallestZ.CumZ + cboxz;
-						}
-					} else {
-						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
-							smallestZ.Pre.CumX = smallestZ.Pre.CumX + cboxx;
-						} else if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ) {
-							itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
-							smallestZ.CumX = smallestZ.CumX - cboxx;
-						} else {
-							smallestZ.Pre.Post = new ScrapPad();
-
-							smallestZ.Pre.Post.Pre = smallestZ.Pre;
-							smallestZ.Pre.Post.Post = smallestZ;
-							smallestZ.Pre = smallestZ.Pre.Post;
-							smallestZ.Pre.CumX = smallestZ.Pre.Pre.CumX + cboxx;
-							smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
-						}
-					}
-				}
-
-				this.VolumeCheck();
-			}
-		}
-
-		/**
-   * Using the parameters found, packs the best solution found and reports to the console.
-   * @param {Container} container 
-   */
-
-	}, {
-		key: "Report",
-		value: function Report(container) {
-			quit = false;
-
-			switch (bestVariant) {
-				case 1:
-					px = container.Length;py = container.Height;pz = container.Width;
-					break;
-
-				case 2:
-					px = container.Width;py = container.Height;pz = container.Length;
-					break;
-
-				case 3:
-					px = container.Width;py = container.Length;pz = container.Height;
-					break;
-
-				case 4:
-					px = container.Height;py = container.Length;pz = container.Width;
-					break;
-
-				case 5:
-					px = container.Length;py = container.Width;pz = container.Height;
-					break;
-
-				case 6:
-					px = container.Height;py = container.Width;pz = container.Length;
-					break;
-			}
-
-			packingBest = true;
-
-			//Print("BEST SOLUTION FOUND AT ITERATION                      :", bestIteration, "OF VARIANT", bestVariant);
-			//Print("TOTAL ITEMS TO PACK                                   :", itemsToPackCount);
-			//Print("TOTAL VOLUME OF ALL ITEMS                             :", totalItemVolume);
-			//Print("WHILE CONTAINER ORIENTATION X - Y - Z                 :", px, py, pz);
-
-			layers.length = 0;
-			layers[0] = new Layer(-1);
-			this.ListCanditLayers();
-			//layers = layers.OrderBy(l => l.LayerEval).ToList();
-			layers.sort(Layer.SortByEval);
-			packedVolume = 0;
-			packedy = 0;
-			packing = true;
-			layerThickness = layers[bestIteration].LayerDim;
-			remainpy = py;
-			remainpz = pz;
-
-			for (x = 1; x <= itemsToPackCount; x++) {
-				itemsToPack[x].IsPacked = false;
-			}
-
-			do {
-				layerinlayer = 0;
-				layerDone = false;
-				this.PackLayer();
-				packedy = packedy + layerThickness;
-				remainpy = py - packedy;
-
-				if (layerinlayer > epsilon) {
-					prepackedy = packedy;
-					preremainpy = remainpy;
-					remainpy = layerThickness - prelayer;
-					packedy = packedy - layerThickness + prelayer;
-					remainpz = lilz;
-					layerThickness = layerinlayer;
-					layerDone = false;
-					this.PackLayer();
-					packedy = prepackedy;
-					remainpy = preremainpy;
-					remainpz = pz;
-				}
-
-				if (!quit) {
-					this.FindLayer(remainpy);
-				}
-			} while (packing && !quit);
-		}
-
-		/**
-   * After packing of each item, the 100% packing condition is checked.
-   */
-
-	}, {
-		key: "VolumeCheck",
-		value: function VolumeCheck() {
-			itemsToPack[cboxi].IsPacked = true;
-			itemsToPack[cboxi].PackDimX = cboxx;
-			itemsToPack[cboxi].PackDimY = cboxy;
-			itemsToPack[cboxi].PackDimZ = cboxz;
-			packedVolume = packedVolume + itemsToPack[cboxi].Volume;
-			packedItemCount++;
-
-			if (packingBest) {
-				this.OutputBoxList();
-			} else if (packedVolume == totalContainerVolume || packedVolume == totalItemVolume) {
-				packing = false;
-				hundredPercentPacked = true;
-			}
-		}
-	}]);
-
-	return AFit;
-}();
-
-exports.default = AFit;
-
-/***/ }),
-/* 32 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.Application = exports.Range = exports.CheckWorksheetExistence = exports.Cells = exports.ThisWorkbook = undefined;
-
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _Signaler = __webpack_require__(2);
-
-var _Signaler2 = _interopRequireDefault(_Signaler);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var typeofString = 'string';
-var colLabels = '0ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-
-var signals = {
-    updated: 'u'
-};
-
-var CellEntry /*extends Signaler*/ = function () {
-    function CellEntry(value) {
-        _classCallCheck(this, CellEntry);
-
-        this.Value = value;
-        this.col = 0;
-        this.row = 0;
-
-        /** @type {Function} */
-        this.calculate = undefined;
-    }
-
-    _createClass(CellEntry, [{
-        key: 'toString',
-        value: function toString() {
-            return this.Value.toString();
-        }
-    }, {
-        key: 'Value',
-        get: function get() {
-            if (this.calculate) this._value = this.calculate();
-            return this._value;
-        },
-        set: function set(value) {
-            this._value = value;
-            //this.Dispatch(signals.updated, this);
-        }
-    }, {
-        key: 'Select',
-        get: function get() {
-            console.log('Select: ', this.Value);
-        }
-    }], [{
-        key: 'signals',
-        get: function get() {
-            return signals;
-        }
-    }]);
-
-    return CellEntry;
-}();
-
-/**
- * 
- * @param {Number} row 
- * @param {Number} col 
- * @param {*} [value]
- */
-
-
-function Cells(row, col, value) {
-    return new CellEntry('default');
-}
-
-/** @type {Worksheet} */
-var active;
-
-var Worksheet = function () {
-    /** @param {string} label */
-    function Worksheet(label) {
-        _classCallCheck(this, Worksheet);
-
-        this.label = label.toLowerCase();
-        /** @type {Map<Number, Map<Number, CellEntry>>} */
-        this.data = new Map();
-
-        this.cellsFN = this.Cells.bind(this);
-    }
-
-    /**
-     * 
-     * @param {CellEntry} cell1 
-     * @param {CellEntry} cell2 
-     */
-
-
-    _createClass(Worksheet, [{
-        key: 'Sum',
-        value: function Sum(cell1, cell2) {
-            var cells = Range(cell1, cell2).cells;
-            var total = 0;
-            cells.forEach(function (cell) {
-                var value = Number.parseFloat(cell.Value);
-                if (!isNaN(value)) total += value;
-            });
-            return total;
-        }
-    }, {
-        key: 'Cells',
-        value: function Cells(row, col, value) {
-            if ((typeof col === 'undefined' ? 'undefined' : _typeof(col)) === typeofString) col = colLabels.indexOf(col);
-
-            if (!this.data.has(row) || !this.data.get(row).has(col)) {
-                if (!this.data.has(row)) this.data.set(row, new Map());
-
-                var newEntry = new CellEntry(0);
-                newEntry.row = row;
-                newEntry.col = col;
-                this.data.get(row).set(col, newEntry);
-            }
-
-            if (value) this.data.get(row).get(col).Value = value;
-
-            return this.data.get(row).get(col);
-        }
-    }, {
-        key: 'Find',
-        value: function Find(value) {
+        key: 'ClearAll',
+        value: function ClearAll() {
             var _iteratorNormalCompletion = true;
             var _didIteratorError = false;
             var _iteratorError = undefined;
 
             try {
-                for (var _iterator = this.data.values()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var row = _step.value;
-                    var _iteratorNormalCompletion2 = true;
-                    var _didIteratorError2 = false;
-                    var _iteratorError2 = undefined;
+                for (var _iterator = debugObjects.keys()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var uid = _step.value;
 
-                    try {
-                        for (var _iterator2 = row.values()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                            var cell = _step2.value;
-
-                            if (cell.Value === value) {
-                                return cell;
-                            }
-                        }
-                    } catch (err) {
-                        _didIteratorError2 = true;
-                        _iteratorError2 = err;
-                    } finally {
-                        try {
-                            if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                                _iterator2.return();
-                            }
-                        } finally {
-                            if (_didIteratorError2) {
-                                throw _iteratorError2;
-                            }
-                        }
-                    }
+                    DebugViz.RemoveObjectByUID(uid);
                 }
             } catch (err) {
                 _didIteratorError = true;
@@ -6327,3095 +6027,65 @@ var Worksheet = function () {
                 }
             }
         }
+
+        /** @param {Boolean} visible */
+
     }, {
-        key: 'Print',
-        value: function Print() {
-            console.group(this.label);
-            var rows = [];
-            var _iteratorNormalCompletion3 = true;
-            var _didIteratorError3 = false;
-            var _iteratorError3 = undefined;
-
-            try {
-                for (var _iterator3 = this.data[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                    var _step3$value = _slicedToArray(_step3.value, 2),
-                        row = _step3$value[0],
-                        rowData = _step3$value[1];
-
-                    var rowResult = [row + ':'];
-                    var _iteratorNormalCompletion4 = true;
-                    var _didIteratorError4 = false;
-                    var _iteratorError4 = undefined;
-
-                    try {
-                        for (var _iterator4 = rowData[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-                            var _step4$value = _slicedToArray(_step4.value, 2),
-                                col = _step4$value[0],
-                                colData = _step4$value[1];
-
-                            rowResult.push(colData.Value);
-                        }
-                    } catch (err) {
-                        _didIteratorError4 = true;
-                        _iteratorError4 = err;
-                    } finally {
-                        try {
-                            if (!_iteratorNormalCompletion4 && _iterator4.return) {
-                                _iterator4.return();
-                            }
-                        } finally {
-                            if (_didIteratorError4) {
-                                throw _iteratorError4;
-                            }
-                        }
-                    }
-
-                    rows[row] = rowResult;
-                }
-            } catch (err) {
-                _didIteratorError3 = true;
-                _iteratorError3 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                        _iterator3.return();
-                    }
-                } finally {
-                    if (_didIteratorError3) {
-                        throw _iteratorError3;
-                    }
-                }
-            }
-
-            rows.forEach(function (row) {
-                var _console;
-
-                (_console = console).log.apply(_console, _toConsumableArray(row));
-            });
-            console.groupEnd();
+        key: 'SetPackingSpaceVisibility',
+        value: function SetPackingSpaceVisibility(visible) {
+            Debug.app.view.packingSpaceView.view.visible = visible;
         }
     }, {
-        key: 'Activate',
+        key: 'view',
         get: function get() {
-            active = this;
-            exports.Cells = Cells = this.cellsFN;
+            return view;
         }
     }]);
 
-    return Worksheet;
+    return DebugViz;
 }();
-
-var Workbook = function () {
-    function Workbook() {
-        _classCallCheck(this, Workbook);
-
-        /** @type {Map<string, Worksheet>} */
-        this.worksheets = new Map();
-    }
-
-    /** @param {Worksheet} worksheet */
-
-
-    _createClass(Workbook, [{
-        key: 'Add',
-        value: function Add(worksheet) {
-            this.worksheets.set(worksheet.label.toLowerCase(), worksheet);
-        }
-
-        /** @param {string} label */
-
-    }, {
-        key: 'Worksheets',
-        value: function Worksheets(label) {
-            return this.worksheets.get(label.toLowerCase());
-        }
-    }, {
-        key: 'Print',
-        value: function Print() {
-            var _iteratorNormalCompletion5 = true;
-            var _didIteratorError5 = false;
-            var _iteratorError5 = undefined;
-
-            try {
-                for (var _iterator5 = this.worksheets.values()[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-                    var worksheet = _step5.value;
-
-                    worksheet.Print();
-                }
-            } catch (err) {
-                _didIteratorError5 = true;
-                _iteratorError5 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion5 && _iterator5.return) {
-                        _iterator5.return();
-                    }
-                } finally {
-                    if (_didIteratorError5) {
-                        throw _iteratorError5;
-                    }
-                }
-            }
-        }
-    }, {
-        key: 'print',
-        get: function get() {
-            this.Print();
-        }
-    }]);
-
-    return Workbook;
-}();
-
-var solverSheet = new Worksheet('CLP Solver Console');
-var itemsSheet = new Worksheet('1.Items');
-var containersSheet = new Worksheet('2.Containers');
-var solutionSheet = new Worksheet('3.Solution');
-
-var ThisWorkbook = new Workbook();
-ThisWorkbook.Add(solverSheet);
-ThisWorkbook.Add(itemsSheet);
-ThisWorkbook.Add(containersSheet);
-ThisWorkbook.Add(solutionSheet);
 
 /**
- * @param {string} label 
- * @returns {Boolean}
+ * DebugViz
  */
-function CheckWorksheetExistence(label) {
-    return ThisWorkbook.Worksheets(label) !== undefined;
-}
 
-var CellsRange = function () {
-    function CellsRange() {
-        _classCallCheck(this, CellsRange);
-
-        /** @type {Array<CellEntry>} */
-        this.cells = [];
+var Debug = function () {
+    function Debug() {
+        _classCallCheck(this, Debug);
     }
 
-    _createClass(CellsRange, [{
-        key: 'Value',
-        set: function set(value) {
-            this.cells.forEach(function (cell) {
-                cell.Value = value;
+    _createClass(Debug, null, [{
+        key: 'MaterialEdit',
+        value: function MaterialEdit(callback) {
+            var objects = Debug.app.view.packResultView.cargoViews;
+            objects.forEach(function (o) {
+                var material = o.mesh.material;
+                callback(material);
+                material.needsUpdate = true;
             });
         }
     }, {
-        key: 'Clear',
+        key: 'AFitTest',
         get: function get() {
-            this.cells.forEach(function (cell) {
-                cell.Value = null;
-            });
-        }
-    }, {
-        key: 'ClearContents',
-        get: function get() {
-            this.Clear;
+            return _AFitTest2.default;
         }
     }]);
 
-    return CellsRange;
+    return Debug;
 }();
 
-var _range = new CellsRange();
-
-/**
- * @param {CellEntry} cell1 
- * @param {CellEntry} cell2 
- */
-function Range(cell1, cell2) {
-    var minCol = Math.min(cell1.col, cell2.col);
-    var maxCol = Math.max(cell1.col, cell2.col);
-    var minRow = Math.min(cell1.row, cell2.row);
-    var maxRow = Math.max(cell1.row, cell2.row);
-
-    _range.cells.length = 0;
-    for (var c = minCol; c < maxCol; c++) {
-        for (var r = minRow; r < maxRow; r++) {
-            _range.cells.push(Cells(r, c));
-        }
-    }
-
-    return _range;
-}
-
-var Application = function () {
-    function Application() {
-        _classCallCheck(this, Application);
-    }
-
-    _createClass(Application, null, [{
-        key: 'Alert',
-        value: function Alert(msg) {
-            console.log('CLP alert:', msg);
-        }
-    }, {
-        key: 'Confirm',
-        value: function Confirm(msg, defaultValue) {
-            console.log('CLP confirm (' + defaultValue + '):', msg);
-            return defaultValue;
-        }
-    }, {
-        key: 'StatusBar',
-        set: function set(value) {
-            console.log(value);
-        }
-    }, {
-        key: 'ScreenUpdating',
-        set: function set(value) {}
-    }]);
-
-    return Application;
-}();
-
-exports.ThisWorkbook = ThisWorkbook;
-exports.Cells = Cells;
-exports.CheckWorksheetExistence = CheckWorksheetExistence;
-exports.Range = Range;
-exports.Application = Application;
-
-/***/ }),
-/* 33 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.signals = exports.signaler = exports.ContainerItem = exports.SolutionData = exports.Execute = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _Workbook = __webpack_require__(32);
-
-var _Signaler = __webpack_require__(2);
-
-var _Signaler2 = _interopRequireDefault(_Signaler);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/** Javascript port by chadiik 2018
- * 
- * CLP Spreadsheet Solver v1.1
- * Open source, developed by Dr. Gunes Erdogan
- * http://people.bath.ac.uk/ge277/index.php/clp-spreadsheet-solver/
- * 'This work is licensed under the Creative Commons Attribution 4.0 International License.; <=view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/.
- */
-
-var epsilon = 0.0001;
-
-//data declarations
-
-var item_type_data =
-/**
- * @param {Number} id 
- * @param {Number} width 
- * @param {Number} height 
- * @param {Number} length 
- */
-function item_type_data(id, width, height, length) {
-    _classCallCheck(this, item_type_data);
-
-    this.id = id;
-    this.width = width;
-    this.height = height;
-    this.length = length;
-    this.volume = width * height * length;
-    this.weight = 0;
-    this.xy_rotatable = true;
-    this.yz_rotatable = true;
-    this.mandatory = 0;
-    this.profit = 0;
-    this.number_requested = 1;
-    this.sort_criterion = 0;
-};
-
-var item_list_data = function () {
-    function item_list_data() {
-        _classCallCheck(this, item_list_data);
-
-        this.num_item_types = 0;
-        this.total_number_of_items = 0;
-        /** @type {Array<item_type_data>} */
-        this.item_types;
-    }
-
-    _createClass(item_list_data, [{
-        key: "item_typesGet",
-        value: function item_typesGet(index) {
-            if (index === 0) {
-                console.warn('0 index');
-            }return this.item_types[index];
-        }
-    }]);
-
-    return item_list_data;
-}();
-
-var item_list = new item_list_data();
-
-var container_type_data = function container_type_data() {
-    _classCallCheck(this, container_type_data);
-
-    this.type_id = 0;
-    this.width = 0;
-    this.height = 0;
-    this.length = 0;
-    this.volume_capacity = 0;
-    this.weight_capacity = 0;
-    this.mandatory = 0;
-    this.cost = 0;
-    this.number_available = 0;
-};
-
-var container_list_data = function () {
-    function container_list_data() {
-        _classCallCheck(this, container_list_data);
-
-        this.num_container_types = 0;
-        /** @type {Array<container_type_data>} */
-        this.container_types;
-    }
-
-    _createClass(container_list_data, [{
-        key: "container_typesGet",
-        value: function container_typesGet(index) {
-            if (index === 0) {
-                console.warn('0 index');
-            }return this.container_types[index];
-        }
-    }]);
-
-    return container_list_data;
-}();
-
-var container_list = new container_list_data();
-
-var compatibility_data = function () {
-    function compatibility_data() {
-        _classCallCheck(this, compatibility_data);
-
-        /** @type {Array<Boolean>} */
-        this.item_to_item;
-        /** @type {Array<Array<Boolean>>} */
-        this.container_to_item;
-    }
-
-    _createClass(compatibility_data, [{
-        key: "item_to_itemGet",
-        value: function item_to_itemGet(index, index2) {
-            if (index === 0 || index2 === 0) {
-                console.warn('0 index');
-            }return this.item_to_item[index][index2];
-        }
-    }, {
-        key: "container_to_itemGet",
-        value: function container_to_itemGet(index, index2) {
-            if (index === 0 || index2 === 0) {
-                console.warn('0 index');
-            }return this.container_to_item[index][index2];
-        }
-    }]);
-
-    return compatibility_data;
-}();
-
-var compatibility_list = new compatibility_data();
-
-var item_location = function item_location() {
-    _classCallCheck(this, item_location);
-
-    this.origin_x = 0;
-    this.origin_y = 0;
-    this.origin_z = 0;
-    this.next_to_item_type = 0;
-};
-
-var item_in_container = function () {
-    function item_in_container() {
-        _classCallCheck(this, item_in_container);
-
-        this.item_type = 0;
-        this.rotation = 0; //1 to 6
-        this.mandatory = 0;
-        this.origin_x = 0;
-        this.origin_y = 0;
-        this.origin_z = 0;
-        this.opposite_x = 0;
-        this.opposite_y = 0;
-        this.opposite_z = 0;
-    }
-
-    _createClass(item_in_container, null, [{
-        key: "ResolveOrientation",
-        value: function ResolveOrientation(rotationNum) {
-            var orientations_base1 = ['xyz', 'xyz', 'zyx', 'xzy', 'yzx', 'yxz', 'zxy'];
-            return orientations_base1[rotationNum];
-        }
-    }]);
-
-    return item_in_container;
-}();
-
-var container_data = function () {
-    function container_data() {
-        _classCallCheck(this, container_data);
-
-        this.type_id = 0;
-        this.width = 0;
-        this.height = 0;
-        this.length = 0;
-        this.volume_capacity = 0;
-        this.weight_capacity = 0;
-        this.cost = 0;
-        this.item_cnt = 0;
-        this.mandatory = 0;
-        this.addition_point_count = 0;
-        this.volume_packed = 0;
-        this.weight_packed = 0;
-
-        /** @type {Array<item_in_container>} */
-        this.items;
-        /** @type {Array<item_location>} */
-        this.addition_points;
-        /** @type {Array<Number>} */
-        this.repack_item_count;
-    }
-
-    _createClass(container_data, [{
-        key: "itemsGet",
-        value: function itemsGet(index) {
-            if (index === 0) {
-                console.warn('0 index');
-            }return this.items[index];
-        }
-    }, {
-        key: "addition_pointsGet",
-        value: function addition_pointsGet(index) {
-            if (index === 0) {
-                console.warn('0 index');
-            }return this.addition_points[index];
-        }
-    }, {
-        key: "repack_item_countGet",
-        value: function repack_item_countGet(index) {
-            if (index === 0) {
-                console.warn('0 index');
-            }return this.repack_item_count[index];
-        }
-    }]);
-
-    return container_data;
-}();
-
-var solution_data = function () {
-    function solution_data() {
-        _classCallCheck(this, solution_data);
-
-        this.feasible = false;
-
-        this.num_containers = 0;
-        this.net_profit = 0;
-        this.total_volume = 0;
-        this.total_weight = 0;
-        this.total_distance = 0;
-        this.total_x_moment = 0;
-        this.total_yz_moment = 0;
-
-        /** @type {Array<container_data>} */
-        this.container;
-        /** @type {Array<Array<Number>>} */
-        this.rotation_order;
-        /** @type {Array<Number>} */
-        this.item_type_order;
-        /** @type {Array<Number>} */
-        this.unpacked_item_count;
-    }
-
-    _createClass(solution_data, [{
-        key: "containerGet",
-        value: function containerGet(index) {
-            if (index === 0) {
-                console.warn('0 index');
-            }return this.container[index];
-        }
-    }, {
-        key: "item_type_orderGet",
-        value: function item_type_orderGet(index) {
-            if (index === 0) {
-                console.warn('0 index');
-            }return this.item_type_order[index];
-        }
-    }, {
-        key: "unpacked_item_countGet",
-        value: function unpacked_item_countGet(index) {
-            if (index === 0) {
-                console.warn('0 index');
-            }return this.unpacked_item_count[index];
-        }
-    }]);
-
-    return solution_data;
-}();
-
-var instance_data = function instance_data() {
-    _classCallCheck(this, instance_data);
-
-    this.front_side_support = false;
-    this.item_item_compatibility_worksheet = false; // true if the data exists
-    this.container_item_compatibility_worksheet = false; // true if the data exists
-};
-
-var instance = new instance_data();
-
-var solver_option_data = function solver_option_data() {
-    _classCallCheck(this, solver_option_data);
-
-    this.CPU_time_limit = 0;
-    this.item_sort_criterion = 0;
-    this.show_progress = false;
-};
-
-var solver_options = new solver_option_data();
-
-/**
- * 
- * @param {solution_data} solution 
- * @param {Number} random_reorder_probability 
- */
-function SortContainers(solution, random_reorder_probability) {
-
-    var i = 0;
-    var j = 0;
-    var candidate_index = 0;
-    var max_mandatory = 0;
-    var max_volume_packed = 0;
-    var min_ratio = 0;
-
-    /** @type {container_data} */
-    var swap_container;
-
-    // insertion sort
-
-    if (Math.random() < 1 - random_reorder_probability) {
-        // insertion sort
-        for (i = 1; i <= solution.num_containers; i++) {
-            var container = solution.containerGet(i);
-            candidate_index = i;
-            max_mandatory = container.mandatory;
-            max_volume_packed = container.volume_packed;
-            min_ratio = container.cost / container.volume_capacity;
-
-            for (j = i + 1; j <= solution.num_containers; j++) {
-                var container2 = solution.containerGet(j);
-                if (container2.mandatory > max_mandatory || container2.mandatory === max_mandatory && container2.volume_packed > max_volume_packed + epsilon || container2.mandatory === 0 && max_mandatory === 0 && container2.volume_packed > max_volume_packed - epsilon && container2.cost / container2.volume_capacity < min_ratio) {
-                    candidate_index = j;
-                    max_mandatory = container2.mandatory;
-                    max_volume_packed = container2.volume_packed;
-                    min_ratio = container2.cost / container2.volume_capacity;
-                }
-            }
-
-            if (candidate_index != i) {
-                swap_container = solution.containerGet(candidate_index);
-                solution.container[candidate_index] = solution.containerGet(i);
-                solution.container[i] = swap_container;
-            }
-        }
-    } else {
-        for (i = 1; i <= solution.num_containers; i++) {
-            candidate_index = Math.floor((solution.num_containers - i + 1) * Math.random() + i);
-
-            if (candidate_index != i) {
-                swap_container = solution.containerGet(candidate_index);
-                solution.container[candidate_index] = solution.containerGet(i);
-                solution.container[i] = swap_container;
-            }
-        }
-    }
-}
-
-/**
- * 
- * @param {solution_data} solution 
- * @param {Number} container_id 
- * @param {Number} percent_time_left 
- */
-function PerturbSolution(solution, container_id, percent_time_left) {
-
-    var i = 0;
-    var j = 0;
-    var k = 0;
-    var swap_long = 0;
-    var operator_selection = 0;
-    var container_emptying_probability = 0;
-    var item_removal_probability = 0;
-    var repack_flag = false;
-    var continue_flag = false;
-
-    var max_z = 0;
-
-    //With solution.containerGet(container_id)
-    var container = solution.containerGet(container_id);
-
-    // test
-
-    container_emptying_probability = 0.05 + 0.15 * percent_time_left;
-    item_removal_probability = 0.05 + 0.15 * percent_time_left;
-
-    if (container.item_cnt > 0) {
-
-        if (Math.random() < container_emptying_probability) {
-
-            // empty the container
-            for (j = 1; j <= container.item_cnt; j++) {
-                var jType = container.itemsGet(j).item_type;
-                solution.unpacked_item_count[jType] = solution.unpacked_item_countGet(jType) + 1;
-                solution.net_profit = solution.net_profit - item_list.item_typesGet(jType).profit;
-            }
-
-            solution.net_profit = solution.net_profit + container.cost;
-            solution.total_volume = solution.total_volume - container.volume_packed;
-            solution.total_weight = solution.total_weight - container.weight_packed;
-
-            container.item_cnt = 0;
-            container.volume_packed = 0;
-            container.weight_packed = 0;
-            container.addition_point_count = 1;
-            container.addition_points[1].origin_x = 0;
-            container.addition_points[1].origin_y = 0;
-            container.addition_points[1].origin_z = 0;
-        } else {
-            repack_flag = false;
-            operator_selection = Math.random();
-
-            if (operator_selection < 0.3) {
-
-                for (j = 1; j < container.item_cnt; j++) {
-                    var jItem = container.itemsGet(j);
-
-                    if (solution.feasible === false && jItem.mandatory === 0 || Math.random() < item_removal_probability) {
-                        var _jType = jItem.item_type;
-                        solution.unpacked_item_count[_jType] = solution.unpacked_item_countGet(_jType) + 1;
-                        solution.net_profit = solution.net_profit - item_list.item_typesGet(_jType).profit;
-                        jItem.item_type = 0;
-
-                        repack_flag = true;
-                    }
-                }
-            } else if (operator_selection < 0.3) {
-                // ???
-                max_z = 0;
-                for (j = 1; j <= container.item_cnt; j++) {
-                    if (max_z < container.itemsGet(j).opposite_z) max_z = container.itemsGet(j).opposite_z;
-                }
-
-                max_z = max_z * (0.1 + 0.5 * percent_time_left * Math.random());
-
-                for (j = 1; j <= container.item_cnt; j++) {
-                    var _jItem = container.itemsGet(j);
-
-                    if (solution.feasible === false && _jItem.mandatory === 0 || _jItem.opposite_z < max_z) {
-                        var _jType2 = _jItem.item_type;
-                        solution.unpacked_item_count[_jType2] = solution.unpacked_item_countGet(_jType2) + 1;
-                        solution.net_profit = solution.net_profit - item_list.item_typesGet(_jType2).profit;
-                        _jItem.item_type = 0;
-
-                        repack_flag = true;
-                    }
-                }
-            } else {
-
-                max_z = 0;
-                for (j = 1; j <= container.item_cnt; j++) {
-                    if (max_z < container.itemsGet(j).opposite_z) max_z = container.itemsGet(j).opposite_z;
-                }
-
-                max_z = max_z * (0.6 - 0.5 * percent_time_left * Math.random());
-
-                for (j = 1; j <= container.item_cnt; j++) {
-                    var _jItem2 = container.itemsGet(j);
-
-                    if (solution.feasible === false && _jItem2.mandatory === 0 || _jItem2.opposite_z > max_z) {
-                        var _jType3 = _jItem2.item_type;
-                        solution.unpacked_item_count[_jType3] = solution.unpacked_item_countGet(_jType3) + 1;
-                        solution.net_profit = solution.net_profit - item_list.item_typesGet(_jType3).profit;
-                        _jItem2.item_type = 0;
-
-                        repack_flag = true;
-                    }
-                }
-            }
-
-            if (repack_flag) {
-
-                for (j = 1; j <= container.item_cnt; j++) {
-                    if (container.itemsGet(j).item_type > 0) solution.net_profit = solution.net_profit - item_list.item_typesGet(container.itemsGet(j).item_type).profit;
-                }
-
-                solution.net_profit = solution.net_profit + container.cost;
-                solution.total_volume = solution.total_volume - container.volume_packed;
-                solution.total_weight = solution.total_weight - container.weight_packed;
-
-                for (j = 1; j <= item_list.num_item_types; j++) {
-                    container.repack_item_count[j] = 0;
-                }
-
-                for (j = 1; j <= container.item_cnt; j++) {
-                    if (container.itemsGet(j).item_type > 0) container.repack_item_count[container.itemsGet(j).item_type] = container.repack_item_countGet(container.itemsGet(j).item_type) + 1;
-                }
-
-                container.volume_packed = 0;
-                container.weight_packed = 0;
-                container.item_cnt = 0;
-                container.addition_point_count = 1;
-                container.addition_points[1].origin_x = 0;
-                container.addition_points[1].origin_y = 0;
-                container.addition_points[1].origin_z = 0;
-
-                // repack now
-
-                for (j = 1; j <= item_list.num_item_types; j++) {
-                    continue_flag = true;
-                    while (container.repack_item_countGet(solution.item_type_orderGet(j)) > 0 && continue_flag) {
-                        continue_flag = AddItemToContainer(solution, container_id, solution.item_type_orderGet(j), 2, true);
-                    } // put the remaining items in the unpacked items list
-
-                    solution.unpacked_item_count[solution.item_type_orderGet(j)] = solution.unpacked_item_countGet(solution.item_type_orderGet(j)) + container.repack_item_countGet(solution.item_type_orderGet(j));
-                    container.repack_item_count[solution.item_type_orderGet(j)] = 0;
-                }
-            }
-        }
-    }
-
-    // change the preferred rotation order randomly
-
-    for (i = 1; i <= item_list.num_item_types; i++) {
-
-        for (j = 1; j <= 6; j++) {
-            k = Math.floor((6 - j + 1) * Math.random() + j); // the order to swap with
-
-            swap_long = solution.rotation_order[i][j];
-            solution.rotation_order[i][j] = solution.rotation_order[i][k];
-            solution.rotation_order[i][k] = swap_long;
-        }
-        // MsgBox ("Item type " + i + " rotation order: " + solution.rotation_order(i, 1) + solution.rotation_order(i, 2) + solution.rotation_order(i, 3) + solution.rotation_order(i, 4) + solution.rotation_order(i, 5) + solution.rotation_order(i, 6))
-    }
-
-    // change the item order randomly - test
-
-    for (i = 1; i <= item_list.num_item_types; i++) {
-        j = Math.floor((item_list.num_item_types - i + 1) * Math.random() + i); // the order to swap with
-
-        swap_long = solution.item_type_orderGet(i);
-        solution.item_type_order[i] = solution.item_type_orderGet(j);
-        solution.item_type_order[j] = swap_long;
-    }
-}
-
-/**
- * 
- * @param {solution_data} solution 
- * @param {Number} container_index 
- * @param {Number} item_type_index 
- * @param {Number} add_type 
- * @param {Boolean} item_cohesion 
- */
-function AddItemToContainer(solution, container_index, item_type_index, add_type, item_cohesion) {
-
-    var i = 0;
-    var j = 0;
-
-    var rotation_index = 0;
-
-    var origin_x = 0;
-    var origin_y = 0;
-    var origin_z = 0;
-    var opposite_x = 0;
-    var opposite_y = 0;
-    var opposite_z = 0;
-
-    var min_x = 0;
-    var min_y = 0;
-    var min_z = 0;
-    var next_to_item_type = 0;
-
-    var candidate_position = 0;
-    var current_rotation = 0;
-    var candidate_rotation = 0;
-
-    var area_supported = 0;
-    var area_required = 0;
-    var intersection_right = 0;
-    var intersection_left = 0;
-    var intersection_top = 0;
-    var intersection_bottom = 0;
-    var support_flag = false;
-
-    //With solution.containerGet(container_index)
-    var container = solution.containerGet(container_index);
-
-    min_x = container.width + 1;
-    min_y = container.height + 1;
-    min_z = container.length + 1;
-    next_to_item_type = 0;
-
-    candidate_position = 0;
-
-    var GoTo = false;
-    // compatibility check
-    if (!GoTo && instance.container_item_compatibility_worksheet === true) {
-        if (compatibility_list.container_to_itemGet(container.type_id, item_list.item_typesGet(item_type_index).id) === false) GoTo = true; //'AddItemToContainer_Finish';
-    }
-
-    // volume size check
-    if (!GoTo && container.volume_packed + item_list.item_typesGet(item_type_index).volume > container.volume_capacity) GoTo = true; //'AddItemToContainer_Finish';
-
-    // weight capacity check
-    if (!GoTo && container.weight_packed + item_list.item_typesGet(item_type_index).weight > container.weight_capacity) GoTo = true; //'AddItemToContainer_Finish';
-
-    // item to item compatibility check
-    if (!GoTo && instance.item_item_compatibility_worksheet === true) {
-        for (i = 1; i <= container.item_cnt; i++) {
-            if (compatibility_list.item_to_itemGet(item_list.item_typesGet(item_type_index).id, item_list.item_typesGet(container.itemsGet(i).item_type).id) === false) {
-                GoTo = true; //'AddItemToContainer_Finish';
-                break;
-            }
-        }
-    }
-
-    if (!GoTo) {
-        for (rotation_index = 1; rotation_index <= 6; rotation_index++) {
-            current_rotation = solution.rotation_order[item_type_index][rotation_index];
-
-            // forbidden rotations
-            if ((current_rotation === 3 || current_rotation === 4) && item_list.item_typesGet(item_type_index).xy_rotatable === false) {
-                //GoTo = 'next_rotation_iteration';
-                continue;
-            }
-
-            if ((current_rotation === 5 || current_rotation === 6) && item_list.item_typesGet(item_type_index).yz_rotatable === false) {
-                //GoTo  = 'next_rotation_iteration';
-                continue;
-            }
-
-            // symmetry breaking
-
-            if (current_rotation === 2 && Math.abs(item_list.item_typesGet(item_type_index).width - item_list.item_typesGet(item_type_index).length) < epsilon) {
-                //GoTo = 'next_rotation_iteration';
-                continue;
-            }
-
-            if (current_rotation === 4 && Math.abs(item_list.item_typesGet(item_type_index).width - item_list.item_typesGet(item_type_index).height) < epsilon) {
-                //GoTo = 'next_rotation_iteration';
-                continue;
-            }
-
-            if (current_rotation === 6 && Math.abs(item_list.item_typesGet(item_type_index).height - item_list.item_typesGet(item_type_index).length) < epsilon) {
-                //GoTo = 'next_rotation_iteration';
-                continue;
-            }
-
-            for (i = 1; i <= container.addition_point_count; i++) {
-
-                if (item_cohesion === true && candidate_position != 0 && next_to_item_type === item_type_index && container.addition_pointsGet(i).next_to_item_type != item_type_index) {
-                    //GoTo = 'next_iteration';
-                    continue;
-                }
-
-                origin_x = container.addition_pointsGet(i).origin_x;
-                origin_y = container.addition_pointsGet(i).origin_y;
-                origin_z = container.addition_pointsGet(i).origin_z;
-
-                if (current_rotation === 1) {
-                    opposite_x = origin_x + item_list.item_typesGet(item_type_index).width;
-                    opposite_y = origin_y + item_list.item_typesGet(item_type_index).height;
-                    opposite_z = origin_z + item_list.item_typesGet(item_type_index).length;
-                } else if (current_rotation === 2) {
-                    opposite_x = origin_x + item_list.item_typesGet(item_type_index).length;
-                    opposite_y = origin_y + item_list.item_typesGet(item_type_index).height;
-                    opposite_z = origin_z + item_list.item_typesGet(item_type_index).width;
-                } else if (current_rotation === 3) {
-                    opposite_x = origin_x + item_list.item_typesGet(item_type_index).width;
-                    opposite_y = origin_y + item_list.item_typesGet(item_type_index).length;
-                    opposite_z = origin_z + item_list.item_typesGet(item_type_index).height;
-                } else if (current_rotation === 4) {
-                    opposite_x = origin_x + item_list.item_typesGet(item_type_index).height;
-                    opposite_y = origin_y + item_list.item_typesGet(item_type_index).length;
-                    opposite_z = origin_z + item_list.item_typesGet(item_type_index).width;
-                } else if (current_rotation === 5) {
-                    opposite_x = origin_x + item_list.item_typesGet(item_type_index).height;
-                    opposite_y = origin_y + item_list.item_typesGet(item_type_index).width;
-                    opposite_z = origin_z + item_list.item_typesGet(item_type_index).length;
-                } else if (current_rotation === 6) {
-                    opposite_x = origin_x + item_list.item_typesGet(item_type_index).length;
-                    opposite_y = origin_y + item_list.item_typesGet(item_type_index).width;
-                    opposite_z = origin_z + item_list.item_typesGet(item_type_index).height;
-                }
-
-                // check the feasibility of all four corners, w.r.t to the other items
-
-                if (opposite_x > container.width + epsilon || opposite_y > container.height + epsilon || opposite_z > container.length + epsilon) {
-                    //GoTo = 'next_iteration';
-                    continue;
-                }
-
-                var next_iteration = false;
-                for (j = 1; j <= container.item_cnt; j++) {
-
-                    if (opposite_x < container.itemsGet(j).origin_x + epsilon || container.itemsGet(j).opposite_x < origin_x + epsilon || opposite_y < container.itemsGet(j).origin_y + epsilon || container.itemsGet(j).opposite_y < origin_y + epsilon || opposite_z < container.itemsGet(j).origin_z + epsilon || container.itemsGet(j).opposite_z < origin_z + epsilon) {
-                        // no conflict
-                    } else {
-                        // conflict
-                        //GoTo = 'next_iteration';
-                        next_iteration = true;
-                        break;
-                    }
-                }
-
-                if (next_iteration) {
-                    continue;
-                }
-
-                // vertical support
-
-                if (origin_y < epsilon) {
-                    support_flag = true;
-                } else {
-                    area_supported = 0;
-                    area_required = (opposite_x - origin_x) * (opposite_z - origin_z);
-                    support_flag = false;
-                    for (j = container.item_cnt; j >= 1; j--) {
-                        if (Math.abs(origin_y - container.itemsGet(j).opposite_y) < epsilon) {
-                            // check for intersection
-
-                            intersection_right = opposite_x;
-                            if (intersection_right > container.itemsGet(j).opposite_x) intersection_right = container.itemsGet(j).opposite_x;
-
-                            intersection_left = origin_x;
-                            if (intersection_left < container.itemsGet(j).origin_x) intersection_left = container.itemsGet(j).origin_x;
-
-                            intersection_top = opposite_z;
-                            if (intersection_top > container.itemsGet(j).opposite_z) intersection_top = container.itemsGet(j).opposite_z;
-
-                            intersection_bottom = origin_z;
-                            if (intersection_bottom < container.itemsGet(j).origin_z) intersection_bottom = container.itemsGet(j).origin_z;
-
-                            if (intersection_right > intersection_left && intersection_top > intersection_bottom) {
-                                area_supported = area_supported + (intersection_right - intersection_left) * (intersection_top - intersection_bottom);
-                                if (area_supported > area_required - epsilon) {
-                                    support_flag = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (support_flag === false) {
-                    //GoTo = 'next_iteration';
-                    continue;
-                }
-
-                // side support
-
-                if (instance.front_side_support === true) {
-                    if (origin_z < epsilon) {
-                        support_flag = true;
-                    } else {
-                        area_supported = 0;
-                        area_required = (opposite_x - origin_x) * (opposite_y - origin_y);
-                        support_flag = false;
-                        for (j = container.item_cnt; j >= 1; j--) {
-                            if (Math.abs(origin_z - container.itemsGet(j).opposite_z) < epsilon) {
-                                // check for intersection
-
-                                intersection_right = opposite_x;
-                                if (intersection_right > container.itemsGet(j).opposite_x) intersection_right = container.itemsGet(j).opposite_x;
-
-                                intersection_left = origin_x;
-                                if (intersection_left < container.itemsGet(j).origin_x) intersection_left = container.itemsGet(j).origin_x;
-
-                                intersection_top = opposite_y;
-                                if (intersection_top > container.itemsGet(j).opposite_y) intersection_top = container.itemsGet(j).opposite_y;
-
-                                intersection_bottom = origin_y;
-                                if (intersection_bottom < container.itemsGet(j).origin_y) intersection_bottom = container.itemsGet(j).origin_y;
-
-                                if (intersection_right > intersection_left && intersection_top > intersection_bottom) {
-                                    area_supported = area_supported + (intersection_right - intersection_left) * (intersection_top - intersection_bottom);
-                                    if (area_supported > area_required - epsilon) {
-                                        support_flag = true;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (support_flag === false) {
-                    //GoTo = 'next_iteration';
-                    continue;
-                }
-
-                // no conflicts at this point
-
-                if (item_cohesion === true && next_to_item_type != item_type_index && container.addition_pointsGet(i).next_to_item_type === item_type_index) {
-                    min_x = origin_x;
-                    min_y = origin_y;
-                    min_z = origin_z;
-                    candidate_position = i;
-                    candidate_rotation = current_rotation;
-                    next_to_item_type = container.addition_pointsGet(i).next_to_item_type;
-                } else {
-                    if (origin_z < min_z || origin_z <= min_z + epsilon && origin_y < min_y || origin_z <= min_z + epsilon && origin_y <= min_y + epsilon && origin_x < min_x || origin_z <= min_z + epsilon && origin_y <= min_y + epsilon && origin_x <= min_x + epsilon && (opposite_x > container.width + epsilon || opposite_y > container.height + epsilon)) {
-                        min_x = origin_x;
-                        min_y = origin_y;
-                        min_z = origin_z;
-                        candidate_position = i;
-                        candidate_rotation = current_rotation;
-                        next_to_item_type = container.addition_pointsGet(i).next_to_item_type;
-                    }
-                }
-            }
-        }
-    }
-
-    // next_iteration: Next i
-    // next_rotation_iteration: Next rotation_index
-
-    // AddItemToContainer_Finish:
-
-    if (candidate_position === 0) {
-        return false;
-    } else {
-        //With solution.containerGet(container_index)
-        var _container = solution.containerGet(container_index);
-        _container.item_cnt = _container.item_cnt + 1;
-        _container.itemsGet(_container.item_cnt).item_type = item_type_index;
-        _container.itemsGet(_container.item_cnt).origin_x = _container.addition_pointsGet(candidate_position).origin_x;
-        _container.itemsGet(_container.item_cnt).origin_y = _container.addition_pointsGet(candidate_position).origin_y;
-        _container.itemsGet(_container.item_cnt).origin_z = _container.addition_pointsGet(candidate_position).origin_z;
-        _container.itemsGet(_container.item_cnt).rotation = candidate_rotation;
-        _container.itemsGet(_container.item_cnt).mandatory = item_list.item_typesGet(item_type_index).mandatory;
-
-        if (candidate_rotation === 1) {
-            _container.itemsGet(_container.item_cnt).opposite_x = _container.itemsGet(_container.item_cnt).origin_x + item_list.item_typesGet(item_type_index).width;
-            _container.itemsGet(_container.item_cnt).opposite_y = _container.itemsGet(_container.item_cnt).origin_y + item_list.item_typesGet(item_type_index).height;
-            _container.itemsGet(_container.item_cnt).opposite_z = _container.itemsGet(_container.item_cnt).origin_z + item_list.item_typesGet(item_type_index).length;
-        } else if (candidate_rotation === 2) {
-            _container.itemsGet(_container.item_cnt).opposite_x = _container.itemsGet(_container.item_cnt).origin_x + item_list.item_typesGet(item_type_index).length;
-            _container.itemsGet(_container.item_cnt).opposite_y = _container.itemsGet(_container.item_cnt).origin_y + item_list.item_typesGet(item_type_index).height;
-            _container.itemsGet(_container.item_cnt).opposite_z = _container.itemsGet(_container.item_cnt).origin_z + item_list.item_typesGet(item_type_index).width;
-        } else if (candidate_rotation === 3) {
-            _container.itemsGet(_container.item_cnt).opposite_x = _container.itemsGet(_container.item_cnt).origin_x + item_list.item_typesGet(item_type_index).width;
-            _container.itemsGet(_container.item_cnt).opposite_y = _container.itemsGet(_container.item_cnt).origin_y + item_list.item_typesGet(item_type_index).length;
-            _container.itemsGet(_container.item_cnt).opposite_z = _container.itemsGet(_container.item_cnt).origin_z + item_list.item_typesGet(item_type_index).height;
-        } else if (candidate_rotation === 4) {
-            _container.itemsGet(_container.item_cnt).opposite_x = _container.itemsGet(_container.item_cnt).origin_x + item_list.item_typesGet(item_type_index).height;
-            _container.itemsGet(_container.item_cnt).opposite_y = _container.itemsGet(_container.item_cnt).origin_y + item_list.item_typesGet(item_type_index).length;
-            _container.itemsGet(_container.item_cnt).opposite_z = _container.itemsGet(_container.item_cnt).origin_z + item_list.item_typesGet(item_type_index).width;
-        } else if (candidate_rotation === 5) {
-            _container.itemsGet(_container.item_cnt).opposite_x = _container.itemsGet(_container.item_cnt).origin_x + item_list.item_typesGet(item_type_index).height;
-            _container.itemsGet(_container.item_cnt).opposite_y = _container.itemsGet(_container.item_cnt).origin_y + item_list.item_typesGet(item_type_index).width;
-            _container.itemsGet(_container.item_cnt).opposite_z = _container.itemsGet(_container.item_cnt).origin_z + item_list.item_typesGet(item_type_index).length;
-        } else if (candidate_rotation === 6) {
-            _container.itemsGet(_container.item_cnt).opposite_x = _container.itemsGet(_container.item_cnt).origin_x + item_list.item_typesGet(item_type_index).length;
-            _container.itemsGet(_container.item_cnt).opposite_y = _container.itemsGet(_container.item_cnt).origin_y + item_list.item_typesGet(item_type_index).width;
-            _container.itemsGet(_container.item_cnt).opposite_z = _container.itemsGet(_container.item_cnt).origin_z + item_list.item_typesGet(item_type_index).height;
-        }
-
-        _container.volume_packed = _container.volume_packed + item_list.item_typesGet(item_type_index).volume;
-        _container.weight_packed = _container.weight_packed + item_list.item_typesGet(item_type_index).weight;
-
-        if (add_type === 2) {
-            _container.repack_item_count[item_type_index] = _container.repack_item_countGet(item_type_index) - 1;
-        }
-
-        // update the addition points
-
-        for (i = candidate_position; i <= _container.addition_point_count - 1; i++) {
-            _container.addition_points[i] = _container.addition_pointsGet(i + 1);
-        }
-
-        _container.addition_point_count = _container.addition_point_count - 1;
-
-        if (_container.itemsGet(_container.item_cnt).opposite_x < _container.width - epsilon && _container.itemsGet(_container.item_cnt).origin_y < _container.height - epsilon && _container.itemsGet(_container.item_cnt).origin_z < _container.length - epsilon) {
-            _container.addition_point_count = _container.addition_point_count + 1;
-            _container.addition_pointsGet(_container.addition_point_count).origin_x = _container.itemsGet(_container.item_cnt).opposite_x;
-            _container.addition_pointsGet(_container.addition_point_count).origin_y = _container.itemsGet(_container.item_cnt).origin_y;
-            _container.addition_pointsGet(_container.addition_point_count).origin_z = _container.itemsGet(_container.item_cnt).origin_z;
-            _container.addition_pointsGet(_container.addition_point_count).next_to_item_type = item_type_index;
-        }
-
-        if (_container.itemsGet(_container.item_cnt).origin_x < _container.width - epsilon && _container.itemsGet(_container.item_cnt).opposite_y < _container.height - epsilon && _container.itemsGet(_container.item_cnt).origin_z < _container.length - epsilon) {
-            _container.addition_point_count = _container.addition_point_count + 1;
-            _container.addition_pointsGet(_container.addition_point_count).origin_x = _container.itemsGet(_container.item_cnt).origin_x;
-            _container.addition_pointsGet(_container.addition_point_count).origin_y = _container.itemsGet(_container.item_cnt).opposite_y;
-            _container.addition_pointsGet(_container.addition_point_count).origin_z = _container.itemsGet(_container.item_cnt).origin_z;
-            _container.addition_pointsGet(_container.addition_point_count).next_to_item_type = item_type_index;
-        }
-
-        if (_container.itemsGet(_container.item_cnt).origin_x < _container.width - epsilon && _container.itemsGet(_container.item_cnt).origin_y < _container.height - epsilon && _container.itemsGet(_container.item_cnt).opposite_z < _container.length - epsilon) {
-            _container.addition_point_count = _container.addition_point_count + 1;
-            _container.addition_pointsGet(_container.addition_point_count).origin_x = _container.itemsGet(_container.item_cnt).origin_x;
-            _container.addition_pointsGet(_container.addition_point_count).origin_y = _container.itemsGet(_container.item_cnt).origin_y;
-            _container.addition_pointsGet(_container.addition_point_count).origin_z = _container.itemsGet(_container.item_cnt).opposite_z;
-            _container.addition_pointsGet(_container.addition_point_count).next_to_item_type = item_type_index;
-        }
-
-        //With solution
-        // update the profit
-
-        if (solution.containerGet(container_index).item_cnt === 1) {
-            solution.net_profit = solution.net_profit + item_list.item_typesGet(item_type_index).profit - solution.containerGet(container_index).cost;
-        } else {
-            solution.net_profit = solution.net_profit + item_list.item_typesGet(item_type_index).profit;
-        }
-
-        // update the volume per container and the total volume
-
-        solution.total_volume = solution.total_volume + item_list.item_typesGet(item_type_index).volume;
-        solution.total_weight = solution.total_weight + item_list.item_typesGet(item_type_index).weight;
-
-        // update the unpacked items
-
-        if (add_type === 1) {
-            solution.unpacked_item_count[item_type_index] = solution.unpacked_item_countGet(item_type_index) - 1;
-        }
-
-        return true;
-    }
-
-    return false;
-}
-
-/**
- * @typedef SolverOptions
- * @property {Number} itemSortCriterion - 1:Volume, 2:Weight, 3:MaxDim
- * @property {Boolean} showProgress
- * @property {Number} cpuTimeLimit - in seconds
- * 
- * @param {SolverOptions} options 
- */
-function GetSolverOptions(options) {
-    if (options) {
-        solver_options.item_sort_criterion = options.itemSortCriterion;
-        solver_options.show_progress = options.showProgress;
-        solver_options.CPU_time_limit = options.cpuTimeLimit;
-    } else {
-        _Workbook.ThisWorkbook.Worksheets("CLP Solver Console").Activate;
-
-        //With solver_options
-
-        if ((0, _Workbook.Cells)(12, 3).Value === "Volume") {
-            solver_options.item_sort_criterion = 1;
-        } else if ((0, _Workbook.Cells)(12, 3).Value === "Weight") {
-            solver_options.item_sort_criterion = 2;
-        } else {
-            solver_options.item_sort_criterion = 3;
-        }
-
-        if ((0, _Workbook.Cells)(13, 3).Value === "Yes") {
-            solver_options.show_progress = true;
-        } else {
-            solver_options.show_progress = false;
-        }
-
-        solver_options.CPU_time_limit = (0, _Workbook.Cells)(14, 3).Value;
-    }
-}
-
-/**
- * @typedef ItemData
- * @property {Number} length
- * @property {Number} width
- * @property {Number} height
- * @property {Boolean} xyRotatable
- * @property {Boolean} yzRotatable
- * @property {Number} weight
- * @property {Number} mandatory
- * @property {Number} profit
- * @property {Number} quantity
- * 
- * @param {Array<ItemData>} itemsData 
- */
-function GetItemData(itemsData) {
-
-    var numItemTypes;
-
-    if (itemsData) {
-        numItemTypes = itemsData.length;
-    } else {
-        numItemTypes = _Workbook.ThisWorkbook.Worksheets("CLP Solver Console").Cells(2, 3).Value;
-        _Workbook.ThisWorkbook.Worksheets("1.Items").Activate;
-    }
-    item_list.num_item_types = numItemTypes;
-    item_list.total_number_of_items = 0;
-
-    item_list.item_types = [null];
-    var i = 0;
-    for (i = 1; i <= item_list.num_item_types; i++) {
-        item_list.item_types.push(new item_type_data());
-    }
-
-    var max_volume = 0;
-    var max_weight = 0;
-
-    if (itemsData) {
-        if (itemsData[0] !== null) itemsData.unshift(null);
-        for (i = 1; i <= item_list.num_item_types; i++) {
-            var item = itemsData[i];
-            item_list.item_typesGet(i).id = i;
-
-            item_list.item_typesGet(i).width = item.width;
-            item_list.item_typesGet(i).height = item.height;
-            item_list.item_typesGet(i).length = item.length;
-
-            item_list.item_typesGet(i).volume = item.width * item.height * item.length;
-
-            if (max_volume < item_list.item_typesGet(i).volume) {
-                max_volume = item_list.item_typesGet(i).volume;
-            }
-
-            item_list.item_typesGet(i).xy_rotatable = item.xyRotatable;
-            item_list.item_typesGet(i).yz_rotatable = item.yzRotatable;
-
-            if (Math.abs(item_list.item_typesGet(i).width - item_list.item_typesGet(i).height) < epsilon && Math.abs(item_list.item_typesGet(i).width - item_list.item_typesGet(i).length) < epsilon) {
-                item_list.item_typesGet(i).xy_rotatable = false;
-                item_list.item_typesGet(i).yz_rotatable = false;
-            }
-
-            item_list.item_typesGet(i).weight = item.weight;
-
-            if (max_weight < item_list.item_typesGet(i).weight) {
-                max_weight = item_list.item_typesGet(i).weight;
-            }
-
-            item_list.item_typesGet(i).mandatory = item.mandatory;
-
-            item_list.item_typesGet(i).profit = item.profit;
-
-            item_list.item_typesGet(i).number_requested = item.quantity;
-
-            item_list.total_number_of_items = item_list.total_number_of_items + item_list.item_typesGet(i).number_requested;
-        }
-    } else {
-        //With item_list
-        for (i = 1; i <= item_list.num_item_types; i++) {
-            item_list.item_typesGet(i).id = i;
-
-            item_list.item_typesGet(i).width = (0, _Workbook.Cells)(2 + i, 4).Value;
-            item_list.item_typesGet(i).height = (0, _Workbook.Cells)(2 + i, 5).Value;
-            item_list.item_typesGet(i).length = (0, _Workbook.Cells)(2 + i, 6).Value;
-
-            item_list.item_typesGet(i).volume = (0, _Workbook.Cells)(2 + i, 7).Value;
-
-            if (max_volume < item_list.item_typesGet(i).volume) {
-                max_volume = item_list.item_typesGet(i).volume;
-            }
-
-            if ((0, _Workbook.Cells)(2 + i, 9).Value === "Yes") {
-                item_list.item_typesGet(i).xy_rotatable = true;
-            } else {
-                item_list.item_typesGet(i).xy_rotatable = false;
-            }
-
-            if ((0, _Workbook.Cells)(2 + i, 10).Value === "Yes") {
-                item_list.item_typesGet(i).yz_rotatable = true;
-            } else {
-                item_list.item_typesGet(i).yz_rotatable = false;
-            }
-
-            if (Math.abs(item_list.item_typesGet(i).width - item_list.item_typesGet(i).height) < epsilon && Math.abs(item_list.item_typesGet(i).width - item_list.item_typesGet(i).length) < epsilon) {
-                item_list.item_typesGet(i).xy_rotatable = false;
-                item_list.item_typesGet(i).yz_rotatable = false;
-            }
-
-            item_list.item_typesGet(i).weight = (0, _Workbook.Cells)(2 + i, 11).Value;
-
-            if (max_weight < item_list.item_typesGet(i).weight) {
-                max_weight = item_list.item_typesGet(i).weight;
-            }
-
-            if ((0, _Workbook.Cells)(2 + i, 12).Value === "Must be packed") {
-                item_list.item_typesGet(i).mandatory = 1;
-            } else if ((0, _Workbook.Cells)(2 + i, 12).Value === "May be packed") {
-                item_list.item_typesGet(i).mandatory = 0;
-            } else if ((0, _Workbook.Cells)(2 + i, 12).Value === "Don't pack") {
-                item_list.item_typesGet(i).mandatory = -1;
-            }
-
-            item_list.item_typesGet(i).profit = (0, _Workbook.Cells)(2 + i, 13).Value;
-
-            item_list.item_typesGet(i).number_requested = (0, _Workbook.Cells)(2 + i, 14).Value;
-
-            item_list.total_number_of_items = item_list.total_number_of_items + item_list.item_typesGet(i).number_requested;
-        }
-    }
-
-    for (i = 1; i <= item_list.num_item_types; i++) {
-
-        if (solver_options.item_sort_criterion === 1) {
-            item_list.item_typesGet(i).sort_criterion = item_list.item_typesGet(i).volume * (max_weight + 1) + item_list.item_typesGet(i).weight;
-        } else if (solver_options.item_sort_criterion === 2) {
-            item_list.item_typesGet(i).sort_criterion = item_list.item_typesGet(i).weight * (max_volume + 1) + item_list.item_typesGet(i).volume;
-        } else {
-            item_list.item_typesGet(i).sort_criterion = item_list.item_typesGet(i).width;
-            if (item_list.item_typesGet(i).sort_criterion < item_list.item_typesGet(i).height) {
-                item_list.item_typesGet(i).sort_criterion = item_list.item_typesGet(i).height;
-            }
-            if (item_list.item_typesGet(i).sort_criterion < item_list.item_typesGet(i).length) {
-                item_list.item_typesGet(i).sort_criterion = item_list.item_typesGet(i).length;
-            }
-
-            item_list.item_typesGet(i).sort_criterion = item_list.item_typesGet(i).sort_criterion * (max_volume + 1) + item_list.item_typesGet(i).volume;
-        }
-    }
-}
-
-/**
- * @typedef ContainerData
- * @property {Number} length
- * @property {Number} width
- * @property {Number} height
- * @property {Number} weightCapacity
- * @property {Number} mandatory
- * @property {Number} cost
- * @property {Number} quantity
- * 
- * @param {Array<ContainerData>} containersData 
- */
-function GetContainerData(containersData) {
-
-    var numContainerTypes;
-    if (containersData) {
-        numContainerTypes = containersData.length;
-    } else {
-        numContainerTypes = _Workbook.ThisWorkbook.Worksheets("CLP Solver Console").Cells(4, 3).Value;
-        _Workbook.ThisWorkbook.Worksheets("2.Containers").Activate;
-    }
-
-    container_list.num_container_types = numContainerTypes;
-
-    container_list.container_types = [null];
-    var i = 0;
-    for (i = 1; i <= container_list.num_container_types; i++) {
-        container_list.container_types.push(new container_type_data());
-    }
-
-    if (containersData) {
-        containersData.unshift(null);
-        for (i = 1; i <= container_list.num_container_types; i++) {
-            var container = containersData[i];
-
-            container_list.container_typesGet(i).type_id = i;
-
-            container_list.container_typesGet(i).width = container.width;
-            container_list.container_typesGet(i).height = container.height;
-            container_list.container_typesGet(i).length = container.length;
-
-            container_list.container_typesGet(i).volume_capacity = container.width * container.height * container.length;
-            container_list.container_typesGet(i).weight_capacity = container.weightCapacity;
-
-            container_list.container_typesGet(i).mandatory = container.mandatory;
-
-            container_list.container_typesGet(i).cost = container.cost;
-
-            container_list.container_typesGet(i).number_available = container.quantity;
-        }
-    } else {
-        //With container_list
-        for (i = 1; i <= container_list.num_container_types; i++) {
-
-            container_list.container_typesGet(i).type_id = i;
-
-            container_list.container_typesGet(i).width = (0, _Workbook.Cells)(1 + i, 3).Value;
-            container_list.container_typesGet(i).height = (0, _Workbook.Cells)(1 + i, 4).Value;
-            container_list.container_typesGet(i).length = (0, _Workbook.Cells)(1 + i, 5).Value;
-
-            container_list.container_typesGet(i).volume_capacity = (0, _Workbook.Cells)(1 + i, 6).Value;
-            container_list.container_typesGet(i).weight_capacity = (0, _Workbook.Cells)(1 + i, 7).Value;
-
-            if ((0, _Workbook.Cells)(1 + i, 8).Value === "Must be used") {
-                container_list.container_typesGet(i).mandatory = 1;
-            } else if ((0, _Workbook.Cells)(1 + i, 8).Value === "May be used") {
-                container_list.container_typesGet(i).mandatory = 0;
-            } else if ((0, _Workbook.Cells)(1 + i, 8).Value === "Do not use") {
-                container_list.container_typesGet(i).mandatory = -1;
-            }
-
-            container_list.container_typesGet(i).cost = (0, _Workbook.Cells)(1 + i, 9).Value;
-
-            container_list.container_typesGet(i).number_available = (0, _Workbook.Cells)(1 + i, 10).Value;
-        }
-    }
-}
-
-function GetCompatibilityData() {}
-
-/*
-
-//With compatibility_list
-    
-var i = 0;
-var j = 0;
-var k = 0;
-  if( instance.item_item_compatibility_worksheet === true ){
-
-    compatibility_list.item_to_item = [[]];
-    
-    for( i = 1; i <= item_list.num_item_types; i++) {
-        for( j = 1; j <= item_list.num_item_types; j++ ){
-            item_list.item_to_item[i][j] = true;
-        }
-    }
-    
-    k = 3;
-    for( i = 1; i <= item_list.num_item_types; i++){
-        for( j = i + 1; j <= item_list.num_item_types; j++){
-            if( ThisWorkbook.Worksheets("1.3.Item-Item Compatibility").Cells(k, 3) === "No" ){
-                item_list.item_to_item[i][j] = false;
-                item_list.item_to_item[j][i] = false;
-            }
-            k = k + 1;
-        }
-    }
-    
-}
-
-if( instance.container_item_compatibility_worksheet = true ){
-
-    Re var .container_to_itemGet(1; <=container_list.num_container_types, 1; <=item_list.num_item_types)
-    
-    for( i = 1; <=container_list.num_container_types
-        for( j = 1; <=item_list.num_item_types
-        
-            .container_to_itemGet(i, j) = true
-            
-        }
-    }
-    
-    k = 3
-    for( i = 1; <=container_list.num_container_types
-        for( j = 1; <=item_list.num_item_types
-        
-            if( ThisWorkbook.Worksheets("2.3.Container-ItemCompatibility").Cells(k, 3) = "No" ){
-                .container_to_itemGet(i, j) = false
-            }
-                
-            k = k + 1
-        }
-    }
-    
-}
-*/
-
-
-/**
- * 
- * @param {solution_data} solution 
- */
-function InitializeSolution(solution) {
-
-    var i = 0;
-    var j = 0;
-    var k = 0;
-    var l = 0;
-
-    //With solution
-    solution.feasible = false;
-    solution.net_profit = 0;
-    solution.total_volume = 0;
-    solution.total_weight = 0;
-    solution.total_distance = 0;
-    solution.total_x_moment = 0;
-    solution.total_yz_moment = 0;
-
-    solution.num_containers = 0;
-    for (i = 1; i <= container_list.num_container_types; i++) {
-        if (container_list.container_typesGet(i).mandatory >= 0) {
-            solution.num_containers = solution.num_containers + container_list.container_typesGet(i).number_available;
-        }
-    }
-
-    solution.rotation_order = [null];
-    for (i = 1; i <= item_list.num_item_types; i++) {
-        solution.rotation_order[i] = [null];
-        for (j = 1; j <= 6; j++) {
-            solution.rotation_order[i][j] = j;
-        }
-    }
-
-    solution.item_type_order = [null];
-    for (i = 1; i <= item_list.num_item_types; i++) {
-        solution.item_type_order[i] = i;
-    }
-
-    solution.container = [null];
-    for (i = 1; i <= solution.num_containers; i++) {
-        solution.container[i] = new container_data();
-
-        solution.containerGet(i).items = [null];
-        for (j = 1; j <= item_list.total_number_of_items; j++) {
-            solution.containerGet(i).items.push(new item_in_container());
-        }solution.containerGet(i).addition_points = [null];
-        for (j = 1; j <= 3 * item_list.total_number_of_items; j++) {
-            solution.containerGet(i).addition_points.push(new item_location());
-        }solution.containerGet(i).repack_item_count = [null];
-        for (j = 1; j <= item_list.total_number_of_items; j++) {
-            solution.containerGet(i).repack_item_count.push(0);
-        }
-    }
-
-    solution.unpacked_item_count = [null];
-
-    l = 1;
-    for (i = 1; i <= container_list.num_container_types; i++) {
-        if (container_list.container_typesGet(i).mandatory >= 0) {
-            for (j = 1; j <= container_list.container_typesGet(i).number_available; j++) {
-
-                solution.containerGet(l).width = container_list.container_typesGet(i).width;
-                solution.containerGet(l).height = container_list.container_typesGet(i).height;
-                solution.containerGet(l).length = container_list.container_typesGet(i).length;
-                solution.containerGet(l).volume_capacity = container_list.container_typesGet(i).volume_capacity;
-                solution.containerGet(l).weight_capacity = container_list.container_typesGet(i).weight_capacity;
-                solution.containerGet(l).cost = container_list.container_typesGet(i).cost;
-                solution.containerGet(l).mandatory = container_list.container_typesGet(i).mandatory;
-                solution.containerGet(l).type_id = i;
-                solution.containerGet(l).volume_packed = 0;
-                solution.containerGet(l).weight_packed = 0;
-                solution.containerGet(l).item_cnt = 0;
-
-                solution.containerGet(l).addition_point_count = 1;
-
-                for (k = 1; k <= item_list.total_number_of_items; k++) {
-                    solution.containerGet(l).itemsGet(k).item_type = 0;
-                    solution.containerGet(l).addition_pointsGet(k).origin_x = 0;
-                    solution.containerGet(l).addition_pointsGet(k).origin_y = 0;
-                    solution.containerGet(l).addition_pointsGet(k).origin_z = 0;
-                    solution.containerGet(l).addition_pointsGet(k).next_to_item_type = 0;
-                }
-
-                for (k = 1; k <= item_list.total_number_of_items; k++) {
-                    solution.containerGet(l).repack_item_count[k] = 0;
-                }
-
-                l = l + 1;
-            }
-        }
-    }
-
-    for (i = 1; i <= item_list.num_item_types; i++) {
-        solution.unpacked_item_count[i] = item_list.item_typesGet(i).number_requested;
-    }
-}
-
-function GetInstanceData() {
-
-    if (_Workbook.ThisWorkbook.Worksheets("CLP Solver Console").Cells(6, 3).Value === "Yes") {
-        instance.front_side_support = true;
-    } else {
-        instance.front_side_support = false;
-    }
-
-    if ((0, _Workbook.CheckWorksheetExistence)("1.3.Item-Item Compatibility") === true) {
-        instance.item_item_compatibility_worksheet = true;
-    } else {
-        instance.item_item_compatibility_worksheet = false;
-    }
-
-    if ((0, _Workbook.CheckWorksheetExistence)("2.3.Container-ItemCompatibility") === true) {
-        instance.container_item_compatibility_worksheet = true;
-    } else {
-        instance.container_item_compatibility_worksheet = false;
-    }
-}
-
-/**
- * @param {solution_data} solution 
- */
-function WriteSolution(solution) {
-
-    //Application.ScreenUpdating = False
-    //Application.Calculation = xlCalculationManual
-
-    var i = 0;
-    var j = 0;
-    var k = 0;
-
-    var container_index = 0;
-
-    /** @type {container_data} */
-    var swap_container;
-
-    // sort the containers
-
-    for (i = 1; i <= solution.num_containers; i++) {
-        for (j = solution.num_containers; j >= 2; j--) {
-            if (solution.containerGet(j).type_id < solution.containerGet(j - 1).type_id || solution.containerGet(j).type_id === solution.containerGet(j - 1).type_id && solution.containerGet(j).volume_packed > solution.containerGet(j - 1).volume_packed) {
-                swap_container = solution.containerGet(j);
-                solution.container[j] = solution.containerGet(j - 1);
-                solution.container[j - 1] = swap_container;
-            }
-        }
-    }
-
-    _Workbook.ThisWorkbook.Worksheets("3.Solution").Activate;
-
-    if (solution.feasible === false) {
-        (0, _Workbook.Cells)(2, 1).Value = "Warning: Last solution returned by the solver does not satisfy all constraints.";
-        //Range(Cells(2, 1), Cells(2, 10)).Interior.ColorIndex = 45;
-    } else {
-        (0, _Workbook.Cells)(2, 1).Value = 0;
-        //Range(Cells(2, 1), Cells(2, 10)).Interior.Pattern = xlNone;
-        //Range(Cells(2, 1), Cells(2, 10)).Interior.TintAndShade = 0;
-        //Range(Cells(2, 1), Cells(2, 10)).Interior.PatternTintAndShade = 0;
-    }
-
-    var offset = 0;
-
-    offset = 0;
-    container_index = 1;
-
-    //With solution
-
-    for (i = 1; i <= container_list.num_container_types; i++) {
-
-        for (j = 1; j <= container_list.container_typesGet(i).number_available; j++) {
-
-            (0, _Workbook.Range)((0, _Workbook.Cells)(6, offset + 2), (0, _Workbook.Cells)(5 + 2 * item_list.total_number_of_items, offset + 2)).Value = 0;
-            (0, _Workbook.Range)((0, _Workbook.Cells)(6, offset + 3), (0, _Workbook.Cells)(5 + 2 * item_list.total_number_of_items, offset + 5)).ClearContents;
-            (0, _Workbook.Range)((0, _Workbook.Cells)(6, offset + 6), (0, _Workbook.Cells)(5 + 2 * item_list.total_number_of_items, offset + 6)).Value = 0;
-
-            if (container_list.container_typesGet(i).mandatory >= 0) {
-                (0, _Workbook.Cells)(3, 'B', solution.containerGet(container_index).item_cnt);
-                for (k = 1; k <= solution.containerGet(container_index).item_cnt; k++) {
-                    (0, _Workbook.Cells)(5 + k, offset + 2).Value = _Workbook.ThisWorkbook.Worksheets("1.Items").Cells(2 + item_list.item_typesGet(solution.containerGet(container_index).itemsGet(k).item_type).id, 2).Value;
-                    (0, _Workbook.Cells)(5 + k, offset + 3).Value = solution.containerGet(container_index).itemsGet(k).origin_x;
-                    (0, _Workbook.Cells)(5 + k, offset + 4).Value = solution.containerGet(container_index).itemsGet(k).origin_y;
-                    (0, _Workbook.Cells)(5 + k, offset + 5).Value = solution.containerGet(container_index).itemsGet(k).origin_z;
-                    if (solution.containerGet(container_index).itemsGet(k).rotation === 1) {
-                        (0, _Workbook.Cells)(5 + k, offset + 6).Value = "xyz";
-                    } else if (solution.containerGet(container_index).itemsGet(k).rotation === 2) {
-                        (0, _Workbook.Cells)(5 + k, offset + 6).Value = "zyx";
-                    } else if (solution.containerGet(container_index).itemsGet(k).rotation === 3) {
-                        (0, _Workbook.Cells)(5 + k, offset + 6).Value = "xzy";
-                    } else if (solution.containerGet(container_index).itemsGet(k).rotation === 4) {
-                        (0, _Workbook.Cells)(5 + k, offset + 6).Value = "yzx";
-                    } else if (solution.containerGet(container_index).itemsGet(k).rotation === 5) {
-                        (0, _Workbook.Cells)(5 + k, offset + 6).Value = "yxz";
-                    } else if (solution.containerGet(container_index).itemsGet(k).rotation === 6) {
-                        (0, _Workbook.Cells)(5 + k, offset + 6).Value = "zxy";
-                    }
-                }
-
-                container_index = container_index + 1;
-            }
-
-            offset = offset + 11;
-        }
-    }
-
-    signaler.Dispatch(signals.solution, solution);
-
-    //Application.ScreenUpdating = true
-    //Application.Calculation = xlCalculationAutomatic
-}
-
-/**
- * 
- * @param {Array<SolverOptions>} solverOptions 
- * @param {Array<ItemData>} itemsData 
- * @param {Array<ContainerData>} containersData 
- */
-function CLP_Solver(solverOptions, itemsData, containersData) {
-
-    //Application.ScreenUpdating = false
-    //Application.Calculation = xlCalculationManual
-
-    var WorksheetExists = false;
-    var reply = 0;
-
-    GetSolverOptions(solverOptions);
-
-    WorksheetExists = (0, _Workbook.CheckWorksheetExistence)("1.Items") && (0, _Workbook.CheckWorksheetExistence)("2.Containers") && (0, _Workbook.CheckWorksheetExistence)("3.Solution");
-    if ((!solverOptions || !itemsData || !containersData) && WorksheetExists === false) {
-        _Workbook.Application.Alert("Worksheets 1.Items, 2.Containers, and 3.Solution must exist for the CLP Spreadsheet Solver to function.");
-        //Application.ScreenUpdating = true
-        //Application.Calculation = xlCalculationAutomatic
-        return;
-    } else {
-        reply = _Workbook.Application.Confirm("This will take " + solver_options.CPU_time_limit + " seconds. Do you want to continue?", true); //, vbYesNo, "CLP Spreadsheet Solver")
-        if (reply === false) {
-            //Application.ScreenUpdating = true
-            //Application.Calculation = xlCalculationAutomatic
-            return;
-        }
-    }
-
-    //Application.EnableCancelKey = xlErrorHandler
-    //On Error GoTo CLP_Solver_Finish
-
-    // Allocate memory and get the data
-
-    GetItemData(itemsData);
-    GetContainerData(containersData);
-    //GetInstanceData();
-    //GetCompatibilityData();
-    SortItems();
-
-    var incumbent = new solution_data();
-    InitializeSolution(incumbent);
-
-    var best_known = new solution_data();
-    InitializeSolution(best_known);
-    best_known = incumbent;
-
-    var iteration = 0;
-
-    var i = 0;
-    var j = 0;
-    var k = 0;
-    var l = 0;
-
-    var nonempty_container_cnt = 0;
-    var container_id = 0;
-
-    var start_time = 0;
-    var end_time = 0;
-
-    var continue_flag = false;
-    var sort_criterion = 0;
-    var selected_rotation = 0;
-
-    // infeasibility check    
-
-    var fcData = FeasibilityCheckData();
-    var infeasibility_count = fcData.infeasibility_count;
-    var infeasibility_string = fcData.infeasibility_string;
-
-    if (infeasibility_count > 0) {
-        reply = _Workbook.Application.Confirm("Infeasibilities detected. " + infeasibility_string + " Do you want to continue?", true); //, vbYesNo, "CLP Spreadsheet Solver")
-        if (reply === false) {
-            //Application.ScreenUpdating = true
-            //Application.Calculation = xlCalculationAutomatic
-            return;
-        }
-    }
-
-    start_time = performance.now() / 1000.0;
-    end_time = start_time;
-
-    // constructive phase
-
-    if (solver_options.show_progress === true) {
-        _Workbook.Application.ScreenUpdating = true;
-        _Workbook.Application.StatusBar = "Constructive phase...";
-        _Workbook.Application.ScreenUpdating = false;
-    } else {
-        _Workbook.Application.ScreenUpdating = true;
-        _Workbook.Application.StatusBar = "LNS algorithm running...";
-        _Workbook.Application.ScreenUpdating = false;
-    }
-
-    SortContainers(incumbent, 0);
-
-    for (i = 1; i <= incumbent.num_containers; i++) {
-        // sort the rotation order for this container
-        for (j = 1; j <= item_list.num_item_types; j++) {
-            sort_criterion = 0;
-            selected_rotation = 0;
-
-            if (sort_criterion < Math.floor(incumbent.containerGet(i).width / item_list.item_typesGet(j).width) * item_list.item_typesGet(j).width * (Math.floor(incumbent.containerGet(i).height / item_list.item_typesGet(j).height) * item_list.item_typesGet(j).height)) {
-                sort_criterion = Math.floor(incumbent.containerGet(i).width / item_list.item_typesGet(j).width) * item_list.item_typesGet(j).width * (Math.floor(incumbent.containerGet(i).height / item_list.item_typesGet(j).height) * item_list.item_typesGet(j).height);
-                selected_rotation = 1;
-            }
-
-            if (sort_criterion < Math.floor(incumbent.containerGet(i).width / item_list.item_typesGet(j).length) * item_list.item_typesGet(j).length * (Math.floor(incumbent.containerGet(i).height / item_list.item_typesGet(j).height) * item_list.item_typesGet(j).height)) {
-                sort_criterion = Math.floor(incumbent.containerGet(i).width / item_list.item_typesGet(j).length) * item_list.item_typesGet(j).length * (Math.floor(incumbent.containerGet(i).height / item_list.item_typesGet(j).height) * item_list.item_typesGet(j).height);
-                selected_rotation = 2;
-            }
-
-            if (item_list.item_typesGet(j).xy_rotatable === true && sort_criterion < Math.floor(incumbent.containerGet(i).width / item_list.item_typesGet(j).width) * item_list.item_typesGet(j).width * (Math.floor(incumbent.containerGet(i).height / item_list.item_typesGet(j).length) * item_list.item_typesGet(j).length)) {
-                sort_criterion = Math.floor(incumbent.containerGet(i).width / item_list.item_typesGet(j).width) * item_list.item_typesGet(j).width * (Math.floor(incumbent.containerGet(i).height / item_list.item_typesGet(j).length) * item_list.item_typesGet(j).length);
-                selected_rotation = 3;
-            }
-
-            if (item_list.item_typesGet(j).xy_rotatable === true && sort_criterion < Math.floor(incumbent.containerGet(i).width / item_list.item_typesGet(j).height) * item_list.item_typesGet(j).height * (Math.floor(incumbent.containerGet(i).height / item_list.item_typesGet(j).length) * item_list.item_typesGet(j).length)) {
-                sort_criterion = sort_criterion < Math.floor(incumbent.containerGet(i).width / item_list.item_typesGet(j).height) * item_list.item_typesGet(j).height * (Math.floor(incumbent.containerGet(i).height / item_list.item_typesGet(j).length) * item_list.item_typesGet(j).length);
-                selected_rotation = 4;
-            }
-
-            if (item_list.item_typesGet(j).yz_rotatable === true && sort_criterion < Math.floor(incumbent.containerGet(i).width / item_list.item_typesGet(j).height) * item_list.item_typesGet(j).height * (Math.floor(incumbent.containerGet(i).height / item_list.item_typesGet(j).width) * item_list.item_typesGet(j).width)) {
-                sort_criterion = Math.floor(incumbent.containerGet(i).width / item_list.item_typesGet(j).height) * item_list.item_typesGet(j).height * (Math.floor(incumbent.containerGet(i).height / item_list.item_typesGet(j).width) * item_list.item_typesGet(j).width);
-                selected_rotation = 5;
-            }
-
-            if (item_list.item_typesGet(j).yz_rotatable === true && sort_criterion < Math.floor(incumbent.containerGet(i).width / item_list.item_typesGet(j).length) * item_list.item_typesGet(j).length * (Math.floor(incumbent.containerGet(i).height / item_list.item_typesGet(j).width) * item_list.item_typesGet(j).width)) {
-                sort_criterion = Math.floor(incumbent.containerGet(i).width / item_list.item_typesGet(j).length) * item_list.item_typesGet(j).length * (Math.floor(incumbent.containerGet(i).height / item_list.item_typesGet(j).width) * item_list.item_typesGet(j).width);
-                selected_rotation = 6;
-            }
-
-            if (selected_rotation === 0) {
-                selected_rotation = 1;
-            }
-
-            incumbent.rotation_order[j][1] = selected_rotation;
-            incumbent.rotation_order[j][selected_rotation] = 1;
-        }
-
-        for (j = 1; j <= item_list.num_item_types; j++) {
-
-            continue_flag = true;
-            while (incumbent.unpacked_item_countGet(incumbent.item_type_orderGet(j)) > 0 && continue_flag) {
-                continue_flag = AddItemToContainer(incumbent, i, incumbent.item_type_orderGet(j), 1, false);
-            }
-        }
-
-        incumbent.feasible = true;
-        for (j = 1; j <= item_list.num_item_types; j++) {
-            if (incumbent.unpacked_item_countGet(j) > 0 && item_list.item_typesGet(j).mandatory === 1) {
-                incumbent.feasible = false;
-                break;
-            }
-        }
-
-        CalculateDispersion(incumbent);
-
-        if (incumbent.feasible === true && best_known.feasible === false || incumbent.feasible === false && best_known.feasible === false && incumbent.total_volume > best_known.total_volume + epsilon || incumbent.feasible === true && best_known.feasible === true && incumbent.net_profit > best_known.net_profit + epsilon || incumbent.feasible === true && best_known.feasible === true && incumbent.net_profit > best_known.net_profit - epsilon && incumbent.total_volume < best_known.total_volume - epsilon) {
-
-            best_known = incumbent;
-        }
-    }
-
-    // GoTo CLP_Solver_Finish
-
-    // end_time = Timer
-    // MsgBox "Constructive phase result: " + best_known.net_profit + " time: " + end_time - start_time
-
-    // improvement phase
-
-    iteration = 0;
-
-    //Do
-    do {
-        //DoEvents
-        if (solver_options.show_progress === true && iteration % 100 === 0) {
-            //Application.ScreenUpdating = true
-            if (best_known.feasible === true) {
-                _Workbook.Application.StatusBar = "Starting iteration " + iteration + ". Best net profit found so far: " + best_known.net_profit + " Dispersion: " + best_known.total_distance;
-            } else {
-                _Workbook.Application.StatusBar = "Starting iteration " + iteration + ". Best net profit found so far: N/A" + " Dispersion: " + best_known.total_distance;
-            }
-            _Workbook.Application.ScreenUpdating = false;
-        }
-
-        if (Math.random() < 0.5) {
-            // < ((end_time - start_time) / solver_options.CPU_time_limit) ^ 2 ){
-
-            incumbent = best_known;
-        }
-
-        //With incumbent
-        for (i = 1; i <= incumbent.num_containers; i++) {
-            PerturbSolution(incumbent, i, 1 - (end_time - start_time) / solver_options.CPU_time_limit);
-        }
-
-        SortContainers(incumbent, 0.2);
-
-        //With incumbent
-        for (i = 1; i <= incumbent.num_containers; i++) {
-            for (j = 1; j <= item_list.num_item_types; j++) {
-                continue_flag = true;
-                while (incumbent.unpacked_item_countGet(incumbent.item_type_orderGet(j)) > 0 && continue_flag === true) {
-                    continue_flag = AddItemToContainer(incumbent, i, incumbent.item_type_orderGet(j), 1, false);
-                    //DoEvents
-                }
-            }
-
-            incumbent.feasible = true;
-            for (j = 1; j <= item_list.num_item_types; j++) {
-                if (incumbent.unpacked_item_countGet(j) > 0 && item_list.item_typesGet(j).mandatory === 1) {
-                    incumbent.feasible = false;
-                    break;
-                }
-            }
-
-            CalculateDispersion(incumbent);
-
-            if (incumbent.feasible === true && best_known.feasible === false || incumbent.feasible === false && best_known.feasible === false && incumbent.total_volume > best_known.total_volume + epsilon || incumbent.feasible === true && best_known.feasible === true && incumbent.net_profit > best_known.net_profit + epsilon || incumbent.feasible === true && best_known.feasible === true && incumbent.net_profit > best_known.net_profit - epsilon && incumbent.total_volume < best_known.total_volume - epsilon || incumbent.feasible === true && best_known.feasible === true && incumbent.net_profit > best_known.net_profit - epsilon && incumbent.total_volume < best_known.total_volume + epsilon && incumbent.total_distance < best_known.total_distance - epsilon || incumbent.feasible === true && best_known.feasible === true && incumbent.net_profit > best_known.net_profit - epsilon && incumbent.total_volume < best_known.total_volume + epsilon && incumbent.total_distance < best_known.total_distance + epsilon && incumbent.total_x_moment < best_known.total_x_moment - epsilon || incumbent.feasible === true && best_known.feasible === true && incumbent.net_profit > best_known.net_profit - epsilon && incumbent.total_volume < best_known.total_volume + epsilon && incumbent.total_distance < best_known.total_distance + epsilon && incumbent.total_x_moment < best_known.total_x_moment + epsilon && incumbent.total_yz_moment < best_known.total_yz_moment - epsilon) {
-
-                best_known = incumbent;
-            }
-        }
-
-        iteration = iteration + 1;
-
-        end_time = performance.now() / 1000.0;
-
-        /* WILL NEVER HAPPEN ? chadik
-        if( end_time < start_time - 0.01 ){
-            solver_options.CPU_time_limit = solver_options.CPU_time_limit - (86400 - start_time)
-            start_time = end_time
-        }
-        */
-    } while (end_time - start_time < solver_options.CPU_time_limit / 3);
-
-    // reorganize now
-
-    CalculateDistance(best_known);
-
-    nonempty_container_cnt = 0;
-    //With best_known
-    for (i = 1; i <= best_known.num_containers; i++) {
-        if (best_known.containerGet(i).item_cnt > 0) {
-            nonempty_container_cnt = nonempty_container_cnt + 1;
-        }
-    }
-
-    for (container_id = 1; container_id <= best_known.num_containers; container_id++) {
-        _Workbook.Application.ScreenUpdating = true;
-        if (best_known.feasible === true) {
-            _Workbook.Application.StatusBar = "Reorganizing container " + container_id + ". Best net profit found so far: " + best_known.net_profit + " Distance: " + best_known.total_distance;
-        } else {
-            _Workbook.Application.StatusBar = "Reorganizing container " + container_id + ". Best net profit found so far: N/A" + " Distance: " + best_known.total_distance;
-        }
-        _Workbook.Application.ScreenUpdating = false;
-
-        if (best_known.containerGet(container_id).item_cnt > 0) {
-
-            incumbent = best_known;
-
-            start_time = performance.now() / 1000.0;
-            end_time = start_time;
-
-            //Do
-            do {
-                //DoEvents
-
-                PerturbSolution(incumbent, container_id, 0.1 + 0.2 * ((end_time - start_time) / (solver_options.CPU_time_limit * 0.666 / nonempty_container_cnt)));
-
-                //With incumbent
-
-                for (j = 1; j <= item_list.num_item_types; j++) {
-                    continue_flag = true;
-                    while (incumbent.unpacked_item_countGet(incumbent.item_type_orderGet(j)) > 0 && continue_flag === true) {
-                        continue_flag = AddItemToContainer(incumbent, container_id, incumbent.item_type_orderGet(j), 1, true);
-                        //DoEvents
-                    }
-                }
-
-                incumbent.feasible = true;
-                for (j = 1; j <= item_list.num_item_types; j++) {
-                    if (incumbent.unpacked_item_countGet(j) > 0 && item_list.item_typesGet(j).mandatory === 1) {
-                        incumbent.feasible = false;
-                        break;
-                    }
-                }
-
-                CalculateDistance(incumbent);
-
-                if (incumbent.feasible === true && best_known.feasible === false || incumbent.feasible === false && best_known.feasible === false && incumbent.total_volume > best_known.total_volume + epsilon || incumbent.feasible === true && best_known.feasible === true && incumbent.net_profit > best_known.net_profit + epsilon || incumbent.feasible === true && best_known.feasible === true && incumbent.net_profit > best_known.net_profit - epsilon && incumbent.total_volume < best_known.total_volume - epsilon || incumbent.feasible === true && best_known.feasible === true && incumbent.net_profit > best_known.net_profit - epsilon && incumbent.total_volume < best_known.total_volume + epsilon && incumbent.total_distance < best_known.total_distance - epsilon || incumbent.feasible === true && best_known.feasible === true && incumbent.net_profit > best_known.net_profit - epsilon && incumbent.total_volume < best_known.total_volume + epsilon && incumbent.total_distance < best_known.total_distance + epsilon && incumbent.total_x_moment < best_known.total_x_moment - epsilon || incumbent.feasible === true && best_known.feasible === true && incumbent.net_profit > best_known.net_profit - epsilon && incumbent.total_volume < best_known.total_volume + epsilon && incumbent.total_distance < best_known.total_distance + epsilon && incumbent.total_x_moment < best_known.total_x_moment + epsilon && incumbent.total_yz_moment < best_known.total_yz_moment - epsilon) {
-
-                    best_known = incumbent;
-
-                    // if( best_known.feasible = true ){
-                    //     Application.StatusBar = "Reorganizing container " + container_id + ". Best net profit found so far: " + best_known.net_profit + " Distance: " + best_known.total_distance
-                    // } else {
-                    //     Application.StatusBar = "Reorganizing container " + container_id + ". Best net profit found so far: N/A" + " Distance: " + best_known.total_distance
-                    // }
-                }
-
-                end_time = performance.now() / 1000.0;
-
-                /* WILL NEVER HAPPEN? chadiik
-                if( end_time < start_time - 0.01 ){
-                    solver_options.CPU_time_limit = solver_options.CPU_time_limit - (86400 - start_time)
-                    start_time = end_time
-                }
-                */
-            } while (end_time - start_time < solver_options.CPU_time_limit * 0.666 / nonempty_container_cnt);
-        }
-    }
-
-    // MsgBox "Iterations performed: " + iteration
-
-    //CLP_Solver_Finish:
-
-    // ensure loadability
-
-    var min_x = 0;
-    var min_y = 0;
-    var min_z = 0;
-
-    var intersection_right = 0;
-    var intersection_left = 0;
-    var intersection_top = 0;
-    var intersection_bottom = 0;
-
-    var selected_item_index = 0;
-
-    /** @type {item_in_container} */
-    var swap_item;
-
-    var area_supported = 0;
-    var area_required = 0;
-    var support_flag = false;
-
-    for (i = 1; i <= best_known.num_containers; i++) {
-        //With best_known.containerGet(i)
-        var container = best_known.containerGet(i);
-
-        for (j = 1; j <= container.item_cnt; j++) {
-
-            selected_item_index = 0;
-            min_x = container.width;
-            min_y = container.height;
-            min_z = container.length;
-
-            for (k = j; k <= container.item_cnt; k++) {
-
-                if (container.itemsGet(k).origin_z < min_z - epsilon || container.itemsGet(k).origin_z < min_z + epsilon && container.itemsGet(k).origin_y < min_y - epsilon || container.itemsGet(k).origin_z < min_z + epsilon && container.itemsGet(k).origin_y < min_y + epsilon && container.itemsGet(k).origin_x < min_x - epsilon) {
-
-                    // check for support
-
-                    if (container.itemsGet(k).origin_y < epsilon) {
-                        support_flag = true;
-                    } else {
-                        area_supported = 0;
-                        area_required = (container.itemsGet(k).opposite_x - container.itemsGet(k).origin_x) * (container.itemsGet(k).opposite_z - container.itemsGet(k).origin_z);
-                        support_flag = false;
-                        for (l = j - 1; l >= 1; l--) {
-
-                            if (Math.abs(container.itemsGet(k).origin_y - container.itemsGet(l).opposite_y) < epsilon) {
-
-                                // check for intersection
-
-                                intersection_right = container.itemsGet(k).opposite_x;
-                                if (intersection_right > container.itemsGet(l).opposite_x) intersection_right = container.itemsGet(l).opposite_x;
-
-                                intersection_left = container.itemsGet(k).origin_x;
-                                if (intersection_left < container.itemsGet(l).origin_x) intersection_left = container.itemsGet(l).origin_x;
-
-                                intersection_top = container.itemsGet(k).opposite_z;
-                                if (intersection_top > container.itemsGet(l).opposite_z) intersection_top = container.itemsGet(l).opposite_z;
-
-                                intersection_bottom = container.itemsGet(k).origin_z;
-                                if (intersection_bottom < container.itemsGet(l).origin_z) intersection_bottom = container.itemsGet(l).origin_z;
-
-                                if (intersection_right > intersection_left && intersection_top > intersection_bottom) {
-                                    area_supported = area_supported + (intersection_right - intersection_left) * (intersection_top - intersection_bottom);
-                                    if (area_supported > area_required - epsilon) {
-                                        support_flag = true;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    if (support_flag === true) {
-                        selected_item_index = k;
-
-                        min_x = container.itemsGet(k).origin_x;
-                        min_y = container.itemsGet(k).origin_y;
-                        min_z = container.itemsGet(k).origin_z;
-                    }
-                }
-            }
-
-            if (selected_item_index > 0) {
-                swap_item = container.itemsGet(selected_item_index);
-                container.items[selected_item_index] = container.itemsGet(j);
-                container.items[j] = swap_item;
-            } else {
-                _Workbook.Application.Alert("Loading order could not be constructed.");
-            }
-        }
-    }
-
-    // write the solution
-
-    // MsgBox best_known.total_distance
-
-    if (best_known.feasible === true) {
-        reply = _Workbook.Application.Confirm("CLP Spreadsheet Solver performed " + iteration + " LNS iterations and found a solution with a net profit of " + best_known.net_profit + ". Do you want to overwrite the current solution with the best found solution?", true); //, vbYesNo, "CLP Spreadsheet Solver")
-        if (reply) {
-            WriteSolution(best_known);
-        }
-    } else if (infeasibility_count > 0) {
-        WriteSolution(best_known);
-    } else {
-        reply = _Workbook.Application.Confirm("The best found solution after " + iteration + " LNS iterations does not satisfy all constraints. Do you want to overwrite the current solution with the best found solution?", true); //, vbYesNo, "CLP Spreadsheet Solver")
-        if (reply) {
-            WriteSolution(best_known);
-        }
-    }
-
-    // Erase the data
-    /*
-    delete item_list.item_types;
-    delete container_list.container_types;
-    delete compatibility_list.item_to_item;
-    delete compatibility_list.container_to_item;
-      for( i = 1; i <= incumbent.num_containers; i++){
-        delete incumbent.containerGet(i).items;
-    }
-    delete incumbent.container;
-    delete incumbent.unpacked_item_count;
-    
-    if(best_known.container){
-        for( i = 1; i <= best_known.container.length; i++){
-            if(best_known.container[i])
-                delete best_known.containerGet(i).items;
-        }
-        delete best_known.container;
-    }
-    delete best_known.unpacked_item_count;
-    */
-    _Workbook.Application.StatusBar = false;
-    _Workbook.Application.ScreenUpdating = true;
-    //Application.Calculation = xlCalculationAutomatic
-
-    //ThisWorkbook.Worksheets("3.Solution").Activate;
-    //Cells(1, 1).Select;
-}
-
-function FeasibilityCheckData() {
-
-    var i = 0;
-    var j = 0;
-    var feasibility_flag = false;
-
-    var infeasibility_count = 0;
-    var infeasibility_string = '';
-
-    (0, _Workbook.Range)(_Workbook.ThisWorkbook.Worksheets("3.Solution").Cells(item_list.total_number_of_items + 9, 1), _Workbook.ThisWorkbook.Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + 4 * item_list.total_number_of_items, 1)).Clear;
-
-    var volume_capacity_required = 0;
-    var volume_capacity_available = 0;
-
-    var weight_capacity_required = 0;
-    var weight_capacity_available = 0;
-
-    var max_width = 0;
-    var max_heigth = 0;
-    var max_length = 0;
-
-    //With item_list
-    for (i = 1; i <= item_list.num_item_types; i++) {
-        if (item_list.item_typesGet(i).mandatory === 1) {
-            volume_capacity_required = volume_capacity_required + item_list.item_typesGet(i).volume * item_list.item_typesGet(i).number_requested;
-            weight_capacity_required = weight_capacity_required + item_list.item_typesGet(i).weight * item_list.item_typesGet(i).number_requested;
-        }
-    }
-
-    //With container_list
-    for (i = 1; i <= container_list.num_container_types; i++) {
-        if (container_list.container_typesGet(i).mandatory >= 0) {
-            volume_capacity_available = volume_capacity_available + container_list.container_typesGet(i).volume_capacity * container_list.container_typesGet(i).number_available;
-            weight_capacity_available = weight_capacity_available + container_list.container_typesGet(i).weight_capacity * container_list.container_typesGet(i).number_available;
-
-            if (container_list.container_typesGet(i).width > max_width) max_width = container_list.container_typesGet(i).width;
-            if (container_list.container_typesGet(i).height > max_heigth) max_heigth = container_list.container_typesGet(i).height;
-            if (container_list.container_typesGet(i).length > max_length) max_length = container_list.container_typesGet(i).length;
-        }
-    }
-
-    if (volume_capacity_required > volume_capacity_available + epsilon) {
-        infeasibility_count = infeasibility_count + 1;
-        infeasibility_string = infeasibility_string + "The amount of available volume is not enough to pack the mandatory items.\n";
-        _Workbook.ThisWorkbook.Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + infeasibility_count, 1).Value = "The amount of available volume is not enough to pack the mandatory items.";
-    }
-
-    if (weight_capacity_required > weight_capacity_available + epsilon) {
-        infeasibility_count = infeasibility_count + 1;
-        infeasibility_string = infeasibility_string + "The amount of available weight capacity is not enough to pack the mandatory items.\n";
-        _Workbook.ThisWorkbook.Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + infeasibility_count, 1).Value = "The amount of available weight capacity is not enough to pack the mandatory items.";
-    }
-
-    //With item_list
-    for (i = 1; i <= item_list.num_item_types; i++) {
-        //With .item_typesGet(i)
-        var itemType = item_list.item_typesGet(i);
-        if (itemType.mandatory === 1 && itemType.xy_rotatable === false && itemType.yz_rotatable === false && (itemType.width > max_width + epsilon || itemType.height > max_heigth + epsilon || itemType.length > max_length + epsilon)) {
-            infeasibility_count = infeasibility_count + 1;
-            if (infeasibility_count < 5) {
-                infeasibility_string = infeasibility_string + "Item type " + i + " is too large to fit into any container." + "\n";
-            }
-            if (infeasibility_count === 5) {
-                infeasibility_string = infeasibility_string + "More can be found in the list of detected infeasibilities in the solution worksheet." + "\n";
-            }
-            _Workbook.ThisWorkbook.Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + infeasibility_count, 1).Value = "Item type " + i + " is too large to fit into any container.";
-        }
-
-        if (itemType.mandatory === 1 && itemType.width > max_width + epsilon && itemType.width > max_heigth + epsilon && itemType.width > max_length + epsilon) {
-            infeasibility_count = infeasibility_count + 1;
-            if (infeasibility_count < 5) {
-                infeasibility_string = infeasibility_string + "Item type " + i + " is too wide to fit into any container." + "\n";
-            }
-            if (infeasibility_count === 5) {
-                infeasibility_string = infeasibility_string + "More can be found in the list of detected infeasibilities in the solution worksheet." + "\n";
-            }
-            _Workbook.ThisWorkbook.Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + infeasibility_count, 1).Value = "Item type " + i + " is too wide to fit into any container.";
-        }
-
-        if (itemType.mandatory === 1 && itemType.height > max_width + epsilon && itemType.height > max_heigth + epsilon && itemType.height > max_length + epsilon) {
-            infeasibility_count = infeasibility_count + 1;
-            if (infeasibility_count < 5) {
-                infeasibility_string = infeasibility_string + "Item type " + i + " is too tall to fit into any container." + "\n";
-            }
-            if (infeasibility_count === 5) {
-                infeasibility_string = infeasibility_string + "More can be found in the list of detected infeasibilities in the solution worksheet." + "\n";
-            }
-            _Workbook.ThisWorkbook.Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + infeasibility_count, 1).Value = "Item type " + i + " is too tall to fit into any container.";
-        }
-
-        if (itemType.mandatory === 1 && itemType.length > max_width + epsilon && itemType.length > max_heigth + epsilon && itemType.length > max_length + epsilon) {
-            infeasibility_count = infeasibility_count + 1;
-            if (infeasibility_count < 5) {
-                infeasibility_string = infeasibility_string + "Item type " + i + " is too long to fit into any container." + "\n";
-            }
-            if (infeasibility_count === 5) {
-                infeasibility_string = infeasibility_string + "More can be found in the list of detected infeasibilities in the solution worksheet." + "\n";
-            }
-            _Workbook.ThisWorkbook.Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + infeasibility_count, 1).Value = "Item type " + i + " is too long to fit into any container.";
-        }
-    }
-
-    if (instance.container_item_compatibility_worksheet === true) {
-
-        for (i = 1; i <= item_list.num_item_types; i++) {
-
-            feasibility_flag = false;
-
-            for (j = 1; j <= container_list.num_container_types; j++) {
-                if (compatibility_list.container_to_itemGet(j, i) === true) {
-                    feasibility_flag = true;
-                    break;
-                }
-            }
-
-            if (feasibility_flag === false) {
-
-                infeasibility_count = infeasibility_count + 1;
-                if (infeasibility_count < 5) {
-                    infeasibility_string = infeasibility_string + "Item type " + i + " is not compatible with any container." + "\n";
-                }
-                if (infeasibility_count === 5) {
-                    infeasibility_string = infeasibility_string + "More can be found in the list of detected infeasibilities in the solution worksheet." + "\n";
-                }
-                _Workbook.ThisWorkbook.Worksheets("3.Solution").Cells(item_list.total_number_of_items + 8 + infeasibility_count, 1).Value = "Item type " + i + " is not compatible with any container.";
-            }
-        }
-    }
-
-    return {
-        infeasibility_count: infeasibility_count,
-        infeasibility_string: infeasibility_string
-    };
-}
-
-function SortItems() {
-
-    var i = 0;
-    var j = 0;
-
-    /** @type {item_type_data} */
-    var swap_item_type;
-
-    if (item_list.num_item_types > 1) {
-        for (i = 1; i <= item_list.num_item_types; i++) {
-            for (j = item_list.num_item_types; j >= 2; j--) {
-                if (item_list.item_typesGet(j).mandatory > item_list.item_typesGet(j - 1).mandatory || item_list.item_typesGet(j).mandatory === 1 && item_list.item_typesGet(j - 1).mandatory === 1 && item_list.item_typesGet(j).sort_criterion > item_list.item_typesGet(j - 1).sort_criterion || item_list.item_typesGet(j).mandatory === 0 && item_list.item_typesGet(j - 1).mandatory === 0 && item_list.item_typesGet(j).profit / item_list.item_typesGet(j).volume > item_list.item_typesGet(j - 1).profit / item_list.item_typesGet(j - 1).volume) {
-
-                    swap_item_type = item_list.item_typesGet(j);
-                    item_list.item_types[j] = item_list.item_typesGet(j - 1);
-                    item_list.item_types[j - 1] = swap_item_type;
-                }
-            }
-        }
-    }
-
-    // for( i = 1; <=item_list.num_item_types
-    //    MsgBox item_list.item_typesGet(i).id + " " + item_list.item_typesGet(i).weight + " " + item_list.item_typesGet(i).sort_criterion
-    // }
-}
-
-/**
- * @param {solution_data} solution 
- */
-function CalculateDistance(solution) {
-
-    var j = 0;
-    var k = 0;
-    var l = 0;
-    var max_z = 0;
-
-    //With solution
-
-    solution.total_distance = 0;
-    solution.total_x_moment = 0;
-    solution.total_yz_moment = 0;
-
-    for (j = 1; j <= solution.num_containers; j++) {
-
-        //With .containerGet(j)
-        var container = solution.containerGet(j);
-        max_z = 0;
-        for (k = 1; k <= container.item_cnt; k++) {
-            for (l = k + 1; l <= container.item_cnt; l++) {
-                if (container.itemsGet(k).item_type === container.itemsGet(l).item_type) {
-                    solution.total_distance = solution.total_distance + Math.abs(container.itemsGet(k).opposite_x + container.itemsGet(k).origin_x - container.itemsGet(l).opposite_x - container.itemsGet(l).origin_x) + Math.abs(container.itemsGet(k).opposite_y + container.itemsGet(k).origin_y - container.itemsGet(l).opposite_y - container.itemsGet(l).origin_y) + Math.abs(container.itemsGet(k).opposite_z + container.itemsGet(k).origin_z - container.itemsGet(l).opposite_z - container.itemsGet(l).origin_z);
-                }
-
-                // solution.total_distance = solution.total_distance + container.itemsGet(k).opposite_z
-            }
-
-            if (max_z < container.itemsGet(k).opposite_z) max_z = container.itemsGet(k).opposite_z;
-
-            // solution.total_distance = solution.total_distance + penalty * max_z
-            solution.total_distance = solution.total_distance + container.itemsGet(k).opposite_z;
-
-            // solution.total_x_moment = solution.total_x_moment + (container.itemsGet(k).origin_y + container.itemsGet(k).opposite_y) * item_list.item_typesGet(container.itemsGet(k).item_type).weight
-        }
-
-        solution.total_distance = solution.total_distance + container.item_cnt * container.item_cnt * max_z;
-    }
-}
-
-/**
- * @param {solution_data} solution 
- */
-function CalculateDispersion(solution) {
-
-    var i = 0;
-    var j = 0;
-    var k = 0;
-    var item_flag = false;
-    var container_count = 0;
-
-    // With solution
-
-    solution.total_distance = 0;
-
-    for (i = 1; i <= item_list.num_item_types; i++) {
-        container_count = 0;
-        for (j = 1; j <= solution.num_containers; j++) {
-
-            // With .containerGet(j)
-            var container = solution.containerGet(j);
-            item_flag = false;
-            for (k = 1; k <= container.item_cnt; k++) {
-                if (container.itemsGet(k).item_type === i) {
-                    item_flag = true;
-                    break;
-                }
-            }
-
-            if (item_flag === true) container_count = container_count + 1;
-        }
-
-        solution.total_distance = solution.total_distance + container_count * container_count;
-    }
-}
-
-var signaler = new _Signaler2.default();
-var signals = {
-    solution: 'solution'
-};
-
-exports.Execute = CLP_Solver;
-exports.SolutionData = solution_data;
-exports.ContainerItem = item_in_container;
-exports.signaler = signaler;
-exports.signals = signals;
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Bin = function () {
-  function Bin(name, w, h, d, mw) {
-    _classCallCheck(this, Bin);
-
-    this.name = name || '';
-    this.width = w || 0;
-    this.height = h || 0;
-    this.depth = d || 0;
-    this.maxWeight = mw || 0;
-    this.items = [];
-  }
-
-  _createClass(Bin, [{
-    key: 'getName',
-    value: function getName() {
-      return this.name;
-    }
-  }, {
-    key: 'getWidth',
-    value: function getWidth() {
-      return this.width;
-    }
-  }, {
-    key: 'getHeight',
-    value: function getHeight() {
-      return this.height;
-    }
-  }, {
-    key: 'getDepth',
-    value: function getDepth() {
-      return this.depth;
-    }
-  }, {
-    key: 'getMaxWeight',
-    value: function getMaxWeight() {
-      return this.maxWeight;
-    }
-  }, {
-    key: 'getItems',
-    value: function getItems() {
-      return this.items;
-    }
-  }, {
-    key: 'getVolume',
-    value: function getVolume() {
-      return this.getWidth() * this.getHeight() * this.getDepth();
-    }
-  }, {
-    key: 'getPackedWeight',
-    value: function getPackedWeight() {
-      return this.items.reduce(function (weight, item) {
-        return weight + item.getWeight();
-      }, 0);
-    }
-  }, {
-    key: 'weighItem',
-    value: function weighItem(item) {
-      var maxWeight = this.getMaxWeight();
-      return !maxWeight || item.getWeight() + this.getPackedWeight() <= maxWeight;
-    }
-  }, {
-    key: 'putItem',
-    value: function putItem(item, p) {
-      var box = this;
-      var fit = false;
-
-      item.position = p;
-      for (var i = 0; i < 6; i++) {
-        item.rotationType = i;
-        var d = item.getDimension();
-
-        if (box.getWidth() < p[0] + d[0] || box.getHeight() < p[1] + d[1] || box.getDepth() < p[2] + d[2]) {
-          continue;
-        }
-
-        fit = true;
-
-        for (var j = 0; j < box.items.length; j++) {
-          var _j = box.items[j];
-          if (_j.intersect(item)) {
-            fit = false;
-            break;
-          }
-        }
-
-        if (fit) {
-          box.items.push(item);
-        }
-
-        return fit;
-      }
-
-      return fit;
-    }
-  }]);
-
-  return Bin;
-}();
-
-exports.default = Bin;
+Debug.Box = DebugBox;
+Debug.Viz = DebugViz;
+
+/** @type {import('../../FreightPacker').default} */
+Debug.api;
+/** @type {import('../App').default} */
+Debug.app;
+
+exports.default = Debug;
 
 /***/ }),
 /* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _RotationTypeStrings;
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var RotationType_WHD = exports.RotationType_WHD = 0;
-var RotationType_HWD = exports.RotationType_HWD = 1;
-var RotationType_HDW = exports.RotationType_HDW = 2;
-var RotationType_DHW = exports.RotationType_DHW = 3;
-var RotationType_DWH = exports.RotationType_DWH = 4;
-var RotationType_WDH = exports.RotationType_WDH = 5;
-
-var WidthAxis = exports.WidthAxis = 0;
-var HeightAxis = exports.HeightAxis = 1;
-var DepthAxis = exports.DepthAxis = 2;
-
-var StartPosition = exports.StartPosition = [0, 0, 0];
-
-var RotationTypeStrings = exports.RotationTypeStrings = (_RotationTypeStrings = {}, _defineProperty(_RotationTypeStrings, RotationType_WHD, 'xyz'), _defineProperty(_RotationTypeStrings, RotationType_HWD, 'yxz'), _defineProperty(_RotationTypeStrings, RotationType_HDW, 'yzx'), _defineProperty(_RotationTypeStrings, RotationType_DHW, 'zyx'), _defineProperty(_RotationTypeStrings, RotationType_DWH, 'zxy'), _defineProperty(_RotationTypeStrings, RotationType_WDH, 'xzy'), _RotationTypeStrings);
-
-var Item = function () {
-  function Item(name, w, h, d, wg) {
-    _classCallCheck(this, Item);
-
-    this.name = name || '';
-    this.width = w || 0;
-    this.height = h || 0;
-    this.depth = d || 0;
-    this.weight = wg || 0;
-    this.rotationType = RotationType_WHD;
-    this.position = []; // x, y, z
-  }
-
-  _createClass(Item, [{
-    key: 'getWidth',
-    value: function getWidth() {
-      return this.width;
-    }
-  }, {
-    key: 'getHeight',
-    value: function getHeight() {
-      return this.height;
-    }
-  }, {
-    key: 'getDepth',
-    value: function getDepth() {
-      return this.depth;
-    }
-  }, {
-    key: 'getWeight',
-    value: function getWeight() {
-      return this.weight;
-    }
-  }, {
-    key: 'getRotationType',
-    value: function getRotationType() {
-      return this.rotationType;
-    }
-  }, {
-    key: 'getRotationTypeString',
-    value: function getRotationTypeString() {
-      return RotationTypeStrings[this.getRotationType()];
-    }
-  }, {
-    key: 'getDimension',
-    value: function getDimension() {
-      var d = void 0;
-      switch (this.rotationType) {
-        case RotationType_WHD:
-          d = [this.getWidth(), this.getHeight(), this.getDepth()];
-          break;
-        case RotationType_HWD:
-          d = [this.getHeight(), this.getWidth(), this.getDepth()];
-          break;
-        case RotationType_HDW:
-          d = [this.getHeight(), this.getDepth(), this.getWidth()];
-          break;
-        case RotationType_DHW:
-          d = [this.getDepth(), this.getHeight(), this.getWidth()];
-          break;
-        case RotationType_DWH:
-          d = [this.getDepth(), this.getWidth(), this.getHeight()];
-          break;
-        case RotationType_WDH:
-          d = [this.getWidth(), this.getDepth(), this.getHeight()];
-          break;
-      }
-      return d;
-    }
-  }, {
-    key: 'intersect',
-    value: function intersect(i2) {
-      return rectIntersect(this, i2, WidthAxis, HeightAxis) && rectIntersect(this, i2, HeightAxis, DepthAxis) && rectIntersect(this, i2, WidthAxis, DepthAxis);
-    }
-  }, {
-    key: 'getVolume',
-    value: function getVolume() {
-      return this.getWidth() * this.getHeight() * this.getDepth();
-    }
-  }]);
-
-  return Item;
-}();
-
-exports.default = Item;
-var rectIntersect = exports.rectIntersect = function rectIntersect(i1, i2, x, y) {
-  var d1 = void 0,
-      d2 = void 0,
-      cx1 = void 0,
-      cy1 = void 0,
-      cx2 = void 0,
-      cy2 = void 0,
-      ix = void 0,
-      iy = void 0;
-
-  d1 = i1.getDimension();
-  d2 = i2.getDimension();
-
-  cx1 = i1.position[x] + d1[x] / 2;
-  cy1 = i1.position[y] + d1[y] / 2;
-  cx2 = i2.position[x] + d2[x] / 2;
-  cy2 = i2.position[y] + d2[y] / 2;
-
-  ix = Math.max(cx1, cx2) - Math.min(cx1, cx2);
-  iy = Math.max(cy1, cy2) - Math.min(cy1, cy2);
-
-  return ix < (d1[x] + d2[x]) / 2 && iy < (d1[y] + d2[y]) / 2;
-};
-
-/***/ }),
-/* 36 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _Logger = __webpack_require__(3);
-
-var _Logger2 = _interopRequireDefault(_Logger);
-
-var _CargoBoxView = __webpack_require__(37);
-
-var _CargoBoxView2 = _interopRequireDefault(_CargoBoxView);
-
-var _CargoView = __webpack_require__(21);
-
-var _CargoView2 = _interopRequireDefault(_CargoView);
-
-var _Signaler2 = __webpack_require__(2);
-
-var _Signaler3 = _interopRequireDefault(_Signaler2);
-
-var _CargoGroup = __webpack_require__(16);
-
-var _CargoGroup2 = _interopRequireDefault(_CargoGroup);
-
-var _Utils = __webpack_require__(0);
-
-var _Utils2 = _interopRequireDefault(_Utils);
-
-var _CargoEntry = __webpack_require__(5);
-
-var _CargoEntry2 = _interopRequireDefault(_CargoEntry);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-/**
- * @typedef {Object} CargoListViewParams
- * @property {import('../UX').default} ux
- */
-
-/**
- * @typedef SortResult
- * @property {Number} min
- * @property {Number} max
- * @property {Number} cargoes
- */
-
-var tempBox = new THREE.Box3();
-var tempVec = new THREE.Vector3();
-
-var signals = {
-    sort: 'sort'
-};
-
-/** @type {CargoListViewParams} */
-var defaultParams = {};
-
-var CargoListView = function (_Signaler) {
-    _inherits(CargoListView, _Signaler);
-
-    /**
-     * @param {CargoListViewParams} params 
-     */
-    function CargoListView(params) {
-        _classCallCheck(this, CargoListView);
-
-        var _this = _possibleConstructorReturn(this, (CargoListView.__proto__ || Object.getPrototypeOf(CargoListView)).call(this));
-
-        _this.params = _Utils2.default.AssignUndefined(params, defaultParams);
-
-        _this.view;
-        _this.templatesView = new THREE.Object3D();
-
-        /**
-         * @type {Map<CargoGroup, CargoView>}
-         */
-        _this.cargoTemplateViews = new Map();
-        return _this;
-    }
-
-    /**
-     * 
-     * @param {CargoGroup} group 
-     */
-
-
-    _createClass(CargoListView, [{
-        key: "Add",
-        value: function Add(group) {
-            //Logger.Log('Adding cargo group #' + this.cargoTemplateViews.size + ': ' + group.ToString() + ' to view', group);
-            var templateCargoView;
-            switch (group.entry.type) {
-                case 'BoxEntry':
-                    {
-                        templateCargoView = new _CargoBoxView2.default(group.entry);
-
-                        break;
-                    }
-
-                default:
-                    templateCargoView = _CargoView2.default.Dummy(group.entry);
-                    _Logger2.default.Warn('group.entry.type not supported by viewer,', group);
-                    break;
-            }
-
-            this.cargoTemplateViews.set(group, templateCargoView);
-            this.templatesView.add(templateCargoView.view);
-
-            this.Sort();
-        }
-
-        /**
-         * 
-         * @param {CargoGroup} group 
-         */
-
-    }, {
-        key: "Remove",
-        value: function Remove(group) {
-            var templateCargoView = this.cargoTemplateViews.get(group);
-            if (templateCargoView) {
-                this.cargoTemplateViews.delete(group);
-                this.templatesView.remove(templateCargoView.view);
-
-                this.Sort();
-            }
-        }
-
-        /**
-         * 
-         * @param {CargoGroup|CargoEntry|string|Number} id 
-         */
-
-    }, {
-        key: "GetTemplate",
-        value: function GetTemplate(id) {
-            var group;
-            if (id instanceof _CargoGroup2.default) {
-                group = id;
-            } else if (id instanceof _CargoEntry2.default) {
-                var _iteratorNormalCompletion = true;
-                var _didIteratorError = false;
-                var _iteratorError = undefined;
-
-                try {
-                    for (var _iterator = this.cargoTemplateViews.keys()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                        var cargoGroup = _step.value;
-
-                        if (cargoGroup.entry === id) group = cargoGroup;
-                    }
-                } catch (err) {
-                    _didIteratorError = true;
-                    _iteratorError = err;
-                } finally {
-                    try {
-                        if (!_iteratorNormalCompletion && _iterator.return) {
-                            _iterator.return();
-                        }
-                    } finally {
-                        if (_didIteratorError) {
-                            throw _iteratorError;
-                        }
-                    }
-                }
-            } else {
-                var _iteratorNormalCompletion2 = true;
-                var _didIteratorError2 = false;
-                var _iteratorError2 = undefined;
-
-                try {
-                    for (var _iterator2 = this.cargoTemplateViews.keys()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                        var cargoGroup = _step2.value;
-
-                        if (cargoGroup.entry.uid === id) group = cargoGroup;
-                    }
-                } catch (err) {
-                    _didIteratorError2 = true;
-                    _iteratorError2 = err;
-                } finally {
-                    try {
-                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                            _iterator2.return();
-                        }
-                    } finally {
-                        if (_didIteratorError2) {
-                            throw _iteratorError2;
-                        }
-                    }
-                }
-            }
-
-            return this.cargoTemplateViews.get(group);
-        }
-
-        /**
-         * @param {Map<CargoGroup, CargoView>} cargoViews 
-         * @returns {Number}
-         */
-
-    }, {
-        key: "Sort",
-        value: function Sort() {
-
-            this.SortMapBySize();
-
-            var units = this.params.ux.params.units;
-
-            this.templatesView.scale.set(1, 1, 1);
-            this.templatesView.updateMatrixWorld(true);
-            var worldToLocal = new THREE.Matrix4().getInverse(this.templatesView.matrixWorld);
-            var padding = 3 * units,
-                start = 0;
-
-            var i = 0,
-                offset = 0;
-
-            /**
-             * @type {SortResult}
-             */
-            var result = { min: start, max: start, cargoes: 0 };
-
-            var list = this.cargoTemplateViews.values(),
-                cargoView;
-            while ((cargoView = list.next()).done === false) {
-
-                cargoView.value.position.set(0, start, 0);
-
-                tempBox.setFromObject(cargoView.value.view);
-                tempBox.applyMatrix4(worldToLocal);
-
-                tempBox.getSize(tempVec);
-                var halfSize = tempVec.y / 2;
-                if (i > 0) offset += halfSize;
-
-                cargoView.value.position.set(0, start + offset, 0);
-
-                offset += halfSize + padding;
-
-                i++;
-            }
-
-            //result.min = tempVec.set(0, result.min, 0).applyMatrix4(this.view.matrixWorld).y;
-            //result.max = tempVec.set(0, offset, 0).applyMatrix4(this.view.matrixWorld).y;
-            result.min = start;
-            result.max = offset;
-            result.cargoes = i;
-            this.Dispatch(signals.sort, result);
-
-            //for(var [cargo, cargoView] of cargoViews){}
-        }
-    }, {
-        key: "SortMapBySize",
-        value: function SortMapBySize() {
-            var _this2 = this;
-
-            /**
-             * 
-             * @param {[CargoGroup, CargoListView]} a 
-             * @param {[CargoGroup, CargoListView]} b 
-             */
-            function sort(a, b) {
-                return -a[0].entry.dimensions.Compare(b[0].entry.dimensions);
-            }
-
-            var list = [].concat(_toConsumableArray(this.cargoTemplateViews.entries()));
-            list.sort(sort);
-            this.cargoTemplateViews = new Map(list);
-            return;
-
-            this.cargoTemplateViews.clear();
-            list.forEach(function (entry) {
-                _this2.cargoTemplateViews.set(entry[0], entry[1]);
-            });
-        }
-    }], [{
-        key: "signals",
-        get: function get() {
-            return signals;
-        }
-    }]);
-
-    return CargoListView;
-}(_Signaler3.default);
-
-exports.default = CargoListView;
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _set = function set(object, property, value, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent !== null) { set(parent, property, value, receiver); } } else if ("value" in desc && desc.writable) { desc.value = value; } else { var setter = desc.set; if (setter !== undefined) { setter.call(receiver, value); } } return value; };
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-var _CargoView2 = __webpack_require__(21);
-
-var _CargoView3 = _interopRequireDefault(_CargoView2);
-
-var _Utils = __webpack_require__(0);
-
-var _Utils2 = _interopRequireDefault(_Utils);
-
-var _BoxEntry = __webpack_require__(10);
-
-var _BoxEntry2 = _interopRequireDefault(_BoxEntry);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var unitCubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 1, 1, 1);
-var materialTemplate = new THREE.MeshStandardMaterial();
-
-var brightnessRange = [.45, .55];
-var hueBase = Math.random();
-function nextColor() {
-    var color = new THREE.Color();
-    color.setHSL(hueBase, 1, brightnessRange[0] + Math.random() * (brightnessRange[1] - brightnessRange[0]));
-    hueBase = _Utils2.default.GoldenSeries(hueBase);
-    return color;
-}
-
-var CargoBoxView = function (_CargoView) {
-    _inherits(CargoBoxView, _CargoView);
-
-    /**
-     * 
-     * @param {BoxEntry} boxEntry 
-     */
-    function CargoBoxView(boxEntry) {
-        _classCallCheck(this, CargoBoxView);
-
-        var _this = _possibleConstructorReturn(this, (CargoBoxView.__proto__ || Object.getPrototypeOf(CargoBoxView)).call(this, boxEntry));
-
-        var material = materialTemplate.clone();
-        material.color = nextColor();
-        _this.mesh = new THREE.Mesh(unitCubeGeometry, material);
-        _this.mesh.scale.copy(boxEntry.dimensions.vec3);
-
-        _this.view = new THREE.Object3D();
-        _this.view.add(_this.mesh);
-        return _this;
-    }
-
-    /** @returns {BoxEntry} */
-
-
-    _createClass(CargoBoxView, [{
-        key: "SetScale",
-
-
-        /**
-         * @param {Number} x 
-         * @param {Number} y 
-         * @param {Number} z 
-         */
-        value: function SetScale(x, y, z) {
-            this.mesh.scale.set(x, y, z);
-        }
-
-        /**
-         * @param {Number} x in radians
-         * @param {Number} y in radians
-         * @param {Number} z in radians
-         */
-
-    }, {
-        key: "SetRotationAngles",
-        value: function SetRotationAngles(x, y, z) {
-            this.mesh.rotation.set(x, y, z);
-        }
-    }, {
-        key: "entry",
-        get: function get() {
-            return _get(CargoBoxView.prototype.__proto__ || Object.getPrototypeOf(CargoBoxView.prototype), "entry", this);
-        },
-        set: function set(value) {
-            _set(CargoBoxView.prototype.__proto__ || Object.getPrototypeOf(CargoBoxView.prototype), "entry", value, this);
-            var s = value.dimensions.vec3;
-            this.SetScale(s.x, s.y, s.z);
-        }
-    }]);
-
-    return CargoBoxView;
-}(_CargoView3.default);
-
-exports.default = CargoBoxView;
-
-/***/ }),
-/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9433,15 +6103,15 @@ var _Container = __webpack_require__(6);
 
 var _Container2 = _interopRequireDefault(_Container);
 
-var _ContainerView = __webpack_require__(39);
+var _ContainerView = __webpack_require__(36);
 
 var _ContainerView2 = _interopRequireDefault(_ContainerView);
 
-var _Logger = __webpack_require__(3);
+var _Logger = __webpack_require__(2);
 
 var _Logger2 = _interopRequireDefault(_Logger);
 
-var _ContainingVolume = __webpack_require__(8);
+var _ContainingVolume = __webpack_require__(13);
 
 var _ContainingVolume2 = _interopRequireDefault(_ContainingVolume);
 
@@ -9466,28 +6136,27 @@ var PackingSpaceView = function () {
         this.containerViews = [];
     }
 
-    /**
-     * @param {Container} container 
+    /** 
+     * @param {Container} container
      */
 
 
     _createClass(PackingSpaceView, [{
         key: "Add",
         value: function Add(container) {
-            _Logger2.default.Log('Adding container: ' + container.ToString() + ' to view', container);
             var containerView = _ContainerView2.default.Request(container);
             this.view.add(containerView.view);
             this.containerViews.push(containerView);
         }
-
-        /**
-         * 
-         * @param {Container} container 
-         */
-
     }, {
-        key: "Remove",
-        value: function Remove(container) {}
+        key: "Clear",
+        value: function Clear() {
+            for (var i = 0; i < this.containerViews.length; i++) {
+                var cv = this.containerViews[i];
+                this.view.remove(cv.view);
+            }
+            this.containerViews.length = 0;
+        }
 
         /**
          * @param {string} containingVolumeUID 
@@ -9527,7 +6196,7 @@ var PackingSpaceView = function () {
 exports.default = PackingSpaceView;
 
 /***/ }),
-/* 39 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9545,15 +6214,15 @@ var _Container = __webpack_require__(6);
 
 var _Container2 = _interopRequireDefault(_Container);
 
-var _Asset = __webpack_require__(40);
+var _Asset = __webpack_require__(5);
 
 var _Asset2 = _interopRequireDefault(_Asset);
 
-var _Logger = __webpack_require__(3);
+var _Logger = __webpack_require__(2);
 
 var _Logger2 = _interopRequireDefault(_Logger);
 
-var _ContainingVolume = __webpack_require__(8);
+var _ContainingVolume = __webpack_require__(13);
 
 var _ContainingVolume2 = _interopRequireDefault(_ContainingVolume);
 
@@ -9561,15 +6230,25 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var ContainerBox =
+/** @param {THREE.Mesh} mesh */
+function ContainerBox(mesh) {
+    _classCallCheck(this, ContainerBox);
+
+    this.mesh = mesh;
+};
+
 /**
  * 
  * @param {Container} container 
  */
+
+
 function createContainerBoxes(container) {
     /**
-     * @type {Map<ContainingVolume, THREE.Mesh>}
+     * @type {Map<ContainingVolume, ContainerBox>}
      */
-    var meshes = new Map();
+    var boxes = new Map();
 
     container.volumes.forEach(function (cv) {
         var mesh = _Asset2.default.CreateMesh();
@@ -9587,12 +6266,15 @@ function createContainerBoxes(container) {
         mesh.material.polygonOffsetFactor = 1;
         mesh.material.polygonOffsetUnits = 1;
 
-        meshes.set(cv, mesh);
+        boxes.set(cv, new ContainerBox(mesh));
     });
 
-    return meshes;
+    return boxes;
 }
 
+var tempVec3 = new THREE.Vector3();
+
+/** @type {WeakMap<Container, ContainerView>} */
 var views = new WeakMap();
 
 var ContainerView = function () {
@@ -9604,6 +6286,10 @@ var ContainerView = function () {
     function ContainerView(container, view) {
         _classCallCheck(this, ContainerView);
 
+        // Store original dimensions
+        this.initializationBox3 = new THREE.Box3();
+        this.initializationBox3.setFromObject(view);
+
         views.set(container, this);
 
         this.container = container;
@@ -9611,20 +6297,21 @@ var ContainerView = function () {
         this.view.add(view);
 
         _Asset2.default.StandardSceneObject(this.view);
+        _Asset2.default.ColorTemplates('Containers').Apply(this.view);
 
-        var containerBoxes = createContainerBoxes(container);
+        this.containerBoxes = createContainerBoxes(container);
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
         var _iteratorError = undefined;
 
         try {
-            for (var _iterator = containerBoxes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            for (var _iterator = this.containerBoxes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                 var _step$value = _slicedToArray(_step.value, 2),
                     cv = _step$value[0],
-                    mesh = _step$value[1];
+                    box = _step$value[1];
 
-                mesh.position.add(cv.position);
-                this.view.add(mesh);
+                box.mesh.position.add(cv.position);
+                this.view.add(box.mesh);
             }
         } catch (err) {
             _didIteratorError = true;
@@ -9640,22 +6327,51 @@ var ContainerView = function () {
                 }
             }
         }
-
-        console.log(this);
     }
 
-    /*
-    Set(object3d){
-        this.view = object3d;
+    //** @param {Input} input @param {Camera} cameraController */
+    /*InitSliderBoxes(input, cameraController, changeCallback, stopCallback){
+        for(var box of this.containerBoxes.values()){
+            box.UseInput(input, cameraController);
+            box.On(sliderSignals.change, changeCallback);
+            box.On(sliderSignals.stop, stopCallback);
+        }
     }*/
 
     /**
-     * @param {Container} container
-     * @returns {ContainerView}
+     * @param {Boolean} visible
+     * @param {THREE.Vector3} [padding]
      */
 
 
-    _createClass(ContainerView, null, [{
+    _createClass(ContainerView, [{
+        key: "PlatformVisibility",
+        value: function PlatformVisibility(visible, padding) {
+
+            if (visible && this.platformMesh === undefined) {
+
+                if (padding === undefined) padding = new THREE.Vector3(0, .01, 0);
+
+                this.initializationBox3.getSize(tempVec3);
+
+                var planeGeom = new THREE.BoxGeometry(tempVec3.x + padding.x * 2, padding.y, tempVec3.z + padding.z * 2, 1, 1, 1);
+                var planeMaterial = new _Asset2.default.CreateSolidMaterialMatte(_Asset2.default.ColorTemplates('Containers').Apply(0xffffff));
+                this.platformMesh = new THREE.Mesh(planeGeom, planeMaterial);
+                _Asset2.default.ReceiveShadow(this.platformMesh);
+
+                this.platformMesh.position.y = .001;
+                this.view.add(this.platformMesh);
+            }
+
+            this.platformMesh.visible = visible;
+        }
+
+        /**
+         * @param {Container} container
+         * @returns {ContainerView}
+         */
+
+    }], [{
         key: "Request",
         value: function Request(container) {
             var view = views.get(container);
@@ -9690,7 +6406,8 @@ var ContainerView = function () {
                     }
                 }
 
-                containerView = new ContainerView(container, _view);
+                _view = new ContainerView(container, _view);
+                views.set(container, _view);
                 _Logger2.default.Warn('View not found for:', container);
             }
             return view;
@@ -9703,99 +6420,7 @@ var ContainerView = function () {
 exports.default = ContainerView;
 
 /***/ }),
-/* 40 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var defaultGeometry = new THREE.CubeGeometry(1, 1, 1);
-var defaultMeshMaterial = new THREE.MeshStandardMaterial({ color: 0xaaaaaa });
-
-var objectLoader = new THREE.ObjectLoader();
-var jsonLoader = new THREE.JSONLoader();
-
-var Asset = function () {
-    function Asset() {
-        _classCallCheck(this, Asset);
-    }
-
-    /**
-     * 
-     * @param {THREE.Geometry|THREE.BufferGeometry} geometry 
-     * @param {THREE.Material} [material]
-     */
-
-
-    _createClass(Asset, null, [{
-        key: "CreateMesh",
-        value: function CreateMesh(geometry, material) {
-            geometry = geometry || defaultGeometry;
-            material = material || defaultMeshMaterial;
-
-            var mesh = new THREE.Mesh(geometry, material);
-            return mesh;
-        }
-
-        /**
-         * @typedef GeometryJSONReturn
-         * @property {THREE.Geometry|THREE.BufferGeometry} geometry
-         * @property {Array<THREE.Material>} [materials]
-         * 
-         * @param {Object} json - Representing Geometry or BufferGeometry json data
-         * @param {string} [texturePath] - optional texture url 
-         * @returns {GeometryJSONReturn}
-         */
-
-    }, {
-        key: "FromGeometryJSON",
-        value: function FromGeometryJSON(json, texturePath) {
-            return jsonLoader.parse(json, texturePath);
-        }
-
-        /**
-         * @param {Object} json 
-         * @param {THREE.Object3D} texturePath 
-         */
-
-    }, {
-        key: "FromJSON",
-        value: function FromJSON(json, texturePath) {
-            return objectLoader.parse(json, texturePath);
-        }
-
-        /**
-         * 
-         * @param {THREE.Object3D} object 
-         */
-
-    }, {
-        key: "StandardSceneObject",
-        value: function StandardSceneObject(object) {
-            object.traverse(function (child) {
-                if (child instanceof THREE.Mesh) {
-                    child.castShadow = true;
-                    child.receiveShadow = true;
-                }
-            });
-        }
-    }]);
-
-    return Asset;
-}();
-
-exports.default = Asset;
-
-/***/ }),
-/* 41 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9871,7 +6496,7 @@ var Pool = function () {
 exports.default = Pool;
 
 /***/ }),
-/* 42 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9883,21 +6508,29 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Logger = __webpack_require__(3);
+var _Logger = __webpack_require__(2);
 
 var _Logger2 = _interopRequireDefault(_Logger);
 
-var _Signaler2 = __webpack_require__(2);
-
-var _Signaler3 = _interopRequireDefault(_Signaler2);
-
-var _BoxEntry = __webpack_require__(10);
+var _BoxEntry = __webpack_require__(3);
 
 var _BoxEntry2 = _interopRequireDefault(_BoxEntry);
 
-var _Dimensions = __webpack_require__(9);
+var _Dimensions = __webpack_require__(18);
 
 var _Dimensions2 = _interopRequireDefault(_Dimensions);
+
+var _LightDispatcher2 = __webpack_require__(7);
+
+var _LightDispatcher3 = _interopRequireDefault(_LightDispatcher2);
+
+var _App = __webpack_require__(10);
+
+var _App2 = _interopRequireDefault(_App);
+
+var _CargoList = __webpack_require__(22);
+
+var _CargoList2 = _interopRequireDefault(_CargoList);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9910,37 +6543,84 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var epsilon = Math.pow(2, -52);
 var numberType = 'number';
 
+var _cargoList = Symbol('cargoList');
+
 var signals = {
-    updated: 'updated',
-    aborted: 'aborted',
-    completed: 'completed'
+    update: 'update',
+    abort: 'abort',
+    insert: 'insert',
+    modify: 'modify',
+    remove: 'remove'
 };
+
+/**
+ * @typedef {Object} CargoInputParams
+ * @property {import('../UX').default} ux
+ */
 
 /**
  * Cubic volumes entry
  */
 
-var CargoInput = function (_Signaler) {
-    _inherits(CargoInput, _Signaler);
+var CargoInput = function (_LightDispatcher) {
+    _inherits(CargoInput, _LightDispatcher);
 
-    function CargoInput() {
+    /**
+     * @param {CargoInputParams} params 
+     */
+    function CargoInput(params) {
         _classCallCheck(this, CargoInput);
 
-        return _possibleConstructorReturn(this, (CargoInput.__proto__ || Object.getPrototypeOf(CargoInput)).call(this));
+        var _this = _possibleConstructorReturn(this, (CargoInput.__proto__ || Object.getPrototypeOf(CargoInput)).call(this));
 
-        /** Do not modify directly, use CargoInput.Update instead
-         * @ignore
-         */
-        //this.entry = new BoxEntry();
+        _this.params = params;
+        return _this;
     }
 
-    /** Creates a new BoxEntry, required for inputs. (Can be reused) */
+    /** @ignore ignore */
 
 
     _createClass(CargoInput, [{
+        key: '_Bind',
+        value: function _Bind(value) {
+            /** @type {App} */
+            var app = value;
+
+            this[_cargoList] = app.packer.cargoList;
+        }
+
+        /** Creates a new BoxEntry, required for inputs. (Can be reused) */
+
+    }, {
         key: 'CreateBoxEntry',
         value: function CreateBoxEntry() {
             return new _BoxEntry2.default();
+        }
+
+        /** @param {string} entryUID @returns {BoxEntry} the entry if it exists */
+
+    }, {
+        key: 'GetEntry',
+        value: function GetEntry(entryUID) {
+            /** @type {CargoList} */
+            var cargoList = this[_cargoList];
+            var entry = cargoList.GetEntry(entryUID);
+            return entry;
+        }
+
+        /** @returns {Array<BoxEntry>} all entries or an empty array */
+
+    }, {
+        key: 'GetEntries',
+        value: function GetEntries() {
+            /** @type {CargoList} */
+            var cargoList = this[_cargoList];
+            var entries = [];
+            cargoList.groups.forEach(function (value) {
+                return entries.push(value.entry);
+            });
+
+            return entries;
         }
 
         /** Shows/updates entry 3D display
@@ -9953,16 +6633,16 @@ var CargoInput = function (_Signaler) {
         value: function Show(entry) {
             if (_BoxEntry2.default.Assert(entry)) {
                 try {
-                    this.Dispatch(signals.updated, entry);
+                    this.Dispatch(signals.update, entry);
                     return true;
                 } catch (error) {
-                    _Logger2.default.Warn('Error in Cargo.Input.Show, error/entry:', error, entry);
+                    _Logger2.default.Warn('Error in CargoInput.Show, error/entry:', error, entry);
                 }
 
                 return false;
             }
 
-            _Logger2.default.Warn('BoxEntry.Assert failed in Cargo.Input.Show, entry:', entry);
+            _Logger2.default.Warn('BoxEntry.Assert failed in CargoInput.Show, entry:', entry);
             return false;
         }
 
@@ -9971,7 +6651,7 @@ var CargoInput = function (_Signaler) {
     }, {
         key: 'Hide',
         value: function Hide() {
-            this.Dispatch(signals.aborted);
+            this.Dispatch(signals.abort);
         }
 
         /** Adds a new entry and obtain its uid
@@ -9985,7 +6665,7 @@ var CargoInput = function (_Signaler) {
             if (_BoxEntry2.default.Assert(entry)) {
 
                 if (_Dimensions2.default.IsVolume(entry.dimensions.Abs()) === false) {
-                    _Logger2.default.Warn('Cargo.Input.Add, entry rejected, dimensions != Volume:', entry);
+                    _Logger2.default.Warn('CargoInput.Add, entry rejected, dimensions != Volume:', entry);
                     return false;
                 }
 
@@ -9993,17 +6673,77 @@ var CargoInput = function (_Signaler) {
                     var commitedEntry = entry.Clone();
                     var uid = commitedEntry.SetUID();
 
-                    this.Dispatch(signals.completed, commitedEntry);
+                    this.Dispatch(signals.insert, commitedEntry);
                     return uid;
                 } catch (error) {
-                    _Logger2.default.Warn('Error in Cargo.Input.Add, error/entry:', error, entry);
+                    _Logger2.default.Warn('Error in CargoInput.Add, error/entry:', error, entry);
                 }
 
                 return false;
             }
 
-            _Logger2.default.Warn('BoxEntry.Assert failed in Cargo.Input.Add, entry:', entry);
+            _Logger2.default.Warn('BoxEntry.Assert failed in CargoInput.Add, entry:', entry);
             return false;
+        }
+
+        /** Modify an existing box entry
+         * @param {string} entryUID
+         * @param {BoxEntry} boxEntry
+         * @returns {Boolean} success
+         */
+
+    }, {
+        key: 'Modify',
+        value: function Modify(entryUID, boxEntry) {
+            var existing = this.GetEntry(entryUID);
+            if (!existing) {
+                _Logger2.default.Warn('CargoInput.Modify, entry not found for:', entryUID);
+                return false;
+            }
+
+            if (_BoxEntry2.default.Assert(boxEntry)) {
+
+                if (_Dimensions2.default.IsVolume(boxEntry.dimensions.Abs()) === false) {
+                    _Logger2.default.Warn('CargoInput.Modify, entry rejected, dimensions != Volume:', boxEntry);
+                    return false;
+                }
+
+                try {
+                    existing.Copy(boxEntry);
+
+                    this.Dispatch(signals.modify, existing);
+                    return true;
+                } catch (error) {
+                    _Logger2.default.Warn('Error in CargoInput.Modify, error/entry:', error, boxEntry);
+                }
+
+                return false;
+            }
+
+            _Logger2.default.Warn('BoxEntry.Assert failed in CargoInput.Modify, entry:', boxEntry);
+            return false;
+        }
+
+        /** Removes an existing box entry
+         * @param {string} entryUID
+         * @returns {Boolean} success
+         */
+
+    }, {
+        key: 'Remove',
+        value: function Remove(entryUID) {
+
+            /** @type {CargoList} */
+            var cargoList = this[_cargoList];
+            var existing = cargoList.GetEntry(entryUID);
+
+            if (!existing) {
+                _Logger2.default.Warn('CargoInput.Remove, entry not found for:', entryUID);
+                return false;
+            }
+
+            this.Dispatch(signals.remove, existing);
+            return true;
         }
     }], [{
         key: 'signals',
@@ -10013,12 +6753,14 @@ var CargoInput = function (_Signaler) {
     }]);
 
     return CargoInput;
-}(_Signaler3.default);
+}(_LightDispatcher3.default);
+
+CargoInput.BoxEntry = _BoxEntry2.default;
 
 exports.default = CargoInput;
 
 /***/ }),
-/* 43 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10030,25 +6772,29 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Signaler2 = __webpack_require__(2);
-
-var _Signaler3 = _interopRequireDefault(_Signaler2);
-
 var _Container = __webpack_require__(6);
 
 var _Container2 = _interopRequireDefault(_Container);
 
-var _PackingSpace = __webpack_require__(17);
+var _PackingSpace = __webpack_require__(23);
 
 var _PackingSpace2 = _interopRequireDefault(_PackingSpace);
 
-var _ContainerView = __webpack_require__(39);
+var _ContainerView = __webpack_require__(36);
 
 var _ContainerView2 = _interopRequireDefault(_ContainerView);
 
-var _Asset = __webpack_require__(40);
+var _Asset = __webpack_require__(5);
 
 var _Asset2 = _interopRequireDefault(_Asset);
+
+var _LightDispatcher2 = __webpack_require__(7);
+
+var _LightDispatcher3 = _interopRequireDefault(_LightDispatcher2);
+
+var _Logger = __webpack_require__(2);
+
+var _Logger2 = _interopRequireDefault(_Logger);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -10065,45 +6811,97 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  */
 
 var signals = {
-    containerLoaded: 'containerLoaded'
+    containerLoaded: 'containerLoaded',
+    sliderValueChange: 'sliderValueChange',
+    sliderValueStop: 'sliderValueStop'
 };
 
-var PackingSpaceInput = function (_Signaler) {
-    _inherits(PackingSpaceInput, _Signaler);
+/**
+ * @typedef {Object} PackingSpaceInputParams
+ * @property {import('../UX').default} ux
+ */
 
-    function PackingSpaceInput() {
+var PackingSpaceInput = function (_LightDispatcher) {
+    _inherits(PackingSpaceInput, _LightDispatcher);
+
+    /**
+     * @param {PackingSpaceInputParams} params 
+     */
+    function PackingSpaceInput(params) {
         _classCallCheck(this, PackingSpaceInput);
 
         var _this = _possibleConstructorReturn(this, (PackingSpaceInput.__proto__ || Object.getPrototypeOf(PackingSpaceInput)).call(this));
+
+        _this.params = params;
 
         _this.packingSpace = new _PackingSpace2.default();
         return _this;
     }
 
-    /**
-     * 
-     * @param {PackingSpaceJSON} jsonObject 
-     */
+    /** @ignore ignore */
 
 
     _createClass(PackingSpaceInput, [{
+        key: "_Bind",
+        value: function _Bind(value) {
+            /** @type {App} */
+            var app = value;
+        }
+
+        /**
+         * @param {PackingSpaceJSON} jsonObject 
+         * @returns {Number|Boolean} uid or false if error
+         */
+
+    }, {
         key: "Load",
         value: function Load(jsonObject) {
-            var data = typeof jsonObject === 'string' ? JSON.parse(jsonObject) : jsonObject;
-            console.log(data);
-            if (data.container) {
-                var container = _Container2.default.FromJSON(data.container);
 
+            var data = void 0;
+            try {
+                data = typeof jsonObject === 'string' ? JSON.parse(jsonObject) : jsonObject;
+            } catch (error) {
+                _Logger2.default.Warn('Error in PackingSpaceInput.Load, error/jsonObject:', error, jsonObject);
+                return false;
+            }
+
+            if (data.container) {
+                var container = void 0;
+                try {
+                    container = _Container2.default.FromJSON(data.container);
+                } catch (error) {
+                    _Logger2.default.Warn('Error in PackingSpaceInput.Load, error/jsonObject.container:', error, data.container);
+                    return false;
+                }
+
+                if (!container.uid) container.SetUID();
+                var uid = container.uid;
+
+                var model = void 0;
                 if (data.view) {
-                    var model = _Asset2.default.FromJSON(data.view);
-                    //var model = Asset.CreateMesh(geometry);
+                    try {
+                        model = _Asset2.default.FromJSON(data.view);
+                    } catch (error) {
+                        _Logger2.default.Warn('Error in PackingSpaceInput.Load, error/jsonObject.view:', error, data.view);
+                        return false;
+                    }
+                }
+
+                if (model) {
                     var containerView = new _ContainerView2.default(container, model);
+                    var units = this.params.ux.params.units;
+                    var padding = 60 * units;
+                    var thickness = 2 * units;
+                    containerView.PlatformVisibility(true, new THREE.Vector3(padding, thickness, padding));
                 }
 
                 this.packingSpace.AddContainer(container);
 
                 this.Dispatch(signals.containerLoaded, container);
+                return uid;
             }
+
+            return false;
         }
     }], [{
         key: "signals",
@@ -10113,35 +6911,219 @@ var PackingSpaceInput = function (_Signaler) {
     }]);
 
     return PackingSpaceInput;
-}(_Signaler3.default);
+}(_LightDispatcher3.default);
 
 exports.default = PackingSpaceInput;
 
 /***/ }),
-/* 44 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(45);
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _LightDispatcher2 = __webpack_require__(7);
+
+var _LightDispatcher3 = _interopRequireDefault(_LightDispatcher2);
+
+var _Packer = __webpack_require__(12);
+
+var _Packer2 = _interopRequireDefault(_Packer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/** @typedef {import('../packer/Packer').SolverParams} SolverParams
+ */
+
+/** @typedef {import('../packer/cub/CUB').CUBParams} CUBParams
+ */
+
+var ResultSpace =
+/** @param {string} uid */
+function ResultSpace(uid) {
+    _classCallCheck(this, ResultSpace);
+
+    this.uid = uid;
+};
+
+var ResultEntry =
+/** @param {string} uid @param {ResultSpace} space @param {Number} quantity */
+function ResultEntry(uid, space, quantity) {
+    _classCallCheck(this, ResultEntry);
+
+    this.uid = uid;
+    this.space = space;
+    this.quantity = quantity || 0;
+};
+
+var PackingResult = function PackingResult() {
+    _classCallCheck(this, PackingResult);
+
+    /** @type {Array<ResultSpace>} */
+    this.packingSpaces = [];
+    /** @type {Array<ResultEntry>} */
+    this.packed = [];
+    /** @type {Array<ResultEntry>} */
+    this.unpacked = [];
+
+    this.totalPacked = 0;
+    this.totalUnpacked = 0;
+    /** algorithm runtime in seconds */
+    this.solveDuration = 1;
+};
+
+/** @param {Packer.PackingResult} packingResult */
+
+
+function toInterfaceResults(packingResult) {
+    var result = new PackingResult();
+
+    /** @param {string} containerUID */
+    function getSpace(containerUID) {
+        for (var i = 0; i < result.packingSpaces.length; i++) {
+            if (result.packingSpaces[i].uid === containerUID) {
+                return result.packingSpaces[i];
+            }
+        }
+
+        var ps = new ResultSpace(containerUID);
+        result.packingSpaces.push(ps);
+        return ps;
+    }
+
+    var totalPacked = 0,
+        totalUnpacked = 0;
+
+    /** @param {ResultEntry} resultEntry @param {Array<ResultEntry>} list */
+    function packEntry(resultEntry, list) {
+        var isFirst = true;
+        for (var i = 0; i < list.length; i++) {
+            if (list[i].uid === resultEntry.uid) {
+                isFirst = false;
+                list[i].quantity++;
+                break;
+            }
+        }
+
+        if (isFirst) {
+            resultEntry.quantity = 1;
+            list.push(resultEntry);
+        }
+    }
+
+    packingResult.packed.forEach(function (p) {
+        var uid = p.entry.uid;
+        var space = getSpace(p.containingVolume.container.uid);
+        packEntry(new ResultEntry(uid, space), result.packed);
+        totalPacked++;
+    });
+
+    packingResult.unpacked.forEach(function (p) {
+        var uid = p.entry.uid;
+        var space = null;
+        var unpackedQuantity = p.unpackedQuantity;
+        result.unpacked.push(new ResultEntry(uid, space, unpackedQuantity));
+        totalUnpacked += unpackedQuantity;
+    });
+
+    result.totalPacked = totalPacked;
+    result.totalUnpacked = totalUnpacked;
+    result.solveDuration = packingResult.runtime;
+
+    return result;
+}
+
+var signals = {
+    solveRequest: 'solveRequest',
+    solved: 'solved',
+    failed: 'failed'
+};
+
+var PackerInterface = function (_LightDispatcher) {
+    _inherits(PackerInterface, _LightDispatcher);
+
+    function PackerInterface() {
+        _classCallCheck(this, PackerInterface);
+
+        return _possibleConstructorReturn(this, (PackerInterface.__proto__ || Object.getPrototypeOf(PackerInterface)).call(this));
+    }
+
+    /** @param {SolverParams} params */
+
+
+    _createClass(PackerInterface, [{
+        key: "Solve",
+        value: function Solve(params) {
+            this.Dispatch(signals.solveRequest, params);
+        }
+
+        /** @ignore ignore */
+
+    }, {
+        key: "_Notify",
+        value: function _Notify() {
+            var value = arguments.length <= 0 ? undefined : arguments[0];
+            switch (value) {
+                case signals.solved:
+                    var packingResult = arguments.length <= 1 ? undefined : arguments[1];
+                    var result = toInterfaceResults(packingResult);
+                    this.Dispatch(signals.solved, result);
+                    break;
+                case signals.failed:
+                    var error = arguments.length <= 1 ? undefined : arguments[1];
+                    this.Dispatch(signals.failed, error);
+                    break;
+            }
+        }
+    }], [{
+        key: "signals",
+        get: function get() {
+            return signals;
+        }
+    }]);
+
+    return PackerInterface;
+}(_LightDispatcher3.default);
+
+exports.default = PackerInterface;
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(42);
 
 
 /***/ }),
-/* 45 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global) {
 
-var _FreightPacker = __webpack_require__(46);
+var _FreightPacker = __webpack_require__(43);
 
 var _FreightPacker2 = _interopRequireDefault(_FreightPacker);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 global.FreightPacker = _FreightPacker2.default;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)))
 
 /***/ }),
-/* 46 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10153,19 +7135,19 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Capabilities = __webpack_require__(47);
+var _Capabilities = __webpack_require__(44);
 
 var _Capabilities2 = _interopRequireDefault(_Capabilities);
 
-var _App = __webpack_require__(23);
+var _App = __webpack_require__(10);
 
 var _App2 = _interopRequireDefault(_App);
 
-var _CargoInput = __webpack_require__(42);
+var _CargoInput = __webpack_require__(38);
 
 var _CargoInput2 = _interopRequireDefault(_CargoInput);
 
-var _Logger = __webpack_require__(3);
+var _Logger = __webpack_require__(2);
 
 var _Logger2 = _interopRequireDefault(_Logger);
 
@@ -10173,26 +7155,34 @@ var _Utils = __webpack_require__(0);
 
 var _Utils2 = _interopRequireDefault(_Utils);
 
-var _PackingSpaceInput = __webpack_require__(43);
+var _PackingSpaceInput = __webpack_require__(39);
 
 var _PackingSpaceInput2 = _interopRequireDefault(_PackingSpaceInput);
 
-var _UX = __webpack_require__(13);
+var _UX = __webpack_require__(15);
 
 var _UX2 = _interopRequireDefault(_UX);
 
-var _PackerInterface = __webpack_require__(67);
+var _PackerInterface = __webpack_require__(40);
 
 var _PackerInterface2 = _interopRequireDefault(_PackerInterface);
+
+var _LightDispatcher2 = __webpack_require__(7);
+
+var _LightDispatcher3 = _interopRequireDefault(_LightDispatcher2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 /**
  * @typedef InitializationParams
  * @property {Boolean} debug
- * @property {import('./api/UX').UXParams} ux
+ * @property {UXParams} uxParams
  */
 
 /**
@@ -10205,13 +7195,49 @@ var defaultParams = {
 var utils = {
 	THREE: THREE,
 	dat: window.dat || __webpack_require__(1).default,
-	Signaler: __webpack_require__(2).default,
+	Signaler: __webpack_require__(4).default,
 	Utils: __webpack_require__(0).default,
-	Debug: __webpack_require__(11).default,
-	Config: __webpack_require__(4).default
+	Debug: __webpack_require__(34).default,
+	Config: __webpack_require__(9).default
 };
 
-var FreightPacker = function () {
+/** @param {FreightPacker|App} domain */
+function devSetup(domain) {
+	if (domain instanceof FreightPacker) {
+		var fp = domain;
+		global.fp = fp;
+		FreightPacker.utils.Debug.api = fp;
+		var params = fp.params;
+		if (params.debug) {
+			_Logger2.default.active = true;
+			_Logger2.default.toConsole = true;
+			_Logger2.default.traceToConsole = true;
+		}
+
+		//require('./api/debug/Tester').testPool();
+		//utils.Debug.CLPTest.Test1();
+	}
+
+	if (domain instanceof _App2.default) {
+		var SceneSetup = __webpack_require__(14).default;
+		var app = domain;
+		FreightPacker.utils.Debug.app = app;
+		app.sceneSetup.OnIncludingPrior(SceneSetup.signals.init, function () {
+			FreightPacker.utils.Debug.Viz.SetViewParent(app.sceneSetup.sceneController.scene);
+		});
+	}
+}
+
+/** @param {FreightPacker} fp */
+function auto(fp) {}
+
+var signals = {
+	ready: 'ready'
+};
+
+var FreightPacker = function (_LightDispatcher) {
+	_inherits(FreightPacker, _LightDispatcher);
+
 	/**
   * Freight Packer API instance
   * @param {HTMLDivElement} containerDiv
@@ -10220,39 +7246,43 @@ var FreightPacker = function () {
 	function FreightPacker(containerDiv, params) {
 		_classCallCheck(this, FreightPacker);
 
-		this.params = _Utils2.default.AssignUndefined(params, defaultParams);
-		FreightPacker.DevSetup(this);
+		var _this = _possibleConstructorReturn(this, (FreightPacker.__proto__ || Object.getPrototypeOf(FreightPacker)).call(this));
 
-		this.ux = new _UX2.default(this.params.ux);
+		var scope = _this;
 
-		/**
-   * Handles input of: description fields (label, etc.), dimensions and constraints
-   * @type {CargoInput}
-   */
-		this.cargoInput = new _CargoInput2.default();
+		_this.params = _Utils2.default.AssignUndefined(params, defaultParams);
+		devSetup(_this);
 
-		/**
-   * Handles input of: packing spaces configurations and assets
-   * @type {PackingSpaceInput}
-   */
-		this.packingSpaceInput = new _PackingSpaceInput2.default();
+		_this.ux = new _UX2.default(_this.params.uxParams);
 
-		var app = new _App2.default(containerDiv, this.ux, {
-			cargoInput: this.cargoInput,
-			packingSpaceInput: this.packingSpaceInput
+		/** @type {CargoInputParams} */
+		var cargoInputParams = { ux: _this.ux };
+
+		/** Handles input of: description fields (label, etc.), dimensions and constraints */
+		_this.cargoInput = new _CargoInput2.default(cargoInputParams);
+
+		/** @type {PackingSpaceInputParams} */
+		var packingSpaceInputParams = { ux: _this.ux };
+
+		/** Handles input of: packing spaces configurations and assets */
+		_this.packingSpaceInput = new _PackingSpaceInput2.default(packingSpaceInputParams);
+
+		/** Manual solving and notification */
+		_this.packer = new _PackerInterface2.default();
+
+		/** @type {AppParams} */
+		var appParams = { ux: _this.ux, cargoInput: _this.cargoInput, packingSpaceInput: _this.packingSpaceInput, packerInterface: _this.packer };
+		var app = new _App2.default(containerDiv, appParams);
+		app.On(_App2.default.signals.start, function () {
+			scope.Dispatch(signals.ready);
 		});
 
-		FreightPacker.DevSetup(app);
+		devSetup(app);
 
-		/**
-   * Manual solving and notification
-   * @type {PackerInterface}
-   */
-		this.packer = new _PackerInterface2.default(app);
-
-		if (this.params.debug) {
-			FreightPacker.Auto(this);
+		if (_this.params.debug) {
+			auto(_this);
 		}
+		return _this;
 	}
 
 	/**
@@ -10276,41 +7306,10 @@ var FreightPacker = function () {
 			});
 		}
 	}, {
-		key: 'DevSetup',
-
-
-		/** @param {FreightPacker|App} domain */
-		value: function DevSetup(domain) {
-			if (domain instanceof FreightPacker) {
-				var fp = domain;
-				global.fp = fp;
-				FreightPacker.utils.Debug.api = fp;
-				var params = fp.params;
-				if (params.debug) {
-					_Logger2.default.active = true;
-					_Logger2.default.toConsole = true;
-					_Logger2.default.traceToConsole = true;
-				}
-
-				//require('./api/debug/Tester').testPool();
-				//utils.Debug.CLPTest.Test1();
-			}
-
-			if (domain instanceof _App2.default) {
-				var SceneSetup = __webpack_require__(12).default;
-				var app = domain;
-				FreightPacker.utils.Debug.app = app;
-				app.sceneSetup.BackListen(SceneSetup.signals.init, function () {
-					FreightPacker.utils.Debug.Viz.SetViewParent(app.sceneSetup.sceneController.scene);
-				});
-			}
+		key: 'signals',
+		get: function get() {
+			return signals;
 		}
-
-		/** @param {FreightPacker} fp */
-
-	}, {
-		key: 'Auto',
-		value: function Auto(fp) {}
 	}, {
 		key: 'utils',
 		get: function get() {
@@ -10319,13 +7318,18 @@ var FreightPacker = function () {
 	}]);
 
 	return FreightPacker;
-}();
+}(_LightDispatcher3.default);
+
+FreightPacker.UX = _UX2.default;
+FreightPacker.CargoInput = _CargoInput2.default;
+FreightPacker.PackingSpaceInput = _PackingSpaceInput2.default;
+FreightPacker.Packer = _PackerInterface2.default;
 
 exports.default = FreightPacker;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)))
 
 /***/ }),
-/* 47 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10359,7 +7363,7 @@ var Capabilities = function () {
 exports.default = Capabilities;
 
 /***/ }),
-/* 48 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10371,9 +7375,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _UpdateComponent = __webpack_require__(24);
+var _UpdateComponent = __webpack_require__(25);
 
 var _UpdateComponent2 = _interopRequireDefault(_UpdateComponent);
+
+var _RaycastGroup = __webpack_require__(26);
+
+var _RaycastGroup2 = _interopRequireDefault(_RaycastGroup);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -10520,12 +7528,12 @@ var Input = function () {
     }
 
     _createClass(Input, [{
-        key: 'Dispose',
+        key: "Dispose",
         value: function Dispose() {
             // remove listeners
         }
     }, {
-        key: 'ListenKeys',
+        key: "ListenKeys",
         value: function ListenKeys(keys) {
             if (keys === undefined) {
                 keys = defaultKeysListen;
@@ -10547,7 +7555,7 @@ var Input = function () {
             });
         }
     }, {
-        key: 'ComputeScreen',
+        key: "ComputeScreen",
         value: function ComputeScreen() {
             var screen = this.domContainer.getBoundingClientRect();
             this.screen.x = screen.x;
@@ -10568,7 +7576,7 @@ var Input = function () {
             */
         }
     }, {
-        key: 'OnMouseDown',
+        key: "OnMouseDown",
         value: function OnMouseDown(mouseEvent) {
             if (mouseEvent.button === 0) {
                 this.UpdateScreenAndMouse(mouseEvent);
@@ -10597,7 +7605,7 @@ var Input = function () {
             }
         }
     }, {
-        key: 'OnDoubleClick',
+        key: "OnDoubleClick",
         value: function OnDoubleClick(mouseEvent) {
             for (var i = 0; i < this.onDoubleClick.length; i++) {
                 this.onDoubleClick[i](mouseEvent);
@@ -10606,7 +7614,7 @@ var Input = function () {
             this.UpdateRaycast('OnDoubleClick');
         }
     }, {
-        key: 'ExecuteDelayedMD',
+        key: "ExecuteDelayedMD",
         value: function ExecuteDelayedMD(mouseEvent) {
             if (this._dridMouseDown !== undefined) {
                 this.AbortDelayedAction(this._dridMouseDown);
@@ -10615,7 +7623,7 @@ var Input = function () {
             }
         }
     }, {
-        key: 'OnMouseUp',
+        key: "OnMouseUp",
         value: function OnMouseUp(mouseEvent) {
             if (mouseEvent.button === 0) {
                 var now = this.clock.getElapsedTime();
@@ -10639,7 +7647,7 @@ var Input = function () {
             }
         }
     }, {
-        key: 'OnMouseDrag',
+        key: "OnMouseDrag",
         value: function OnMouseDrag() {
             var p = this.onDragEvent;
             if (p._status) {
@@ -10664,7 +7672,7 @@ var Input = function () {
             }
         }
     }, {
-        key: 'OnClick',
+        key: "OnClick",
         value: function OnClick(mouseEvent) {
             for (var i = 0; i < this.onClick.length; i++) {
                 this.onClick[i](mouseEvent);
@@ -10673,7 +7681,7 @@ var Input = function () {
             this.UpdateRaycast('OnClick');
         }
     }, {
-        key: 'OnRightClick',
+        key: "OnRightClick",
         value: function OnRightClick(mouseEvent) {
             //mouseEvent.preventDefault();
             this.UpdateScreenAndMouse(mouseEvent);
@@ -10684,7 +7692,7 @@ var Input = function () {
             this.UpdateRaycast('OnRightClick');
         }
     }, {
-        key: 'OnMouseMove',
+        key: "OnMouseMove",
         value: function OnMouseMove(mouseEvent) {
             this._mouse.x = THREE.Math.clamp(mouseEvent.clientX - this.screen.left, 0, this.screen.width);
             this._mouse.y = THREE.Math.clamp(mouseEvent.clientY - this.screen.top, 0, this.screen.height);
@@ -10692,12 +7700,12 @@ var Input = function () {
             this.ExecuteDelayedMD(mouseEvent);
         }
     }, {
-        key: 'OnScroll',
+        key: "OnScroll",
         value: function OnScroll(event) {
             this.screenNeedsUpdate = true;
         }
     }, {
-        key: 'OnMouseWheel',
+        key: "OnMouseWheel",
         value: function OnMouseWheel(mouseEvent) {
             mouseEvent.preventDefault();
             var delta = THREE.Math.clamp(mouseEvent.wheelDelta || -mouseEvent.detail, -1, 1);
@@ -10705,7 +7713,7 @@ var Input = function () {
             this.fov.lerp = 0;
         }
     }, {
-        key: 'LerpZoom',
+        key: "LerpZoom",
         value: function LerpZoom() {
             this.fov.lerp += .1;
             if (this.fov.lerp >= 1 || Number.isNaN(this.fov.lerp)) {
@@ -10715,13 +7723,13 @@ var Input = function () {
             this.camera.updateProjectionMatrix();
         }
     }, {
-        key: 'OnResize',
+        key: "OnResize",
         value: function OnResize(event) {
             this.screenNeedsUpdate = true;
             this.cameraNeedsUpdate = true;
         }
     }, {
-        key: 'RemoveEventCallback',
+        key: "RemoveEventCallback",
         value: function RemoveEventCallback(eventType, callback) {
             var callbacks = this[eventType];
             for (var iCallback = 0; iCallback < callbacks.length; iCallback++) {
@@ -10731,7 +7739,7 @@ var Input = function () {
             }
         }
     }, {
-        key: 'Update',
+        key: "Update",
         value: function Update() {
             this.UpdateScreenAndMouse();
 
@@ -10752,18 +7760,18 @@ var Input = function () {
             this.OnMouseDrag();
         }
     }, {
-        key: 'Update25',
+        key: "Update25",
         value: function Update25() {
             this.LerpZoom();
             this.UpdateRaycast('Update25');
         }
     }, {
-        key: 'Update10',
+        key: "Update10",
         value: function Update10() {
             this.UpdateRaycast('Update10');
         }
     }, {
-        key: 'FireOnce',
+        key: "FireOnce",
         value: function FireOnce() {
             for (var iCallback = this.fireOnce.length; iCallback-- > 0;) {
                 this.fireOnce[iCallback]();
@@ -10771,7 +7779,7 @@ var Input = function () {
             this.fireOnce.length = 0;
         }
     }, {
-        key: 'DelayedAction',
+        key: "DelayedAction",
         value: function DelayedAction(action, delay) {
             var drid = window.setTimeout(function () {
                 action();
@@ -10779,13 +7787,13 @@ var Input = function () {
             return drid;
         }
     }, {
-        key: 'AbortDelayedAction',
+        key: "AbortDelayedAction",
         value: function AbortDelayedAction(drid) {
             window.clearTimeout(drid);
             return;
         }
     }, {
-        key: 'Repeat',
+        key: "Repeat",
         value: function Repeat(action, interval) {
             if (this._repeats === undefined) this._repeats = [];
             var drid = window.setInterval(function () {
@@ -10795,7 +7803,7 @@ var Input = function () {
             return drid;
         }
     }, {
-        key: 'StopRepeat',
+        key: "StopRepeat",
         value: function StopRepeat(action) {
             if (this._repeats === undefined) return;
             if (typeof action === 'number') {
@@ -10811,7 +7819,7 @@ var Input = function () {
             }
         }
     }, {
-        key: 'UpdateScreenAndMouse',
+        key: "UpdateScreenAndMouse",
         value: function UpdateScreenAndMouse(mouseEvent) {
             if (this.screenNeedsUpdate) {
                 this.ComputeScreen();
@@ -10836,7 +7844,7 @@ var Input = function () {
             this.mouseViewport.y = -this._mouse.y / this.screen.height * 2 + 1;
         }
     }, {
-        key: 'RaycastTest',
+        key: "RaycastTest",
         value: function RaycastTest(objects, recursive) {
             this.UpdateRaycaster();
             recursive = recursive !== undefined ? recursive : false;
@@ -10846,25 +7854,32 @@ var Input = function () {
             }
             return undefined;
         }
+
+        /**
+         * @param {string} event Update Update25 Update10 OnMouseDown OnDoubleClick OnMouseUp OnRightClick OnClick
+         * @param {string} groupID 
+         * @param {RaycastGroup} group 
+         */
+
     }, {
-        key: 'AddRaycastGroup',
+        key: "AddRaycastGroup",
         value: function AddRaycastGroup(event, groupID, group) {
             if (this._raycastGroups[event][groupID] !== undefined) console.log('RaycastGroup ' + groupID + ' is being overwritten.');
             this._raycastGroups[event][groupID] = group;
         }
     }, {
-        key: 'RemoveRaycastGroup',
+        key: "RemoveRaycastGroup",
         value: function RemoveRaycastGroup(event, groupID) {
             delete this._raycastGroups[event][groupID];
         }
     }, {
-        key: 'UpdateRaycaster',
+        key: "UpdateRaycaster",
         value: function UpdateRaycaster() {
             this.camera.updateMatrixWorld();
             this.raycaster.setFromCamera(this.mouseViewport, this.camera);
         }
     }, {
-        key: 'UpdateRaycast',
+        key: "UpdateRaycast",
         value: function UpdateRaycast(event) {
             var raycastGroupsKeys = Object.keys(this._raycastGroups[event]);
             var numRaycastGroups = raycastGroupsKeys.length;
@@ -10885,7 +7900,7 @@ var Input = function () {
 exports.default = Input;
 
 /***/ }),
-/* 49 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10944,7 +7959,7 @@ var Quality = function () {
 exports.default = Quality;
 
 /***/ }),
-/* 50 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10977,7 +7992,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 /** @type {RendererParams} */
 var defaultParams = {
     antialias: true,
-    shadows: THREE.PCFSoftShadowMap,
+    shadows: true,
+    shadowMapType: THREE.PCFSoftShadowMap,
     shadowsAutoUpdate: true,
     clearColor: 0xcfcfcf,
     renderSizeMul: 1,
@@ -10994,16 +8010,15 @@ var Renderer = function () {
         this.params = _Utils2.default.AssignUndefined(params, defaultParams);
         this.renderer = new THREE.WebGLRenderer({ antialias: this.params.antialias });
 
-        if (this.params.shadows) {
-            this.renderer.shadowMap.enabled = true;
-            this.renderer.shadowMap.type = this.params.shadows;
-            this.renderer.shadowMap.autoUpdate = this.params.shadowsAutoUpdate;
-        }
+        this.renderer.shadowMap.enabled = this.params.shadows;
+        this.renderer.shadowMap.type = this.params.shadowMapType;
+        this.renderer.shadowMap.autoUpdate = this.params.shadowsAutoUpdate;
 
         this.renderer.physicallyCorrectLights = true;
         this.renderer.gammaInput = true;
         this.renderer.gammaOutput = true;
-        this.renderer.toneMapping = THREE.ReinhardToneMapping;
+        this.renderer.toneMapping = THREE.Uncharted2ToneMapping;
+        this.renderer.toneMappingExposure = 1.4;
         //this.renderer.toneMappingExposure = ;
 
         this.maxTextureSize = this.renderer.context.getParameter(this.renderer.context.MAX_TEXTURE_SIZE);
@@ -11089,7 +8104,7 @@ var Renderer = function () {
 exports.default = Renderer;
 
 /***/ }),
-/* 51 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11099,15 +8114,15 @@ Object.defineProperty(exports, "__esModule", {
         value: true
 });
 
-var _Controller2 = __webpack_require__(25);
+var _Controller2 = __webpack_require__(27);
 
 var _Controller3 = _interopRequireDefault(_Controller2);
 
-var _Camera = __webpack_require__(26);
+var _Camera = __webpack_require__(28);
 
 var _Camera2 = _interopRequireDefault(_Camera);
 
-var _Transform = __webpack_require__(52);
+var _Transform = __webpack_require__(49);
 
 var _Transform2 = _interopRequireDefault(_Transform);
 
@@ -11168,7 +8183,7 @@ var HUDView = function (_Controller) {
 exports.default = HUDView;
 
 /***/ }),
-/* 52 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11250,7 +8265,7 @@ var Transform = function () {
 exports.default = Transform;
 
 /***/ }),
-/* 53 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11260,11 +8275,21 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _CargoGroup = __webpack_require__(16);
+var _App = __webpack_require__(10);
 
-var _CargoGroup2 = _interopRequireDefault(_CargoGroup);
+var _App2 = _interopRequireDefault(_App);
+
+var _LightDispatcher2 = __webpack_require__(7);
+
+var _LightDispatcher3 = _interopRequireDefault(_LightDispatcher2);
+
+var _Logger = __webpack_require__(2);
+
+var _Logger2 = _interopRequireDefault(_Logger);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11274,87 +8299,112 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var _position = Symbol('position');
-var _rotation = Symbol('rotation');
+var _app = Symbol('app');
 
-var PackingItem = function () {
-    function PackingItem() {
-        _classCallCheck(this, PackingItem);
+var typeofNumber = 'number';
 
-        this[_position] = new THREE.Vector3();
-        this[_rotation] = new THREE.Euler();
+var PackResults = function () {
+
+    /** @param {App} app */
+    function PackResults(app) {
+        _classCallCheck(this, PackResults);
+
+        this[_app] = app;
     }
 
-    /** @returns {THREE.Vector3} */
+    _createClass(PackResults, [{
+        key: "SliceResults",
 
 
-    _createClass(PackingItem, [{
-        key: 'position',
-        get: function get() {
-            return this[_position];
-        },
-        set: function set(value) {
-            this[_position] = value;
+        /** 
+         * 0: None - 1: All (over y span)
+         * @param {Number} value
+         */
+        value: function SliceResults(value) {
+
+            if ((typeof value === "undefined" ? "undefined" : _typeof(value)) !== typeofNumber) {
+                _Logger2.default.Warn('PackResults.SliceResults error, parameter is not a number:', value);
+                return;
+            }
+
+            /** @type {App} */
+            var app = this[_app];
+            app.view.packResultView.Slice(value);
         }
-
-        /** @returns {THREE.Euler} */
-
     }, {
-        key: 'rotation',
+        key: "animationDuration",
         get: function get() {
-            return this[_position];
+            /** @type {App} */
+            var app = this[_app];
+            return app.view.packResultView.params.animationDuration;
         },
         set: function set(value) {
-            this[_rotation] = value;
+
+            if ((typeof value === "undefined" ? "undefined" : _typeof(value)) !== typeofNumber) {
+                _Logger2.default.Warn('PackResults.animationDuration error, parameter is not a number:', value);
+                return;
+            }
+
+            /** @type {App} */
+            var app = this[_app];
+            app.view.packResultView.params.animationDuration = value;
         }
     }]);
 
-    return PackingItem;
+    return PackResults;
 }();
 
-var Cargo = function (_PackingItem) {
-    _inherits(Cargo, _PackingItem);
+var visualizationSignals = {};
 
-    /**
-     * 
-     * @param {CargoGroup} group
-     */
-    function Cargo(group) {
-        _classCallCheck(this, Cargo);
+var Visualization = function (_LightDispatcher) {
+    _inherits(Visualization, _LightDispatcher);
 
-        var _this = _possibleConstructorReturn(this, (Cargo.__proto__ || Object.getPrototypeOf(Cargo)).call(this));
+    /** @param {App} app */
+    function Visualization(app) {
+        _classCallCheck(this, Visualization);
 
-        _this.group = group;
+        var _this = _possibleConstructorReturn(this, (Visualization.__proto__ || Object.getPrototypeOf(Visualization)).call(this));
+
+        _this[_app] = app;
+
+        _this.packResults = new PackResults(app);
         return _this;
     }
 
-    _createClass(Cargo, [{
-        key: 'Clone',
-        value: function Clone() {
-            var cargo = new Cargo(this.group);
-            return cargo;
-        }
-    }, {
-        key: 'ToString',
-        value: function ToString() {
-            var output = 'Cargo(' + this.entry.ToString() + ')';
+    /** Selects an entry in the scene, optionally highlighting packed instances
+     *  @param {string | Boolean} [entryUID] default = false (deselect) @param {Boolean} [highlightPackedInstances] default = true */
 
-            return output;
+
+    _createClass(Visualization, [{
+        key: "SelectEntry",
+        value: function SelectEntry(entryUID, highlightPackedInstances) {
+            /** @type {App} */
+            var app = this[_app];
+
+            if (entryUID && !app.packer.cargoList.GetEntry(entryUID)) {
+                _Logger2.default.Warn('Visualization.SelectEntry failed, entry not found for:', entryUID);
+                return;
+            }
+
+            app.view.cargoListView.Select(entryUID);
+
+            if (highlightPackedInstances === undefined) highlightPackedInstances = true;
+            if (highlightPackedInstances || !entryUID) app.view.packResultView.SelectEntry(entryUID);
         }
-    }, {
-        key: 'entry',
+    }], [{
+        key: "signals",
         get: function get() {
-            return this.group.entry;
+            return visualizationSignals;
         }
     }]);
 
-    return Cargo;
-}(PackingItem);
+    return Visualization;
+}(_LightDispatcher3.default);
 
-exports.default = Cargo;
+exports.default = Visualization;
 
 /***/ }),
-/* 54 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11366,82 +8416,171 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Dimensions = __webpack_require__(9);
+var _LightDispatcher2 = __webpack_require__(7);
 
-var _Dimensions2 = _interopRequireDefault(_Dimensions);
+var _LightDispatcher3 = _interopRequireDefault(_LightDispatcher2);
+
+var _App = __webpack_require__(10);
+
+var _App2 = _interopRequireDefault(_App);
+
+var _CargoListView = __webpack_require__(16);
+
+var _CargoListView2 = _interopRequireDefault(_CargoListView);
+
+var _CargoEntry = __webpack_require__(8);
+
+var _CargoEntry2 = _interopRequireDefault(_CargoEntry);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var type = 'Volume';
-var _box3 = Symbol('box3');
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-var Volume = function () {
-    function Volume() {
-        _classCallCheck(this, Volume);
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-        /**
-         * @type {THREE.Vector3}
-         */
-        this.position = new THREE.Vector3();
+var _app = Symbol('app');
 
-        /**
-         * @type {Dimensions}
-         */
-        this.dimensions = new _Dimensions2.default();
+var signals = {
+    boxEntryInteract: 'beInteract0'
+};
 
-        this[_box3] = new THREE.Box3();
+var User = function (_LightDispatcher) {
+    _inherits(User, _LightDispatcher);
+
+    /** @param {App} app */
+    function User(app) {
+        _classCallCheck(this, User);
+
+        var _this = _possibleConstructorReturn(this, (User.__proto__ || Object.getPrototypeOf(User)).call(this));
+
+        _this[_app] = app;
+
+        var scope = _this;
+        /** @param {CargoEntry} cargoEntry */
+        function onCargoInteract(cargoEntry) {
+            scope.Dispatch(signals.boxEntryInteract, cargoEntry.uid);
+        }
+
+        app.view.cargoListView.On(_CargoListView2.default.signals.interact, onCargoInteract);
+        return _this;
     }
 
-    /** @returns {THREE.Box3} */
-
-
-    _createClass(Volume, [{
-        key: 'toJSON',
-        value: function toJSON() {
-            return {
-                type: type,
-                position: this.position,
-                dimensions: this.dimensions
-            };
-        }
-    }, {
-        key: 'ToString',
-        value: function ToString() {
-            return this.dimensions.ToString();
-        }
-    }, {
-        key: 'box3',
+    _createClass(User, null, [{
+        key: "signals",
         get: function get() {
-            /** @type {THREE.Box3} */
-            var b = this[_box3];
-            b.setFromCenterAndSize(this.position, this.dimensions.vec3);
-            return b;
-        }
-    }], [{
-        key: 'FromJSON',
-        value: function FromJSON(data, volume) {
-            if (!volume) {
-                if (data.type !== type) console.warn('Data supplied is not: ' + type);
-
-                volume = new Volume();
-            }
-
-            volume.position = new THREE.Vector3(data.position.x, data.position.y, data.position.z);
-            volume.dimensions = _Dimensions2.default.FromJSON(data.dimensions);
-
-            return volume;
+            return signals;
         }
     }]);
 
-    return Volume;
-}();
+    return User;
+}(_LightDispatcher3.default);
 
-exports.default = Volume;
+exports.default = User;
 
 /***/ }),
-/* 55 */
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var typeofNumber = 'number';
+
+/** @param {THREE.Color} source @param {Array<THREE.Color>} colors */
+function findNearest(source, colors) {
+    var dMin = Number.MAX_SAFE_INTEGER;
+    var nearest = source;
+    colors.forEach(function (color) {
+        var vx = color.r - source.r,
+            vy = color.g - source.g,
+            vz = color.b - source.b;
+        var d = vx * vx + vy * vy + vz * vz;
+        if (d < dMin) {
+            dMin = d;
+            nearest = color;
+        }
+    });
+
+    return nearest;
+}
+
+var tempColor = new THREE.Color();
+
+var ColorTemplate = function () {
+    /**
+     * @param {Array<string|THREE.Color>} colors 
+     */
+    function ColorTemplate() {
+        var _this = this;
+
+        _classCallCheck(this, ColorTemplate);
+
+        /** @type {Array<THREE.Color>} */
+        this.colors = [];
+
+        for (var _len = arguments.length, colors = Array(_len), _key = 0; _key < _len; _key++) {
+            colors[_key] = arguments[_key];
+        }
+
+        colors.forEach(function (color) {
+            if (!(color instanceof THREE.Color)) color = new THREE.Color(color);
+            _this.colors.push(color);
+        });
+    }
+
+    /**
+     * @template T
+     * @param {T} target 
+     * @returns {T}
+     */
+
+
+    _createClass(ColorTemplate, [{
+        key: 'Apply',
+        value: function Apply(target) {
+            var scope = this;
+            if ((typeof target === 'undefined' ? 'undefined' : _typeof(target)) === typeofNumber) {
+                var mapColor = findNearest(tempColor.setHex(target), this.colors);
+                target = mapColor.getHex();
+            } else if (target instanceof THREE.Color) {
+                var _mapColor = findNearest(target, this.colors);
+                target.copy(_mapColor);
+            } else if (target instanceof THREE.Material) {
+                var color = target.color;
+                if (color instanceof THREE.Color) {
+                    var _mapColor2 = findNearest(color, this.colors);
+                    color.copy(_mapColor2);
+                }
+            } else if (target instanceof THREE.Object3D) {
+                target.traverse(function (child) {
+                    if (child instanceof THREE.Mesh) {
+                        scope.Apply(child.material);
+                    }
+                });
+            }
+            return target;
+        }
+    }]);
+
+    return ColorTemplate;
+}();
+
+exports.default = ColorTemplate;
+
+/***/ }),
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11627,6 +8766,188 @@ exports.RotationConstraint = RotationConstraint;
 exports.TranslationConstraint = TranslationConstraint;
 
 /***/ }),
+/* 54 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _CargoGroup = __webpack_require__(19);
+
+var _CargoGroup2 = _interopRequireDefault(_CargoGroup);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var _position = Symbol('position');
+var _rotation = Symbol('rotation');
+
+var PackingItem = function () {
+    function PackingItem() {
+        _classCallCheck(this, PackingItem);
+
+        this[_position] = new THREE.Vector3();
+        this[_rotation] = new THREE.Euler();
+    }
+
+    /** @returns {THREE.Vector3} */
+
+
+    _createClass(PackingItem, [{
+        key: 'position',
+        get: function get() {
+            return this[_position];
+        },
+        set: function set(value) {
+            this[_position] = value;
+        }
+
+        /** @returns {THREE.Euler} */
+
+    }, {
+        key: 'rotation',
+        get: function get() {
+            return this[_position];
+        },
+        set: function set(value) {
+            this[_rotation] = value;
+        }
+    }]);
+
+    return PackingItem;
+}();
+
+var Cargo = function (_PackingItem) {
+    _inherits(Cargo, _PackingItem);
+
+    /**
+     * 
+     * @param {CargoGroup} group
+     */
+    function Cargo(group) {
+        _classCallCheck(this, Cargo);
+
+        var _this = _possibleConstructorReturn(this, (Cargo.__proto__ || Object.getPrototypeOf(Cargo)).call(this));
+
+        _this.group = group;
+        return _this;
+    }
+
+    _createClass(Cargo, [{
+        key: 'Clone',
+        value: function Clone() {
+            var cargo = new Cargo(this.group);
+            return cargo;
+        }
+    }, {
+        key: 'ToString',
+        value: function ToString() {
+            var output = 'Cargo(' + this.entry.ToString() + ')';
+
+            return output;
+        }
+    }, {
+        key: 'entry',
+        get: function get() {
+            return this.group.entry;
+        }
+    }]);
+
+    return Cargo;
+}(PackingItem);
+
+exports.default = Cargo;
+
+/***/ }),
+/* 55 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+        value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+var _Asset = __webpack_require__(5);
+
+var _Asset2 = _interopRequireDefault(_Asset);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/** @typedef FloatingShelfParams @property {THREE.Vector3} padding x z for padding, y for thickness @property {Number} colorHex */
+/** @type {FloatingShelfParams} */
+var defaultParams = {
+        padding: new THREE.Vector3(0, .001, 0),
+        colorHex: 0xffffff
+};
+
+var box3 = new THREE.Box3();
+var vec3 = new THREE.Vector3();
+
+var FloatingShelf = function () {
+        /** @param {THREE.Object3D} targetView @param {FloatingShelfParams} params */
+        function FloatingShelf(targetView, params) {
+                _classCallCheck(this, FloatingShelf);
+
+                this.params = _Utils2.default.AssignUndefined(params, defaultParams);
+
+                this.targetView = targetView;
+                this.view = new THREE.Object3D();
+
+                var planeGeom = new THREE.BoxGeometry(1, 1, 1, 1, 1, 1);
+                var planeMaterial = new _Asset2.default.CreateSolidMaterialMatte(this.params.colorHex);
+                this.platformMesh = new THREE.Mesh(planeGeom, planeMaterial);
+                _Asset2.default.ReceiveShadow(this.platformMesh);
+
+                this.view.add(this.platformMesh);
+
+                this.Update();
+        }
+
+        _createClass(FloatingShelf, [{
+                key: "Update",
+                value: function Update() {
+                        box3.setFromObject(this.targetView);
+                        var worldToLocal = new THREE.Matrix4().getInverse(this.targetView.matrixWorld);
+                        box3.applyMatrix4(worldToLocal);
+                        box3.getSize(vec3);
+                        var height = vec3.y;
+
+                        var padding = this.params.padding;
+                        var thickness = Math.max(.0001, padding.y);
+                        this.platformMesh.scale.set(Math.max(.0001, vec3.x + padding.x * 2), thickness, Math.max(.0001, vec3.z + padding.z * 2));
+
+                        box3.getCenter(vec3);
+                        this.platformMesh.position.set(vec3.x, vec3.y - height / 2 - thickness, vec3.z);
+                }
+        }]);
+
+        return FloatingShelf;
+}();
+
+exports.default = FloatingShelf;
+
+/***/ }),
 /* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11639,138 +8960,141 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Item = __webpack_require__(18);
+var _Utils = __webpack_require__(0);
 
-var _Item2 = _interopRequireDefault(_Item);
-
-var _AFit = __webpack_require__(31);
-
-var _AFit2 = _interopRequireDefault(_AFit);
-
-var _Container = __webpack_require__(19);
-
-var _Container2 = _interopRequireDefault(_Container);
+var _Utils2 = _interopRequireDefault(_Utils);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/** @param {Array<Item>} items */
-function sumOfVolumes(items) {
-    var sum = 0;
-    for (var i = 0, len = items.length; i < len; i++) {
-        sum += items[i].Volume;
-    }return sum;
-}
+var cubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 1, 1, 1);
+var outlineMaterial = new THREE.MeshBasicMaterial({ side: THREE.BackSide, depthWrite: false, depthTest: true });
+var boxOutlineMaterial = new THREE.MeshBasicMaterial({ side: THREE.BackSide });
 
-/**
- * @param {Array<Object>} objects 
- * @param {Array<string>} m - mapping to Item.constructor, ie: [ID, Length, ...]
- */
-function toItems(objects, m) {
-    var items = [];
-    objects.forEach(function (o) {
-        items.push(new _Item2.default(o[m[0]], o[m[1]], o[m[2]], o[m[3]], o[m[4]]));
-    });
-    return items;
-}
-
-var TestData =
-/**
- * @param {Container} container 
- * @param {Array<Item>} items 
- */
-function TestData(container, items) {
-    _classCallCheck(this, TestData);
-
-    this.container = container;
-    this.items = items;
+/** @typedef OutlineParams @property {Number} color @property {Number} opacity @property {Number} offsetFactor @property {Number} offsetUnits */
+/** @type {OutlineParams} */
+var defaultParams = {
+    color: 0x000000,
+    opacity: 1,
+    offsetFactor: 1,
+    offsetUnits: 1
 };
 
-var AFitTest = function () {
-    function AFitTest() {
-        _classCallCheck(this, AFitTest);
+var tempBox3 = new THREE.Box3();
+var tempMatrix4 = new THREE.Matrix4();
 
-        this.aFitPacker = new _AFit2.default();
+var Outline = function () {
+
+    /** @param {OutlineParams} params */
+    function Outline(params) {
+        _classCallCheck(this, Outline);
+
+        this.params = _Utils2.default.AssignUndefined(params, defaultParams);
+
+        this.view = new THREE.Object3D();
+
+        /** @type {Map<THREE.Object3D, THREE.Object3D>} */
+        this.outlines = new Map();
     }
 
-    /**
-     * @param {Container} container 
-     * @param {Array<Item>} items 
-     */
+    /** @param {THREE.Object3D} value */
 
 
-    _createClass(AFitTest, [{
-        key: "T1",
-        value: function T1(container, items) {
-
-            var startTime = performance.now();
-            var result = this.aFitPacker.Solve(container, items);
-            result.PackTimeInMilliseconds = Math.ceil(performance.now() - startTime);
-
-            var containerVolume = container.Length * container.Width * container.Height;
-            var itemVolumePacked = sumOfVolumes(result.PackedItems);
-            var itemVolumeUnpacked = sumOfVolumes(result.UnpackedItems);
-
-            result.PercentContainerVolumePacked = Math.floor(itemVolumePacked / containerVolume * 100 * 100) / 100;
-            result.PercentItemVolumePacked = Math.floor(itemVolumePacked / (itemVolumePacked + itemVolumeUnpacked) * 100 * 100) / 100;
-
-            return result;
-        }
-    }], [{
-        key: "GenerateDataSample1",
-        value: function GenerateDataSample1() {
-            var containerData = { ID: 1000, Name: 'Box1', Length: 15, Width: 13, Height: 9 };
-            var itemsData = [{ ID: 1000, Name: 'Item1', Length: 5, Width: 4, Height: 2, Quantity: 1 }, { ID: 1001, Name: 'Item2', Length: 2, Width: 1, Height: 1, Quantity: 3 }, { ID: 1002, Name: 'Item3', Length: 9, Width: 7, Height: 3, Quantity: 4 }, { ID: 1003, Name: 'Item4', Length: 13, Width: 6, Height: 3, Quantity: 8 }, { ID: 1004, Name: 'Item5', Length: 17, Width: 8, Height: 6, Quantity: 1 }, { ID: 1005, Name: 'Item6', Length: 3, Width: 3, Height: 2, Quantity: 2 }];
-
-            var container = Object.assign(new _Container2.default(), containerData);
-            var items = toItems(itemsData, ['ID', 'Length', 'Width', 'Height', 'Quantity']);
-
-            var data = new TestData(container, items);
-            return data;
+    _createClass(Outline, [{
+        key: "Disable",
+        value: function Disable() {
+            this.view.visible = false;
         }
     }, {
-        key: "GenerateDataSample2",
-        value: function GenerateDataSample2() {
-            var containerData = { ID: 1000, Name: 'Box1', Length: 60, Width: 35, Height: 25 };
-            var itemsData = [{ ID: 1000, Name: 'Item1', Length: 30, Width: 50, Height: 20, Quantity: 1 }, { ID: 1003, Name: 'Item4', Length: 13, Width: 6, Height: 3, Quantity: 6 }, { ID: 1004, Name: 'Item5', Length: 17, Width: 8, Height: 6, Quantity: 3 }, { ID: 1005, Name: 'Item6', Length: 5, Width: 5, Height: 2, Quantity: 16 }];
+        key: "object3d",
+        set: function set(value) {
+            if (!value) return this.Disable();
 
-            var container = Object.assign(new _Container2.default(), containerData);
-            var items = toItems(itemsData, ['ID', 'Length', 'Width', 'Height', 'Quantity']);
+            this.view.visible = true;
 
-            var data = new TestData(container, items);
-            return data;
+            if (this.material === undefined) this.material = outlineMaterial.clone();
+            var material = this.material;
+            material.color.setHex(this.params.color);
+            material.opacity = THREE.Math.clamp(this.params.opacity, 0, 1);
+            material.transparent = true; //material.opacity < .999;
+            material.polygonOffset = true;
+            material.polygonOffsetFactor = -this.params.offsetFactor;
+            material.polygonOffsetUnits = this.params.offsetUnits;
+
+            var outline = this.outlines.get(value);
+            if (!outline) {
+                outline = value.clone(true);
+                if (outline instanceof THREE.Mesh) {
+                    outline.material = material;
+                } else {
+                    outline.children.forEach(function (oChild) {
+                        return oChild.traverse(function (child) {
+                            if (child instanceof THREE.Mesh) {
+                                var outlineReady = child.clone();
+                                outlineReady.material = material;
+                                if (child.parent) {
+                                    // Assuming end of hierarchical tree
+                                    child.parent.add(outlineReady);
+                                    child.parent.remove(child);
+                                }
+                            }
+                        });
+                    });
+                }
+
+                this.outlines.set(value, outline);
+            }
+
+            value.updateMatrixWorld();
+            outline.matrixWorld.copy(value.matrixWorld);
+
+            while (this.view.children.length > 0) {
+                this.view.remove(this.view.children[this.view.children.length - 1]);
+            }this.view.add(outline);
         }
+
+        /** @param {THREE.Object3D} value */
+
     }, {
-        key: "GenerateDataSampleFlatdeck",
-        value: function GenerateDataSampleFlatdeck() {
-            var containerData = { ID: 1000, Name: 'Box1', Length: 576, Width: 102, Height: 102 };
-            var itemsData = [{ ID: 1000, Name: 'Item1', Length: 100, Width: 70, Height: 90, Quantity: 3 }, { ID: 1003, Name: 'Item4', Length: 60, Width: 60, Height: 60, Quantity: 7 }, { ID: 1004, Name: 'Item5', Length: 40, Width: 20, Height: 30, Quantity: 4 }, { ID: 1005, Name: 'Item6', Length: 30, Width: 20, Height: 30, Quantity: 20 }];
+        key: "box",
+        set: function set(value) {
+            if (!value) return this.Disable();
 
-            var container = Object.assign(new _Container2.default(), containerData);
-            var items = toItems(itemsData, ['ID', 'Length', 'Width', 'Height', 'Quantity']);
+            this.view.visible = true;
 
-            var data = new TestData(container, items);
-            return data;
-        }
-    }, {
-        key: "GenerateDataSampleFlatdeck2",
-        value: function GenerateDataSampleFlatdeck2() {
-            var containerData = { ID: 1000, Name: 'Box1', Length: 576, Width: 102, Height: 102 };
-            var itemsData = [{ ID: 1000, Name: 'Item1', Length: 100, Width: 70, Height: 90, Quantity: 3 }, { ID: 1003, Name: 'Item4', Length: 60, Width: 60, Height: 60, Quantity: 7 }, { ID: 1004, Name: 'Item5', Length: 40, Width: 20, Height: 30, Quantity: 4 }, { ID: 1005, Name: 'Item6', Length: 30, Width: 20, Height: 30, Quantity: 20 }, { ID: 1005, Name: 'Item6', Length: 50, Width: 20, Height: 30, Quantity: 20 }];
+            if (this.boxMaterial === undefined) this.boxMaterial = boxOutlineMaterial.clone();
+            this.boxMaterial.color.setHex(this.params.color);
+            this.boxMaterial.opacity = THREE.Math.clamp(this.params.opacity, 0, 1);
+            this.boxMaterial.transparent = this.boxMaterial.opacity < .999;
 
-            var container = Object.assign(new _Container2.default(), containerData);
-            var items = toItems(itemsData, ['ID', 'Length', 'Width', 'Height', 'Quantity']);
+            if (this.boxMesh === undefined) {
+                this.boxMesh = new THREE.Mesh(cubeGeometry, this.boxMaterial);
+            }
 
-            var data = new TestData(container, items);
-            return data;
+            value.updateMatrixWorld();
+            tempBox3.setFromObject(value);
+            tempBox3.getSize(this.view.scale);
+            this.view.scale.addScalar(this.params.offsetFactor);
+            tempBox3.getCenter(this.view.position);
+
+            var parent = this.view.parent;
+            if (parent) {
+                parent.updateMatrixWorld();
+                var inverse = tempMatrix4.getInverse(parent.matrixWorld);
+                this.view.applyMatrix(inverse);
+            }
+
+            while (this.view.children.length > 0) {
+                this.view.remove(this.view.children[this.view.children.length - 1]);
+            }this.view.add(this.boxMesh);
         }
     }]);
 
-    return AFitTest;
+    return Outline;
 }();
 
-exports.default = AFitTest;
+exports.default = Outline;
 
 /***/ }),
 /* 57 */
@@ -11782,212 +9106,89 @@ exports.default = AFitTest;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.test1Data = exports.Test1 = undefined;
 
-var _Workbook = __webpack_require__(32);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var solverSheet = _Workbook.ThisWorkbook.Worksheets('CLP Solver Console');
-var itemsSheet = _Workbook.ThisWorkbook.Worksheets('1.Items');
-var containersSheet = _Workbook.ThisWorkbook.Worksheets('2.Containers');
-var solutionSheet = _Workbook.ThisWorkbook.Worksheets('3.Solution');
+var _Dimensions = __webpack_require__(18);
 
-var noYes = ['No', 'Yes'];
-var sortCriterion = [null, 'Volume', 'Weight', 'MaxDim'];
+var _Dimensions2 = _interopRequireDefault(_Dimensions);
 
-/** @type {import('./CLPSolver').SolverOptions} */
-var solverOptions = {
-    itemSortCriterion: 1,
-    showProgress: false,
-    cpuTimeLimit: 3
-};
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// First-Fit-Decreasing based on:
-solverSheet.Cells(12, 3, sortCriterion[solverOptions.itemSortCriterion]);
-// Show progress on status bar?
-solverSheet.Cells(13, 3, noYes[Number(solverOptions.showProgress)]);
-// CPU time limit (seconds)
-solverSheet.Cells(14, 3, solverOptions.cpuTimeLimit);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-// Front side support required?
-solverSheet.Cells(6, 3, noYes[0]);
+var type = 'Volume';
+var _box3 = Symbol('box3');
 
-function packPriority(p) {
-    switch (p) {
-        case 1:
-            return 'Must be packed';
-        case 0:
-            return 'May be packed';
-        case -1:
-            return 'Don\'t pack';
+var Volume = function () {
+    function Volume() {
+        _classCallCheck(this, Volume);
+
+        /**
+         * @type {THREE.Vector3}
+         */
+        this.position = new THREE.Vector3();
+
+        /**
+         * @type {Dimensions}
+         */
+        this.dimensions = new _Dimensions2.default();
+
+        this[_box3] = new THREE.Box3();
     }
-}
-function fillPriority(p) {
-    switch (p) {
-        case 1:
-            return 'Must be used';
-        case 0:
-            return 'May be used';
-        case -1:
-            return 'Do not use';
-    }
-}
 
-var containersDataSrc = [{ ID: 1000, Name: 'Box1', Length: 576, Width: 102, Height: 102 }];
-var containersData = [];
-var itemsDataSrc = [{ ID: 1001, Name: 'Item1', Length: 100, Width: 70, Height: 90, Quantity: 3 }, { ID: 1002, Name: 'Item4', Length: 60, Width: 60, Height: 60, Quantity: 7 }, { ID: 1003, Name: 'Item5', Length: 40, Width: 20, Height: 30, Quantity: 4 }, { ID: 1004, Name: 'Item6', Length: 30, Width: 20, Height: 30, Quantity: 20 }];
-var itemsData = [];
+    /** @returns {THREE.Box3} */
 
-var numItems = itemsDataSrc.length;
-// Number of types of items
-solverSheet.Cells(2, 3, numItems);
 
-for (var i = 1; i <= numItems; i++) {
-    var item = itemsDataSrc[i - 1];
+    _createClass(Volume, [{
+        key: 'toJSON',
+        value: function toJSON() {
+            return {
+                type: type,
+                position: this.position,
+                dimensions: this.dimensions
+            };
+        }
+    }, {
+        key: 'ToString',
+        value: function ToString() {
+            return this.dimensions.ToString();
+        }
+    }, {
+        key: 'box3',
+        get: function get() {
+            /** @type {THREE.Box3} */
+            var b = this[_box3];
+            b.setFromCenterAndSize(this.position, this.dimensions.vec3);
+            return b;
+        }
+    }], [{
+        key: 'FromJSON',
+        value: function FromJSON(data, volume) {
+            if (!volume) {
+                if (data.type !== type) console.warn('Data supplied is not: ' + type);
 
-    var volume = item.Length * item.Width * item.Height;
+                volume = new Volume();
+            }
 
-    /** @type {import('./CLPSolver').ItemData} */
-    var itemData = {
-        length: item.Length,
-        width: item.Width,
-        height: item.Height,
-        xyRotatable: true,
-        yzRotatable: true,
-        mandatory: 1,
-        profit: 0,
-        weight: volume / 1000,
-        quantity: item.Quantity
-    };
-    itemsData.push(itemData);
-    continue;
-    // 1 id, 2 name, 4 width, 5 height, 6 length, 7 volume, 9 xy, 10 yz, 11 weight, 12 packPriority = MustBePacked, 13 profit = 0, 14 quantity
+            volume.position = new THREE.Vector3(data.position.x, data.position.y, data.position.z);
+            volume.dimensions = _Dimensions2.default.FromJSON(data.dimensions);
 
-    itemsSheet.Cells(2 + i, 1, i);
-    itemsSheet.Cells(2 + i, 2, item.ID);
+            return volume;
+        }
+    }]);
 
-    itemsSheet.Cells(2 + i, 4, itemData.width);
-    itemsSheet.Cells(2 + i, 5, itemData.height);
-    itemsSheet.Cells(2 + i, 6, itemData.length);
-    itemsSheet.Cells(2 + i, 7, volume);
+    return Volume;
+}();
 
-    itemsSheet.Cells(2 + i, 9, noYes[Number(itemData.xyRotatable)]);
-    itemsSheet.Cells(2 + i, 10, noYes[Number(itemData.yzRotatable)]);
-
-    itemsSheet.Cells(2 + i, 11, itemData.weight);
-
-    itemsSheet.Cells(2 + i, 12, packPriority(itemData.mandatory));
-
-    itemsSheet.Cells(2 + i, 13, itemData.profit);
-
-    itemsSheet.Cells(2 + i, 14, itemData.quantity);
-}
-
-var numContainers = containersDataSrc.length;
-// Number of types of containers
-solverSheet.Cells(4, 3, numContainers);
-for (var i = 1; i <= numContainers; i++) {
-    var container = containersDataSrc[i - 1];
-
-    var _volume = container.Width * container.Height * container.Length;
-
-    /** @type {import('./CLPSolver').ContainerData} */
-    var containerData = {
-        length: container.Length,
-        width: container.Width,
-        height: container.Height,
-        quantity: 1,
-        mandatory: 1,
-        cost: 0,
-        weightCapacity: _volume / 1000
-    };
-    containersData.push(containerData);
-    continue;
-    // 1 id, 2 name, 3 width, 4 height, 5, length, 6 volume_capacity, 7 weight_capacity, 8 fillPriority = 1, 9 cost = 1, 10 quantity
-
-    containersSheet.Cells(1 + i, 1, i);
-    containersSheet.Cells(1 + i, 2, container.ID);
-
-    containersSheet.Cells(1 + i, 3, containerData.width);
-    containersSheet.Cells(1 + i, 4, containerData.height);
-    containersSheet.Cells(1 + i, 5, containerData.length);
-    containersSheet.Cells(1 + i, 6, _volume);
-
-    containersSheet.Cells(1 + i, 7, containerData.weightCapacity);
-
-    containersSheet.Cells(1 + i, 8, fillPriority(containerData.mandatory));
-
-    containersSheet.Cells(1 + i, 9, containerData.cost);
-
-    containersSheet.Cells(1 + i, 10, containerData.quantity);
-}
-
-solutionSheet.Cells(1, 'B').calculate = function () {
-    return Math.abs(solutionSheet.Cells(4, 'J').Value);
-}; // =+$J$4
-solutionSheet.Cells(4, 'G').calculate = function () {
-    return solutionSheet.Sum(solutionSheet.Cells(6, 'G'), solutionSheet.Cells(6 + solutionSheet.Cells(3, 'B'), 'G'));
-}; // =SUM($G$6:$G$39)
-solutionSheet.Cells(4, 'H').calculate = function () {
-    return solutionSheet.Sum(solutionSheet.Cells(6, 'H'), solutionSheet.Cells(6 + solutionSheet.Cells(3, 'B'), 'H'));
-}; // =SUM($H$6:$H$39)
-solutionSheet.Cells(4, 'I').calculate = function () {
-    return solutionSheet.Sum(solutionSheet.Cells(6, 'I'), solutionSheet.Cells(6 + solutionSheet.Cells(3, 'B'), 'I'));
-}; // =SUM($I$6:$I$39)
-solutionSheet.Cells(4, 'J').calculate = function () {
-    return solutionSheet.Sum(solutionSheet.Cells(6, 'J'), solutionSheet.Cells(6 + solutionSheet.Cells(3, 'B'), 'J'));
-}; // =SUM($J$6:$J$39)
-
-for (var i = 1; i <= 100 /*solutionSheet.Cells(3, 'B')*/; i++) {
-    solutionSheet.Cells(5 + i, 'G').calculate = function () {
-        var itemName = solutionSheet.Cells(6, 'B').Value;
-        return itemsSheet.Cells(itemsSheet.Find(itemName).row, 1).Value;
-    }; // itemIndex
-
-    solutionSheet.Cells(5 + i, 'H').calculate = function () {
-        return itemsSheet.Cells(2 + solutionSheet.Cells(5 + i, 'G'), 7).Value;
-    }; // volume
-    solutionSheet.Cells(5 + i, 'I').calculate = function () {
-        return itemsSheet.Cells(2 + solutionSheet.Cells(5 + i, 'G'), 11).Value;
-    }; // weight
-    solutionSheet.Cells(5 + i, 'J').calculate = function () {
-        return itemsSheet.Cells(2 + solutionSheet.Cells(5 + i, 'G'), 13).Value;
-    }; // profit
-}
-
-console.log('CLP setup complete');
-console.log(_Workbook.ThisWorkbook);
-
-var CLPSolver = __webpack_require__(33);
-
-var test1Data = {
-    solverOptions: solverOptions,
-    items: itemsData,
-    container: containersData[0]
-};
-
-function Test1() {
-
-    /** @param {CLPSolver.SolutionData} solution */
-    function onSolution(solution) {
-        console.log(solution);
-        var packedItems = solution.container.filter(function (container) {
-            return container !== null;
-        })[0].items;
-        console.log(packedItems);
-    }
-    CLPSolver.signaler.On(CLPSolver.signals.solution, onSolution);
-    CLPSolver.Execute(test1Data.solverOptions, test1Data.items, [test1Data.container]);
-}
-
-exports.Test1 = Test1;
-exports.test1Data = test1Data;
+exports.default = Volume;
 
 /***/ }),
 /* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(global) {
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -11996,22 +9197,24 @@ exports.pack = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var debugUser = function () {
-    var _ref = _asyncToGenerator(function* () {
-        yield sleep(16);
-        var input = _Debug2.default.app.sceneSetup.input;
-        if (input.keys['right']) running = false;
-        if (input.keys['space']) running = true;
-        while (!running) {
-            yield sleep(200);
-            if (input.keys['right']) break;
+/**
+ * @param {Region} region * @param {Number} color 
+ */
+var debugRegionBlink = function () {
+    var _ref = _asyncToGenerator(function* (region, color, solid, checkered, blinks, onDuration, offDuration) {
+        for (var i = 0; i < blinks; i++) {
+            debugRegion(region, color, solid, onDuration, checkered);
+            yield sleep(onDuration + offDuration);
         }
     });
 
-    return function debugUser() {
+    return function debugRegionBlink(_x, _x2, _x3, _x4, _x5, _x6, _x7) {
         return _ref.apply(this, arguments);
     };
 }();
+
+/** @param {Array<string>} */
+
 
 /**
  * 
@@ -12020,12 +9223,15 @@ var debugUser = function () {
  * @param {CUBParams} params 
  */
 var pack = function () {
-    var _ref9 = _asyncToGenerator(function* (container, items, params) {
+    var _ref2 = _asyncToGenerator(function* (container, items, params) {
+
+        this.params = _Utils2.default.AssignUndefined(params, defaultParams);
+        console.log('CUBParams:', this.params);
 
         _Debug2.default.Viz.SetPackingSpaceVisibility(false);
 
-        var assistant = new PackingAssistant(container, items);
-        var packedContainer = new PackedContainer(container, assistant);
+        var packedContainer = new PackedContainer(container, this.params);
+        packedContainer.items = items;
 
         var iItem = items.length - 1;
 
@@ -12052,21 +9258,23 @@ var pack = function () {
         while (items.length > 0) {
             var item = items[iItem];
 
+            // Clean-up regions
+            packedContainer.ProcessRegions();
+            /**/yield sleep(16);
+
             // Check if container supports this item's weight
             var weightPass = packedContainer.WeightPass(item.weight);
             if (weightPass === false) {
 
                 /**/debugLog('weight pass failed.');
-                /**/yield sleep(200);
                 unpackItem(iItem);
             } else {
 
                 // Try to pack item
-                var packedItem = /**/yield packedContainer.Fit(item);
+                var packedItem = packedContainer.FitLessWaste(item);
                 if (packedItem === false) {
 
                     /**/debugLog('item fitting failed.');
-                    /**/yield sleep(200);
                     unpackItem(iItem);
                 } else {
 
@@ -12074,10 +9282,10 @@ var pack = function () {
                 }
             }
 
-            /**/yield sleep(50);
+            /**/yield sleep(16);
         }
 
-        packedContainer.packedItems.sort(PackedItem.DepthSort);
+        packedContainer.packedItems.sort(PackedItem.Sort);
 
         debugClear();
         _Debug2.default.Viz.SetPackingSpaceVisibility(true);
@@ -12085,16 +9293,22 @@ var pack = function () {
         return packedContainer;
     });
 
-    return function pack(_x6, _x7, _x8) {
-        return _ref9.apply(this, arguments);
+    return function pack(_x8, _x9, _x10) {
+        return _ref2.apply(this, arguments);
     };
 }();
 
-var _Components = __webpack_require__(20);
+var _Components = __webpack_require__(24);
 
-var _Debug = __webpack_require__(11);
+var _Debug = __webpack_require__(34);
 
 var _Debug2 = _interopRequireDefault(_Debug);
+
+var _Math2D = __webpack_require__(62);
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12102,24 +9316,24 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; } /** @author chadiik <http://chadiik.com/> */
 
-var debugging = true;
+var debugging = false;
 
 var running = true;
 if (debugging) {
     _Debug2.default.app.sceneSetup.input.ListenKeys(['right', 'space']);
 }
 
-function sleep(ms) {
+function sleep(ms, force) {
     return new Promise(function (resolve) {
-        if (debugging) setTimeout(resolve, ms);else resolve();
+        if (debugging || force) setTimeout(resolve, ms);else resolve();
     });
 }
 
-function click(ms) {
+function click(ms, force) {
     return new Promise(function (resolve) {
-        if (debugging) {
+        if (debugging || force) {
             var execute = function execute() {
                 if (tid !== undefined) clearTimeout(tid);
                 removeEventListener('mouseup', execute);
@@ -12130,6 +9344,25 @@ function click(ms) {
 
             if (ms && ms > 0) tid = setTimeout(execute, ms);
             addEventListener('mouseup', execute);
+        } else {
+            resolve();
+        }
+    });
+}
+
+function keypress(ms, force) {
+    return new Promise(function (resolve) {
+        if (debugging || force) {
+            var execute = function execute() {
+                if (tid !== undefined) clearTimeout(tid);
+                removeEventListener('keydown', execute);
+                resolve();
+            };
+
+            var tid = undefined;
+
+            if (ms && ms > 0) tid = setTimeout(execute, ms);
+            addEventListener('keydown', execute);
         } else {
             resolve();
         }
@@ -12154,10 +9387,7 @@ function debugRegion(region, color, solid, duration, checkered) {
         l = region.length;
     var debugUID = _Debug2.default.Viz.DrawVolume(x + w / 2, y + h / 2, z + l / 2, w, h, l, color || 0xaaffff, duration || -1, !Boolean(solid), checkered);
     return debugUID;
-}
-
-/** @param {Array<string>} */
-function debugClear(uids) {
+}function debugClear(uids) {
     if (uids) {
         uids.forEach(function (uid) {
             _Debug2.default.Viz.RemoveObjectByUID(uid);
@@ -12167,27 +9397,9 @@ function debugClear(uids) {
     }
 }
 
+var epsilon = Math.pow(2, -52);
 var smallValue = .000001;
-
-var Wall =
-/**
- * @param {Number} axis 0, 1 or 2 for x, y or z
- * @param {Number} distance 
- * @param {Number} x 
- * @param {Number} y 
- * @param {Number} width 
- * @param {Number} height 
- */
-function Wall(axis, distance, x, y, width, height) {
-    _classCallCheck(this, Wall);
-
-    this.axis = axis;
-    this.distance = distance;
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-};
+var smallValueSqrt = .001;
 
 var Region = function () {
     /**
@@ -12212,12 +9424,22 @@ var Region = function () {
             this.preferredX = preferredX;
             return this;
         }
+
+        /** @param {Region} region */
+
+    }, {
+        key: "Copy",
+        value: function Copy(region) {
+            this.Set(region.x, region.y, region.z, region.width, region.height, region.length, region.preferredX);
+            return this;
+        }
     }, {
         key: "GetCorners",
 
 
         /**
          * @param {Number} offset offsets the region by this before calculating corners 
+         * @returns {Array<Number>} 8 corners, length = 24 + center point [24, 25, 26]
          */
         value: function GetCorners(offset) {
             var x = this.x - offset,
@@ -12240,6 +9462,29 @@ var Region = function () {
             tempCorners[24] = x + w / 2;tempCorners[25] = y + h / 2;tempCorners[26] = z + l / 2; // center
 
             return tempCorners;
+        }
+
+        /**
+         * @param {Array} result
+         * @returns {Array<Number>} 4 corners, length = 12
+         */
+
+    }, {
+        key: "GetFloorPoints",
+        value: function GetFloorPoints(result) {
+            if (result === undefined) result = tempPoints;
+            var x = this.x,
+                y = this.y,
+                z = this.z,
+                w = this.width,
+                l = this.length;
+
+            result[0] = x;result[1] = y;result[2] = z;
+            result[3] = x + w;result[4] = y;result[5] = z;
+            result[6] = x + w;result[7] = y;result[8] = z + l;
+            result[9] = x;result[10] = y;result[11] = z + l;
+
+            return result;
         }
 
         /**
@@ -12293,108 +9538,133 @@ var Region = function () {
             return x <= other.x + other.width && x + w >= other.x && y <= other.y + other.height && y + h >= other.y && z <= other.z + other.length && z + l >= other.z;
         }
 
-        /** @param {Number} offset offsets the region by this before checking * @param {Number} width * @param {Number} height * @param {Number} length */
+        /** @param {Number} offset offsets the region by this before checking * @param {Number} width * @param {Number} height * @param {Number} length
+         * @param {Region} [result]
+         */
 
     }, {
         key: "FitTest",
-        value: function FitTest(offset, width, height, length) {
+        value: function FitTest(offset, width, height, length, result) {
+            if (!result) result = tempRegion;
             // Check that all dimensions fit
             var fit = width < this.width + offset * 2 && height < this.height + offset * 2 && length < this.length + offset * 2;
             if (fit) {
                 // Calculate x based on preferred side
                 var x = this.preferredX !== 0 ? this.x + this.width - width : this.x;
-                tempRegion.Set(x, this.y, this.z, width, height, length, this.preferredX);
-                return tempRegion;
+                result.Set(x, this.y, this.z, width, height, length, this.preferredX);
+                return result;
             }
 
             return false;
         }
 
-        /** @param {Region} region * @param {Number} minRegionAxis */
+        /** @param {Region} region * @param {Number} minRegionAxis @param {Boolean} skipTop */
 
     }, {
         key: "Subtract",
-        value: function () {
-            var _ref2 = _asyncToGenerator(function* (region, minRegionAxis) {
-                var newRegions;
+        value: function Subtract(region, minRegionAxis, skipTop) {
+            var newRegions;
 
-                /**/var debugUIDs = [];
-                /**/debugUIDs.push(debugRegion(region, 0xff000000));
+            // Calculate a new east region
+            var axis = region.x + region.width;
+            var size = this.x + this.width - axis;
+            if (size > minRegionAxis) {
+                var east = new Region(axis, this.y, this.z, size, this.height, this.length, 0);
+                if (newRegions === undefined) newRegions = [];
+                newRegions.push(east);
+            }
 
-                // Calculate a new east region
-                var axis = region.x + region.width;
-                var size = this.x + this.width - axis;
-                if (size > minRegionAxis) {
-                    var east = new Region(axis, this.y, this.z, size, this.height, this.length, 0);
-                    if (newRegions === undefined) newRegions = [];
-                    newRegions.push(east);
+            // Calculate a new west region
+            axis = this.x;
+            size = region.x - axis;
+            if (size > minRegionAxis) {
+                var west = new Region(axis, this.y, this.z, size, this.height, this.length, 1);
+                if (newRegions === undefined) newRegions = [];
+                newRegions.push(west);
+            }
 
-                    /**/debugUIDs.push(debugRegion(east, 0x7fff0000, true));
-                }
-
-                // Calculate a new west region
-                axis = this.x;
-                size = region.x - axis;
-                if (size > minRegionAxis) {
-                    var west = new Region(axis, this.y, this.z, size, this.height, this.length, 1);
-                    if (newRegions === undefined) newRegions = [];
-                    newRegions.push(west);
-
-                    /**/debugUIDs.push(debugRegion(west, 0x7f00ff00, true));
-                }
-
+            if (!skipTop) {
                 // Calculate a new over/up region
                 axis = region.y + region.height;
                 size = this.y + this.height - axis;
                 if (size > minRegionAxis) {
-                    var over = new Region(region.x, axis, region.z, region.width, size, region.length, 0); // add overhang var? // togglePreferredX based on pre-packed weight distribution?
+                    var over = new Region(region.x, axis, region.z, region.width, size, region.length, 0); // todo: add overhang var? // togglePreferredX based on pre-packed weight distribution?
                     if (newRegions === undefined) newRegions = [];
                     newRegions.push(over);
-
-                    /**/debugUIDs.push(debugRegion(over, 0x7f0000ff, true));
                 }
-
-                /*
-                // Calculate a new south region
-                axis = this.z;
-                size = region.z - axis;
-                if(size > minRegionAxis){
-                    let south = new Region(this.x, this.y, axis, this.width, this.height, size, 0); // togglePreferredX based on pre-packed weight distribution?
-                    if(newRegions === undefined) newRegions = [];
-                    newRegions.push(south);
-                      /** /debugUIDs.push(debugRegion(south, 0x7f0000ff, true, 100));
-                    /** /await sleep(200);
-                    /** /debugUIDs.push(debugRegion(south, 0x7f0000ff, true, 100));
-                    /** /await sleep(200);
-                    /** /debugUIDs.push(debugRegion(south, 0x7f0000ff, true));
-                    /** /debugLog('south region created');
-                    /** /await click();
-                }
-                */
-
-                // Set this as new north/front region
-                axis = region.z + region.length;
-                size = this.z + this.length - axis;
-                this.z = axis;
-                this.length = size;
-
-                if (size > minRegionAxis) {
-                    /**/debugUIDs.push(debugRegion(this, 0x7faaffff, true));
-                }
-
-                //**/await click();
-
-                /**/debugClear(debugUIDs);
-
-                return newRegions;
-            });
-
-            function Subtract(_x, _x2) {
-                return _ref2.apply(this, arguments);
             }
 
-            return Subtract;
-        }()
+            // Calculate a new south region
+            axis = this.z;
+            size = region.z - axis;
+            if (false) {
+                var south = new Region(this.x, this.y, axis, this.width, this.height, size, 0); // todo togglePreferredX based on pre-packed weight distribution?
+                if (newRegions === undefined) newRegions = [];
+                newRegions.push(south);
+            }
+
+            // Set this as new north/front region
+            axis = region.z + region.length;
+            size = this.z + this.length - axis;
+            this.z = axis;
+            this.length = size;
+
+            return newRegions;
+        }
+
+        /** @param {Region} other */
+
+    }, {
+        key: "ConnectFloorRects",
+        value: function ConnectFloorRects(other) {
+            var ptsA = this.GetFloorPoints(tempPoints),
+                ptsB = other.GetFloorPoints(tempPoints2);
+
+            var adjacent = 0;
+            var intersections = [];
+            for (var iA = 0; iA < 12; iA += 3) {
+                var nextA = iA + 3 === 12 ? 0 : iA + 3;
+                var ax = ptsA[iA],
+                    az = ptsA[iA + 2],
+                    nax = ptsA[nextA],
+                    naz = ptsA[nextA + 2];
+
+                for (var iB = 0; iB < 12; iB += 3) {
+                    var nextB = iB + 3 === 12 ? 0 : iB + 3;
+                    var bx = ptsB[iB],
+                        bz = ptsB[iB + 2],
+                        nbx = ptsB[nextB],
+                        nbz = ptsB[nextB + 2];
+
+                    if ((0, _Math2D.rectangleContainsPoint)(smallValue, ptsA[0], ptsA[2], ptsA[6] - ptsA[0], ptsA[8] - ptsA[2], bx, bz) || (0, _Math2D.rectangleContainsPoint)(smallValue, ptsB[0], ptsB[2], ptsB[6] - ptsB[0], ptsB[8] - ptsB[2], ax, az)) {
+                        adjacent++;
+                    }
+
+                    var intersection = (0, _Math2D.linesIntersect)(ax, az, nax, naz, bx, bz, nbx, nbz);
+                    if (intersection && ((0, _Math2D.rectangleContainsPoint)(smallValue, ptsA[0], ptsA[2], ptsA[6] - ptsA[0], ptsA[8] - ptsA[2], intersection.x, intersection.y) || (0, _Math2D.rectangleContainsPoint)(smallValue, ptsB[0], ptsB[2], ptsB[6] - ptsB[0], ptsB[8] - ptsB[2], intersection.x, intersection.y))) {
+                        intersections.push(intersection);
+                    }
+                }
+            }
+
+            if (adjacent > 1) {
+                for (var i = 0; i < 12; i += 3) {
+                    intersections.push({ x: ptsA[i], y: ptsA[i + 2] }, { x: ptsB[i], y: ptsB[i + 2] });
+                }
+            } else {
+                intersections.length = 0;
+            }
+
+            var rectangles = (0, _Math2D.rectanglesFromPoints)(intersections);
+
+            var rectA = { p1: { x: ptsA[0], y: ptsA[2] }, p2: { x: ptsA[3], y: ptsA[5] }, p3: { x: ptsA[6], y: ptsA[8] }, p4: { x: ptsA[9], y: ptsA[11] } };
+            var rectB = { p1: { x: ptsB[0], y: ptsB[2] }, p2: { x: ptsB[3], y: ptsB[5] }, p3: { x: ptsB[6], y: ptsB[8] }, p4: { x: ptsB[9], y: ptsB[11] } };
+            rectangles.push(rectA, rectB);
+
+            (0, _Math2D.reduceRectangles)(rectangles);
+
+            return rectangles;
+        }
 
         /**
          * Deepest to front, smallest to largest
@@ -12422,7 +9692,10 @@ var Region = function () {
 
 var tempRegion = new Region();
 var tempRegion2 = new Region();
-var tempCorners = [0, 0, 0];
+var tempRegion3 = new Region();
+var tempCorners = [0];
+var tempPoints = [0];
+var tempPoints2 = [0];
 
 var PackedItem = function () {
 
@@ -12451,8 +9724,30 @@ var PackedItem = function () {
     _createClass(PackedItem, null, [{
         key: "DepthSort",
         value: function DepthSort(a, b) {
-            if (a.z + smallValue < b.z) return -1;
-            if (a.z > b.z + smallValue) return 1;
+            var az = a.z + a.packedLength,
+                bz = b.z + b.packedLength;
+            if (az + smallValue < bz) return -1;
+            if (az > bz + smallValue) return 1;
+            if (a.y < b.y) return -1;
+            if (a.y > b.y) return 1;
+            if (a.ref.volume > b.ref.volume + smallValue) return -1;
+            if (a.ref.volume + smallValue < b.ref.volume) return 1;
+            return 0;
+        }
+
+        /** @param {PackedItem} a * @param {PackedItem} b */
+
+    }, {
+        key: "Sort",
+        value: function Sort(a, b) {
+            if (a.z + smallValue < b.z) {
+                if (a.z + a.packedLength > b.z && a.y > b.y) return 1;
+                return -1;
+            }
+            if (b.z + smallValue < a.z) {
+                if (b.z + b.packedLength > a.z && b.y > a.y) return 1;
+                return 1;
+            }
             if (a.y < b.y) return -1;
             if (a.y > b.y) return 1;
             if (a.ref.volume > b.ref.volume + smallValue) return -1;
@@ -12467,13 +9762,13 @@ var PackedItem = function () {
 var PackedContainer = function () {
     /**
      * @param {Container} container 
-     * @param {PackingAssistant} assistant
+     * @param {CUBParams} params
      */
-    function PackedContainer(container, assistant) {
+    function PackedContainer(container, params) {
         _classCallCheck(this, PackedContainer);
 
         this.container = container;
-        this.assistant = assistant;
+        this.params = params;
 
         /** @type {Array<PackedItem>} */
         this.packedItems = [];
@@ -12484,17 +9779,24 @@ var PackedContainer = function () {
         /** @type {Array<Region>} */
         this.regions = [firstRegion];
 
+        /** @type {Array<PackedItem>} */
+        this.tops = [];
+
         this.cumulatedWeight = 0;
     }
 
-    /** @param {PackedItem} item */
+    /** @param {Array<Item>} items */
 
 
     _createClass(PackedContainer, [{
         key: "SetPacked",
+
+
+        /** @param {PackedItem} item */
         value: function SetPacked(item) {
             this.cumulatedWeight += item.ref.weight;
             this.packedItems.push(item);
+            this.tops.push(item);
         }
 
         /** @param {Item} item */
@@ -12517,304 +9819,551 @@ var PackedContainer = function () {
 
     }, {
         key: "Occupy",
-        value: function () {
-            var _ref3 = _asyncToGenerator(function* (region, fit) {
-                var _regions;
+        value: function Occupy(region, fit) {
+            var _regions;
 
-                // Subtracts fit from region and calculates new bounding regions
-                var newRegions = /**/yield region.Subtract(fit, this.assistant.minRegionAxis);
+            // Subtracts fit from region and calculates new bounding regions
+            var newRegions = region.Subtract(fit, this.assistant.minRegionAxis, this.params.skipTop);
 
-                // Add new bounding regions if any
-                if (newRegions) (_regions = this.regions).push.apply(_regions, _toConsumableArray(newRegions));
+            // Add new bounding regions if any
+            if (newRegions) (_regions = this.regions).push.apply(_regions, _toConsumableArray(newRegions));
 
-                // Check that region is still valid, otherwise remove it
-                if (region.length < this.assistant.minRegionAxis) {
-                    var regionIndex = this.regions.indexOf(region);
-                    this.regions.splice(regionIndex, 1);
-                    return false;
-                }
-
-                return true;
-            });
-
-            function Occupy(_x3, _x4) {
-                return _ref3.apply(this, arguments);
+            // Check that region is still valid, otherwise remove it
+            if (region.length < this.assistant.minRegionAxis) {
+                var regionIndex = this.regions.indexOf(region);
+                this.regions.splice(regionIndex, 1);
+                return false;
             }
 
-            return Occupy;
-        }()
+            var debugUIDs = [];
+            if (!newRegions) newRegions = [];
+            newRegions.push(region);
+            newRegions.forEach(function (region) {
+                debugUIDs.push(debugRegion(region, 0xffff0000, true, -1, true));
+            });
+
+            debugClear(debugUIDs);
+
+            return true;
+        }
+    }, {
+        key: "GetPlacementWithHighestScore",
+
+
+        /** @param {Item} item */
+        value: function GetPlacementWithHighestScore(item) {
+            var numRegions = this.regions.length;
+            var volumeItem = item.volume;
+            var validOrientations = item.validOrientations;
+
+            /** @typedef PlacementScore @property {Number} region region index @property {Number} orientation orientation index @property {Number} n score */
+            /** @type {Array<PlacementScore>} */
+            var regionScoreTable = [],
+                orientationScoreTable = [];
+            var testSuccessfulRegions = 4;
+            // Try to fit in sorted regions
+            for (var iRegion = 0; iRegion < numRegions && testSuccessfulRegions > 0; iRegion++) {
+                var region = this.regions[iRegion];
+
+                if (region.volume > volumeItem) {
+                    var dummyRegion = tempRegion2.Copy(region);
+
+                    orientationScoreTable.length = 0;
+                    for (var iOrient = 0; iOrient < validOrientations.length; iOrient++) {
+                        var orientation = validOrientations[iOrient];
+
+                        var dimensions = item.GetOrientedDimensions(orientation);
+                        var regionFitTest = region.FitTest(smallValue, dimensions[0], dimensions[1], dimensions[2]);
+                        if (regionFitTest !== false) {
+
+                            testSuccessfulRegions--;
+
+                            // Subtracts fit from region and calculates new bounding regions
+                            var newRegions = dummyRegion.Subtract(regionFitTest, this.assistant.minRegionAxis, this.params.skipTop);
+                            if (newRegions === undefined) newRegions = [];
+                            if (dummyRegion.length > this.assistant.minRegionAxis) newRegions.push(dummyRegion);
+
+                            var orientationScore = {
+                                region: iRegion,
+                                orientation: orientation,
+                                n: this.assistant.RateFit(item, regionFitTest, newRegions)
+                            };
+                            orientationScoreTable.push(orientationScore);
+                        }
+                    }
+
+                    if (orientationScoreTable.length > 0) {
+                        orientationScoreTable.sort(PackedContainer.SortByN);
+                        var regionScore = orientationScoreTable.pop();
+                        regionScoreTable.push(regionScore);
+                    }
+                }
+            }
+
+            if (regionScoreTable.length === 0) {
+                return false;
+            }
+
+            regionScoreTable.sort(PackedContainer.SortByN);
+            var highestScore = regionScoreTable.pop();
+            return highestScore;
+        }
 
         /** @param {Item} item */
 
     }, {
-        key: "Fit",
-        value: function () {
-            var _ref4 = _asyncToGenerator(function* (item) {
-                var numRegions = this.regions.length;
-                var numPackedItems = this.packedItems.length;
+        key: "FitLessWaste",
+        value: function FitLessWaste(item) {
 
-                // Try orientations 'xyz', 'zyx', 'yxz', 'yzx', 'zxy', 'xzy'
-                for (var iOrient = 0; iOrient < 6; iOrient++) {
-                    var dimensions = item.GetOrientedDimensions(iOrient);
+            var highestScore = this.GetPlacementWithHighestScore(item);
 
-                    // Check if orientation is permitted
-                    if (dimensions) {
+            if (highestScore === false) {
+                console.log('revertedToRegular');
+                return this.FitRegular(item);
+            }
 
-                        // Try to fit in sorted regions
-                        for (var iRegion = 0; iRegion < numRegions; iRegion++) {
-                            var region = this.regions[iRegion];
+            var region = this.regions[highestScore.region];
+            var orientation = item.validOrientations[highestScore.orientation];
+            var dimensions = item.GetOrientedDimensions(orientation);
+            var regionFitTest = region.FitTest(smallValue, dimensions[0], dimensions[1], dimensions[2]);
+            if (regionFitTest !== false) {
+                return this.CommitFit(item, region, regionFitTest, orientation);
+            }
 
-                            // Fit test (success: Region, failure: false)
-                            var regionFitTest = region.FitTest(smallValue, dimensions[0], dimensions[1], dimensions[2]);
-                            if (regionFitTest !== false) {
+            return false;
+        }
 
-                                for (var iPacked = 0; iPacked < numPackedItems; iPacked++) {
-                                    var _packedItem = this.packedItems[iPacked];
-                                    // Creates temporary region for following calculations
-                                    var packedRegion = tempRegion2.Set(_packedItem.x, _packedItem.y, _packedItem.z, _packedItem.packedWidth, _packedItem.packedHeight, _packedItem.packedLength, 0);
+        /** @param {Item} item */
 
-                                    var intersects = packedRegion.Intersects(-smallValue, regionFitTest);
-                                    if (intersects) {
-                                        continue;
-                                    }
-                                }
+    }, {
+        key: "GetFirstFit",
+        value: function GetFirstFit(item) {
+            var validOrientations = item.validOrientations;
+            var numRegions = this.regions.length;
 
-                                //**/debugLog('regionFitTest:', regionFitTest);
+            // Try to fit in sorted regions
+            for (var iRegion = 0; iRegion < numRegions; iRegion++) {
+                var region = this.regions[iRegion];
 
-                                // Create a new packed item
-                                var packedItem = new PackedItem(item, regionFitTest.x, regionFitTest.y, regionFitTest.z, regionFitTest.width, regionFitTest.height, regionFitTest.length, iOrient);
-                                /**/var debugUID = debugRegion(regionFitTest, 0xffff0000, true);
+                for (var iOrient = 0; iOrient < validOrientations.length; iOrient++) {
+                    var orientation = validOrientations[iOrient];
 
-                                // Reserve the tested sub region: regionFitTest from the containing region: region
-                                var regionRemains = /**/yield this.Occupy(region, regionFitTest);
+                    var dimensions = item.GetOrientedDimensions(orientation);
 
-                                // Clean-up regions
-                                /**/yield this.ProcessRegions();
-                                /**/debugClear([debugUID]);
-                                debugRegion(regionFitTest, 0xffffffff, false);
+                    // Fit test (success: Region, failure: false)
+                    var regionFitTest = region.FitTest(smallValue, dimensions[0], dimensions[1], dimensions[2]);
+                    if (regionFitTest !== false) {
+                        /** @typedef Placement @property {Number} region region index @property {Number} orientation orientation index */
+                        /** @type {Placement} */
+                        var result = { region: iRegion, orientation: orientation };
+                        return result;
+                    }
+                }
+            }
 
-                                return packedItem;
-                            }
+            return false;
+        }
+
+        /** @param {Item} item */
+
+    }, {
+        key: "FitRegular",
+        value: function FitRegular(item) {
+
+            var firstFit = this.GetFirstFit(item);
+            if (firstFit) {
+
+                var region = this.regions[firstFit.region];
+                var orientation = item.validOrientations[firstFit.orientation];
+                var dimensions = item.GetOrientedDimensions(orientation);
+
+                var regionFitTest = region.FitTest(smallValue, dimensions[0], dimensions[1], dimensions[2]);
+                if (regionFitTest !== false) {
+
+                    return this.CommitFit(item, region, regionFitTest, orientation);
+                }
+            }
+
+            return false;
+        }
+
+        /** @param {Item} item @param {Region} containingRegion @param {Region} placement @param {Number} orientation */
+
+    }, {
+        key: "CommitFit",
+        value: function CommitFit(item, containingRegion, placement, orientation) {
+
+            var numPackedItems = this.packedItems.length;
+
+            // Make sure that the new 'packed item to be' does not collide with a previous one
+            for (var iPacked = 0; iPacked < numPackedItems; iPacked++) {
+                var _packedItem = this.packedItems[iPacked];
+                // Creates temporary region for following calculations
+                var packedRegion = tempRegion2.Set(_packedItem.x, _packedItem.y, _packedItem.z, _packedItem.packedWidth, _packedItem.packedHeight, _packedItem.packedLength, 0);
+
+                var intersects = packedRegion.Intersects(-smallValue, placement);
+                if (intersects) {
+                    console.log('revertedToRegular');
+                    return this.FitRegular(item);
+                }
+            }
+
+            // Create a new packed item
+            var packedItem = new PackedItem(item, placement.x, placement.y, placement.z, placement.width, placement.height, placement.length, orientation);
+            /**/var debugUID = debugRegion(placement, 0xffff0000, true);
+
+            // Reserve the tested sub region: regionFitTest from the containing region: region
+            var regionRemains = this.Occupy(containingRegion, placement);
+
+            /**/debugClear([debugUID]);
+            debugRegion(placement, 0xffffffff, false);
+
+            return packedItem;
+        }
+    }, {
+        key: "ProcessRegionsPreferredX",
+        value: function ProcessRegionsPreferredX() {
+            var regions = this.regions,
+                numRegions = regions.length;
+            var containerWidth = this.container.width;
+
+            for (var iRegion = 0; iRegion < numRegions; iRegion++) {
+                var region = regions[iRegion];
+
+                if (Math.abs(region.x) < smallValue) region.preferredX = 0;else if (Math.abs(region.x + region.width - containerWidth) < smallValue) region.preferredX = 1;
+            }
+        }
+    }, {
+        key: "ProcessRegionsMergeExpand",
+        value: function ProcessRegionsMergeExpand() {
+            var regions = this.regions,
+                numRegions = regions.length;
+
+            var toInt = 1 / smallValue;
+            function coordID(value) {
+                return Math.floor(value * toInt);
+            }
+
+            /** @typedef Level @property {Number} y @property {Array<import('./Math2D').Rectangle>} rectangles */
+            /** @type {Array<Level>} */
+            var levels = {};
+
+            var neighbours = [],
+                rectangles = [];
+            for (var iRegion = 0; iRegion < numRegions; iRegion++) {
+                var regionA = regions[iRegion];
+                neighbours.length = 0;
+                neighbours.push(iRegion);
+
+                for (var jRegion = iRegion + 1; jRegion < numRegions; jRegion++) {
+                    var regionB = regions[jRegion];
+
+                    if (Math.abs(regionA.y - regionB.y) < smallValue) {
+                        var intersects = regionA.Intersects(smallValue, regionB);
+                        if (intersects) {
+                            neighbours.push(jRegion);
                         }
                     }
                 }
 
-                return false;
-            });
+                var numNeighbours = neighbours.length;
+                if (numNeighbours > 1) {
+                    rectangles.length = 0;
 
-            function Fit(_x5) {
-                return _ref4.apply(this, arguments);
+                    for (var iNeighbour = 0; iNeighbour < numNeighbours; iNeighbour++) {
+                        var neighbourA = regions[neighbours[iNeighbour]];
+
+                        for (var jNeighbour = iNeighbour + 1; jNeighbour < numNeighbours; jNeighbour++) {
+                            var neighbourB = regions[neighbours[jNeighbour]];
+
+                            rectangles.push.apply(rectangles, _toConsumableArray(neighbourA.ConnectFloorRects(neighbourB)));
+                        }
+                    }
+
+                    if (rectangles.length > 0) {
+                        var _levels$yCat$rectangl;
+
+                        var yCat = coordID(regionA.y);
+                        if (levels[yCat] === undefined) levels[yCat] = { y: regionA.y, rectangles: [] };
+                        (_levels$yCat$rectangl = levels[yCat].rectangles).push.apply(_levels$yCat$rectangl, rectangles);
+                    }
+                }
             }
 
-            return Fit;
-        }()
+            var levelsYCats = Object.keys(levels);
+            for (var iYCat = 0, numYCats = levelsYCats.length; iYCat < numYCats; iYCat++) {
+                /** @type {Level} */
+                var level = levels[levelsYCats[iYCat]];
+                var _rectangles = level.rectangles;
+                var regionY = level.y;
+                var regionHeight = this.container.height - regionY;
+
+                (0, _Math2D.reduceRectangles)(_rectangles);
+                for (var iRect = 0, numRects = _rectangles.length; iRect < numRects; iRect++) {
+                    var rect = _rectangles[iRect];
+                    var rx = rect.p1.x,
+                        ry = rect.p1.y;
+                    var rw = rect.p3.x - rx,
+                        rh = rect.p3.y - ry;
+
+                    // Calculate preferred packing side based on center point relative to container
+                    var preferredX = rx.x + rw / 2 < this.container.width / 2 ? 0 : 1;
+                    var newRegion = new Region(rx, regionY, ry, rw, regionHeight, rh, preferredX);
+                    this.regions.push(newRegion);
+                }
+            }
+        }
     }, {
         key: "ProcessRegionsForZeroRegions",
-        value: function () {
-            var _ref5 = _asyncToGenerator(function* () {
-                var regions = this.regions;
-                var minRegionAxis = this.assistant.minRegionAxis;
-                for (var iRegion = 0; iRegion < regions.length; iRegion++) {
-                    var region = regions[iRegion];
-                    if (region.width < minRegionAxis || region.height < minRegionAxis || region.length < minRegionAxis) {
-                        regions.splice(iRegion, 1);
-                        iRegion--;
-                    }
+        value: function ProcessRegionsForZeroRegions() {
+            var regions = this.regions;
+            var minRegionAxis = this.assistant.minRegionAxis;
+            for (var iRegion = 0; iRegion < regions.length; iRegion++) {
+                var region = regions[iRegion];
+                if (region.width < minRegionAxis || region.height < minRegionAxis || region.length < minRegionAxis) {
+                    regions.splice(iRegion, 1);
+                    iRegion--;
                 }
-            });
-
-            function ProcessRegionsForZeroRegions() {
-                return _ref5.apply(this, arguments);
             }
+        }
+    }, {
+        key: "ProcessRegionsPerPackedItem",
+        value: function ProcessRegionsPerPackedItem(packedItem, harsh) {
+            var regions = this.regions;
+            var itemVolume = packedItem.ref.volume;
 
-            return ProcessRegionsForZeroRegions;
-        }()
+            // Creates temporary region for following calculations
+            var packedRegion = tempRegion.Set(packedItem.x, packedItem.y, packedItem.z, packedItem.packedWidth, packedItem.packedHeight, packedItem.packedLength, 0);
+
+            for (var iRegion = 0; iRegion < regions.length; iRegion++) {
+                var region = regions[iRegion];
+
+                if (itemVolume > region.volume && packedRegion.ContainsRegion(smallValue, region)) {
+                    regions.splice(iRegion, 1);
+                    iRegion--;
+                    console.log('Contained region' + iRegion + ' deleted');
+                    continue;
+                }
+
+                if (packedRegion.Intersects(-smallValue, region)) {
+
+                    if (harsh) {
+                        console.log('\tIntersecting region' + iRegion + ' deleted (!)');
+                        regions.slice(iRegion, 1);
+                        iRegion--;
+                        continue;
+                    }
+
+                    var regionRemains = this.Occupy(region, packedRegion);
+                    iRegion--;
+                }
+            }
+        }
     }, {
         key: "ProcessRegionsForPackedItems",
-        value: function () {
-            var _ref6 = _asyncToGenerator(function* () {
-                var regions = this.regions;
-                var packedItems = this.packedItems;
+        value: function ProcessRegionsForPackedItems(harsh) {
+            var packedItems = this.packedItems,
+                numPackedItems = packedItems.length;
 
-                for (var iRegion = 0; iRegion < regions.length; iRegion++) {
-                    var region = regions[iRegion];
-                    var volumeRegion = region.volume;
+            for (var iItem = 0; iItem < numPackedItems; iItem++) {
+                var packedItem = packedItems[iItem];
+                this.ProcessRegionsPerPackedItem(packedItem, harsh);
+            }
+        }
+    }, {
+        key: "ProcessRegionsEnclosed",
+        value: function ProcessRegionsEnclosed() {
+            var regions = this.regions;
 
-                    for (var iPacked = 0; iPacked < packedItems.length; iPacked++) {
-                        var packedItem = packedItems[iPacked];
+            for (var iRegion = 0; iRegion < regions.length; iRegion++) {
+                var regionA = regions[iRegion];
+                var volumeA = regionA.volume;
 
-                        // Calculate preferred packing side based on center point relative to container
-                        var preferredX = packedItem.x + packedItem.packedWidth / 2 < this.container.width / 2 ? 0 : 1;
-                        // Creates temporary region for following calculations
-                        var packedRegion = tempRegion.Set(packedItem.x, packedItem.y, packedItem.z, packedItem.packedWidth, packedItem.packedHeight, packedItem.packedLength, preferredX);
+                for (var jRegion = iRegion + 1; jRegion < regions.length; jRegion++) {
+                    var regionB = regions[jRegion];
+                    var volumeB = regionB.volume;
 
-                        var volumePacked = packedRegion.volume;
-                        // Checks if packedRegion is larger then region, as it could be completely contained within
-                        if (volumePacked > volumeRegion) {
-                            // If the region is completely contained within the packed volume, remove the region
-                            if (packedRegion.ContainsRegion(smallValue, region)) {
-                                /**/debugRegion(region, 0xff0000, true, 100);
-                                /**/yield sleep(50);
-                                regions.splice(iRegion, 1);
-                                iRegion--;
-                                break;
-                            }
-                        }
-
-                        // Checks if the region and packedRegion intersects
-                        /*let corners = packedRegion.GetCorners(-smallValue * 10);
-                        let intersects = false, iCorner = 0;
-                        while(iCorner < 27 && intersects === false){
-                            intersects = region.ContainsPoint(-smallValue, corners[iCorner], corners[iCorner + 1], corners[iCorner + 2]);
-                            iCorner += 3;
-                        }
-                        */
-
-                        var intersects = packedRegion.Intersects(-smallValue, region);
-
-                        if (intersects) {
-                            /**/debugLog('intersects');
-                            /**/yield click();
-
+                    if (volumeA < volumeB) {
+                        // If a A is completely contained within B, remove the A
+                        if (regionB.ContainsRegion(smallValue, regionA)) {
                             regions.splice(iRegion, 1);
                             iRegion--;
                             break;
-
-                            // Reserve the packedRegion from the containing region
-                            var regionRemains = /**/yield this.Occupy(region, packedRegion);
-
-                            iRegion--;
-                            // If the containing region: region, has been removed, then break
-                            if (regionRemains === false) {
-                                break;
-                            }
                         }
-
-                        // also merge walls?
-                    }
-                }
-            });
-
-            function ProcessRegionsForPackedItems() {
-                return _ref6.apply(this, arguments);
-            }
-
-            return ProcessRegionsForPackedItems;
-        }()
-    }, {
-        key: "ProcessRegionsEnclosed",
-        value: function () {
-            var _ref7 = _asyncToGenerator(function* () {
-                var regions = this.regions;
-
-                for (var iRegion = 0; iRegion < regions.length; iRegion++) {
-                    var regionA = regions[iRegion];
-                    var volumeA = regionA.volume;
-
-                    for (var jRegion = iRegion + 1; jRegion < regions.length; jRegion++) {
-                        var regionB = regions[jRegion];
-                        var volumeB = regionB.volume;
-
-                        if (volumeA < volumeB) {
-                            // If a A is completely contained within B, remove the A
-                            if (regionB.ContainsRegion(smallValue, regionA)) {
-                                /**/debugRegion(regionA, 0xff0000, true, 100);
-                                /**/yield sleep(50);
-                                regions.splice(iRegion, 1);
-                                iRegion--;
-                                break;
-                            }
-                        } else {
-                            // If a B is completely contained within A, remove the B
-                            if (regionA.ContainsRegion(smallValue, regionB)) {
-                                /**/debugRegion(regionB, 0xff0000, true, 100);
-                                /**/yield sleep(50);
-                                regions.splice(jRegion, 1);
-                                jRegion--;
-                            }
+                    } else {
+                        // If a B is completely contained within A, remove the B
+                        if (regionA.ContainsRegion(smallValue, regionB)) {
+                            regions.splice(jRegion, 1);
+                            jRegion--;
                         }
                     }
                 }
-            });
-
-            function ProcessRegionsEnclosed() {
-                return _ref7.apply(this, arguments);
             }
-
-            return ProcessRegionsEnclosed;
-        }()
+        }
     }, {
         key: "ProcessRegions",
-        value: function () {
-            var _ref8 = _asyncToGenerator(function* () {
-                console.log('>>> ProcessRegions()');
-                var regions = this.regions;
+        value: function ProcessRegions() {
+            var regions = this.regions;
 
-                // Removes unuseable regions
-                /**/yield this.ProcessRegionsForZeroRegions();
+            if (global.processRegionsCount === undefined) global.processRegionsCount = 0;
 
-                // Removes regions that are completely enclosed in packed volumes, and correct any intersecting ones
-                /**/yield this.ProcessRegionsForPackedItems();
+            // Recalculate preferred insertion side per region (left or right)
+            this.ProcessRegionsPreferredX();
 
-                // Removes regions that are completely enclosed in larger regions
-                /**/yield this.ProcessRegionsEnclosed();
+            // Removes regions that are completely enclosed in packed volumes, and correct any intersecting ones
+            this.ProcessRegionsForPackedItems();
 
-                // Sort by z (first) and volume (second)
-                regions.sort(Region.SortDeepestSmallest);
+            // Merge and expand free regions (can span several packed item tops)
+            this.ProcessRegionsMergeExpand();
 
-                this.packedItems.sort(PackedItem.DepthSort);
-                /**/yield this.ProcessRegionsForPackedItems();
+            // Removes unuseable regions
+            this.ProcessRegionsForZeroRegions();
 
-                /**/var debugUIDs = [];
-                for (var iRegion = 0; iRegion < regions.length; iRegion++) {
-                    var region = regions[iRegion];
-                    /**/debugUIDs.push(debugRegion(region, 0xff0000, true, 100, true));
-                    /**/yield sleep(16);
-                    /**/debugUIDs.push(debugRegion(region, 0xff0000, true, -1, true));
-                }
+            // Removes regions that are completely enclosed in larger regions
+            this.ProcessRegionsEnclosed();
 
-                //**/await click();
-                /**/yield debugUser();
+            // Sort by z (first) and volume (second)
+            regions.sort(Region.SortDeepestSmallest);
 
-                /**/debugClear(debugUIDs);
-            });
+            this.packedItems.sort(PackedItem.Sort);
+        }
+    }, {
+        key: "items",
+        set: function set(items) {
+            this.assistant = new PackingAssistant(items, this);
+        }
+    }], [{
+        key: "SortByN",
+        value: function SortByN(a, b) {
+            if (isNaN(a.n) || isNaN(b.n)) return 0;
 
-            function ProcessRegions() {
-                return _ref8.apply(this, arguments);
-            }
-
-            return ProcessRegions;
-        }()
+            if (a.n < b.n) return -1;
+            if (a.n > b.n) return 1;
+            return 0;
+        }
     }]);
 
     return PackedContainer;
 }();
 
+var PackingAssistant = function () {
+    /**
+     * @param {Array<Item>} items 
+     * @param {PackedContainer} packedContainer 
+     */
+    function PackingAssistant(items, packedContainer) {
+        _classCallCheck(this, PackingAssistant);
+
+        global.assistant = this;
+        this.debugRegion = function (regionIndex) {};
+
+        this.params = {
+            minDimensionsNoWasteFactor: [1, 1, 1]
+        };
+
+        this.workingItems = items;
+        this.packedContainer = packedContainer;
+        this.workingRegions = this.packedContainer.regions;
+
+        this.minRegionAxis = smallValue;
+
+        this.workingItemsSortFunction = _Components.Item.VolumeSort;
+
+        // Sort items by volume ascending
+        this.workingItems.sort(this.workingItemsSortFunction);
+
+        var minDimensionsSearchSet = this.workingItems;
+        //minDimensionsSearchSet = [this.workingItems[0]];
+        this.minDimensions = this.GetMinDimensionsOverall(minDimensionsSearchSet);
+    }
+
+    /** @param {Array<Item>} items */
+
+
+    _createClass(PackingAssistant, [{
+        key: "GetMinDimensionsOverall",
+        value: function GetMinDimensionsOverall(items) {
+            var minDimensions = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER];
+
+            for (var iItem = 0, numItems = items.length; iItem < numItems; iItem++) {
+                var item = items[iItem];
+                var validOrientations = item.validOrientations;
+                for (var iOrient = 0; iOrient < validOrientations.length; iOrient++) {
+                    var orientation = validOrientations[iOrient];
+                    var dimensions = item.GetOrientedDimensions(orientation);
+                    if (dimensions[0] < minDimensions[0]) minDimensions[0] = dimensions[0];
+                    if (dimensions[1] < minDimensions[1]) minDimensions[1] = dimensions[1];
+                    if (dimensions[2] < minDimensions[2]) minDimensions[2] = dimensions[2];
+                }
+            }
+
+            return minDimensions;
+        }
+
+        /**
+         * 
+         * @param {Item} fittedItem 
+         * @param {Region} fit 
+         * @param {Array<Region>} newRegions 
+         */
+
+    }, {
+        key: "RateFit",
+        value: function RateFit(fittedItem, fit, newRegions) {
+
+            // Try out a recursive deep rate fit
+
+            var containerLength = this.packedContainer.container.length;
+            var minDimensions = this.minDimensions;
+            var minDimensionsNoWasteFactor = this.params.minDimensionsNoWasteFactor;
+
+            var minZScore = 1 - (fit.z + fit.length) / containerLength; // 0-1
+
+            // new regions usability score
+            var minWasteScore = 1; // have completely filled the region if newRegions.length === 0
+            if (newRegions.length > 0) {
+                minWasteScore = 0;
+                for (var iRegion = 0; iRegion < newRegions.length; iRegion++) {
+                    var region = newRegions[iRegion];
+
+                    var scoreW = 0,
+                        scoreH = 0,
+                        scoreL = 0;
+                    if (region.width >= minDimensions[0] && region.width - minDimensions[0] < minDimensions[0] * minDimensionsNoWasteFactor[0]) scoreW += 1;
+                    if (region.height >= minDimensions[1] && region.width - minDimensions[1] < minDimensions[1] * minDimensionsNoWasteFactor[1]) scoreH += 1;
+                    if (region.length >= minDimensions[2] && region.width - minDimensions[2] < minDimensions[2] * minDimensionsNoWasteFactor[2]) scoreL += 1;
+
+                    minWasteScore += scoreW * .5 + scoreH * .3 + scoreL * .2;
+                }
+                minWasteScore /= newRegions.length;
+            }
+
+            var minZ_weight = this.packedContainer.params.minZ_weight;
+            var minWaste_weight = this.packedContainer.params.minWaste_weight;
+            var score = minZScore * minZ_weight + minWasteScore * minWaste_weight;
+            return score;
+        }
+    }]);
+
+    return PackingAssistant;
+}();
+
 /**
  * @typedef CUBParams
+ * @property {Number} minZ_weight
+ * @property {Number} minWaste_weight
+ * @property {Boolean} skipTop
  */
 
-var PackingAssistant =
-/**
- * @param {Container} container 
- * @param {Array<Item>} items 
- */
-function PackingAssistant(container, items) {
-    _classCallCheck(this, PackingAssistant);
+/** @type {CUBParams} */
 
-    this.container = container;
-    this.workingArray = items;
 
-    this.minRegionAxis = smallValue;
-
-    // Sort items by volume ascending
-    this.workingArray.sort(_Components.Item.VolumeSort);
-
-    var smallestItem = this.workingArray[0];
-    this.minItemSize = Math.min(smallestItem.width, smallestItem.height, smallestItem.length); // Should take valid orientations into consideration
-};
-
-exports.pack = pack;
+var defaultParams = {
+    minZ_weight: .9,
+    minWaste_weight: .1,
+    skipTop: false
+};exports.pack = pack;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)))
 
 /***/ }),
 /* 59 */
@@ -12827,49 +10376,103 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-function almost(n1, n2) {
-    return Math.abs(n1 - n2) < .01;
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Item = __webpack_require__(60);
+
+var _Item2 = _interopRequireDefault(_Item);
+
+var _Container = __webpack_require__(61);
+
+var _Container2 = _interopRequireDefault(_Container);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * @param {Array<Object>} objects 
+ * @param {Array<string>} m - mapping to Item.constructor, ie: [ID, Length, ...]
+ */
+function toItems(objects, m) {
+    var items = [];
+    objects.forEach(function (o) {
+        items.push(new _Item2.default(o[m[0]], o[m[1]], o[m[2]], o[m[3]], o[m[4]]));
+    });
+    return items;
 }
 
-function resolve(w, l, h, dimensions) {
-    var dw = dimensions.width,
-        dl = dimensions.length,
-        dh = dimensions.height;
+var TestData =
+/**
+ * @param {Container} container 
+ * @param {Array<Item>} items 
+ */
+function TestData(container, items) {
+    _classCallCheck(this, TestData);
 
-    if (almost(w, dw)) {
-        // x
-        if (almost(h, dh)) {
-            // y
-            return 'xyz';
-        } else if (almost(h, dl)) {
-            // z
-            return 'xzy';
-        }
-    } else if (almost(w, dh)) {
-        // y
-        if (almost(h, dw)) {
-            // x
-            return 'yxz';
-        } else if (almost(h, dl)) {
-            // z
-            return 'yzx';
-        }
-    } else if (almost(w, dl)) {
-        // z
-        if (almost(h, dw)) {
-            // x
-            return 'zxy';
-        } else if (almost(h, dh)) {
-            // y
-            return 'zyx';
-        }
+    this.container = container;
+    this.items = items;
+};
+
+var AFitTest = function () {
+    function AFitTest() {
+        _classCallCheck(this, AFitTest);
     }
 
-    console.warn('ResolveOrientation issue with:', item);
-    return 'xyz';
-}
+    _createClass(AFitTest, null, [{
+        key: "GenerateDataSample1",
+        value: function GenerateDataSample1() {
+            var containerData = { ID: 1000, Name: 'Box1', Length: 15, Width: 13, Height: 9 };
+            var itemsData = [{ ID: 1000, Name: 'Item1', Length: 5, Width: 4, Height: 2, Quantity: 1 }, { ID: 1001, Name: 'Item2', Length: 2, Width: 1, Height: 1, Quantity: 3 }, { ID: 1002, Name: 'Item3', Length: 9, Width: 7, Height: 3, Quantity: 4 }, { ID: 1003, Name: 'Item4', Length: 13, Width: 6, Height: 3, Quantity: 8 }, { ID: 1004, Name: 'Item5', Length: 17, Width: 8, Height: 6, Quantity: 1 }, { ID: 1005, Name: 'Item6', Length: 3, Width: 3, Height: 2, Quantity: 2 }];
 
-exports.resolve = resolve;
+            var container = Object.assign(new _Container2.default(), containerData);
+            var items = toItems(itemsData, ['ID', 'Length', 'Width', 'Height', 'Quantity']);
+
+            var data = new TestData(container, items);
+            return data;
+        }
+    }, {
+        key: "GenerateDataSample2",
+        value: function GenerateDataSample2() {
+            var containerData = { ID: 1000, Name: 'Box1', Length: 60, Width: 35, Height: 25 };
+            var itemsData = [{ ID: 1000, Name: 'Item1', Length: 30, Width: 50, Height: 20, Quantity: 1 }, { ID: 1003, Name: 'Item4', Length: 13, Width: 6, Height: 3, Quantity: 6 }, { ID: 1004, Name: 'Item5', Length: 17, Width: 8, Height: 6, Quantity: 3 }, { ID: 1005, Name: 'Item6', Length: 5, Width: 5, Height: 2, Quantity: 16 }];
+
+            var container = Object.assign(new _Container2.default(), containerData);
+            var items = toItems(itemsData, ['ID', 'Length', 'Width', 'Height', 'Quantity']);
+
+            var data = new TestData(container, items);
+            return data;
+        }
+    }, {
+        key: "GenerateDataSampleFlatdeck",
+        value: function GenerateDataSampleFlatdeck() {
+            var containerData = { ID: 1000, Name: 'Box1', Length: 576, Width: 102, Height: 102 };
+            var itemsData = [{ ID: 1000, Name: 'Item1', Length: 100, Width: 70, Height: 90, Quantity: 3 }, { ID: 1003, Name: 'Item4', Length: 60, Width: 60, Height: 60, Quantity: 7 }, { ID: 1004, Name: 'Item5', Length: 40, Width: 20, Height: 30, Quantity: 4 }, { ID: 1005, Name: 'Item6', Length: 30, Width: 20, Height: 30, Quantity: 20 }];
+
+            var container = Object.assign(new _Container2.default(), containerData);
+            var items = toItems(itemsData, ['ID', 'Length', 'Width', 'Height', 'Quantity']);
+
+            var data = new TestData(container, items);
+            return data;
+        }
+    }, {
+        key: "GenerateDataSampleFlatdeck2",
+        value: function GenerateDataSampleFlatdeck2() {
+            var containerData = { ID: 1000, Name: 'Box1', Length: 576, Width: 102, Height: 102 };
+            var itemsData = [{ ID: 1000, Name: 'Item1', Length: 100, Width: 70, Height: 90, Quantity: 3 }, { ID: 1003, Name: 'Item4', Length: 60, Width: 60, Height: 60, Quantity: 7 }, { ID: 1004, Name: 'Item5', Length: 40, Width: 28, Height: 30, Quantity: 4 }, { ID: 1005, Name: 'Item6', Length: 30, Width: 23, Height: 34, Quantity: 20 }, { ID: 1005, Name: 'Item6', Length: 45, Width: 20, Height: 30, Quantity: 30 }, { ID: 1005, Name: 'Item6', Length: 35, Width: 22, Height: 18, Quantity: 27 }];
+
+            var container = Object.assign(new _Container2.default(), containerData);
+            var items = toItems(itemsData, ['ID', 'Length', 'Width', 'Height', 'Quantity']);
+
+            var data = new TestData(container, items);
+            return data;
+        }
+    }]);
+
+    return AFitTest;
+}();
+
+exports.default = AFitTest;
 
 /***/ }),
 /* 60 */
@@ -12879,179 +10482,93 @@ exports.resolve = resolve;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Bin = __webpack_require__(34);
-
-var _Bin2 = _interopRequireDefault(_Bin);
-
-var _Item = __webpack_require__(35);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Packer = function () {
-  function Packer(bins, items) {
-    _classCallCheck(this, Packer);
+function almost(n1, n2) {
+    return Math.abs(n1 - n2) < .01;
+}
 
-    this.bins = bins || [];
-    this.items = items || [];
-    this.unfitItems = [];
-  }
+var Item = function () {
+    /**
+     * @param {Object} id 
+     * @param {Number} dim1 
+     * @param {Number} dim2 
+     * @param {Number} dim3 
+     * @param {Number} quantity 
+     */
+    function Item(id, dim1, dim2, dim3, quantity) {
+        _classCallCheck(this, Item);
 
-  _createClass(Packer, [{
-    key: 'addBin',
-    value: function addBin(bin) {
-      this.bins.push(bin);
+        this.ID = id;
+        this.IsPacked = false;
+        this.Dim1 = dim2;
+        this.Dim2 = dim1;
+        this.Dim3 = dim3;
+        this.CoordX = 0;
+        this.CoordY = 0;
+        this.CoordZ = 0;
+        this.Quantity = quantity;
+        this.PackDimX = 0;
+        this.PackDimY = 0;
+        this.PackDimZ = 0;
+        this.Volume = this.Dim1 * this.Dim2 * this.Dim3;
     }
-  }, {
-    key: 'addItem',
-    value: function addItem(item) {
-      this.items.push(item);
-    }
-  }, {
-    key: 'findFittedBin',
-    value: function findFittedBin(i) {
-      for (var _i = 0; _i < this.bins.length; _i++) {
-        var b = this.bins[_i];
 
-        if (!b.weighItem(i) || !b.putItem(i, _Item.StartPosition)) {
-          continue;
-        }
+    /** 
+     * @param {Item} item
+     * @returns {string} - axis order (xyz, xzy, yxz, yzx, zxy or zyx)
+     */
 
-        if (b.items.length === 1 && b.items[0] === i) {
-          b.items = [];
-        }
 
-        return b;
-      }
-      return null;
-    }
-  }, {
-    key: 'getBiggerBinThan',
-    value: function getBiggerBinThan(b) {
-      var v = b.getVolume();
-      for (var _i = 0; _i < this.bins; _i++) {
-        var b2 = this.bins[_i];
-        if (b2.getVolume() > v) {
-          return b2;
-        }
-      }
-      return null;
-    }
-  }, {
-    key: 'unfitItem',
-    value: function unfitItem() {
-      if (this.items.length === 0) {
-        return;
-      }
-      this.unfitItems.push(this.items[0]);
-      this.items.splice(0, 1);
-    }
-  }, {
-    key: 'packToBin',
-    value: function packToBin(b, items) {
-      var b2 = null;
-      var unpacked = [];
-      var fit = b.weighItem(items[0]) && b.putItem(items[0], _Item.StartPosition);
+    _createClass(Item, null, [{
+        key: 'ResolveOrientation',
+        value: function ResolveOrientation(item) {
+            var w = item.Dim1,
+                l = item.Dim2,
+                h = item.Dim3;
 
-      if (!fit) {
-        var _b = this.getBiggerBinThan(b);
-        if (_b) {
-          return this.packToBin(_b, items);
-        }
-        return this.items;
-      }
-
-      // Pack unpacked items.
-      for (var _i = 1; _i < this.items.length; _i++) {
-        var fitted = false;
-        var item = this.items[_i];
-
-        if (b.weighItem(item)) {
-          // Try available pivots in current bin that are not intersect with
-          // existing items in current bin.
-          lookup: for (var _pt = 0; _pt < 3; _pt++) {
-            for (var _j = 0; _j < b.items.length; _j++) {
-              var pv = void 0;
-              var ib = b.items[_j];
-              switch (_pt) {
-                case _Item.WidthAxis:
-                  pv = [ib.position[0] + ib.getWidth(), ib.position[1], ib.position[2]];
-                  break;
-                case _Item.HeightAxis:
-                  pv = [ib.position[0], ib.position[1] + ib.getHeight(), ib.position[2]];
-                  break;
-                case _Item.DepthAxis:
-                  pv = [ib.position[0], ib.position[1], ib.position[2] + ib.getDepth()];
-                  break;
-              }
-
-              if (b.putItem(item, pv)) {
-                fitted = true;
-                break lookup;
-              }
+            if (almost(item.PackDimX, w)) {
+                // x
+                if (almost(item.PackDimY, h)) {
+                    // y
+                    return 'xyz';
+                } else if (almost(item.PackDimY, l)) {
+                    // z
+                    return 'xzy';
+                }
+            } else if (almost(item.PackDimX, h)) {
+                // y
+                if (almost(item.PackDimY, w)) {
+                    // x
+                    return 'yxz';
+                } else if (almost(item.PackDimY, l)) {
+                    // z
+                    return 'yzx';
+                }
+            } else if (almost(item.PackDimX, l)) {
+                // z
+                if (almost(item.PackDimY, w)) {
+                    // x
+                    return 'zxy';
+                } else if (almost(item.PackDimY, h)) {
+                    // y
+                    return 'zyx';
+                }
             }
-          }
+
+            return 'xyz';
         }
+    }]);
 
-        if (!fitted) {
-          while (b2 !== null) {
-            b2 = this.getBiggerBinThan(b);
-            if (b2) {
-              b2.items.push(item);
-              var left = this.packToBin(b2, b2.items);
-              if (left.length === 0) {
-                b = b2;
-                fitted = true;
-                break;
-              }
-            }
-          }
-
-          if (!fitted) {
-            unpacked.push(item);
-          }
-        }
-      }
-
-      return unpacked;
-    }
-  }, {
-    key: 'pack',
-    value: function pack() {
-
-      this.bins.sort(function (a, b) {
-        return a.getVolume() > b.getVolume();
-      });
-
-      this.items.sort(function (a, b) {
-        return a.getVolume() < b.getVolume();
-      });
-
-      while (this.items.length > 0) {
-        var bin = this.findFittedBin(this.items[0]);
-
-        if (bin === null) {
-          this.unfitItem();
-          continue;
-        }
-
-        this.items = this.packToBin(bin, this.items);
-      }
-
-      return this;
-    }
-  }]);
-
-  return Packer;
+    return Item;
 }();
 
-exports.default = Packer;
+exports.default = Item;
 
 /***/ }),
 /* 61 */
@@ -13063,360 +10580,27 @@ exports.default = Packer;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.setDebugMatrix = exports.resolveOrientation = exports.pack = undefined;
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Container =
 /**
- * @param {Container} container 
- * @param {Array<Item>} items 
+ * @param {Object} id 
+ * @param {Number} width 
+ * @param {Number} length 
+ * @param {Number} height 
  */
-var pack = function () {
-    var _ref = _asyncToGenerator(function* (container, items) {
-        /** @type {Array<Packing>} */
-        var packings = [];
-        /** @type {Array<Item>} */
-        var unpacked = [];
+function Container(id, width, length, height) {
+    _classCallCheck(this, Container);
 
-        items.sort(volumeSort);
+    this.ID = id;
 
-        //for(let iItem = 0; iItem < items.length; iItem++){
-        var iItem = 0;
-        while (items.length > 0) {
-            var item = items[iItem];
+    this.Width = length || 0;
+    this.Length = width || 0;
+    this.Height = height || 0;
+};
 
-            if (item.weight > container.weight) {
-                return { failed: 'Item is too big' };
-            }
-
-            var packed = false;
-
-            for (var iPacking = 0; iPacking < packings.length && !packed; iPacking++) {
-                var _packing = packings[iPacking];
-                yield debugAs('Packing', _packing);
-
-                // If this packing's going to be too big with this item as well then skip on to the next packing
-                if (_packing.weight + item.weight > container.weight) {
-                    yield debugAs('Log', 'Packing ' + iPacking + ' is overweight');
-                    continue;
-                }
-
-                for (var iSpace = 0; iSpace < _packing.spaces.length; iSpace++) {
-                    var _packing$spaces;
-
-                    var _space = _packing.spaces[iSpace];
-                    yield debugAs('Space', _space);
-
-                    // Try placing the item in this space, if it doesn't fit skip on the next space
-                    var _placement = place(item, _space);
-                    if (!_placement) {
-                        yield debugAs('Log', 'Placing item in Space ' + iSpace + ' of Packing ' + iPacking + ' failed');
-                        continue;
-                    }
-
-                    yield debugAs('Placement', _placement);
-
-                    // Add the item to the packing and break up the surrounding spaces
-                    _packing.placements.push(_placement);
-                    _packing.weight += item.weight;
-                    _packing.spaces.splice(iSpace, 1);
-                    (_packing$spaces = _packing.spaces).push.apply(_packing$spaces, _toConsumableArray(breakUpSpace(_space, _placement)));
-
-                    packed = true;
-                    items.splice(iItem, 1);
-                    yield debugAs('Packed', _placement);
-                    yield debugAs('Log', 'Item packed successfully in Space ' + iSpace + ' of Packing ' + iPacking);
-                    break;
-                }
-            }
-
-            if (packed) {
-                continue;
-            }
-
-            // Can't fit in any of the spaces for the current packings so lets try a new space the size of the container
-            /** @type {Space} */
-            var space = {
-                dimensions: container.dimensions.sort(rnsort),
-                position: [0, 0, 0]
-            };
-
-            var placement = place(item, space);
-
-            // If it can't be placed in this space, then it's just too big for the container and we should abandon hope
-            if (!placement) {
-                unpacked.push.apply(unpacked, _toConsumableArray(items.splice(iItem, 1)));
-                yield debugAs('Log', 'Placing item of dimensions' + str(item.dimensions) + ' abandoned');
-                continue;
-            }
-
-            // Otherwise lets put the item in a new packing and break up the remaing free space around it
-            /** @type {Packing} */
-            var packing = {
-                placements: [placement],
-                weight: item.weight,
-                spaces: breakUpSpace(space, placement)
-            };
-            packings.push(packing);
-            items.splice(iItem, 1);
-            yield debugAs('Packed', placement);
-            yield debugAs('Log', 'Item packed successfully in new Space.');
-        }
-
-        return {
-            packings: packings,
-            unpacked: unpacked
-        };
-    });
-
-    return function pack(_x, _x2) {
-        return _ref.apply(this, arguments);
-    };
-}();
-
-var _Debug = __webpack_require__(11);
-
-var _Debug2 = _interopRequireDefault(_Debug);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
-var offset = new THREE.Vector3();
-var orientation = new THREE.Quaternion();
-var scale = new THREE.Vector3();
-function setDebugMatrix(matrix) {
-    matrix.decompose(offset, orientation, scale);
-}
-
-var debugging = false;
-
-function sleep(ms) {
-    return new Promise(function (resolve) {
-        if (debugging) setTimeout(resolve, ms);else resolve();
-    });
-}
-
-function str(obj) {
-    var result;
-    if (obj instanceof Array) {
-        result = '[';
-        var i = void 0;
-        for (i = 0; i < obj.length - 1; i++) {
-            result += obj[i] + ', ';
-        }result += obj[i] + ']';
-    }
-    return result;
-}
-
-function debugLog() {
-    var _console;
-
-    (_console = console).log.apply(_console, arguments);
-    return sleep(50);
-}
-
-function debugPacking() {
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-    }
-
-    /** @type {Packing} */
-    var packing = args[0];
-    packing.spaces.forEach(function (space) {
-        var p = space.position;
-        var d = space.dimensions;
-        _Debug2.default.Viz.DrawVolume(p[0], p[1], p[2], d[0], d[1], d[2], args[1] || 0xaaffff, args[2] || 500);
-    });
-    return sleep(500);
-}
-
-function debugSpace() {
-    /** @type {Space} */
-    var space = arguments.length <= 0 ? undefined : arguments[0];
-    var p = space.position;
-    var d = space.dimensions;
-    _Debug2.default.Viz.DrawVolume(p[0], p[1], p[2], d[0], d[1], d[2], (arguments.length <= 1 ? undefined : arguments[1]) || 0xaaffff, (arguments.length <= 2 ? undefined : arguments[2]) || 500);
-    return sleep(300);
-}
-
-function debugPlacement() {
-    /** @type {Placement} */
-    var placement = arguments.length <= 0 ? undefined : arguments[0];
-    var p = placement.position;
-    var d = placement.dimensions;
-    _Debug2.default.Viz.DrawVolume(p[0], p[1], p[2], d[0], d[1], d[2], (arguments.length <= 1 ? undefined : arguments[1]) || 0xaaffaa, (arguments.length <= 2 ? undefined : arguments[2]) || 500);
-    return sleep(300);
-}
-
-function debugPacked() {
-    /** @type {Placement} */
-    var placement = arguments.length <= 0 ? undefined : arguments[0];
-
-    debugPlacement(placement, 0x8888ff, 100000);
-}
-
-function debugAs(type) {
-    for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-        args[_key2 - 1] = arguments[_key2];
-    }
-
-    switch (type) {
-        case 'Log':
-            return debugLog.apply(undefined, args);
-        case 'Packing':
-            return debugPacking.apply(undefined, args);
-        case 'Space':
-            return debugSpace.apply(undefined, args);
-        case 'Placement':
-            return debugPlacement.apply(undefined, args);
-        case 'Packed':
-            return debugPacked.apply(undefined, args);
-    }
-    return true;
-}
-
-/**
- * @typedef {Array<Number>} Dimensions
- * @typedef {Array<Number>} Position
- * 
- * @typedef Item
- * @property {string} id 
- * @property {Dimensions} dimensions
- * @property {Number} weight
- * 
- * @typedef Container
- * @property {Dimensions} dimensions
- * @property {Number} weight
- * 
- * @typedef Placement
- * @property {string} id
- * @property {Dimensions} dimensions
- * @property {Position} position
- * @property {Number} weight
- * 
- * @typedef Space
- * @property {Dimensions} dimensions
- * @property {Position} position
- * 
- * @typedef Packing
- * @property {Array<Space>} spaces
- * @property {Array<Placement>} placements
- * @property {Number} weight
- */
-
-var placePermutations = [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]];
-
-/**
- * @param {Item} item 
- * @param {Space} space
- * @returns {Placement}
- */
-function place(item, space) {
-    var d = item.dimensions,
-        sd = space.dimensions;
-
-    for (var i = 0; i < 6; i++) {
-        var p = placePermutations[i];
-        if (d[p[0]] <= sd[0] && d[p[1]] <= sd[1] && d[p[2]] <= sd[2]) {
-            return {
-                id: item.id,
-                dimensions: [d[p[0]], d[p[1]], d[p[2]]],
-                position: space.position,
-                weight: item.weight
-            };
-        }
-    }
-
-    return undefined;
-}
-
-/**
- * 
- * @param {Space} space 
- * @param {Placement} placement
- * @returns {Array<Space>} 
- */
-function breakUpSpace(space, placement) {
-    var spaceDim = space.dimensions,
-        spacePos = space.position,
-        placementDim = placement.dimensions;
-    return [{
-        dimensions: [spaceDim[0] - placementDim[0], spaceDim[1], spaceDim[2]],
-        position: [spacePos[0] + placementDim[0], spacePos[1], spacePos[2]]
-    }, {
-        dimensions: [placementDim[0], spaceDim[1] - placementDim[1], spaceDim[2]],
-        position: [spacePos[0], spacePos[1] + placementDim[1], spacePos[2]]
-    }, {
-        dimensions: [placementDim[0], placementDim[1], spaceDim[2] - placementDim[2]],
-        position: [spacePos[0], spacePos[1], spacePos[2] + placementDim[2]]
-    }];
-}
-
-function rnsort(a, b) {
-    if (a < b) return 1;
-    if (a > b) return -1;
-    return 0;
-}
-
-function volumeSort(a, b) {
-    var av = a.dimensions[0] * a.dimensions[1] * a.dimensions[2];
-    var bv = b.dimensions[0] * b.dimensions[1] * b.dimensions[2];
-
-    if (av > bv) return -1;
-    if (av < bv) return 1;
-    return 0;
-}
-
-function almost(n1, n2) {
-    return Math.abs(n1 - n2) < .01;
-}
-
-/** 
- * @param {Array<Number>} packedDimensions
- * @param {Array<Number>} itemDimensions
- * @returns {string} - axis order (xyz, xzy, yxz, yzx, zxy or zyx)
- */
-function resolveOrientation(packedDimensions, itemDimensions) {
-    var pw = packedDimensions[0],
-        ph = packedDimensions[1],
-        w = itemDimensions[0],
-        h = itemDimensions[1],
-        l = itemDimensions[2];
-    if (almost(pw, w)) {
-        // x
-        if (almost(ph, h)) {
-            // y
-            return 'xyz';
-        } else if (almost(ph, l)) {
-            // z
-            return 'xzy';
-        }
-    } else if (almost(pw, h)) {
-        // y
-        if (almost(ph, w)) {
-            // x
-            return 'yxz';
-        } else if (almost(ph, l)) {
-            // z
-            return 'yzx';
-        }
-    } else if (almost(pw, l)) {
-        // z
-        if (almost(ph, w)) {
-            // x
-            return 'zxy';
-        } else if (almost(ph, h)) {
-            // y
-            return 'zyx';
-        }
-    }
-    return 'xyz';
-}
-
-exports.pack = pack;
-exports.resolveOrientation = resolveOrientation;
-exports.setDebugMatrix = setDebugMatrix;
+exports.default = Container;
 
 /***/ }),
 /* 62 */
@@ -13429,35 +10613,250 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+/** @typedef Vec2 @property {Number} x @property {Number} y */
+/** @typedef Rectangle @property {Vec2} p1 @property {Vec2} p2 @property {Vec2} p3 @property {Vec2} p4 */
+
+var epsilon = Math.pow(2, -52);
+var smallValue = .000001;
+var smallValueSqrt = .001;
+
+// line intercept math by Paul Bourke http://paulbourke.net/geometry/pointlineplane/
+// Determine the intersection point of two line segments
+// Return FALSE if the lines don't intersect
+function segmentIntersect(x1, y1, x2, y2, x3, y3, x4, y4) {
+
+    // Check if none of the lines are of length 0
+    if (x1 === x2 && y1 === y2 || x3 === x4 && y3 === y4) {
+        return false;
+    }
+
+    var denominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+
+    // Lines are parallel
+    if (Math.abs(denominator) < epsilon) {
+        return false;
+    }
+
+    var ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
+    var ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
+
+    // is the intersection along the segments
+    if (ua > 0 || ua < 1 || ub > 0 || ub < 1) return false;
+
+    // Return a object with the x and y coordinates of the intersection
+    var x = x1 + ua * (x2 - x1);
+    var y = y1 + ua * (y2 - y1);
+
+    return { x: x, y: y };
+}
+
+function linesIntersect(ax, ay, bx, by, cx, cy, dx, dy) {
+    // Line AB represented as a1x + b1y = c1
+    var a1 = by - ay,
+        b1 = ax - bx;
+    var c1 = a1 * ax + b1 * ay;
+
+    // Line CD represented as a2x + b2y = c2
+    var a2 = dy - cy,
+        b2 = cx - dx;
+    var c2 = a2 * cx + b2 * cy;
+
+    var determinant = a1 * b2 - a2 * b1;
+
+    // The lines are parallel
+    if (Math.abs(determinant) < smallValue) return false;
+
+    var x = (b2 * c1 - b1 * c2) / determinant;
+    var y = (a1 * c2 - a2 * c1) / determinant;
+    return { x: x, y: y };
+}
+
+function rectangleContainsPoint(offset, rx, ry, rw, rh, px, py) {
+    var x = rx - offset,
+        y = ry - offset,
+        w = rw + offset * 2,
+        h = rh + offset * 2;
+    return px > x && px < x + w && py > y && py < y + h;
+}
+
+/** @param {Number} offset offsets the region by this before checking * @param {Region} subRegion */
+function rectangleContainsRectangle(offset, rx, ry, rw, rh, ox, oy, ow, oh) {
+    var x = rx - offset,
+        y = ry - offset,
+        w = rw + offset * 2,
+        h = rh + offset * 2;
+    return ox > x && ox + ow < x + w && oy > y && oy + oh < y + h;
+}
+
+/**
+ * @param {Array<Vec2>} points
+ */
+function rectanglesFromPoints(points) {
+    // Separate points in lists of 'y' coordinate, grouped by 'x' coordinate
+    var toInt = Math.round(1 / smallValue);
+    var xs = {};
+    points.forEach(function (point) {
+        var xCat = Math.floor(point.x * toInt);
+        if (xs[xCat] === undefined) xs[xCat] = { x: point.x, ys: [] };
+        var ys = xs[xCat].ys;
+        var yCat = Math.floor(point.y * toInt);
+        var insert = true;
+        for (var iY = 0; iY < ys.length; iY++) {
+            if (ys[iY].yCat === yCat) insert = false;
+        }
+        if (insert) ys.push({ yCat: yCat, y: point.y });
+    });
+
+    //console.log('xs:', xs);
+
+    // Intersect lists
+    function sortYCat(a, b) {
+        if (a.yCat < b.yCat) return -1;
+        if (a.yCat > b.yCat) return 1;
+        return 0;
+    }
+    var xsKeys = Object.keys(xs);
+    for (var iX = 0; iX < xsKeys.length; iX++) {
+        var xCat = xs[xsKeys[iX]];
+        xCat.ys.sort(sortYCat);
+    }
+
+    /** @typedef IntersectedX @property {Number} x1 @property {Number} x2 @property {Array<Number>} ys */
+    /** @type {Array<IntersectedX>} */
+    var intersectedXs = [];
+    for (var _iX = 0; _iX < xsKeys.length; _iX++) {
+        var xCat1 = xs[xsKeys[_iX]];
+        var ys1 = xCat1.ys;
+        for (var iX2 = _iX + 1; iX2 < xsKeys.length; iX2++) {
+            var xCat2 = xs[xsKeys[iX2]];
+            var ys2 = xCat2.ys;
+
+            var yIntersect = [];
+            var xIntersect = { x1: xCat1.x, x2: xCat2.x, ys: yIntersect };
+            for (var iY1 = 0; iY1 < ys1.length; iY1++) {
+                for (var iY2 = 0; iY2 < ys2.length; iY2++) {
+                    if (ys1[iY1].yCat === ys2[iY2].yCat) {
+                        yIntersect.push(ys1[iY1].y);
+                        break;
+                    }
+                }
+            }
+
+            if (yIntersect.length > 1) intersectedXs.push(xIntersect);
+        }
+    }
+
+    //console.log(intersectedXs);
+
+    /** @type {Array<Rectangle>} */
+    var rectangles = [];
+    for (var iIX = 0; iIX < intersectedXs.length; iIX++) {
+        var intersectedX = intersectedXs[iIX];
+        var ys = intersectedX.ys;
+        var x1 = intersectedX.x1,
+            x2 = intersectedX.x2;
+        for (var _iY = 0; _iY < ys.length; _iY++) {
+            for (var _iY2 = _iY + 1; _iY2 < ys.length; _iY2++) {
+                var p1 = { x: x1, y: ys[_iY] },
+                    p2 = { x: x2, y: ys[_iY] },
+                    p3 = { x: x2, y: ys[_iY2] },
+                    p4 = { x: x1, y: ys[_iY2] };
+
+                var rectangle = { p1: p1, p2: p2, p3: p3, p4: p4 };
+                rectangles.push(rectangle);
+            }
+        }
+    }
+
+    return rectangles;
+}
+
+/**
+ * @param {Array<Rectangle>} rectangles 
+ * @returns {Array<Rectangle>} the array is edited in-place
+ */
+function reduceRectangles(rectangles) {
+    for (var iRect = 0; iRect < rectangles.length; iRect++) {
+        var ra = rectangles[iRect];
+        var ax = ra.p1.x,
+            ay = ra.p1.y;
+        var aw = ra.p3.x - ax,
+            ah = ra.p3.y - ay;
+        for (var jRect = 0; jRect < rectangles.length; jRect++) {
+            if (iRect !== jRect) {
+                var rb = rectangles[jRect];
+                var bx = rb.p1.x,
+                    by = rb.p1.y;
+                var bw = rb.p3.x - bx,
+                    bh = rb.p3.y - by;
+                if (rectangleContainsRectangle(smallValue, ax, ay, aw, ah, bx, by, bw, bh)) {
+                    rectangles.splice(jRect, 1);
+                    jRect--;
+                    iRect = Math.max(0, jRect - 1);
+                    break;
+                }
+            }
+        }
+    }
+    return rectangles;
+}
+
+/** @param {Number} ax @param {Number} ay @param {Number} bx @param {Number} by @param {Number} x @param {Number} y */
+function segmentContainsPoint(ax, ay, bx, by, x, y) {
+    var vx = bx - ax,
+        vy = by - ay,
+        vxa = x - ax,
+        vya = y - ay,
+        vxb = x - bx,
+        vyb = y - by;
+    var d = Math.sqrt(vx * vx + vy * vy),
+        da = Math.sqrt(vxa * vxa + vya * vya),
+        db = Math.sqrt(vxb * vxb + vyb * vyb);
+    return Math.abs(d - (da + db)) < smallValueSqrt;
+}
+
+exports.linesIntersect = linesIntersect;
+exports.rectangleContainsPoint = rectangleContainsPoint;
+exports.rectangleContainsRectangle = rectangleContainsRectangle;
+exports.reduceRectangles = reduceRectangles;
+exports.rectanglesFromPoints = rectanglesFromPoints;
+
+/***/ }),
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _CargoListView = __webpack_require__(36);
+var _CargoListView = __webpack_require__(16);
 
 var _CargoListView2 = _interopRequireDefault(_CargoListView);
 
-var _Packer = __webpack_require__(7);
+var _Packer = __webpack_require__(12);
 
 var _Packer2 = _interopRequireDefault(_Packer);
 
-var _CargoList = __webpack_require__(29);
+var _CargoList = __webpack_require__(22);
 
 var _CargoList2 = _interopRequireDefault(_CargoList);
 
-var _PackingSpaceView = __webpack_require__(38);
+var _PackingSpaceView = __webpack_require__(35);
 
 var _PackingSpaceView2 = _interopRequireDefault(_PackingSpaceView);
 
-var _PackingSpace = __webpack_require__(17);
+var _PackingSpace = __webpack_require__(23);
 
 var _PackingSpace2 = _interopRequireDefault(_PackingSpace);
 
-var _SceneSetup = __webpack_require__(12);
+var _SceneSetup = __webpack_require__(14);
 
 var _SceneSetup2 = _interopRequireDefault(_SceneSetup);
-
-var _Utils3D = __webpack_require__(63);
-
-var _Utils3D2 = _interopRequireDefault(_Utils3D);
 
 var _Utils = __webpack_require__(0);
 
@@ -13467,7 +10866,7 @@ var _PackResultView = __webpack_require__(64);
 
 var _PackResultView2 = _interopRequireDefault(_PackResultView);
 
-var _UpdateComponent = __webpack_require__(24);
+var _UpdateComponent = __webpack_require__(25);
 
 var _UpdateComponent2 = _interopRequireDefault(_UpdateComponent);
 
@@ -13475,7 +10874,13 @@ var _Container = __webpack_require__(6);
 
 var _Container2 = _interopRequireDefault(_Container);
 
+var _BoxEntry = __webpack_require__(3);
+
+var _BoxEntry2 = _interopRequireDefault(_BoxEntry);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -13483,7 +10888,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @typedef {Object} ViewParams
  * @property {import('../UX').default} ux
  * @property {Object} cargoListView
- * @property {import('../utils/cik/Utils3D').IPoint} cargoListView.bottomLeft
+ * @property {Number} cargoListView.paddingZ
+ * @property {Number} cargoListView.paddingY
  * @property {import('./CargoListView').CargoListViewParams} cargoListView.params
  * @property {Object} packResultView
  * @property {import('./PackResultView').PackResultViewParams} packResultView.params
@@ -13493,14 +10899,18 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var defaultParams = {
     ux: undefined,
     cargoListView: {
-        bottomLeft: { x: 100, y: 100 },
+        paddingZ: 120,
+        paddingY: 40,
         params: {}
     },
     packResultView: {
-        params: {}
+        params: {
+            animationDuration: 1
+        }
     }
 };
 
+var tempBox3 = new THREE.Box3();
 var tempVec = new THREE.Vector3();
 
 var View = function () {
@@ -13511,27 +10921,45 @@ var View = function () {
      * @param {ViewParams} params 
      */
     function View(packer, sceneSetup, params) {
+
+        /** @param {Packer.PackingResult} packingResult */
+        var onPackUpdate = function () {
+            var _ref = _asyncToGenerator(function* (packingResult) {
+                yield scope.packResultView.DisplayPackingResult(packingResult);
+            });
+
+            return function onPackUpdate(_x) {
+                return _ref.apply(this, arguments);
+            };
+        }();
+
         _classCallCheck(this, View);
 
         this.sceneSetup = sceneSetup;
         this.params = _Utils2.default.AssignUndefined(params, defaultParams);
 
         var scope = this;
+        var units = this.params.ux.params.units;
 
         // Fill lights
         if (true) {
-            var lights = this.sceneSetup.DefaultLights(this.sceneSetup.sceneController, true, false);
+            var lights = this.sceneSetup.DefaultLights(this.sceneSetup.sceneController, true, true);
 
             var dl = lights.filter(function (light) {
                 return light instanceof THREE.DirectionalLight;
             })[0];
-            var dlData = { "color": "0xfeeedd", "intensity": 1, "castShadow": true, "shadow.bias": 0.001, "shadow.radius": 1, "shadow.mapSize.x": 2048, "shadow.mapSize.y": 2048, "shadow.camera.left": -400, "shadow.camera.top": 400, "shadow.camera.right": 400, "shadow.camera.bottom": -400, "shadow.camera.near": 1, "shadow.camera.far": 1000 };
-            var Config = __webpack_require__(4).default;
+            var dlData = { "color": "0xfceeee", "intensity": 1, "castShadow": true, "shadow.bias": 0.00001, "shadow.radius": 4, "shadow.mapSize.x": 4096, "shadow.mapSize.y": 4096, "shadow.camera.left": -400, "shadow.camera.top": 300, "shadow.camera.right": 400, "shadow.camera.bottom": -300, "shadow.camera.near": 20, "shadow.camera.far": 800 };
+            var Config = __webpack_require__(9).default;
             Config.Load(dl, dlData);
 
             if (this.sceneSetup.ux.params.hud) {
                 this.sceneSetup.DefaultLights(this.sceneSetup.hud);
             }
+
+            var dlComp = lights.filter(function (light) {
+                return light instanceof THREE.DirectionalLight;
+            })[1];
+            dlComp.castShadow = true;
         }
 
         // Packing space
@@ -13540,39 +10968,69 @@ var View = function () {
         /** @param {Container} container */
         function onContainerAdded(container) {
             /** @type {THREE.Box3} */
-            var box3 = void 0;
-            container.volumes.forEach(function (volume) {
-                if (box3 === undefined) box3 = volume.box3;else box3.union(volume.box3);
-            });
+            var box3 = container.combinedVolume.box3;
             scope.sceneSetup.cameraController.Frame(box3, .7);
             scope.packingSpaceView.Add(container);
+
+            tempBox3.setFromObject(scope.packingSpaceView.view);
+            tempBox3.getSize(tempVec);
+            console.log('container box3:', tempBox3);
+            var containerSize = Math.max(tempVec.x, tempVec.y, tempVec.z);
+            scope.cargoListView.view.position.z = containerSize / 2 + scope.params.cargoListView.paddingZ * units;
+            scope.cargoListView.view.position.y = scope.params.cargoListView.paddingY * units;
         }
         packer.packingSpace.On(_PackingSpace2.default.signals.containerAdded, onContainerAdded);
 
         // Cargo list
         this.params.cargoListView.params.ux = this.params.ux;
         this.cargoListView = new _CargoListView2.default(this.params.cargoListView.params);
-        var onCargoGroupAdded = this.cargoListView.Add.bind(this.cargoListView);
-        packer.cargoList.On(_CargoList2.default.signals.groupAdded, onCargoGroupAdded);
-        var onCargoRemoved = this.cargoListView.Remove.bind(this.cargoListView);
-        packer.cargoList.On(_CargoList2.default.signals.groupRemoved, onCargoRemoved);
 
-        // Cargo list display
-        if (this.params.ux.params.hud) {
-            this.sceneSetup.hud.Add(this.cargoListView.templatesView);
-            this.HUDSetup();
+        this.sceneSetup.input.AddRaycastGroup('OnClick', 'cargoListView', this.cargoListView.raycastGroup);
+        console.log('_raycastGroups:', this.sceneSetup.input._raycastGroups);
+
+        this.sceneSetup.sceneController.AddDefault(this.cargoListView.view);
+
+        function onCargoListViewChanged() {
+            tempBox3.setFromObject(scope.cargoListView.view);
+            tempBox3.getCenter(tempVec);
+            var listViewCenterX = tempVec.x;
+            scope.cargoListView.view.getWorldPosition(tempVec);
+            var offsetX = listViewCenterX - tempVec.x;
+
+            tempBox3.setFromObject(scope.packingSpaceView.view);
+            tempBox3.getCenter(tempVec);
+            var centerX = tempVec.x;
+
+            scope.cargoListView.view.position.x = centerX - offsetX;
         }
+        function onCargoGroupAdded(group) {
+            scope.cargoListView.Add(group);
+            onCargoListViewChanged();
+        }
+        packer.cargoList.On(_CargoList2.default.signals.groupAdded, onCargoGroupAdded);
+        function onCargoGroupRemoved(group) {
+            scope.cargoListView.Remove(group);
+            onCargoListViewChanged();
+        }
+        packer.cargoList.On(_CargoList2.default.signals.groupRemoved, onCargoGroupRemoved);
+        function onCargoGroupModified(group) {
+            scope.cargoListView.Update(group);
+            onCargoListViewChanged();
+        }
+        packer.cargoList.On(_CargoList2.default.signals.groupModified, onCargoGroupModified);
 
         // Packing result
         this.params.packResultView.params.ux = this.params.ux;
         this.packResultView = new _PackResultView2.default(this.cargoListView, this.packingSpaceView, this.params.packResultView.params);
         this.sceneSetup.sceneController.AddDefault(this.packResultView.view);
-
-        var onPackUpdate = this.packResultView.DisplayPackingResult.bind(this.packResultView);
         packer.On(_Packer2.default.signals.packUpdate, onPackUpdate);
 
         var updateComponent = new _UpdateComponent2.default(true, 1 / 30, this.Update.bind(this));
         this.sceneSetup.input.updateComponents.push(updateComponent);
+
+        if (this.params.ux.params.hud) {
+            this.HUDSetup();
+        }
 
         if (this.params.ux.params.configure) {
             this.Configure();
@@ -13593,99 +11051,20 @@ var View = function () {
             var units = this.params.ux.params.units;
             var input = this.sceneSetup.input;
             var hud = this.sceneSetup.hud;
-            var clv = this.cargoListView;
             var scope = this;
-
-            var cargoListViewRect = new _Utils3D2.default.Rect(0, 0, 150, input.screen.height);
-            var clvRectIgnore = cargoListViewRect.Clone();
-            clvRectIgnore.Offset(input.screen.left, input.screen.top);
-
-            var min = -1,
-                max = 1;
-            var v = new THREE.Vector3(),
-                viewportPointA = new THREE.Vector2(),
-                viewportPointB = new THREE.Vector2();
-            var dragOffset = 0;
-
-            // 
-
-            /**
-             * @param {import('./CargoListView').SortResult} sortResult
-             */
-            function onSort(sortResult) {
-                if (sortResult.cargoes > 0) {
-                    _Utils3D2.default.Project(v.set(0, sortResult.min, 0), hud.cameraController.camera, input.screen, viewportPointA);
-                    _Utils3D2.default.Project(v.set(0, sortResult.max, 0), hud.cameraController.camera, input.screen, viewportPointB);
-
-                    var distance = viewportPointA.sub(viewportPointB).length();
-                    var ratio = .8 / distance;
-                    var s = Math.max(.6, Math.pow(Math.min(1, clv.templatesView.scale.length() * ratio), .9));
-                    clv.templatesView.scale.set(s, s, s);
-                    clv.templatesView.updateMatrixWorld();
-                }
-
-                min = v.set(0, sortResult.min, 0).applyMatrix4(clv.templatesView.matrixWorld).y;
-                max = v.set(0, sortResult.max, 0).applyMatrix4(clv.templatesView.matrixWorld).y;
-            }
-            this.cargoListView.On(_CargoListView2.default.signals.sort, onSort);
-
-            /**
-             * @param {import('../utils/cik/input/Input').DragEvent} dragEvent 
-             */
-            function onDrag(dragEvent) {
-                var start = cargoListViewRect.ContainsPoint(dragEvent.sx, dragEvent.sy);
-                var current = cargoListViewRect.ContainsPoint(dragEvent.x, dragEvent.y);
-                if (start && current) {
-                    var offset = dragEvent.dy * .5 * units;
-                    var clvMin = min + offset,
-                        clvMax = max + offset;
-                    _Utils3D2.default.Project(v.set(0, clvMin, 0), hud.cameraController.camera, input.screen, viewportPointA);
-                    _Utils3D2.default.Project(v.set(0, clvMax, 0), hud.cameraController.camera, input.screen, viewportPointB);
-                    //console.log(viewportPointA, viewportPointB);
-                    if (offset > 0 && viewportPointA.y < -.7 || offset < 0 && viewportPointB.y > .8) {
-                        dragOffset += offset;
-                        min += offset;
-                        max += offset;
-                        clv.templatesView.position.y += offset;
-                    }
-                }
-            }
-            input.onDrag.push(onDrag);
-
-            this.sceneSetup.cameraController.orbitControls.ignoredAreas.push(clvRectIgnore);
-
-            /**
-             * @param {import('../utils/cik/input/Input').IScreen} screen 
-             */
-            function onScreenResize(screen) {
-
-                cargoListViewRect.bottom = screen.height;
-                clvRectIgnore.Copy(cargoListViewRect);
-                clvRectIgnore.Offset(screen.left, screen.top);
-
-                var bottomLeft = scope.params.cargoListView.bottomLeft; // offset in pixels
-                tempVec.set(bottomLeft.x, bottomLeft.y); // viewport point in pixels
-
-                _Utils3D2.default.ToNDC(tempVec, screen); // NDC point
-                _Utils3D2.default.Unproject(tempVec, hud.cameraController.camera, tempVec, 'z'); // worldPos on z plane
-                tempVec.y += dragOffset;
-                clv.templatesView.position.copy(tempVec); // set view position
-
-                clv.templatesView.updateMatrixWorld(true);
-
-                clv.Sort();
-            }
-
-            input.onResize.push(onScreenResize);
-            onScreenResize(input.screen);
+        }
+    }, {
+        key: "ClearPackingResults",
+        value: function ClearPackingResults() {
+            this.packResultView.Clear();
         }
     }, {
         key: "Configure",
         value: function Configure() {
 
-            var Smart = __webpack_require__(14).default;
-            var Config = __webpack_require__(4).default;
-            var Control3D = __webpack_require__(15).default;
+            var Smart = __webpack_require__(20).default;
+            var Config = __webpack_require__(9).default;
+            var Control3D = __webpack_require__(21).default;
 
             var scope = this;
             var input = this.sceneSetup.input;
@@ -13694,7 +11073,7 @@ var View = function () {
                 var hudControl3D = Control3D.Request('hud');
 
                 Config.MakeShortcut('Configure', 'Show HUDControl3D', function () {
-                    hudControl3D.Toggle(scope.cargoListView.templatesView);
+                    hudControl3D.Toggle(scope.cargoListView.view);
                 });
             }
         }
@@ -13704,202 +11083,6 @@ var View = function () {
 }();
 
 exports.default = View;
-
-/***/ }),
-/* 63 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/**
- * @typedef {Object} Screen
- * @property {Number} width
- * @property {Number} height
- */
-
-/**
- * @typedef {Object} IPoint
- * @property {Number} x
- * @property {Number} y
- */
-
-var tempBox = new THREE.Box3();
-var tempVec = new THREE.Vector3();
-
-var Utils3D = function () {
-    function Utils3D() {
-        _classCallCheck(this, Utils3D);
-    }
-
-    _createClass(Utils3D, null, [{
-        key: 'ToNDC',
-
-
-        /** Converts 'vec' to NDC, to supply 'vec' in the range [0, 1], ommit 'screen'
-         * @param {THREE.Vector2|THREE.Vector3} vec 
-         * @param {Screen} [screen]
-         * @returns {THREE.Vector2|THREE.Vector3}
-         */
-        value: function ToNDC(vec, screen) {
-            if (screen) {
-                vec.x /= screen.width;
-                vec.y /= screen.height;
-            }
-            vec.x = vec.x * 2 - 1;
-            vec.y = vec.y * 2 - 1;
-
-            if (vec.z !== undefined) vec.z = .5;
-
-            return vec;
-        }
-
-        /** Converts 'vec' to [0, 1] range, to supply 'vec' in NDC [-1, 1], ommit 'screen'
-         * @param {THREE.Vector2|THREE.Vector3} vec 
-         * @param {Screen} [screen]
-         * @returns {THREE.Vector2|THREE.Vector3}
-         */
-
-    }, {
-        key: 'ToUnit',
-        value: function ToUnit(vec, screen) {
-            if (screen) {
-                vec.x /= screen.width;
-                vec.y /= screen.height;
-            } else {
-                vec.x = vec.x / 2 + .5;
-                vec.y = vec.y / 2 + .5;
-            }
-
-            if (vec.z !== undefined) vec.z = .5;
-
-            return vec;
-        }
-
-        /** Converts a NDC to world plane (axis) position
-         * @param {THREE.Vector2|THREE.Vector3} viewportPoint - in NDC, can be safely used as 'result' if THREE.Vector3
-         * @param {THREE.Camera} camera 
-         * @param {THREE.Vector3} [result]
-         * @param {string} [axis] - 'x', 'y' or 'z' (default='z')
-         * @returns {THREE.Vector3}
-         */
-
-    }, {
-        key: 'Unproject',
-        value: function Unproject(viewportPoint, camera, result, axis) {
-            // Ref: https://stackoverflow.com/a/13091694/1712403
-
-            result = result || new THREE.Vector3();
-            result.set(viewportPoint.x, viewportPoint.y, .5);
-            result.unproject(camera);
-            result.sub(camera.position).normalize();
-
-            axis = axis || 'z';
-            var distance = -camera.position[axis] / result[axis];
-            result.multiplyScalar(distance).add(camera.position);
-
-            return result;
-        }
-
-        /** Converts world position to NDC
-         * @param {THREE.Vector3} worldPoint 
-         * @param {THREE.Camera} camera 
-         * @param {Screen} screen 
-         * @param {THREE.Vector2} result 
-         */
-
-    }, {
-        key: 'Project',
-        value: function Project(worldPoint, camera, screen, result) {
-            // Ref: https://github.com/josdirksen/threejs-cookbook/blob/master/03-camera/03.07-convert-world-coordintate-to-screen-coordinates.html
-
-            tempVec.copy(worldPoint).project(camera);
-            result = result || new THREE.Vector2();
-            result.x = tempVec.x;
-            result.y = tempVec.y;
-            return result;
-        }
-    }]);
-
-    return Utils3D;
-}();
-
-var Rect = function () {
-    /**
-     * @param {Number} left 
-     * @param {Number} top 
-     * @param {Number} right 
-     * @param {Number} bottom 
-     */
-    function Rect(left, top, right, bottom) {
-        _classCallCheck(this, Rect);
-
-        this.Set(left, top, right, bottom);
-    }
-
-    /**
-     * @param {Number} left 
-     * @param {Number} top 
-     * @param {Number} right 
-     * @param {Number} bottom 
-     */
-
-
-    _createClass(Rect, [{
-        key: 'Set',
-        value: function Set(left, top, right, bottom) {
-            this.left = left;
-            this.top = top;
-            this.right = right;
-            this.bottom = bottom;
-        }
-
-        /**
-         * @param {IPoint|Number} point - {x, y} | x value
-         * @param {Number} y - y value
-         */
-
-    }, {
-        key: 'ContainsPoint',
-        value: function ContainsPoint(point, y) {
-            var x = y ? point : point.x;
-            y = y ? y : point.y;
-            return x > this.left && x < this.right && y > this.top && y < this.bottom;
-        }
-    }, {
-        key: 'Offset',
-        value: function Offset(x, y) {
-            this.left += x;
-            this.top += y;
-            this.right += x;
-            this.bottom += y;
-        }
-    }, {
-        key: 'Copy',
-        value: function Copy(rect) {
-            this.Set(rect.left, rect.top, rect.right, rect.bottom);
-        }
-    }, {
-        key: 'Clone',
-        value: function Clone() {
-            return new Rect(this.left, this.top, this.right, this.bottom);
-        }
-    }]);
-
-    return Rect;
-}();
-
-Utils3D.Rect = Rect;
-
-exports.default = Utils3D;
 
 /***/ }),
 /* 64 */
@@ -13918,15 +11101,15 @@ var _Utils = __webpack_require__(0);
 
 var _Utils2 = _interopRequireDefault(_Utils);
 
-var _CargoListView = __webpack_require__(36);
+var _CargoListView = __webpack_require__(16);
 
 var _CargoListView2 = _interopRequireDefault(_CargoListView);
 
-var _CargoView = __webpack_require__(21);
+var _CargoView = __webpack_require__(17);
 
 var _CargoView2 = _interopRequireDefault(_CargoView);
 
-var _Pool = __webpack_require__(41);
+var _Pool = __webpack_require__(37);
 
 var _Pool2 = _interopRequireDefault(_Pool);
 
@@ -13934,29 +11117,38 @@ var _PackedCargoBoxView = __webpack_require__(65);
 
 var _PackedCargoBoxView2 = _interopRequireDefault(_PackedCargoBoxView);
 
-var _PackingSpaceView = __webpack_require__(38);
+var _PackingSpaceView = __webpack_require__(35);
 
 var _PackingSpaceView2 = _interopRequireDefault(_PackingSpaceView);
-
-var _Logger = __webpack_require__(3);
-
-var _Logger2 = _interopRequireDefault(_Logger);
 
 var _Tween = __webpack_require__(66);
 
 var _Tween2 = _interopRequireDefault(_Tween);
 
-var _Packer = __webpack_require__(7);
+var _Packer = __webpack_require__(12);
 
 var _Packer2 = _interopRequireDefault(_Packer);
 
+var _BoxEntry = __webpack_require__(3);
+
+var _BoxEntry2 = _interopRequireDefault(_BoxEntry);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function sleep(ms) {
+    return new Promise(function (resolve) {
+        return setTimeout(resolve, ms);
+    });
+}
 
 /**
  * @typedef {Object} PackResultViewParams
  * @property {import('../UX').default} ux
+ * @property {Number} animationDuration
  */
 
 /** @type {PackResultViewParams} */
@@ -14010,6 +11202,9 @@ function getOrientationEuler(orientation) {
     return new THREE.Euler(a[0] * rad, a[1] * rad, a[2] * rad);
 }
 
+var tempBox = new THREE.Box3();
+var tempVec = new THREE.Vector3();
+
 var PackResultView = function () {
     /**
      * @param {CargoListView} cargoListView
@@ -14023,6 +11218,8 @@ var PackResultView = function () {
         this.packingSpaceView = packingSpaceView;
         this.params = _Utils2.default.AssignUndefined(params, defaultParams);
 
+        /** @type {Array<CargoView} */
+        this.cargoViews = [];
         this.view = new THREE.Object3D();
 
         this.pool = new _Pool2.default(poolNewFN, poolResetFN);
@@ -14038,67 +11235,216 @@ var PackResultView = function () {
 
     _createClass(PackResultView, [{
         key: 'DisplayPackingResult',
-        value: function DisplayPackingResult(packingResult) {
-            var _this = this;
+        value: function () {
+            var _ref = _asyncToGenerator(function* (packingResult) {
 
-            console.log(packingResult);
-            //var containingVolume = this.packingSpaceView.FindContainingVolume(containingVolumeID);
-            var containingVolume = packingResult.packed[0].containingVolume;
-            var matrix = this.packingSpaceView.GetMatrix(containingVolume);
-            var offset = new THREE.Vector3();
-            var orientation = new THREE.Quaternion();
-            var scale = new THREE.Vector3();
-            matrix.decompose(offset, orientation, scale);
+                var units = this.params.ux.params.units;
 
-            var animatingViews = this.animatingViews;
-            var view = this.view;
-            var onTweenComplete = this.OnTweenComplete.bind(this);
+                var containingVolume = packingResult.packed[0].containingVolume;
+                var matrix = this.packingSpaceView.GetMatrix(containingVolume);
+                var offset = new THREE.Vector3();
+                var orientation = new THREE.Quaternion();
+                var scale = new THREE.Vector3();
+                matrix.decompose(offset, orientation, scale);
 
-            var _loop = function _loop() {
-                var item = packingResult.packed[i];
-                var cargoViewTemplate = _this.cargoListView.GetTemplate(item.entry);
-                var packedCargoView = _this.pool.Request(cargoViewTemplate);
+                /** @type {Map<CargoView, Number>} */
+                var packedQuantities = new Map();
 
-                _Logger2.default.WarnOnce('PackResultView.DisplayPackingResult', 'packedCargoView should be rotated instead of re-scaling');
-                var rotation = getOrientationEuler(item.orientation);
-                packedCargoView.SetRotationAngles(rotation.x, rotation.y, rotation.z);
-
-                var x = item.position.x + offset.x,
-                    y = item.position.y + offset.y,
-                    z = item.position.z + offset.z;
-
+                var animatingViews = this.animatingViews;
+                var view = this.view;
+                var onTweenComplete = this.OnCargoFirstTweenComplete.bind(this);
                 var zEntry = containingVolume.dimensions.length;
-                setTimeout(function () {
-                    var posTweenCombo = _Tween2.default.Combo.Request3(_Tween2.default.functions.linear, x, y, zEntry, 0, 0, z - zEntry, .75);
+                var numPackedItems = packingResult.packed.length;
+                var delayPerItem = this.params.animationDuration * 1000 / numPackedItems;
+                for (var i = 0; i < numPackedItems; i++) {
+                    var item = packingResult.packed[i];
+                    var cargoViewTemplate = this.cargoListView.GetTemplate(item.entry);
 
+                    var packedQuantity = packedQuantities.get(cargoViewTemplate);
+                    var totalQuantity = cargoViewTemplate.entry.quantity;
+                    if (packedQuantity === undefined) packedQuantities.set(cargoViewTemplate, packedQuantity = 0);
+                    packedQuantities.set(cargoViewTemplate, ++packedQuantity);
+                    var textColor = packedQuantity === totalQuantity ? 'rgb(255, 255, 255)' : 'rgb(255, 0, 0)';
+                    this.cargoListView.UpdateLabel(cargoViewTemplate, packedQuantity + '/' + totalQuantity, textColor);
+
+                    var packedCargoView = this.pool.Request(cargoViewTemplate);
+
+                    this.cargoViews.push(packedCargoView);
+
+                    var rotation = getOrientationEuler(item.orientation);
+                    packedCargoView.SetRotationAngles(rotation.x, rotation.y, rotation.z);
+
+                    var x = item.position.x + offset.x,
+                        y = item.position.y + offset.y,
+                        z = item.position.z + offset.z;
+
+                    var posTweenCombo = _Tween2.default.Combo.Request3(_Tween2.default.functions.ease.easeOutQuad, x, y, zEntry, 0, 0, z - zEntry, .5);
+
+                    posTweenCombo.extraData = packedCargoView;
                     posTweenCombo.Hook(packedCargoView.position, 'x', 'y', 'z');
                     posTweenCombo.onComplete = onTweenComplete;
                     posTweenCombo.Update(0);
                     animatingViews.push(posTweenCombo);
 
                     view.add(packedCargoView.view);
-                }, 200 * i);
-            };
+                    yield sleep(delayPerItem);
+                }
 
-            for (var i = 0, numPackedItems = packingResult.packed.length; i < numPackedItems; i++) {
-                _loop();
+                yield sleep(500);
+
+                var unpackedOffset = 6 * units;
+                for (var _i = 0, numUnpackedItems = packingResult.unpacked.length; _i < numUnpackedItems; _i++) {
+                    var _item = packingResult.unpacked[_i];
+                    var _cargoViewTemplate = this.cargoListView.GetTemplate(_item.entry);
+
+                    if (_i === 0) unpackedOffset += _item.entry.dimensions.width / 2;
+
+                    for (var j = 0; j < _item.unpackedQuantity; j++) {
+                        var _packedCargoView = this.pool.Request(_cargoViewTemplate);
+
+                        this.cargoViews.push(_packedCargoView);
+
+                        var _x2 = containingVolume.dimensions.width * 1.5 + unpackedOffset + offset.x,
+                            _y = _item.entry.dimensions.height / 2 + offset.y,
+                            _z = _item.entry.dimensions.length * j + offset.z;
+
+                        var _posTweenCombo = _Tween2.default.Combo.Request3(_Tween2.default.functions.ease.easeOutQuad, _x2, _y, zEntry, 0, 0, _z - zEntry, .5);
+
+                        _posTweenCombo.extraData = _packedCargoView;
+                        _posTweenCombo.Hook(_packedCargoView.position, 'x', 'y', 'z');
+                        _posTweenCombo.onComplete = onTweenComplete;
+                        _posTweenCombo.Update(0);
+                        animatingViews.push(_posTweenCombo);
+
+                        view.add(_packedCargoView.view);
+                        yield sleep(delayPerItem * .5);
+                    }
+
+                    unpackedOffset += _item.entry.dimensions.width + 6 * units;
+                }
+            });
+
+            function DisplayPackingResult(_x) {
+                return _ref.apply(this, arguments);
             }
+
+            return DisplayPackingResult;
+        }()
+
+        /** @param {Tween|Tween.Combo} tween */
+
+    }, {
+        key: 'OnCargoFirstTweenComplete',
+        value: function OnCargoFirstTweenComplete(tween) {
+            var packedCargoView = tween.extraData;
+            this.OnTweenComplete(tween);
+            var scaleTweenCombo = _Tween2.default.Combo.Request3(_Tween2.default.functions.special.pingPong, 1, 1, 1, .1, .1, .1, .1);
+
+            scaleTweenCombo.extraData = packedCargoView;
+            scaleTweenCombo.Hook(packedCargoView.view.scale, 'x', 'y', 'z');
+            scaleTweenCombo.onComplete = this.OnTweenComplete.bind(this);;
+            scaleTweenCombo.Update(0);
+            this.animatingViews.push(scaleTweenCombo);
         }
 
-        /**
-         * 
-         * @param {Tween|Tween.Combo} tween 
-         */
+        /** @param {Tween|Tween.Combo} tween */
 
     }, {
         key: 'OnTweenComplete',
         value: function OnTweenComplete(tween) {
+            var packedCargoView = tween.extraData;
+            packedCargoView.view.scale.set(1, 1, 1);
             var index = this.animatingViews.indexOf(tween);
             if (index != -1) {
                 this.animatingViews.splice(index, 1);
             }
             tween.Unhook();
             tween.Return();
+        }
+
+        /** @param {string} entryUID */
+
+    }, {
+        key: 'SelectEntry',
+        value: function SelectEntry(entryUID) {
+            if (!entryUID) {
+                this.DisableHighlights();
+            } else {
+                this.Highlight(entryUID);
+            }
+        }
+    }, {
+        key: 'DisableHighlights',
+        value: function DisableHighlights() {
+            for (var i = 0, numCargoViews = this.cargoViews.length; i < numCargoViews; i++) {
+                this.cargoViews[i].focus = 1;
+            }
+        }
+
+        /** @param {string} entryUID */
+
+    }, {
+        key: 'Highlight',
+        value: function Highlight(entryUID) {
+            for (var i = 0, numCargoViews = this.cargoViews.length; i < numCargoViews; i++) {
+                var cargoView = this.cargoViews[i];
+
+                var cvEntry = cargoView.entry;
+                if (cvEntry.uid === entryUID) {
+                    cargoView.focus = 1.75;
+                } else {
+                    cargoView.focus = .25;
+                }
+            }
+        }
+
+        /** @param {Number} value */
+
+    }, {
+        key: 'Slice',
+        value: function Slice(value) {
+            if (value >= 1) {
+                this.view.children.forEach(function (child) {
+                    child.visible = true;
+                });
+                return;
+            }
+
+            var minY = Number.MAX_SAFE_INTEGER,
+                maxY = Number.MIN_SAFE_INTEGER;
+            this.view.children.forEach(function (child) {
+                tempBox.setFromObject(child);
+                tempBox.getSize(tempVec);
+                var halfHeight = tempVec.y / 2;
+                tempBox.getCenter(tempVec);
+                var low = tempVec.y - halfHeight;
+                var high = tempVec.y + halfHeight;
+                if (low < minY) minY = low;
+                if (high > maxY) maxY = high;
+            });
+
+            var y = minY + value * (maxY - minY);
+
+            //console.log('slice ' + y.toFixed(2) + ' between ' + minY.toFixed(2) + ' and ' + maxY.toFixed(2));
+
+            this.view.children.forEach(function (child) {
+                tempBox.setFromObject(child);
+                tempBox.getSize(tempVec);
+                var halfHeight = tempVec.y / 2;
+                tempBox.getCenter(tempVec);
+                var low = tempVec.y - halfHeight;
+
+                if (low < y) child.visible = true;else child.visible = false;
+            });
+        }
+    }, {
+        key: 'Clear',
+        value: function Clear() {
+            this.animatingViews.length = 0;
+            this.cargoViews.length = 0;
+            while (this.view.children.length > 0) {
+                this.view.remove(this.view.children[this.view.children.length - 1]);
+            }
         }
     }, {
         key: 'Update',
@@ -14131,13 +11477,17 @@ var _set = function set(object, property, value, receiver) { var desc = Object.g
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _CargoBoxView2 = __webpack_require__(37);
+var _CargoBoxView2 = __webpack_require__(29);
 
 var _CargoBoxView3 = _interopRequireDefault(_CargoBoxView2);
 
-var _BoxEntry = __webpack_require__(10);
+var _BoxEntry = __webpack_require__(3);
 
 var _BoxEntry2 = _interopRequireDefault(_BoxEntry);
+
+var _Asset = __webpack_require__(5);
+
+var _Asset2 = _interopRequireDefault(_Asset);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -14148,7 +11498,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var unitCubeEdgeGeometry = new THREE.EdgesGeometry(new THREE.BoxBufferGeometry(1, 1, 1, 1, 1, 1));
-var wireframeMaterialTemplate = new THREE.LineBasicMaterial({ color: 0xffffff });
+var wireframeMaterialTemplate = new THREE.LineBasicMaterial({ color: 0xffffff, flatShading: true });
+
+var _wireMaterialSettings = Symbol('wireMatSet');
 
 var PackedCargoBoxView = function (_CargoBoxView) {
     _inherits(PackedCargoBoxView, _CargoBoxView);
@@ -14167,11 +11519,15 @@ var PackedCargoBoxView = function (_CargoBoxView) {
         meshMaterial.polygonOffsetUnits = 1;
         meshMaterial.transparent = true;
         meshMaterial.opacity = .5;
+        meshMaterial.blending = THREE.NormalBlending;
+        meshMaterial.depthTest = true;
+        meshMaterial.depthWrite = false;
 
         _this.mesh.castShadow = _this.mesh.receiveShadow = true;
 
         var material = wireframeMaterialTemplate.clone();
         _this.wireMesh = new THREE.LineSegments(unitCubeEdgeGeometry, material);
+        _this.wireMesh.renderOrder = Number.MAX_SAFE_INTEGER - 1;
         _this.wireMesh.scale.copy(boxEntry.dimensions.vec3);
 
         _this.view.add(_this.wireMesh);
@@ -14227,6 +11583,29 @@ var PackedCargoBoxView = function (_CargoBoxView) {
             _set(PackedCargoBoxView.prototype.__proto__ || Object.getPrototypeOf(PackedCargoBoxView.prototype), "entry", value, this);
             this.scale = value.dimensions.vec3;
         }
+
+        /** @param {Number} value */
+
+    }, {
+        key: "focus",
+        set: function set(value) {
+            _set(PackedCargoBoxView.prototype.__proto__ || Object.getPrototypeOf(PackedCargoBoxView.prototype), "focus", value, this);
+
+            if (this[_wireMaterialSettings]) _Asset2.default.RestoreMaterial(this.wireMesh.material, this[_wireMaterialSettings]);
+
+            if (Math.abs(1 - value) > .0001) {
+                if (this[_wireMaterialSettings] === undefined) {
+                    this.wireMesh.material = this.wireMesh.material.clone();
+                    this[_wireMaterialSettings] = {};
+                    _Asset2.default.SetMaterialFocus(this.wireMesh.material, value, this[_wireMaterialSettings]);
+                } else {
+                    _Asset2.default.SetMaterialFocus(this.wireMesh.material, value);
+                }
+            }
+        },
+        get: function get() {
+            return _get(PackedCargoBoxView.prototype.__proto__ || Object.getPrototypeOf(PackedCargoBoxView.prototype), "focus", this);
+        }
     }]);
 
     return PackedCargoBoxView;
@@ -14247,7 +11626,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Pool = __webpack_require__(41);
+var _Pool = __webpack_require__(37);
 
 var _Pool2 = _interopRequireDefault(_Pool);
 
@@ -14294,6 +11673,23 @@ var functions = {
             var ts = (t /= d) * t;
             var tc = ts * t;
             return b + c * (33 * tc * ts + -106 * ts * ts + 126 * tc + -67 * ts + 15 * t);
+        },
+
+        /** @type {TweenCallback} */
+        easeOutQuad: function easeOutQuad(t, b, c, d) {
+            return -c * (t /= d) * (t - 2) + b;
+        },
+
+        /** @type {TweenCallback} */
+        easeOutCubic: function easeOutCubic(t, b, c, d) {
+            return c * ((t = t / d - 1) * t * t + 1) + b;
+        }
+    },
+
+    special: {
+        /** @type {TweenCallback} */
+        pingPong: function pingPong(t, b, c, d) {
+            return Math.sin(t / d * Math.PI) * c + b;
         }
     }
 };
@@ -14532,85 +11928,6 @@ var Tween = function () {
 Tween.Combo = TweenCombo;
 
 exports.default = Tween;
-
-/***/ }),
-/* 67 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _App = __webpack_require__(23);
-
-var _App2 = _interopRequireDefault(_App);
-
-var _Signaler2 = __webpack_require__(2);
-
-var _Signaler3 = _interopRequireDefault(_Signaler2);
-
-var _Packer = __webpack_require__(7);
-
-var _Packer2 = _interopRequireDefault(_Packer);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _app = Symbol('app');
-
-var signals = {
-    packUpdate: 'packUpdate'
-};
-
-var PackerInterface = function (_Signaler) {
-    _inherits(PackerInterface, _Signaler);
-
-    /**
-     * @param {App} app 
-     */
-    function PackerInterface(app) {
-        _classCallCheck(this, PackerInterface);
-
-        var _this = _possibleConstructorReturn(this, (PackerInterface.__proto__ || Object.getPrototypeOf(PackerInterface)).call(this));
-
-        var scope = _this;
-        function onPackUpdate() {
-            scope.Dispatch(signals.packUpdate);
-        }
-
-        app.packer.On(_Packer2.default.signals.packUpdate, onPackUpdate);
-        _this[_app] = app;
-        return _this;
-    }
-
-    _createClass(PackerInterface, [{
-        key: "Solve",
-        value: function Solve(arg) {
-            /** @type {App} */
-            var app = this[_app];
-            app.packer.Solve(arg);
-        }
-    }], [{
-        key: "signals",
-        get: function get() {
-            return signals;
-        }
-    }]);
-
-    return PackerInterface;
-}(_Signaler3.default);
-
-exports.default = PackerInterface;
 
 /***/ })
 /******/ ]);

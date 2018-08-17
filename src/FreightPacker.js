@@ -1,16 +1,17 @@
 import Capabilities from './api/utils/Capabilities';
-import App from './api/App';
-import CargoInput from './api/components/CargoInput';
+import App, { AppParams } from './api/App';
+import CargoInput, { CargoInputParams } from './api/components/CargoInput';
 import Logger from './api/utils/cik/Logger';
 import Utils from './api/utils/cik/Utils';
-import PackingSpaceInput from './api/components/PackingSpaceInput';
-import UX from './api/UX';
+import PackingSpaceInput, { PackingSpaceInputParams } from './api/components/PackingSpaceInput';
+import UX, { UXParams } from './api/UX';
 import PackerInterface from './api/components/PackerInterface';
+import LightDispatcher from './api/components/LightDispatcher';
 
 /**
  * @typedef InitializationParams
  * @property {Boolean} debug
- * @property {import('./api/UX').UXParams} ux
+ * @property {UXParams} uxParams
  */
 
 /**
@@ -29,7 +30,43 @@ const utils = {
 	Config: require('./api/utils/cik/config/Config').default
 };
 
-class FreightPacker {
+/** @param {FreightPacker|App} domain */
+function devSetup(domain){
+	if(domain instanceof FreightPacker){
+		let fp = domain;
+		global.fp = fp;
+		FreightPacker.utils.Debug.api = fp;
+		let params = fp.params;
+		if(params.debug) {
+			Logger.active = true;
+			Logger.toConsole = true;
+			Logger.traceToConsole = true;
+		}
+
+		//require('./api/debug/Tester').testPool();
+		//utils.Debug.CLPTest.Test1();
+	}
+
+	if(domain instanceof App){
+		const SceneSetup = require('./api/view/SceneSetup').default;
+		let app = domain;
+		FreightPacker.utils.Debug.app = app;
+		app.sceneSetup.OnIncludingPrior(SceneSetup.signals.init, function(){
+			FreightPacker.utils.Debug.Viz.SetViewParent(app.sceneSetup.sceneController.scene);
+		});
+	}
+}
+
+/** @param {FreightPacker} fp */
+function auto(fp){
+	
+}
+
+const signals = {
+	ready: 'ready'
+};
+
+class FreightPacker extends LightDispatcher {
 	/**
 	 * Freight Packer API instance
 	 * @param {HTMLDivElement} containerDiv
@@ -37,38 +74,40 @@ class FreightPacker {
 	 */
 	constructor( containerDiv, params ) {
 
+		super();
+		let scope = this;
+
 		this.params = Utils.AssignUndefined(params, defaultParams);
-		FreightPacker.DevSetup(this);
+		devSetup(this);
 
-		this.ux = new UX(this.params.ux);
+		this.ux = new UX(this.params.uxParams);
 
-		/**
-		 * Handles input of: description fields (label, etc.), dimensions and constraints
-		 * @type {CargoInput}
-		 */
-		this.cargoInput = new CargoInput();
+		/** @type {CargoInputParams} */
+		let cargoInputParams = {ux: this.ux};
 
-		/**
-		 * Handles input of: packing spaces configurations and assets
-		 * @type {PackingSpaceInput}
-		 */
-		this.packingSpaceInput = new PackingSpaceInput();
+		/** Handles input of: description fields (label, etc.), dimensions and constraints */
+		this.cargoInput = new CargoInput(cargoInputParams);
 
-		var app = new App(containerDiv, this.ux, {
-			cargoInput: this.cargoInput,
-			packingSpaceInput: this.packingSpaceInput
-		});
+		/** @type {PackingSpaceInputParams} */
+		let packingSpaceInputParams = {ux: this.ux};
 
-		FreightPacker.DevSetup(app);
+		/** Handles input of: packing spaces configurations and assets */
+		this.packingSpaceInput = new PackingSpaceInput(packingSpaceInputParams);
 
-		/**
-		 * Manual solving and notification
-		 * @type {PackerInterface}
-		 */
-		this.packer = new PackerInterface(app);
+		/** Manual solving and notification */
+		this.packer = new PackerInterface();
+
+		/** @type {AppParams} */
+		let appParams = {ux: this.ux, cargoInput: this.cargoInput, packingSpaceInput: this.packingSpaceInput, packerInterface: this.packer};
+		let app = new App(containerDiv, appParams);
+			app.On(App.signals.start, function(){
+				scope.Dispatch(signals.ready);
+			});
+
+		devSetup(app);
 
 		if(this.params.debug){
-			FreightPacker.Auto(this);
+			auto(this);
 		}
 	}
 
@@ -77,55 +116,32 @@ class FreightPacker {
 	 * @return {Promise<Void>|Promise<string>} 
 	 */
 	static CheckRequirements () {
-		var webgl = Capabilities.IsWebGLReady();
+		let webgl = Capabilities.IsWebGLReady();
 
 		return new Promise((resolve, reject) => {
 			if(webgl){
 				resolve();
 			}
 			else {
-				var message = 'WebGL not supported.';
+				let message = 'WebGL not supported.';
 				reject(message);
 			}
 		});
+	}
+
+	static get signals(){
+		return signals;
 	}
 
 	static get utils(){
 		return utils;
 	}
 
-	/** @param {FreightPacker|App} domain */
-	static DevSetup(domain){
-		if(domain instanceof FreightPacker){
-			let fp = domain;
-			global.fp = fp;
-			FreightPacker.utils.Debug.api = fp;
-			let params = fp.params;
-			if(params.debug) {
-				Logger.active = true;
-				Logger.toConsole = true;
-				Logger.traceToConsole = true;
-			}
-
-			//require('./api/debug/Tester').testPool();
-			//utils.Debug.CLPTest.Test1();
-		}
-
-		if(domain instanceof App){
-			const SceneSetup = require('./api/view/SceneSetup').default;
-			let app = domain;
-			FreightPacker.utils.Debug.app = app;
-			app.sceneSetup.BackListen(SceneSetup.signals.init, function(){
-				FreightPacker.utils.Debug.Viz.SetViewParent(app.sceneSetup.sceneController.scene);
-			});
-		}
-	}
-
-	/** @param {FreightPacker} fp */
-	static Auto(fp){
-		
-	}
-
 }
+
+FreightPacker.UX = UX;
+FreightPacker.CargoInput = CargoInput;
+FreightPacker.PackingSpaceInput = PackingSpaceInput;
+FreightPacker.Packer = PackerInterface;
 
 export default FreightPacker;
