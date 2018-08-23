@@ -16,8 +16,10 @@ class Item{
      * @param {Number} weight 
      * @param {Number} quantity 
      * @param {Array<Number|string>} validOrientations
+     * @param {Number} stackingCapacity 
+     * @param {Boolean} grounded 
      */
-    constructor(id, width, height, length, weight, quantity, validOrientations){
+    constructor(id, width, height, length, weight, quantity, validOrientations, stackingCapacity, grounded){
         this.id = id;
         this.width = width;
         this.height = height;
@@ -28,12 +30,15 @@ class Item{
         this.quantity = quantity;
 
         this.validOrientations = validOrientations;
+
+        this.stackingCapacity = stackingCapacity;
+        this.grounded = grounded;
     }
 
     /** @returns {Array<Number>} */
     get validOrientations(){ return this[_validOrientations]; }
     set validOrientations(value){
-        if(value === undefined) value = orientations;
+        if(!value) value = orientations;
 
         let validOrientations = [];
         for(let i = 0; i < value.length; i++){
@@ -41,6 +46,8 @@ class Item{
             let orientation = (typeof vo === typeofNumber) ? vo : orientations.indexOf(vo.toLowerCase());
             if(orientation !== -1) validOrientations.push(orientation);
         }
+
+        if(validOrientations.length === 0) validOrientations[0] = 'xyz' || orientations[0];
 
         this[_validOrientations] = validOrientations;
         this[_maxHeight] = undefined;
@@ -82,6 +89,25 @@ class Item{
     /** @param {Number} orientation */
     static ResolveOrientation(orientation){
         return orientations[orientation];
+    }
+
+    /** @param {Array<Item>} items */
+    static GetMinDimensions(items){
+        var minDimensions = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER];
+
+        for(let iItem = 0, numItems = items.length; iItem < numItems; iItem++){
+            let item = items[iItem];
+            var validOrientations = item.validOrientations;
+            for(let iOrient = 0; iOrient < validOrientations.length; iOrient++){
+                let orientation = validOrientations[iOrient];
+                let dimensions = item.GetOrientedDimensions(orientation);
+                if(dimensions[0] < minDimensions[0]) minDimensions[0] = dimensions[0];
+                if(dimensions[1] < minDimensions[1]) minDimensions[1] = dimensions[1];
+                if(dimensions[2] < minDimensions[2]) minDimensions[2] = dimensions[2];
+            }
+        }
+
+        return minDimensions;
     }
 
     /**

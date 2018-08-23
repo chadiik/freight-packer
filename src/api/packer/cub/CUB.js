@@ -90,9 +90,59 @@ function debugClear(uids){
     }
 }
 
+function numberFormatDefault(n){ return n; }
+
+function numberFormat(n, d){
+    if(n > Number.MAX_SAFE_INTEGER - 2) return 'MAX';
+    let nStr = Math.round(n) !== n ? n.toFixed(d) : n;
+    return nStr;
+}
+
+/** @typedef FormatParams @property {Function} nf number formatting function */
+/** @param {string} str @param {FormatParams} params @param {Array<*>} args */
+function format(str, params, ...args){
+    if(params.nf === undefined) params.nf = numberFormatDefault;
+    let index = 0;
+    while( (index = str.indexOf('@', index)) !== -1 ){
+        if(str[index - 1] !== '\\'){
+            let a = args.shift();
+            if(typeof a === 'number') a = params.nf(a);
+            str = str.replace('@', a);
+        }
+        index += 1;
+    }
+    return str;
+}
+
 const epsilon = Math.pow(2, -52);
 const smallValue = .000001;
 const smallValueSqrt = .001;
+const maxWeightValue = Number.MAX_SAFE_INTEGER;
+
+/** @typedef Rectangle @property {Vec2} p1 @property {Vec2} p2 @property {Vec2} p3 @property {Vec2} p4 
+ * @property {Number} weight @property {Number} weightCapacity @property {Number} stackingCapacity 
+ */
+
+/**
+ * @param {Rectangle | Array<Rectangle>} rect 
+ * @param {Number} weight 
+ * @param {Number} weightCapacity 
+ * @param {Number} stackingCapacity 
+ */
+function setRectangleWeights(rect, weight, weightCapacity, stackingCapacity){
+    if(rect instanceof Array){
+        for(let i = 0; i < rect.length; i++){
+            rect[i].weight = weight;
+            rect[i].weightCapacity = weightCapacity;
+            rect[i].stackingCapacity = stackingCapacity;
+        }
+    }
+    else{
+        rect.weight = weight;
+        rect.weightCapacity = weightCapacity;
+        rect.stackingCapacity = stackingCapacity;
+    }
+}
 
 class Region{
     /**
@@ -100,6 +150,7 @@ class Region{
      */
     constructor(x, y, z, width, height, length, preferredX){
         this.Set(x, y, z, width, height, length, preferredX);
+        this.SetWeights(0, maxWeightValue, maxWeightValue);
     }
 
     /**
@@ -111,10 +162,22 @@ class Region{
         this.preferredX = preferredX;
         return this;
     }
+    
+    /**
+     * @param {Number} weight 
+     * @param {Number} weightCapacity 
+     * @param {Number} stackingCapacity 
+     */
+    SetWeights(weight, weightCapacity, stackingCapacity){
+        this.weight = weight;
+        this.weightCapacity = weightCapacity;
+        this.stackingCapacity = stackingCapacity;
+    }
 
     /** @param {Region} region */
     Copy(region){
         this.Set(region.x, region.y, region.z, region.width, region.height, region.length, region.preferredX);
+        this.SetWeights(this.weight, this.weightCapacity, this.stackingCapacity);
         return this;
     }
 
@@ -189,24 +252,35 @@ class Region{
     }
 
     /** @param {Number} offset offsets the region by this before checking * @param {Number} width * @param {Number} height * @param {Number} length
+     * @param {Number} weight @param {Boolean} grounded
      * @param {Region} [result]
      */
-    FitTest(offset, width, height, length, result){
+    FitTest(offset, width, height, length, weight, grounded, result){
         if(!result) result = tempRegion;
+
+        if(grounded && this.y > smallValue) return false;
+
         // Check that all dimensions fit
-        var fit = width < this.width + offset * 2 && height < this.height + offset * 2 && length < this.length + offset * 2;
+        let fit = width < this.width + offset * 2 && height < this.height + offset * 2 && length < this.length + offset * 2;
         if(fit){
-            // Calculate x based on preferred side
-            let x = this.preferredX !== 0 ? this.x + this.width - width : this.x;
-            result.Set(x, this.y, this.z, width, height, length, this.preferredX);
-            return result;
+
+            let weightFit = weight <= this.weightCapacity;
+            if(weightFit){
+
+                // Calculate x based on preferred side
+                let x = this.preferredX !== 0 ? this.x + this.width - width : this.x;
+                result.Set(x, this.y, this.z, width, height, length, this.preferredX);
+                result.SetWeights(weight, 0, maxWeightValue);
+                return result;
+            }
         }
 
         return false;
     }
 
-    /** @param {Region} region * @param {Number} minRegionAxis @param {Boolean} skipTop */
-    Subtract(region, minRegionAxis, skipTop){
+    /** @param {Region} region * @param {Number} minRegionAxis */
+    Subtract(region, minRegionAxis){
+        /** @type {Array<Region>} */
         var newRegions;
         
         // Calculate a new east region
@@ -214,6 +288,7 @@ class Region{
         let size = this.x + this.width - axis;
         if(size > minRegionAxis){
             let east = new Region(axis, this.y, this.z, size, this.height, this.length, 0);
+            east.SetWeights(0, this.weightCapacity, this.stackingCapacity);
             if(newRegions === undefined) newRegions = [];
             newRegions.push(east);
         }
@@ -223,19 +298,19 @@ class Region{
         size = region.x - axis;
         if(size > minRegionAxis){
             let west = new Region(axis, this.y, this.z, size, this.height, this.length, 1);
+            west.SetWeights(0, this.weightCapacity, this.stackingCapacity);
             if(newRegions === undefined) newRegions = [];
             newRegions.push(west);
         }
 
-        if( !skipTop ){
-            // Calculate a new over/up region
-            axis = region.y + region.height;
-            size = this.y + this.height - axis;
-            if(size > minRegionAxis){
-                let over = new Region(region.x, axis, region.z, region.width, size, region.length, 0); // todo: add overhang var? // togglePreferredX based on pre-packed weight distribution?
-                if(newRegions === undefined) newRegions = [];
-                newRegions.push(over);
-            }
+        // Calculate a new over/up region
+        axis = region.y + region.height;
+        size = this.y + this.height - axis;
+        if(size > minRegionAxis){
+            let over = new Region(region.x, axis, region.z, region.width, size, region.length, 0); // todo: add overhang var? // togglePreferredX based on pre-packed weight distribution?
+            over.SetWeights(0, region.stackingCapacity, region.stackingCapacity);
+            if(newRegions === undefined) newRegions = [];
+            newRegions.push(over);
         }
 
         // Calculate a new south region
@@ -243,6 +318,7 @@ class Region{
         size = region.z - axis;
         if(false && size > minRegionAxis){
             let south = new Region(this.x, this.y, axis, this.width, this.height, size, 0); // todo togglePreferredX based on pre-packed weight distribution?
+            south.SetWeights(0, this.weightCapacity, this.stackingCapacity);
             if(newRegions === undefined) newRegions = [];
             newRegions.push(south);
         }
@@ -252,6 +328,7 @@ class Region{
         size = this.z + this.length - axis;
         this.z = axis;
         this.length = size;
+        this.SetWeights(0, this.weightCapacity, this.stackingCapacity);
 
         return newRegions;
     }
@@ -304,10 +381,22 @@ class Region{
         rectangles.push(rectA, rectB);
 
         reduceRectangles(rectangles);
+
+        setRectangleWeights(rectangles, this.weight + other.weight, this.weightCapacity + other.weightCapacity, this.stackingCapacity + other.stackingCapacity);
         
         return rectangles;
     }
 
+    ToString(){
+        return format('R(p:[@, @, @], d:[@, @, @], w:@, wCap:@, sCap:@)', {nf: function(n){
+                return numberFormat(n, 2);
+            }},
+            this.x, this.y, this.z,
+            this.width, this.height, this.length,
+            this.weight, this.weightCapacity, this.stackingCapacity
+        );
+    }
+    
     /**
      * Deepest to front, smallest to largest
      * @param {Region} a * @param {Region} b 
@@ -323,7 +412,6 @@ class Region{
 
 var tempRegion = new Region();
 var tempRegion2 = new Region();
-var tempRegion3 = new Region();
 var tempCorners = [0];
 var tempPoints = [0];
 var tempPoints2 = [0];
@@ -393,6 +481,7 @@ class PackedContainer{
         this.unpackedItems = [];
 
         var firstRegion = new Region(0, 0, 0, container.width, container.height, container.length, 0);
+        firstRegion.SetWeights(0, this.container.weightCapacity, 0);
         /** @type {Array<Region>} */
         this.regions = [firstRegion];
 
@@ -427,8 +516,14 @@ class PackedContainer{
     /** @param {Region} region * @param {Region} fit * @returns {Boolean} false if region has been deleted */
     Occupy(region, fit){
 
+        /*console.group('Regions');
+        this.regions.forEach(region => {
+            console.log(region.ToString());
+        });
+        console.groupEnd();*/
+
         // Subtracts fit from region and calculates new bounding regions
-        var newRegions = region.Subtract(fit, this.assistant.minRegionAxis, this.params.skipTop);
+        var newRegions = region.Subtract(fit, this.assistant.minRegionAxis);
 
         // Add new bounding regions if any
         if(newRegions) this.regions.push(...newRegions);
@@ -443,9 +538,12 @@ class PackedContainer{
         var debugUIDs = [];
         if(!newRegions) newRegions = [];
         newRegions.push(region);
+        //console.group('Occupy');
         newRegions.forEach(region => {
+            //console.log(region.ToString());
             debugUIDs.push(debugRegion(region, 0xffff0000, true, -1, true));
         });
+        //console.groupEnd();
 
         debugClear(debugUIDs);
 
@@ -483,13 +581,16 @@ class PackedContainer{
                     let orientation = validOrientations[iOrient];
 
                     let dimensions = item.GetOrientedDimensions(orientation);
-                    let regionFitTest = region.FitTest(smallValue, dimensions[0], dimensions[1], dimensions[2]);
+                    let regionFitTest = region.FitTest(smallValue, 
+                        dimensions[0], dimensions[1], dimensions[2], 
+                        item.weight, item.grounded);
+                    
                     if(regionFitTest !== false){
 
                         testSuccessfulRegions--;
 
                         // Subtracts fit from region and calculates new bounding regions
-                        let newRegions = dummyRegion.Subtract(regionFitTest, this.assistant.minRegionAxis, this.params.skipTop);
+                        let newRegions = dummyRegion.Subtract(regionFitTest, this.assistant.minRegionAxis);
                         if(newRegions === undefined) newRegions = [];
                         if(dummyRegion.length > this.assistant.minRegionAxis)
                             newRegions.push(dummyRegion);
@@ -522,6 +623,9 @@ class PackedContainer{
 
     /** @param {Item} item */
     FitLessWaste(item){
+
+        // General weight check
+        if(this.WeightPass(item.weight) === false) return false;
         
         let highestScore = this.GetPlacementWithHighestScore(item);
 
@@ -533,7 +637,9 @@ class PackedContainer{
         let region = this.regions[highestScore.region];
         let orientation = item.validOrientations[highestScore.orientation];
         let dimensions = item.GetOrientedDimensions(orientation);
-        let regionFitTest = region.FitTest(smallValue, dimensions[0], dimensions[1], dimensions[2]);
+        let regionFitTest = region.FitTest(smallValue, 
+            dimensions[0], dimensions[1], dimensions[2],
+            item.weight, item.grounded);
         if(regionFitTest !== false){
             return this.CommitFit(item, region, regionFitTest, orientation);
         }
@@ -556,8 +662,13 @@ class PackedContainer{
                 let dimensions = item.GetOrientedDimensions(orientation);
 
                 // Fit test (success: Region, failure: false)
-                let regionFitTest = region.FitTest(smallValue, dimensions[0], dimensions[1], dimensions[2]);
+                let regionFitTest = region.FitTest(smallValue, 
+                    dimensions[0], dimensions[1], dimensions[2],
+                    item.weight, item.grounded);
                 if(regionFitTest !== false){
+
+                    // Stacking & weight test 
+
                     /** @typedef Placement @property {Number} region region index @property {Number} orientation orientation index */
                     /** @type {Placement} */
                     let result = {region: iRegion, orientation: orientation};
@@ -572,6 +683,9 @@ class PackedContainer{
     /** @param {Item} item */
     FitRegular(item){
 
+        // General weight check
+        if(this.WeightPass(item.weight) === false) return false;
+
         var firstFit = this.GetFirstFit(item);
         if(firstFit){
 
@@ -579,7 +693,9 @@ class PackedContainer{
             let orientation = item.validOrientations[firstFit.orientation];
             let dimensions = item.GetOrientedDimensions(orientation);
 
-            let regionFitTest = region.FitTest(smallValue, dimensions[0], dimensions[1], dimensions[2]);
+            let regionFitTest = region.FitTest(smallValue, 
+                dimensions[0], dimensions[1], dimensions[2],
+                item.weight, item.grounded);
             if(regionFitTest !== false){
 
                 return this.CommitFit(item, region, regionFitTest, orientation);
@@ -592,6 +708,8 @@ class PackedContainer{
     /** @param {Item} item @param {Region} containingRegion @param {Region} placement @param {Number} orientation */
     CommitFit(item, containingRegion, placement, orientation){
         
+        placement.SetWeights(item.weight, 0, item.stackingCapacity);
+
         let numPackedItems = this.packedItems.length;
 
         // Make sure that the new 'packed item to be' does not collide with a previous one
@@ -599,10 +717,11 @@ class PackedContainer{
             let packedItem = this.packedItems[iPacked];
             // Creates temporary region for following calculations
             let packedRegion = tempRegion2.Set(packedItem.x, packedItem.y, packedItem.z, packedItem.packedWidth, packedItem.packedHeight, packedItem.packedLength, 0);
+            packedRegion.SetWeights(packedItem.ref.weight, 0, packedItem.ref.stackingCapacity);
             
             let intersects = packedRegion.Intersects(-smallValue, placement);
             if(intersects){
-                console.log('revertedToRegular');
+                console.log('revertedToRegular - CommitFit');
                 return this.FitRegular(item);
             }
         }
@@ -642,45 +761,49 @@ class PackedContainer{
             return Math.floor(value * toInt);
         }
 
-        /** @typedef Level @property {Number} y @property {Array<import('./Math2D').Rectangle>} rectangles */
+        /** @typedef Level @property {Number} y @property {Array<Rectangle>} rectangles */
         /** @type {Array<Level>} */
         var levels = {};
 
         var neighbours = [], rectangles = [];
         for(let iRegion = 0; iRegion < numRegions; iRegion++){
             let regionA = regions[iRegion];
-            neighbours.length = 0;
-            neighbours.push(iRegion);
-            
-            for(let jRegion = iRegion + 1; jRegion < numRegions; jRegion++){
-                let regionB = regions[jRegion];
 
-                if(Math.abs(regionA.y - regionB.y) < smallValue){
-                    let intersects = regionA.Intersects(smallValue, regionB);
-                    if(intersects){
-                        neighbours.push(jRegion);
-                    }
-                }
-            }
+            if(regionA.weightCapacity > smallValue){
+                neighbours.length = 0;
+                neighbours.push(iRegion);
+                
+                for(let jRegion = iRegion + 1; jRegion < numRegions; jRegion++){
+                    let regionB = regions[jRegion];
 
-            let numNeighbours = neighbours.length;
-            if(numNeighbours > 1){
-                rectangles.length = 0;
-
-                for(let iNeighbour = 0; iNeighbour < numNeighbours; iNeighbour++){
-                    let neighbourA = regions[neighbours[iNeighbour]];
-
-                    for(let jNeighbour = iNeighbour + 1; jNeighbour < numNeighbours; jNeighbour++){
-                        let neighbourB = regions[neighbours[jNeighbour]];
-
-                        rectangles.push(...neighbourA.ConnectFloorRects(neighbourB));
+                    if(regionB.weightCapacity > smallValue && Math.abs(regionA.y - regionB.y) < smallValue){
+                        let intersects = regionA.Intersects(smallValue, regionB);
+                        if(intersects){
+                            neighbours.push(jRegion);
+                        }
                     }
                 }
 
-                if(rectangles.length > 0){
-                    let yCat = coordID(regionA.y);
-                    if(levels[yCat] === undefined) levels[yCat] = {y: regionA.y, rectangles: []};
-                    levels[yCat].rectangles.push(...rectangles);
+                let numNeighbours = neighbours.length;
+                if(numNeighbours > 1){
+                    rectangles.length = 0;
+
+                    for(let iNeighbour = 0; iNeighbour < numNeighbours; iNeighbour++){
+                        let neighbourA = regions[neighbours[iNeighbour]];
+
+                        for(let jNeighbour = iNeighbour + 1; jNeighbour < numNeighbours; jNeighbour++){
+                            let neighbourB = regions[neighbours[jNeighbour]];
+
+                            let connectedNeighbours = neighbourA.ConnectFloorRects(neighbourB);
+                            rectangles.push(...connectedNeighbours);
+                        }
+                    }
+
+                    if(rectangles.length > 0){
+                        let yCat = coordID(regionA.y);
+                        if(levels[yCat] === undefined) levels[yCat] = {y: regionA.y, rectangles: []};
+                        levels[yCat].rectangles.push(...rectangles);
+                    }
                 }
             }
         }
@@ -702,6 +825,7 @@ class PackedContainer{
                 // Calculate preferred packing side based on center point relative to container
                 let preferredX = (rx.x + rw / 2) < (this.container.width / 2) ? 0 : 1;
                 let newRegion = new Region(rx, regionY, ry, rw, regionHeight, rh, preferredX);
+                newRegion.SetWeights(rect.weight, rect.weightCapacity, rect.stackingCapacity);
                 this.regions.push(newRegion);
             }
         }
@@ -719,12 +843,14 @@ class PackedContainer{
         }
     }
 
+    /** @param {PackedItem} packedItem @param {Boolean} [harsh] default = false */
     ProcessRegionsPerPackedItem(packedItem, harsh){
         var regions = this.regions;
         let itemVolume = packedItem.ref.volume;
         
         // Creates temporary region for following calculations
         let packedRegion = tempRegion.Set(packedItem.x, packedItem.y, packedItem.z, packedItem.packedWidth, packedItem.packedHeight, packedItem.packedLength, 0);
+        packedRegion.SetWeights(packedItem.ref.weight, 0, packedItem.ref.stackingCapacity);
 
         for(let iRegion = 0; iRegion < regions.length; iRegion++){
             let region = regions[iRegion];
@@ -815,6 +941,12 @@ class PackedContainer{
         regions.sort(Region.SortDeepestSmallest);
 
         this.packedItems.sort(PackedItem.Sort);
+
+        /*console.group('ProcessRegions');
+        regions.forEach(region => {
+            console.log(region.ToString());
+        });
+        console.groupEnd();*/
     }
 }
 
@@ -911,16 +1043,14 @@ class PackingAssistant{
 
 /**
  * @typedef CUBParams
- * @property {Number} minZ_weight
- * @property {Number} minWaste_weight
- * @property {Boolean} skipTop
+ * @property {Number} minZ_weight score for tightly packing in length (Z)
+ * @property {Number} minWaste_weight score for minimizing wasted space
  */
 
 /** @type {CUBParams} */
 const defaultParams = {
     minZ_weight: .9,
-    minWaste_weight: .1,
-    skipTop: false
+    minWaste_weight: .1
 };
 
 /**
@@ -968,26 +1098,16 @@ async function pack(container, items, params){
         packedContainer.ProcessRegions();
         /**/await sleep(16);
 
-        // Check if container supports this item's weight
-        let weightPass = packedContainer.WeightPass(item.weight);
-        if( weightPass === false ){
+        // Try to pack item
+        let packedItem = packedContainer.FitLessWaste(item);
+        if( packedItem === false ){
 
-            /**/debugLog('weight pass failed.');
+            /**/debugLog('item fitting failed.');
             unpackItem(iItem);
         }
         else{
 
-            // Try to pack item
-            let packedItem = packedContainer.FitLessWaste(item);
-            if( packedItem === false ){
-
-                /**/debugLog('item fitting failed.');
-                unpackItem(iItem);
-            }
-            else{
-
-                packItem(iItem, packedItem);
-            }
+            packItem(iItem, packedItem);
         }
 
         /**/await sleep(16);

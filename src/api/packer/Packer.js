@@ -9,11 +9,14 @@ import ContainingVolume from "./container/ContainingVolume";
 /**
  * @typedef {Object} PackerParams
  * @property {import('../UX').default} ux
+ * @property {Number} defaultStackingFactor
  */
 
+/** @typedef {import('../packer/cub/CUB').CUBParams} CUBParams */
+
 /** @typedef SolverParams
- * @property {*} algorithmParams
- * @property {string} algorithm
+ * @property {CUBParams} algorithmParams
+ * @property {string} algorithm default = 'cub'
  */
 
 class PackedCargo {
@@ -57,6 +60,7 @@ class PackingResult{
     }
 }
 
+/** @type {PackerParams} */
 const defaultParams = {};
 const signals = {
     packUpdate: 'packUpdate',
@@ -65,10 +69,10 @@ const signals = {
 
 const _solverParams = Symbol('solverParams');
 
+const epsilon = Math.pow(2, -52);
+
 class Packer extends Signaler {
-    /**
-     * @param {PackerParams} params 
-     */
+    /** @param {PackerParams} params */
     constructor(params){
         super();
 
@@ -78,6 +82,11 @@ class Packer extends Signaler {
         this.cargoList = new CargoList();
 
         this.solverExecutionsCount = 0;
+    }
+
+    /** @param {PackerParams} extendedParams */
+    set extendedParams(extendedParams){
+        this.params = Utils.AssignUndefined(this.params, extendedParams);
     }
 
     /** @param {SolverParams} params */
@@ -123,12 +132,13 @@ class Packer extends Signaler {
             let entry = group.entry;
             entries[entry.uid] = entry;
             d = entry.dimensions;
-            let item = new Item(entry.uid, d.width, d.height, d.length, entry.weight, entry.quantity);
+            let validOrientations = entry.properties.rotation.enabled ? entry.properties.rotation.allowedOrientations : undefined;
+            let stackingCapacity = entry.properties.stacking.enabled ? entry.properties.stacking.capacity : (entry.weight > epsilon ? entry.weight * this.params.defaultStackingFactor : Number.MAX_SAFE_INTEGER - 10);
+            let grounded = entry.properties.translation.enabled ? entry.properties.translation.grounded : false;
+            let item = new Item(entry.uid, d.width, d.height, d.length, entry.weight, entry.quantity, validOrientations, stackingCapacity, grounded);
             items.push(item);
             numTotalItems += entry.quantity;
         }
- 
-        Logger.Log('Solving', items, ' in ', container);
 
         const CUB = require('./cub/CUB');
         var startTime = performance.now();

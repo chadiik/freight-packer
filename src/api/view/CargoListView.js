@@ -11,6 +11,7 @@ import BoxEntry from "../components/box/BoxEntry";
 import TextLabelView from "./components/TextLabelView";
 import RaycastGroup, { RaycastCallback } from "../utils/cik/input/RaycastGroup";
 import Outline from "./components/Outline";
+import Tween from "../utils/cik/Tween";
 
 /**
  * @typedef {Object} CargoListViewParams
@@ -26,6 +27,7 @@ import Outline from "./components/Outline";
  */
 
 const typeofString = 'string';
+const epsilon = Math.pow(2, -52);
 
 const _selectedEntryUID = Symbol('seUID');
 
@@ -60,16 +62,14 @@ class CargoListView extends Signaler {
         this.templatesView = new THREE.Object3D();
         this.view.add(this.templatesView);
 
-        /**
-         * @type {Map<CargoGroup, CargoView>}
-         */
+        /** @type {Map<CargoGroup, CargoView>} */
         this.cargoTemplateViews = new Map();
 
         let units = this.params.ux.params.units;
 
         // Shelf
         /** @type {import('./components/FloatingShelf').FloatingShelfParams} */
-        let fsParams = {padding: new THREE.Vector3(10 * units, (this.params.outlineOffset * units + 1) * units, 10 * units), colorHex: Asset.ColorTemplates('Containers').Apply(0x000000)};
+        let fsParams = {padding: new THREE.Vector3(10 * units, (this.params.outlineOffset + 1) * units, 10 * units), colorHex: Asset.ColorTemplates('Containers').Apply(0x000000)};
         this.floatingShelf = new FloatingShelf(this.templatesView, fsParams);
         this.view.add(this.floatingShelf.view);
 
@@ -85,6 +85,21 @@ class CargoListView extends Signaler {
 
         this.outline = new Outline({color: 0xffffff, opacity: 1, offsetFactor: this.params.outlineOffset * units});
         this.view.add(this.outline.view);
+
+        // Transition
+        this.slidingAnimation = {
+            enabled: false,
+            position: Tween.Combo.RequestN(Tween.functions.ease.easeOutCubic, .5, 0, 0),
+            originalPosition: new THREE.Vector3(0, 0, 0)
+        };
+
+        let scope = this;
+        function onAnimationComplete(){
+            scope.slidingAnimation.enabled = false;
+        }
+        this.slidingAnimation.position.onComplete = onAnimationComplete;
+
+        this.slidingAnimation.position.Hook(this.view.position, 'y');
     }
 
     /**
@@ -143,7 +158,7 @@ class CargoListView extends Signaler {
     /**
      * @param {CargoGroup} group 
      */
-    Update(group){
+    UpdateGroup(group){
         let templateCargoView = this.cargoTemplateViews.get(group);
         templateCargoView.ReflectEntry();
 
@@ -201,6 +216,34 @@ class CargoListView extends Signaler {
     /** @param {CargoView} target */
     SetOutline(target){
         this.outline.box = target instanceof CargoBoxView ? target.mesh : target.view;
+    }
+
+    SlideUp(targetY, duration){
+        let deltaY = targetY - this.view.position.y;
+        if(Math.abs(deltaY) < epsilon) return;
+
+        this.slidingAnimation.position.SetDurations(duration);
+        this.slidingAnimation.position.SetStartValues(this.view.position.y);
+        this.slidingAnimation.position.SetDeltas(deltaY);
+        this.slidingAnimation.position.Restart();
+        this.slidingAnimation.enabled = true;
+    }
+
+    SlideDown(duration){
+        let deltaY = this.slidingAnimation.originalPosition.y - this.view.position.y;
+        if(Math.abs(deltaY) < epsilon) return;
+
+        this.slidingAnimation.position.SetDurations(duration);
+        this.slidingAnimation.position.SetStartValues(this.view.position.y);
+        this.slidingAnimation.position.SetDeltas(deltaY);
+        this.slidingAnimation.position.Restart();
+        this.slidingAnimation.enabled = true;
+    }
+
+    Update(){
+        if(this.slidingAnimation.enabled){
+            this.slidingAnimation.position.Update();
+        }
     }
 
     /**

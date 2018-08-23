@@ -2,7 +2,6 @@ import WizardStep from "../../wizard/WizardStep";
 import IO from '../../../utils/IO';
 import Draggable from "../../../ui/elements/Draggable";
 import Dom from "../../../ui/Dom";
-import SurfaceUtils from "../../../utils/SurfaceUtils";
 import ContainersEditorWizard from "./ContainersEditorWizard";
 import OptimizedMultiMat from "../../../utils/OptimizedMultiMat";
 

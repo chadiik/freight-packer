@@ -1,13 +1,15 @@
 import AFitTest from "../packer/afit/AFitTest";
+import Asset from "../components/assets/Asset";
 
 function delay(time, callback){
     setTimeout(callback, time);
 }
 
 const debugGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 1, 1, 1);
-const debugMaterial = new THREE.MeshStandardMaterial({color: 0xff7f00, transparent: true, opacity: .35, map: new THREE.TextureLoader().load('../resources/textures/checkers.jpg', function(map){
-    map.wrapS = map.wrapT = THREE.RepeatWrapping; 
-})});
+var debugMaterial = new THREE.MeshStandardMaterial({color: 0xff7f00, transparent: true, opacity: .35});
+Asset.SetTextureMap('checkers.jpg', debugMaterial, 'map').then( (map) => {
+    map.wrapS = map.wrapT = THREE.RepeatWrapping;
+});
 const debugBox = new THREE.Mesh(debugGeometry, debugMaterial);
 
 var tempVec = new THREE.Vector3();

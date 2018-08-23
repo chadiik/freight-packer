@@ -1,4 +1,6 @@
 import ColorTemplate from "./ColorTemplate";
+import Signaler from "../../utils/cik/Signaler";
+import Resources from "../../Resources";
 
 const SolidMaterialType = THREE.MeshStandardMaterial;
 const TransparentMaterialType = THREE.MeshStandardMaterial;
@@ -16,9 +18,41 @@ const receiveShadow = true;
 /** @type {Map<string, ColorTemplate>} */
 var colorTemplates = new Map();
 
+var signaler = new Signaler();
+const signals = {
+    resourcesSet: 'resourcesSet'
+};
+
+const _resources = Symbol('resources');
+
 class Asset {
     constructor(){
 
+    }
+
+    /** @param {Resources} value */
+    static set resources(value){
+        Asset[_resources] = value;
+        signaler.Dispatch(signals.resourcesSet);
+    }
+
+    static get resources(){ return Asset[_resources]; }
+
+    /**
+     * @param {string} url 
+     * @param {THREE.Material} material 
+     * @param {string} mapName 
+     * @returns {Promise<THREE.Texture>}
+     */
+    static SetTextureMap(url, material, mapName){
+        return new Promise( (resolve, reject) => {
+            signaler.OnIncludingPrior(signals.resourcesSet, () => {
+                let texture = material[mapName];
+                if(texture instanceof THREE.Texture || texture === null){
+                    material[mapName] = new THREE.TextureLoader().load(Asset.resources.texturesPath + url, resolve, undefined, reject);
+                }
+            });
+        });
     }
 
     /**
@@ -101,10 +135,10 @@ class Asset {
 
     /**
      * @param {Object} json 
-     * @param {THREE.Object3D} texturePath 
+     * @returns {THREE.Object3D}
      */
-    static FromJSON(json, texturePath){
-        return objectLoader.parse(json, texturePath);
+    static FromJSON(json){
+        return objectLoader.parse(json);
     }
 
     /** @param {THREE.Object3D} object */

@@ -16,6 +16,10 @@ function nextColor(){
 }
 
 const _materialSettings = Symbol('matSet');
+const _color = Symbol('color');
+
+const typeofNumber = 'number',
+    typeofString = 'string';
 
 class CargoBoxView extends CargoView {
     /**
@@ -26,7 +30,12 @@ class CargoBoxView extends CargoView {
         super(boxEntry);
 
         var material = materialTemplate.clone();
-        material.color = nextColor();
+
+        let colorHex = boxEntry.Description('color');
+        this[_color] = colorHex ? new THREE.Color(colorHex) : nextColor();
+        boxEntry.Description('color', this.color.getHex());
+
+        material.color = this.color;
         this.mesh = new THREE.Mesh(unitCubeGeometry, material);
         this.mesh.scale.copy(boxEntry.dimensions.vec3);
 
@@ -39,6 +48,9 @@ class CargoBoxView extends CargoView {
         super.entry = value;
         var s = value.dimensions.vec3;
         this.SetScale(s.x, s.y, s.z);
+
+        let colorHex = value.Description('color');
+        if(colorHex) this.color = colorHex;
     }
 
     /** @param {Number} value */
@@ -61,6 +73,21 @@ class CargoBoxView extends CargoView {
 
     get focus(){ return super.focus; }
 
+    /** @returns {THREE.Color} */
+    get color(){ return this[_color]; }
+
+    /** @param {Number} value hex */
+    set color(value){
+        /** @type {THREE.Color} */
+        let c = this[_color];
+        if(typeof value === typeofNumber) c.setHex(value);
+        else if(typeof value === typeofString) c.setHex(Number.parseInt(value));
+        else c.copy(value);
+        if(this[_materialSettings]) this[_materialSettings].color = c.getHex();
+        else this.mesh.material.color = c;
+        this.focus = super.focus;
+    }
+
     /**
      * @param {Number} x 
      * @param {Number} y 
@@ -68,6 +95,8 @@ class CargoBoxView extends CargoView {
      */
     SetScale(x, y, z){
         this.mesh.scale.set(x, y, z);
+
+        if(this.labelView) this.labelView.view.position.z = params.width / 2 + this.entry.dimensions.length / 2;
     }
 
     ReflectEntry(){
@@ -93,6 +122,10 @@ class CargoBoxView extends CargoView {
      */
     SetRotationAngles(x, y, z){
         this.mesh.rotation.set(x, y, z);
+    }
+
+    static GetNextColor(){
+        return nextColor();
     }
 }
 

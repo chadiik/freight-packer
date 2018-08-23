@@ -1,11 +1,10 @@
 import LightDispatcher from "./LightDispatcher";
 import Packer from "../packer/Packer";
+import Utils from "../utils/cik/Utils";
 
-/** @typedef {import('../packer/Packer').SolverParams} SolverParams
- */
+/** @typedef {import('../packer/Packer').SolverParams} SolverParams */
 
-/** @typedef {import('../packer/cub/CUB').CUBParams} CUBParams
- */
+/** @typedef {import('../packer/cub/CUB').CUBParams} CUBParams */
 
 class ResultSpace{
     /** @param {string} uid */
@@ -104,15 +103,30 @@ const signals = {
     failed: 'failed'
 };
 
+/** @typedef PackerParams 
+ * @property {Number} defaultStackingFactor default = 10, multiplier for stacking capacity (capacity = weight * defaultStackingFactor) if stackingProperty is not enabled */
+const defaultParams = {
+    defaultStackingFactor: 10
+};
+
+/** @type {SolverParams} */
+const defaultSolverParams = {
+    algorithm: 'cub'
+};
+
 class PackerInterface extends LightDispatcher {
 
-    constructor(){
+    /** @param {PackerParams} params */
+    constructor(params){
         super();
         
+        this.params = Utils.AssignUndefined(params, defaultParams);
     }
 
-    /** @param {SolverParams} params */
+    /** Solve packing for current cargo list in loaded packing space 
+     * @param {SolverParams} params */
     Solve(params){
+        params = Utils.AssignUndefined(params, defaultSolverParams);
         this.Dispatch(signals.solveRequest, params);
     }
 
@@ -132,6 +146,7 @@ class PackerInterface extends LightDispatcher {
         }
     }
 
+    /** Enumeration of dispatched types */
     static get signals(){
         return signals;
     }

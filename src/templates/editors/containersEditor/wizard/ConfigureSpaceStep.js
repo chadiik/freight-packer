@@ -21,7 +21,7 @@ import ContainersEditorWizard from "./ContainersEditorWizard";
 
 const signals = {
     surfacePick: 'surfacePick',
-    dimensionsInput: 'dimensionsInput',
+    infoInput: 'infoInput',
     sidePick: 'sidePick'
 }
 
@@ -64,7 +64,7 @@ class ConfigureSpaceStep extends WizardStep {
 
         var inputAction = new WizardAction(element.querySelector('#input'));
         inputAction.button.onclick = function(){
-            scope.InputDimensions();
+            scope.InputInfo();
         };
 
         var surfaceAction = new WizardAction(element.querySelector('#surface'));
@@ -86,7 +86,7 @@ class ConfigureSpaceStep extends WizardStep {
             inputAction.disabled = false;
         });
 
-        this.On(signals.dimensionsInput, function(){
+        this.On(signals.infoInput, function(){
             inputAction.status = true;
             sideAction.disabled = false;
         });
@@ -98,7 +98,7 @@ class ConfigureSpaceStep extends WizardStep {
     }
 
     PickSurface(){
-        if( ! this.raycastGroup ){
+        if( !this.raycastGroup ){
             var scope = this;
             this.raycastGroup = new RaycastGroup(
                 [this.obj], //items
@@ -198,7 +198,7 @@ class ConfigureSpaceStep extends WizardStep {
         var scope = this;
         var input = FPEditor.instance.sceneSetup.input;
         input.DelayedAction(function(){
-            scope.PlatformDimensions();
+            scope.SurfaceInfo();
         }, 200);
 
         this.On(signals.surfacePick, function(){
@@ -206,17 +206,17 @@ class ConfigureSpaceStep extends WizardStep {
         });
     }
 
-    PlatformDimensions(){
+    SurfaceInfo(){
 
         var scope = this;
 
         var platform = this.platform;
-        var platformDimensions = this.platformDimensions = {width: platform.width, length: platform.length};
+        var surfaceInfo = /*this.surfaceInfo =*/ {width: platform.width, length: platform.length};
 
         var obj = this.obj;
         var onChange = function(){
-            let sw = platformDimensions.width / platform.width;
-            let sl = platformDimensions.length / platform.length;
+            let sw = surfaceInfo.width / platform.width;
+            let sl = surfaceInfo.length / platform.length;
             let sh = (sw + sl) / 2;
             obj.scale.set(sw, sh, sl);
             platform.Scale(sw, sl, sh);
@@ -237,22 +237,23 @@ class ConfigureSpaceStep extends WizardStep {
             volume.position.copy(platform.center);
         };
 
-        Feedback.Prompt('Platform width', platformDimensions.width)
+        Feedback.Prompt('Surface width', surfaceInfo.width)
             .then(function(width){
-                platformDimensions.width = Number.parseFloat(width);
-                return Feedback.Prompt('Platform length', platformDimensions.length);
+                surfaceInfo.width = Number.parseFloat(width);
+                return Feedback.Prompt('Surface length', surfaceInfo.length);
             })
             .then(function(length){
-                platformDimensions.length = Number.parseFloat(length);
+                surfaceInfo.length = Number.parseFloat(length);
                 onChange();
                 scope.Dispatch(signals.surfacePick);
             })
     }
 
-    InputDimensions(){
+    InputInfo(){
 
         var scope = this;
         
+        var containingVolume = this.data.container.volume;
         var dimensions = this.data.container.volume.dimensions;
         if(dimensions.volume < 1){
             let platform = this.platform;
@@ -271,12 +272,17 @@ class ConfigureSpaceStep extends WizardStep {
             .then(function(length){
                 dimensions.length = Number.parseFloat(length);
                 onChange();
-                return Feedback.Prompt('Volume height', dimensions.height)
+                return Feedback.Prompt('Volume height', dimensions.height);
             })
             .then(function(height){
                 dimensions.height = Number.parseFloat(height);
                 onChange();
-                scope.Dispatch(signals.dimensionsInput);
+                return Feedback.Prompt('Weight capacity', dimensions.width * dimensions.length * dimensions.height / 1000);
+            })
+            .then(function(weightCapacity){
+                containingVolume.weightCapacity = weightCapacity;
+                onChange();
+                scope.Dispatch(signals.infoInput);
             });
     }
 
@@ -308,7 +314,7 @@ class ConfigureSpaceStep extends WizardStep {
     }
 
     PickLoadingSide(){
-        if( ! this.raycastGroupSide && this.displayVolume ){
+        if( !this.raycastGroupSide && this.displayVolume ){
             var scope = this;
             this.raycastGroupSide = new RaycastGroup(
                 [this.displayVolume], //items

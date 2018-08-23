@@ -29,7 +29,7 @@ class Utils {
      * @returns {T}
      */
     static AssignUndefined(target, source){
-        if(target === undefined){
+        if(typeof target !== typeofObject){
             target = {};
             Object.assign(target, source);
             return target;

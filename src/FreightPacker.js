@@ -5,22 +5,12 @@ import Logger from './api/utils/cik/Logger';
 import Utils from './api/utils/cik/Utils';
 import PackingSpaceInput, { PackingSpaceInputParams } from './api/components/PackingSpaceInput';
 import UX, { UXParams } from './api/UX';
-import PackerInterface from './api/components/PackerInterface';
+import PackerInterface, { PackerParams } from './api/components/PackerInterface';
 import LightDispatcher from './api/components/LightDispatcher';
+import Constants from './api/Constants';
+import Resources from './api/Resources';
 
-/**
- * @typedef InitializationParams
- * @property {Boolean} debug
- * @property {UXParams} uxParams
- */
-
-/**
- * @type {InitializationParams}
- */
-const defaultParams = {
-	debug: false
-};
-
+//#region dev
 const utils = {
 	THREE: THREE,
 	dat: (window.dat || require('./api/utils/cik/config/datGUIConsole').default),
@@ -62,6 +52,23 @@ function auto(fp){
 	
 }
 
+//#endregion
+
+/**
+ * @typedef InitializationParams
+ * @property {Boolean} debug set to false for deployment
+ * @property {string} texturesPath url to textures directory
+ * @property {UXParams} uxParams UX parameters
+ * @property {PackerParams} packerParams Packer general parameters
+ */
+
+/**
+ * @type {InitializationParams}
+ */
+const defaultParams = {
+	debug: false
+};
+
 const signals = {
 	ready: 'ready'
 };
@@ -95,10 +102,13 @@ class FreightPacker extends LightDispatcher {
 		this.packingSpaceInput = new PackingSpaceInput(packingSpaceInputParams);
 
 		/** Manual solving and notification */
-		this.packer = new PackerInterface();
+		this.packer = new PackerInterface(this.params.packerParams);
+
+		let resources = new Resources();
+			resources.texturesPath = this.params.texturesPath;
 
 		/** @type {AppParams} */
-		let appParams = {ux: this.ux, cargoInput: this.cargoInput, packingSpaceInput: this.packingSpaceInput, packerInterface: this.packer};
+		let appParams = {ux: this.ux, cargoInput: this.cargoInput, packingSpaceInput: this.packingSpaceInput, packerInterface: this.packer, resources: resources};
 		let app = new App(containerDiv, appParams);
 			app.On(App.signals.start, function(){
 				scope.Dispatch(signals.ready);
@@ -112,6 +122,7 @@ class FreightPacker extends LightDispatcher {
 	}
 
 	/**
+	 * Check that webgl, etc are supported in this browser.
 	 * Will resolve if requirements are met, otherwise rejects with an error message
 	 * @return {Promise<Void>|Promise<string>} 
 	 */
@@ -129,6 +140,7 @@ class FreightPacker extends LightDispatcher {
 		});
 	}
 
+	/** Enumeration of dispatched types */
 	static get signals(){
 		return signals;
 	}
@@ -143,5 +155,6 @@ FreightPacker.UX = UX;
 FreightPacker.CargoInput = CargoInput;
 FreightPacker.PackingSpaceInput = PackingSpaceInput;
 FreightPacker.Packer = PackerInterface;
+FreightPacker.Constants = Constants;
 
 export default FreightPacker;

@@ -25,6 +25,7 @@ class User extends LightDispatcher{
         app.view.cargoListView.On(CargoListView.signals.interact, onCargoInteract);
     }
 
+    /** Enumeration of dispatched types */
     static get signals(){
         return signals;
     }

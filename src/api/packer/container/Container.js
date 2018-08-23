@@ -13,7 +13,7 @@ class Container {
          */
         this.volumes = [];
 
-        Logger.WarnOnce('Container.constructor', 'weight, label not implemented');
+        Logger.WarnOnce('Container.constructor', 'label not implemented');
     }
 
     /** @param {ContainingVolume} volume */
@@ -38,6 +38,8 @@ class Container {
             maxY = Number.MIN_SAFE_INTEGER,
             maxZ = Number.MIN_SAFE_INTEGER;
 
+        let combinedWeightCapacity = 0;
+        
         this.volumes.forEach(volume => {
             let pos = volume.position;
             let dim = volume.dimensions;
@@ -47,11 +49,14 @@ class Container {
             if(pos.x + dim.width > maxX) maxX = pos.x + dim.width;
             if(pos.y + dim.height > maxY) maxY = pos.y + dim.height;
             if(pos.z + dim.length > maxZ) maxZ = pos.z + dim.length;
+
+            combinedWeightCapacity += volume.weightCapacity;
         });
 
         combinedVolume.container = this;
         combinedVolume.dimensions.Set(maxX - minX, maxZ - minZ, maxY - minY);
         combinedVolume.position.set((maxX + minX) / 2, (maxZ + minZ) / 2, (maxY + minY) / 2);
+        combinedVolume.weightCapacity = combinedWeightCapacity;
         
         return combinedVolume;
     }

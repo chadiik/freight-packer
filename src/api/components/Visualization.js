@@ -31,7 +31,7 @@ class PackResults {
         app.view.packResultView.params.animationDuration = value; 
     }
 
-    /** 
+    /** Hides stacked boxes in viewer by vertical position
      * 0: None - 1: All (over y span)
      * @param {Number} value
      */
@@ -81,6 +81,7 @@ class Visualization extends LightDispatcher{
         if(highlightPackedInstances || !entryUID) app.view.packResultView.SelectEntry(entryUID);
     }
 
+    /** Enumeration of dispatched types */
     static get signals(){
         return visualizationSignals;
     }

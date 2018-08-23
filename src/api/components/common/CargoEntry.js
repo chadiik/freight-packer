@@ -30,6 +30,27 @@ class CargoEntry {
         return this.uid;
     }
 
+    /** @param {string} key @param {string} [value] ommit value param to get description content instead of setting it */
+    Description(key, value){
+        let d = this.descriptions.get(key);
+        if(d){
+            if(value === undefined) return d.content;
+
+            d.content = value;
+        }
+        else{
+            if(value === undefined) return false;
+
+            d = new TextField(key, value);
+            this.descriptions.set(key, d);
+        }
+    }
+
+    /** @param {string} key */
+    DeleteDescription(key){
+        if( this.descriptions.has(key) ) this.descriptions.delete(key);
+    }
+
     Copy(entry){
         Logger.Warn('CargoEntry.Copy is not implemented');
     }

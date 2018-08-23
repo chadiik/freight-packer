@@ -49,6 +49,11 @@ const functions = {
         /** @type {TweenCallback} */
         easeOutCubic: function (t, b, c, d) {
             return c*((t=t/d-1)*t*t + 1) + b;
+        },
+
+        easeInOutQuad: function (t, b, c, d) {
+            if ((t/=d/2) < 1) return c/2*t*t + b;
+            return -c/2 * ((--t)*(t-2) - 1) + b;
         }
     },
 
@@ -79,6 +84,15 @@ class TweenCombo{
         this.completed = false;
     }
 
+    /** @param {Array<Number>} args */
+    SetDurations(...args){ for(var i = 0; i < this.tweens.length; i++) this.tweens[i].duration = args[i]; }
+
+    /** @param {Array<Number>} args */
+    SetDeltas(...args){ for(var i = 0; i < this.tweens.length; i++) this.tweens[i].delta = args[i]; }
+
+    /** @param {Array<Number>} args */
+    SetStartValues(...args){ for(var i = 0; i < this.tweens.length; i++) this.tweens[i].startValue = args[i]; }
+
     /**
      * @param {Object} object 
      * @param {Array<string>} properties 
@@ -90,14 +104,17 @@ class TweenCombo{
     }
 
     Unhook(){
-        this.tweens.forEach(tween => {
-            tween.Unhook();
-        });
+        this.tweens.forEach(tween => tween.Unhook());
+    }
+
+    /** Restarts time */
+    Restart(){
+        this.tweens.forEach(tween => tween.Restart());
     }
 
     /**
      * Update tween
-     * @param {Number} t [0, duration]
+     * @param {Number} [t] [0, duration]
      */
     Update(t){
         var completed = true;
@@ -132,7 +149,7 @@ class TweenCombo{
      * @param {Number} delta2
      * @param {Number} duration
      */
-    static Request3(callback, startValue0, startValue1, startValue2, delta0, delta1, delta2, duration){
+    static Request3(callback, duration, startValue0, delta0, startValue1, delta1, startValue2, delta2){
         var tween0 = pool.Request();
         tween0.Reset(callback, startValue0, delta0, duration);
 
@@ -143,7 +160,24 @@ class TweenCombo{
         tween2.Reset(callback, startValue2, delta2, duration);
 
         var combo = new TweenCombo(tween0, tween1, tween2);
+        return combo;
+    }
 
+    /**
+     * @param {TweenCallback} callback 
+     * @param {Number} duration 
+     * @param {Array<Number>} args startValueN, deltaN
+     */
+    static RequestN(callback, duration, ...args){
+
+        let tweens = [];
+        for(let i = 0; i < args.length; i += 2){
+            let tween = pool.Request();
+            tween.Reset(callback, args[i], args[i + 1], duration);
+            tweens.push(tween);
+        }
+
+        let combo = new TweenCombo(...tweens);
         return combo;
     }
 }
@@ -178,8 +212,13 @@ class Tween{
             this.startValue = this.object[this.property];
         }
 
-        this.startTime = clock.getElapsedTime();
+        this.Restart();
+    }
+
+    /** Restarts time */
+    Restart(){
         this.completed = false;
+        this.startTime = clock.getElapsedTime();
     }
 
     /**
@@ -201,7 +240,7 @@ class Tween{
 
     /**
      * Update tween
-     * @param {Number} t [0, duration]
+     * @param {Number} [t] [0, duration]
      */
     Update(t){
         if(t === undefined) t = clock.getElapsedTime() - this.startTime;

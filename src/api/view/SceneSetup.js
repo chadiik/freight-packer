@@ -38,14 +38,14 @@ class SceneSetup extends Signaler {
         this.sceneController = new Controller(controllerParams);
 
         /** @type {import('../scene/Renderer').RendererParams} */
-        var rendererParams = {clearColor: 0xefefef};
+        var rendererParams = {clearColor: this.ux.params.backgroundColor};
         Object.assign(rendererParams, quality);
         this.sceneRenderer = new Renderer(rendererParams);
         this.sceneRenderer.renderer.toneMappingExposure = 1.6;
         this.domElement.appendChild(this.sceneRenderer.renderer.domElement);
 
         /** @type {import('./Camera').CameraParams} */
-        var cameraParams = {fov: 30, aspect: 1, near: 1 * units, far: 3000 * units};
+        var cameraParams = {fov: this.ux.params.fov, aspect: 1, near: 1 * units, far: 5000 * units};
         this.cameraController = new Camera(cameraParams);
         this.cameraController.OrbitControls(this.sceneRenderer.renderer.domElement);
 
@@ -61,7 +61,7 @@ class SceneSetup extends Signaler {
         // hud
         if(this.ux.params.hud){
             /** @type {import('../view/HUDView').HUDViewParams} */
-            var hudParams = {ux: this.ux};
+            var hudParams = {ux: this.ux, sceneSetup: this, container: this.sceneRenderer.renderer.domElement};
             /** @type {import('./Camera').CameraParams} */
             var hudCameraParams = Utils.AssignUndefined({fov: 15}, cameraParams);
             this.hud = new HUDView(hudParams, hudCameraParams);
@@ -76,7 +76,7 @@ class SceneSetup extends Signaler {
 
         // Comeplete setup
         var setupParams = {
-            gridHelper: true,
+            gridHelper: false,
         }
 
         // Initial camera move
@@ -119,7 +119,7 @@ class SceneSetup extends Signaler {
 
                     scope.input.Update();
                     scope.cameraController.Update();
-                    hud.cameraController.Update();
+                    hud.Update(timestamp);
 
                     sceneRenderer.renderer.clear();
                     sceneRenderer.Render(scene1, camera1);

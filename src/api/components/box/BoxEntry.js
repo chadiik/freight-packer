@@ -1,11 +1,11 @@
-import { SupportsStacking, RotationConstraint, TranslationConstraint } from "./PackingProperty";
+import { StackingProperty, RotationConstraint, TranslationConstraint } from "./PackingProperty";
 import Dimensions from "./Dimensions";
 import TextField from "../common/TextField";
 import CargoEntry from "../common/CargoEntry";
 
 /**
  * @typedef {Object} BoxEntryProperties
- * @property {SupportsStacking} stacking
+ * @property {StackingProperty} stacking
  * @property {RotationConstraint} rotation
  * @property {TranslationConstraint} translation
  */
@@ -35,16 +35,16 @@ class BoxEntry extends CargoEntry {
          */
         this.properties;
 
-        this.properties.stacking    = new SupportsStacking();
+        this.properties.stacking    = new StackingProperty();
         this.properties.rotation    = new RotationConstraint();
         this.properties.translation = new TranslationConstraint();
         
         this.descriptions.set('label', new TextField('label', getDefaultLabel()));
     }
 
-    set weight(value){ return super.weight; }
+    set weight(value){ super.weight = value; }
     get weight(){
-        return this.dimensions.volume / 1000;
+        return super.weight;
     }
 
     /**
@@ -133,11 +133,15 @@ class BoxEntry extends CargoEntry {
             && entry.quantity !== undefined
                 && typeof entry.weight === numberType
                 && typeof entry.quantity === numberType
-                && SupportsStacking.Assert(entry.properties.stacking)
+                && StackingProperty.Assert(entry.properties.stacking)
                 && RotationConstraint.Assert(entry.properties.rotation)
                 && TranslationConstraint.Assert(entry.properties.translation)
         ;
     }
 }
+
+BoxEntry.StackingProperty = StackingProperty;
+BoxEntry.RotationConstraint = RotationConstraint;
+BoxEntry.TranslationConstraint = TranslationConstraint;
 
 export default BoxEntry;

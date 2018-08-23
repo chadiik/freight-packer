@@ -133,10 +133,10 @@ class PackResultView{
                 y = item.position.y + offset.y,
                 z = item.position.z + offset.z;
 
-            let posTweenCombo = Tween.Combo.Request3(Tween.functions.ease.easeOutQuad,
-                x, y, zEntry, 
-                0, 0, z - zEntry,
-                .5
+            let posTweenCombo = Tween.Combo.RequestN(Tween.functions.ease.easeOutQuad, .5,
+                x, 0,
+                y, 0,
+                zEntry, z - zEntry
             );
             
             posTweenCombo.extraData = packedCargoView;
@@ -156,6 +156,12 @@ class PackResultView{
             let item = packingResult.unpacked[i];
             let cargoViewTemplate = this.cargoListView.GetTemplate(item.entry);
 
+            let totalQuantity = cargoViewTemplate.entry.quantity;
+            if(packedQuantities.has(cargoViewTemplate) === false){
+                let textColor = false ? 'rgb(255, 255, 255)' : 'rgb(255, 0, 0)';
+                this.cargoListView.UpdateLabel(cargoViewTemplate, '0/' + totalQuantity, textColor);
+            }
+
             if(i === 0) unpackedOffset += item.entry.dimensions.width / 2;
 
             for(let j = 0; j < item.unpackedQuantity; j++){
@@ -167,10 +173,10 @@ class PackResultView{
                     y = item.entry.dimensions.height / 2 + offset.y,
                     z = item.entry.dimensions.length * j + offset.z;
 
-                let posTweenCombo = Tween.Combo.Request3(Tween.functions.ease.easeOutQuad,
-                    x, y, zEntry, 
-                    0, 0, z - zEntry,
-                    .5
+                let posTweenCombo = Tween.Combo.RequestN(Tween.functions.ease.easeOutQuad, .5,
+                    x, 0,
+                    y, 0,
+                    zEntry, z - zEntry
                 );
                 
                 posTweenCombo.extraData = packedCargoView;
@@ -191,10 +197,10 @@ class PackResultView{
     OnCargoFirstTweenComplete(tween){
         let packedCargoView = tween.extraData;
         this.OnTweenComplete(tween);
-        let scaleTweenCombo = Tween.Combo.Request3(Tween.functions.special.pingPong,
-            1, 1, 1, 
-            .1, .1, .1,
-            .1
+        let scaleTweenCombo = Tween.Combo.RequestN(Tween.functions.special.pingPong, .1, 
+            1, .1,
+            1, .1,
+            1, .1
         );
         
         scaleTweenCombo.extraData = packedCargoView;

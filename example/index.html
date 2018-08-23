@@ -6,23 +6,22 @@
     <meta name="apple-mobile-web-app-capable" content="yes" /> 
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--link rel="stylesheet" href="css/UIDom.css"-->
     
     <title>Freight Packer API example</title>
     
     <style>
-      /* Container div styling */
+      /* Viewer div styling */
       #fp-view {
         position: relative;
         width: calc(100% - 20px);
         height: calc(100% - 20px);
         margin: 10px;
-        /*line-height: 0px;*/
       }
   
       body { 
         margin: 2px;
-        background-color: #ffffff;
+        /*background-color: #101010;*/
+        background-color: #a0a0a0;
         height: 60%;
         font-family: Monospace;
         font-size: small;
@@ -33,14 +32,15 @@
       }
   
       .columns {
-        height: 600px;
+        height: 99%;
+        max-width: 1600px;
       }
           
       .left {
         width: 280px;
         float: left;
         background: #bbb;
-        height: 100%;
+        height: 99vh;
         overflow: scroll !important;
       }
   
@@ -48,28 +48,47 @@
         float: none;
         background: #efefef;
         width: auto;
-        height: 100%;
+        height: 600px;
         overflow: hidden;
+      }
+
+      .rightPane {
+        float: none;
+        background: #202020;
+        color: #efefef;
+        width: auto;
+        height: calc(99vh - 600px);
+        overflow: scroll !important;
       }
   
       #fp-gui {
         padding: 4px;
       }
+
+      /*! houdinijs v9.4.2 | (c) 2017 Chris Ferdinandi | MIT License | http://github.com/cferdinandi/houdini */
+      .collapse-text-hide,.js-houdini .active>.collapse-text-show{display:none;visibility:hidden}
+      .js-houdini .active>.collapse-text-hide{display:inline-block;visibility:visible}
+      .js-houdini .collapse{border:0;clip:rect(0 0 0 0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}
+      .js-houdini .collapse.active{clip:auto;height:auto;margin:0;overflow:visible;position:static;width:auto}
+      .js-houdini .collapse:focus{outline:none}
     </style>
 
     <!-- API files, dependencies (3rd party code) and API -->
     <script src="../build/FreightPackerDependencies.js" ></script>
     <script src="../build/FreightPacker.js" ></script>
 
-    <!-- Example dependencies (not of interest) -->
+    <!-- Example (~UI) dependencies (not of interest) -->
+    <script src="./mockup/lib/jquery-3.3.1.min.js"></script>
     <script src="./mockup/lib/dat.gui.js"></script>
     <script src="./mockup/lib/datGUIExtensions.js"></script>
     <script src="./mockup/lib/crel.js"></script>
     <script src="./mockup/lib/FileSaver.js"></script>
+    <script src="./mockup/lib/houdini.js"></script>
+    <script src="./mockup/lib/JSONFormatter.js"></script>
     <script src="../editor/FPEditor.js"></script>
     <script src="./mockup/ExampleUI.js"></script>
 
-    <!-- Example/Reference -->
+    <!-- Example -->
     <script src="./Example.js"></script>
 
     <script>
@@ -89,8 +108,22 @@
         </div>
       </div>
       <div class="right">
-        <!-- Container div () -->
+
+        <!-- Viewer div -->
         <div id="fp-view"></div>
+
+      </div>
+      <div class="rightPane">
+
+        <!-- Log div -->
+        <div id="fp-log"></div>
+
+        <!-- Standard unsupported webgl message -->
+        <div id="no-webgl" style="display:none; position:absolute; top:20px; background-color:#bbb; color:#000;">
+          Your browser does not seem to support <a href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</a>.<br/>
+          Find out how to get it <a href="http://get.webgl.org/">here</a>
+        </div>
+
       </div>
     </div>
 

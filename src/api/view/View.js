@@ -9,10 +9,14 @@ import PackResultView from "./PackResultView";
 import UpdateComponent from "../utils/cik/input/UpdateComponent";
 import Container from "../packer/container/Container";
 import BoxEntry from "../components/box/BoxEntry";
+import DomUI from "./dom/DomUI";
+import OrthoviewsNavigator from "./OrthoviewsNavigator";
+import Camera from "../scene/Camera";
 
 /**
  * @typedef {Object} ViewParams
  * @property {import('../UX').default} ux
+ * @property {Number} transitionDuration
  * @property {Object} cargoListView
  * @property {Number} cargoListView.paddingZ
  * @property {Number} cargoListView.paddingY
@@ -24,6 +28,7 @@ import BoxEntry from "../components/box/BoxEntry";
  /** @type {ViewParams} */
 const defaultParams = {
     ux: undefined,
+    transitionDuration: 1.5,
     cargoListView: {
         paddingZ: 120,
         paddingY: 40,
@@ -43,13 +48,18 @@ class View {
     /**
      * Constructor
      * @param {Packer} packer 
+     * @param {DomUI} domUI; 
      * @param {SceneSetup} sceneSetup 
      * @param {ViewParams} params 
      */
-    constructor(packer, sceneSetup, params){
+    constructor(packer, sceneSetup, domUI, params){
 
         this.sceneSetup = sceneSetup;
         this.params = Utils.AssignUndefined(params, defaultParams);
+
+        this.domUI = domUI;
+        this.domUI.CreateOrthoViewsIcons();
+        this.domUI.On(DomUI.signals.orthoViewSelected, this.OnOrthoViewSelected.bind(this));
 
         var scope = this;
         var units = this.params.ux.params.units;
@@ -71,6 +81,9 @@ class View {
             dlComp.castShadow = true;
         }
 
+        let orthoviewsNavParams = {ux: this.params.ux};
+        this.orthoviewsNavigator = new OrthoviewsNavigator(this.sceneSetup.cameraController, orthoviewsNavParams);
+
         // Packing space
         this.packingSpaceView = new PackingSpaceView();
         this.sceneSetup.sceneController.AddDefault(this.packingSpaceView.view);
@@ -78,12 +91,13 @@ class View {
         function onContainerAdded(container){
             /** @type {THREE.Box3} */
             let box3 = container.combinedVolume.box3;
-            scope.sceneSetup.cameraController.Frame(box3, .7);
+            scope.sceneSetup.cameraController.TransitionToFrame(1, box3, scope.params.transitionDuration);
+
             scope.packingSpaceView.Add(container);
 
             tempBox3.setFromObject(scope.packingSpaceView.view);
             tempBox3.getSize(tempVec);
-            console.log('container box3:', tempBox3);
+
             let containerSize = Math.max(tempVec.x, tempVec.y, tempVec.z);
             scope.cargoListView.view.position.z = containerSize / 2 + scope.params.cargoListView.paddingZ * units;
             scope.cargoListView.view.position.y = scope.params.cargoListView.paddingY * units;
@@ -95,7 +109,6 @@ class View {
         this.cargoListView = new CargoListView(this.params.cargoListView.params);
 
         this.sceneSetup.input.AddRaycastGroup('OnClick', 'cargoListView', this.cargoListView.raycastGroup);
-        console.log('_raycastGroups:', this.sceneSetup.input._raycastGroups);
 
         this.sceneSetup.sceneController.AddDefault(this.cargoListView.view);
 
@@ -105,6 +118,10 @@ class View {
             let listViewCenterX = tempVec.x;
             scope.cargoListView.view.getWorldPosition(tempVec);
             let offsetX = listViewCenterX - tempVec.x;
+
+            /** @type {THREE.Box3} */
+            let box3 = tempBox3;
+            scope.sceneSetup.cameraController.TransitionToFrame(1, box3, scope.params.transitionDuration);
 
             tempBox3.setFromObject(scope.packingSpaceView.view);
             tempBox3.getCenter(tempVec);
@@ -123,7 +140,7 @@ class View {
         }
         packer.cargoList.On(CargoList.signals.groupRemoved, onCargoGroupRemoved);
         function onCargoGroupModified(group){
-            scope.cargoListView.Update(group);
+            scope.cargoListView.UpdateGroup(group);
             onCargoListViewChanged();
         }
         packer.cargoList.On(CargoList.signals.groupModified, onCargoGroupModified);
@@ -135,12 +152,16 @@ class View {
 
         /** @param {Packer.PackingResult} packingResult */
         async function onPackUpdate(packingResult){
+            scope.orthoviewsNavigator.Navigate(OrthoviewsNavigator.orthoviews.home, false);
             await scope.packResultView.DisplayPackingResult(packingResult);
         }
         packer.On(Packer.signals.packUpdate, onPackUpdate);
 
         var updateComponent = new UpdateComponent(true, 1/30, this.Update.bind(this));
         this.sceneSetup.input.updateComponents.push(updateComponent);
+
+        this.orthoviewsNavigator.boundingView = this.packingSpaceView.view;
+        this.orthoviewsNavigator.cargoListView = this.cargoListView;
 
         if(this.params.ux.params.hud){
             this.HUDSetup();
@@ -154,6 +175,7 @@ class View {
     /** @param {Number} now */
     Update(now){
         this.packResultView.Update();
+        this.cargoListView.Update();
     }
 
     HUDSetup(){
@@ -167,6 +189,16 @@ class View {
 
     ClearPackingResults(){
         this.packResultView.Clear();
+    }
+
+    /** @param {DomUI.orthoviews} viewType */
+    OnOrthoViewSelected(viewType){
+        switch(viewType){
+            case DomUI.orthoviews.home:     this.orthoviewsNavigator.Navigate(OrthoviewsNavigator.orthoviews.home);     break;
+            case DomUI.orthoviews.top:      this.orthoviewsNavigator.Navigate(OrthoviewsNavigator.orthoviews.top);      break;
+            case DomUI.orthoviews.front:    this.orthoviewsNavigator.Navigate(OrthoviewsNavigator.orthoviews.front);    break;
+            case DomUI.orthoviews.side:     this.orthoviewsNavigator.Navigate(OrthoviewsNavigator.orthoviews.side);     break;
+        }
     }
 
     Configure(){

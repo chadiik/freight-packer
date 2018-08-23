@@ -4,11 +4,12 @@ import ContainerView from "../view/ContainerView";
 import Asset from "./assets/Asset";
 import LightDispatcher from "./LightDispatcher";
 import Logger from "../utils/cik/Logger";
+import ContainingVolume from "../packer/container/ContainingVolume";
 
 /**
  * @typedef PackingSpaceJSON
- * @property {THREE.Geometry} jsonObject.geometry
- * @property {Container} jsonObject.container
+ * @property {*} jsonObject.view json data
+ * @property {Container} jsonObject.container json data
  */
 
 const signals = {
@@ -21,6 +22,21 @@ const signals = {
  * @typedef {Object} PackingSpaceInputParams
  * @property {import('../UX').default} ux
  */
+
+/** @param {Container} container @param {THREE.Object3D} model */
+function createContainerView(container, model, units){
+    let containerView;
+    if(model){
+        containerView = new ContainerView(container, model);
+    }
+    else{
+        containerView = ContainerView.Request(container);
+    }
+    
+    let padding = 60 * units;
+    let thickness = 2 * units;
+    containerView.PlatformVisibility(true, new THREE.Vector3(padding, thickness, padding));
+}
 
 class PackingSpaceInput extends LightDispatcher {
     /**
@@ -41,11 +57,39 @@ class PackingSpaceInput extends LightDispatcher {
     }
 
     /**
+     * Creates a dummy container, get an uid for later changes (or false on error)
+     * @param {Number} width
+     * @param {Number} length
+     * @param {Number} height
+     * @param {Number} weightCapacity
+     * @returns {Number|Boolean} uid or false if error
+     */
+    FromInput(width, length, height, weightCapacity){
+        let container = new Container();
+
+        let containingVolume = new ContainingVolume(container);
+            containingVolume.dimensions.Set(width, length, height);
+            containingVolume.weightCapacity = weightCapacity;
+
+        container.Add(containingVolume);
+
+        let units = this.params.ux.params.units;
+        createContainerView(container, null, units);
+
+        this.packingSpace.AddContainer(container);
+        
+        this.Dispatch(signals.containerLoaded, container);
+        return container.uid;
+    }
+
+    /**
+     * Load packing config, get an uid for later changes (or false on error)
      * @param {PackingSpaceJSON} jsonObject 
      * @returns {Number|Boolean} uid or false if error
      */
     Load(jsonObject){
 
+        /** @type {PackingSpaceJSON} jsonObject */
         let data;
         try{
             data = typeof jsonObject === 'string' ? JSON.parse(jsonObject) : jsonObject;
@@ -79,13 +123,8 @@ class PackingSpaceInput extends LightDispatcher {
                 }
             }
 
-            if(model){
-                let containerView = new ContainerView(container, model);
-                let units = this.params.ux.params.units;
-                let padding = 60 * units;
-                let thickness = 2 * units;
-                containerView.PlatformVisibility(true, new THREE.Vector3(padding, thickness, padding));
-            }
+            let units = this.params.ux.params.units;
+            createContainerView(container, model, units);
 
             this.packingSpace.AddContainer(container);
 
@@ -96,6 +135,7 @@ class PackingSpaceInput extends LightDispatcher {
         return false;
     }
 
+    /** Enumeration of dispatched types */
     static get signals(){
         return signals;
     }

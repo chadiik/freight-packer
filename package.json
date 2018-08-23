@@ -7,7 +7,8 @@
     "compile": "webpack",
     "build": "SET NODE_ENV=production && webpack -p --config webpack/prod.config.js",
     "example": "SET NODE_ENV=development && webpack --config webpack/dev.config.js",
-    "editor": "SET NODE_ENV=development && webpack --config webpack/editor.config.js"
+    "editor": "SET NODE_ENV=development && webpack --config webpack/editor.config.js",
+    "lib": "SET NODE_ENV=development && webpack --config webpack/lib.dev.config.js"
   },
   "keywords": [
     "threejs",

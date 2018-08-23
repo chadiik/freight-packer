@@ -4,19 +4,38 @@ import Dimensions from './box/Dimensions';
 import LightDispatcher from './LightDispatcher';
 import App from '../App';
 import CargoList from '../packer/CargoList';
+import CargoBoxView from '../view/CargoBoxView';
+import Pool from '../utils/cik/Pool';
 
 const epsilon = Math.pow(2, -52);
 const numberType = 'number';
 
 const _cargoList = Symbol('cargoList');
 
+function poolNewFN(){
+    return new BoxEntry();
+}
+/** @param {BoxEntry} boxEntry */
+function poolResetFN(boxEntry){
+    return boxEntry;
+}
+var boxEntryPool = new Pool(poolNewFN, poolResetFN);
+
 const signals = {
-    update: 'update',
-    abort: 'abort',
+    show: 'show',
+    hide: 'hide',
     insert: 'insert',
     modify: 'modify',
     remove: 'remove'
 };
+
+/** Renews entry: modify uid and color
+ * @param {BoxEntry} boxEntry */
+function renewBoxEntry(boxEntry){
+    boxEntry.SetUID();
+    boxEntry.Description('color', CargoBoxView.GetNextColor().getHex());
+    console.log('renewed entry with color:', boxEntry.Description('color'));
+}
 
 /**
  * @typedef {Object} CargoInputParams
@@ -47,25 +66,48 @@ class CargoInput extends LightDispatcher {
 
     /** Creates a new BoxEntry, required for inputs. (Can be reused) */
     CreateBoxEntry(){
-        return new BoxEntry();
+        let boxEntry = new BoxEntry();
+        renewBoxEntry(boxEntry);
+        return boxEntry;
     }
 
-    /** @param {string} entryUID @returns {BoxEntry} the entry if it exists */
+    /** @param {string} entryUID @returns {BoxEntry} a copy of the entry if it exists */
     GetEntry(entryUID){
         /** @type {CargoList} */
         let cargoList = this[_cargoList];
         let entry = cargoList.GetEntry(entryUID);
+        let entryMirror = boxEntryPool.Request();
+        entryMirror.Copy(entry);
         return entry;
     }
 
-    /** @returns {Array<BoxEntry>} all entries or an empty array */
+    /** @returns {Array<BoxEntry>} an array of copies of all entries */
     GetEntries(){
         /** @type {CargoList} */
         let cargoList = this[_cargoList];
         let entries = [];
-        cargoList.groups.forEach(value => entries.push(value.entry));
+        cargoList.groups.forEach(value => {
+            let entryMirror = boxEntryPool.Request();
+            entryMirror.Copy(value.entry);
+            entries.push(entryMirror);
+        });
 
         return entries;
+    }
+
+    /**
+     * Return BoxEntry objects to object pool (less memory usage)
+     * @param {BoxEntry | Array<BoxEntry>} objects 
+     */
+    Recycle(objects){
+        if(objects instanceof Array){
+            objects.forEach( (object) => {
+                if(object instanceof BoxEntry) boxEntryPool.Return(object);
+            });
+        }
+        else if(objects instanceof BoxEntry){
+            boxEntryPool.Return(objects);
+        }
     }
 
     /** Shows/updates entry 3D display
@@ -75,7 +117,7 @@ class CargoInput extends LightDispatcher {
     Show(entry){
         if(BoxEntry.Assert(entry)){
             try{
-                this.Dispatch(signals.update, entry);
+                this.Dispatch(signals.show, entry);
                 return true;
             }
             catch(error){
@@ -91,7 +133,7 @@ class CargoInput extends LightDispatcher {
 
     /** Hides entry 3D display */
     Hide(){
-        this.Dispatch(signals.abort);
+        this.Dispatch(signals.hide);
     }
 
     /** Adds a new entry and obtain its uid
@@ -102,13 +144,15 @@ class CargoInput extends LightDispatcher {
         if(BoxEntry.Assert(entry)){
 
             if( Dimensions.IsVolume(entry.dimensions.Abs()) === false ){
-                Logger.Warn('CargoInput.Add, entry rejected, dimensions != Volume:', entry);
+                Logger.Warn('CargoInput.Add, entry rejected, dimensions != Volume:', entry.dimensions);
                 return false;
             }
 
             try{
                 let commitedEntry = entry.Clone();
                 let uid = commitedEntry.SetUID();
+                
+                renewBoxEntry(entry);
 
                 this.Dispatch(signals.insert, commitedEntry);
                 return uid;
@@ -124,7 +168,7 @@ class CargoInput extends LightDispatcher {
         return false;
     }
 
-    /** Modify an existing box entry
+    /** Modify an existing BoxEntry, referenced by its uid, using a modifed template
      * @param {string} entryUID
      * @param {BoxEntry} boxEntry
      * @returns {Boolean} success
@@ -179,6 +223,7 @@ class CargoInput extends LightDispatcher {
         return true;
     }
 
+    /** Enumeration of dispatched types */
     static get signals(){
         return signals;
     }

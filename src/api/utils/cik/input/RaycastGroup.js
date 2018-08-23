@@ -85,7 +85,7 @@ class RaycastGroup {
 
         
         if(this.updateProperty){
-            UpdateRaycastItems();
+            this.UpdateRaycastItems();
         }
         
         var raycastItems = this.raycastItems;

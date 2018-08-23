@@ -16,6 +16,10 @@ function loadFile(url){
 
 const namespace = FPEditor.namespace;
 
+const typeofString = 'string',
+    typeofNumber = 'number',
+    typeofObject = 'object';
+
 const signals = {
     // automate
 
@@ -25,6 +29,7 @@ const signals = {
 
     // packing space
     loadPSConfig: 'loadPSConfig',
+    inputPSConfig: 'inputPSConfig',
 
     // box input
     boxInputUpdate: 'boxInputUpdate',
@@ -64,12 +69,61 @@ class ExampleUI extends FreightPacker.utils.Signaler {
         //inputFolder.open();
     }
 
+    ParseCSVJobFile(){
+        const spacesExp = new RegExp(' ', 'g');
+        const newLineExp = new RegExp('\n', 'g');
+        /** @param {string} str */
+        function csv(str){
+            str = str.replace(newLineExp, ',');
+            return str.replace(spacesExp, '').split(',');
+        }
+
+        return new Promise((resolve, reject) => {
+            namespace.IO.GetFile(function(content){
+                // label, width, length, height, weightCapacity
+                // format: label, width, length, height, weight, quantity
+                var data = csv(content);
+                for(let i = 0; i < data.length; i++){
+                    if(i % 6 !== 0) data[i] = Number.parseFloat(data[i]);
+                }
+                var containerData = {
+                    ID: data[0],
+                    Dim1: data[1],
+                    Dim2: data[2],
+                    Dim3: data[3],
+                    Weight: data[4]
+                    // data[5] is quantity = 1
+                };
+                var itemsData = [];
+                for(let i = 6; i < data.length; i += 6){
+                    var item = {
+                        ID: data[i],
+                        Dim1: data[i + 1],
+                        Dim2: data[i + 2],
+                        Dim3: data[i + 3],
+                        Weight: data[i + 4],
+                        Quantity: data[i + 5]
+                    };
+                    itemsData.push(item);
+                }
+
+                var result = {
+                    container: containerData,
+                    items: itemsData
+                };
+
+                resolve(result);
+            }, false);
+        });
+    }
+
     CreateAutoController(){
         var scope = this;
 
         var testDataFlatdeck = FreightPacker.utils.Debug.AFitTest.GenerateDataSampleFlatdeck2();
         var testData;
 
+        var scale = 1;
         var itemQttMultiplier = 1;
         function testDataCargoAdd(){
             var items = testData.items;
@@ -78,14 +132,19 @@ class ExampleUI extends FreightPacker.utils.Signaler {
                 function roll(){
                     let item = items.pop();
                     if(item){
+                        /** @type {import('../Example').UIEntry} */
                         let boxInput = {
                             label: item.ID.toString(),
-                            width: item.Dim1,
-                            length: item.Dim2,
-                            height: item.Dim3,
-                            quantity: Math.floor(item.Quantity * itemQttMultiplier)
+                            width: item.Dim1 * scale,
+                            length: item.Dim2 * scale,
+                            height: item.Dim3 * scale,
+                            weight: item.Weight || (item.Dim1 * item.Dim2 * item.Dim3 / 1000),
+                            quantity: Math.floor(item.Quantity * itemQttMultiplier),
+                            validOrientations: item.ValidOrientations,
+                            stackingCapacity: item.StackingCapacity,
+                            grounded: item.Grounded
                         };
-                        scope.Dispatch(ExampleUI.signals.boxInputUpdate, boxInput);
+                        scope.Dispatch(ExampleUI.signals.boxInputUpdate, boxInput, false);
                         scope.Dispatch(ExampleUI.signals.boxInputComplete);
                     }
                     else if(items.length <= 0){
@@ -103,24 +162,62 @@ class ExampleUI extends FreightPacker.utils.Signaler {
             scope.Dispatch(signals.packRequest, algorithm, algorithmArgs);
         }
 
+        const defaultPSConfig = '../resources/config/flatdeck48.json';
+        var psConfig = defaultPSConfig;
+
         function packingTestFlatdeck48CUB(){
             testData = testDataFlatdeck;
             algorithm = 'cub';
             algorithmArgs = ExampleUI.getCUBParams();
 
-            samplePackingSpace()
+            samplePackingSpace('../resources/config/flatdeck48.json')
             .then(testDataCargoAdd)
             .then(pack);
         }
-        
 
-        function samplePackingSpace(){
-            let psConfigs = [
-                '../resources/config/flatdeck48.json',
-                '../resources/config/flatdeck48-d3.json'
-            ];
+        function packingTestFlatdeck53CUB(){
+            testData = testDataFlatdeck;
+            algorithm = 'cub';
+            algorithmArgs = ExampleUI.getCUBParams();
+
+            samplePackingSpace('../resources/config/flatdeck53.json')
+            .then(testDataCargoAdd)
+            .then(pack);
+        }
+
+        function packingTestFlatdeck48CUB_scaled(){
+            testData = testDataFlatdeck;
+            algorithm = 'cub';
+            algorithmArgs = ExampleUI.getCUBParams();
+
+            scope.Dispatch(ExampleUI.signals.inputPSConfig, {width: 102 * scale, length: 576 * scale, height: 102 * scale, weightCapacity: 48000});
+
+            testDataCargoAdd()
+            .then(pack);
+        }
+
+        function loadCSVJob(){
+            scope.ParseCSVJobFile()
+            .then( (result) => {
+                testData = result;
+                algorithm = 'cub';
+                algorithmArgs = ExampleUI.getCUBParams();
+
+                let containerData = {
+                    width: result.container.Dim1 * scale, length: result.container.Dim2 * scale, height: result.container.Dim3 * scale, weightCapacity: result.container.Weight
+                };
+                console.log(result, containerData);
+                scope.Dispatch(ExampleUI.signals.inputPSConfig, containerData);
+
+                testDataCargoAdd()
+                .then(pack);
+            });
+        }
+
+        function samplePackingSpace(psConfig){
+            psConfig = psConfig || defaultPSConfig;
             return new Promise((resolve, reject) => {
-                loadFile(psConfigs[1])
+                loadFile(psConfig)
                 .then(function(data){
                     scope.Dispatch(ExampleUI.signals.loadPSConfig, data);
                     setTimeout(resolve, 500);
@@ -131,12 +228,18 @@ class ExampleUI extends FreightPacker.utils.Signaler {
 
         var controller = {
             Flatdeck48_CUB: packingTestFlatdeck48CUB,
+            Flatdeck53_CUB: packingTestFlatdeck53CUB,
+            CUB_Scaled: packingTestFlatdeck48CUB_scaled,
             LoadPackingSpace: samplePackingSpace,
+            LoadCSVJob: loadCSVJob
         };
 
         var autoFolder = this.gui.addFolder('Automate');
         autoFolder.add(controller, 'Flatdeck48_CUB');
+        autoFolder.add(controller, 'Flatdeck53_CUB');
+        //autoFolder.add(controller, 'CUB_Scaled');
         autoFolder.add(controller, 'LoadPackingSpace');
+        autoFolder.add(controller, 'LoadCSVJob');
 
         return autoFolder;
     }
@@ -152,7 +255,6 @@ class ExampleUI extends FreightPacker.utils.Signaler {
 
         var controller = {
             minZToWasteRatio: .9,
-            skipTop: false,
             Solve: pack,
             resultSlice: 1
         };
@@ -169,14 +271,13 @@ class ExampleUI extends FreightPacker.utils.Signaler {
         });
 
         function getCUBParams(){
-            return {minZ_weight: controller.minZToWasteRatio, minWaste_weight: (1 - controller.minZToWasteRatio), skipTop: controller.skipTop};
+            return {minZ_weight: controller.minZToWasteRatio, minWaste_weight: (1 - controller.minZToWasteRatio)};
         }
 
         ExampleUI.getCUBParams = getCUBParams;
 
         var packerFolder = this.gui.addFolder('Packer');
         packerFolder.add(controller, 'minZToWasteRatio', 0, 1).step(.1);
-        packerFolder.add(controller, 'skipTop');
         packerFolder.add(controller, 'Solve');
         packerFolder.add(controller, 'ResultSlice', 0, 1).step(.1);
 
@@ -203,17 +304,26 @@ class ExampleUI extends FreightPacker.utils.Signaler {
         return spaceFolder;
     }
 
-    CreateInputController(data){
+    CreateInputController(){
         var scope = this;
         
         var boxRange = {w:[10, 120], l:[10, 120], h:[10, 120]};
-        var boxInput = FreightPacker.utils.Utils.AssignUndefined(data, {
+        var boxInput = {
             width:0, length:0, height:0, label: '', weight: 0, quantity: 1, 
-            entryUID: ''
-        });
+            validOrientations: 'xyz, zyx, yxz, yzx, zxy, xzy', stackingCapacity: -1, grounded: false,
+            uid: ''
+        };
+
+        var needsUpdate = false;
+        window.setInterval(function(){
+            if(needsUpdate){
+                needsUpdate = false;
+                scope.Dispatch(ExampleUI.signals.boxInputUpdate, boxInput, true);
+            }
+        }, 1000 / 50);
         
         function inputUpdate(){
-            scope.Dispatch(ExampleUI.signals.boxInputUpdate, boxInput);
+            needsUpdate = true;
         }
         function complete(){
             scope.Dispatch(ExampleUI.signals.boxInputComplete);
@@ -232,26 +342,35 @@ class ExampleUI extends FreightPacker.utils.Signaler {
 
         /** @param {BoxEntry} entry */
         function updateForEntry(entry){
+            controller.EntryUID = entry.uid;
+
             controller.Width = entry.dimensions.width;
             controller.Length = entry.dimensions.length;
             controller.Height = entry.dimensions.height;
             controller.Label = entry.label;
             controller.Quantity = entry.quantity;
             controller.Weight = entry.weight;
+            controller.ValidOrientations = entry.properties.rotation.enabled ? entry.properties.rotation.allowedOrientations.join(', ') : '';
+            controller.StackingCapacity = entry.properties.stacking.enabled ? entry.properties.stacking.capacity : -1;
+            controller.Grounded = entry.properties.translation.enabled && entry.properties.translation.grounded;
+
+            needsUpdate = false;
             
             inputFolder.updateAll();
         }
 
+        ExampleUI.UpdateInput = updateForEntry;
+
         function getEntryByUID(){
-            scope.Dispatch(ExampleUI.signals.boxEntryRequest, controller.EntryUID, updateForEntry, boxInput);
+            scope.Dispatch(ExampleUI.signals.boxEntryRequest, boxInput.uid, updateForEntry);
         }
 
         function modifyEntry(){
-            scope.Dispatch(ExampleUI.signals.boxInputModify, controller.EntryUID, boxInput);
+            scope.Dispatch(ExampleUI.signals.boxInputModify, boxInput.uid, boxInput);
         }
 
         function removeEntry(){
-            scope.Dispatch(ExampleUI.signals.boxInputRemove, controller.EntryUID);
+            scope.Dispatch(ExampleUI.signals.boxInputRemove, boxInput.uid);
         }
 
         var controller = {
@@ -286,10 +405,22 @@ class ExampleUI extends FreightPacker.utils.Signaler {
                 get: function(){ return boxInput.quantity;},
                 set: function(value){ boxInput.quantity = value; inputUpdate();}
             },
+            ValidOrientations: {
+                get: function(){ return boxInput.validOrientations;},
+                set: function(value){ boxInput.validOrientations = value; inputUpdate();},
+            },
+            StackingCapacity: {
+                get: function(){ return boxInput.stackingCapacity;},
+                set: function(value){ boxInput.stackingCapacity = value; inputUpdate();}
+            },
+            Grounded: {
+                get: function(){ return boxInput.grounded;},
+                set: function(value){ boxInput.grounded = value; inputUpdate();}
+            },
 
             EntryUID: {
-                get: function(){ return boxInput.entryUID;},
-                set: function(value){ boxInput.entryUID = value; getEntryByUID();}
+                get: function(){ return boxInput.uid;},
+                set: function(value){ boxInput.uid = value; getEntryByUID();}
             }
         });
 
@@ -301,6 +432,12 @@ class ExampleUI extends FreightPacker.utils.Signaler {
         infoFolder.add(controller, 'Label');
         infoFolder.add(controller, 'Weight');
         infoFolder.add(controller, 'Quantity');
+
+        var constraintsFolder = inputFolder.addFolder('Constraints');
+        constraintsFolder.open();
+        constraintsFolder.add(controller, 'ValidOrientations');
+        constraintsFolder.add(controller, 'StackingCapacity');
+        constraintsFolder.add(controller, 'Grounded');
 
         var dimensionsFolder = inputFolder.addFolder('Dimensions');
         dimensionsFolder.open();
@@ -323,4 +460,59 @@ class ExampleUI extends FreightPacker.utils.Signaler {
     static get signals(){
         return signals;
     }
+
+    static LogToPane(...args){
+        let logPane = document.getElementById('fp-log');
+        let time = new Date();
+        let timestamp = time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + '.' + time.getMilliseconds();
+        logPane.innerHTML = '<div> ' + timestamp + ' UI >> ' + argsToString(args) + '</div>' + logPane.innerHTML;
+        commitArgs();
+    }
+}
+
+var jsonCount = 0, jsonAppended = 0;
+var jsonObjects = [];
+function commitArgs(){
+    while(jsonAppended < jsonCount){
+        let i = jsonAppended++;
+
+        JSONFormatter.format(jsonObjects[i], {
+            collapse: false, // Setting to 'true' this will format the JSON into a collapsable/expandable tree
+            appendTo: '#json-view-' + i, // A string of the id, class or element name to append the formatted json
+            list_id: 'json-list-' + i // The name of the id at the root ul of the formatted JSON
+        });
+    }
+}
+
+houdini.init();
+function argsToString(args){
+    let result = '';
+    args.forEach(arg => {
+        if(typeof arg === typeofObject){
+            try{
+                let i = jsonCount++;
+                let jsonString = JSON.stringify(arg, function(key, value) {
+                    // limit precision of floats
+                    if (typeof value === 'number') {
+                        return parseFloat(value.toFixed(2));
+                    }
+                    return value;
+                });
+                let jsonObject = JSON.parse(jsonString);
+                jsonObjects.push(jsonObject);
+
+                result += '<a class="collapse-toggle" data-collapse href="#json-view-' + i + '" style="color: #b5d5ff; cursor: pointer;">' + arg + '</a>';
+                result += '<div class="collapse" id="json-view-' + i + '"></div>'; 
+            }
+            catch(err){
+                console.warn(err);
+                result += arg;
+            }
+        }
+        else{
+            result += arg;
+        }
+        result += ' ';
+    });
+    return result;
 }

@@ -57,6 +57,7 @@ class Editor {
     }
 
     Start(){
+        let lights = this.sceneSetup.DefaultLights(this.sceneSetup.sceneController, false, false);
         this.sceneSetup.Start();
     }
 

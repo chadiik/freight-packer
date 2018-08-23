@@ -10,6 +10,9 @@ import Signaler from './utils/cik/Signaler';
 import PackerInterface, { SolverParams } from './components/PackerInterface';
 import BoxEntry from './components/box/BoxEntry';
 import Container from './packer/container/Container';
+import Resources from './Resources';
+import Asset from './components/assets/Asset';
+import DomUI from './view/dom/DomUI';
 
 const signals = {
     start: 'start'
@@ -21,6 +24,7 @@ const signals = {
  * @property {CargoInput} cargoInput
  * @property {PackingSpaceInput} packingSpaceInput
  * @property {PackerInterface} packerInterface
+ * @property {Resources} resources
  */
 
 class App extends Signaler{
@@ -40,10 +44,13 @@ class App extends Signaler{
         this.cargoInput = params.cargoInput;
         this.packingSpaceInput = params.packingSpaceInput;
         this.packerInterface = params.packerInterface;
+        this.resources = params.resources;
+        Asset.resources = this.resources;
 
         /** @type {PackerParams} */
         let packerParams = {ux: this.ux};
         this.packer = new Packer(packerParams);
+        this.packer.extendedParams = this.packerInterface.params;
         
         this.cargoInput.On(CargoInput.signals.insert, 
             /** @param {BoxEntry} boxEntry */
@@ -77,7 +84,8 @@ class App extends Signaler{
                 scope.Solve(solverParams);
             });
 
-        this.sceneSetup = new SceneSetup(containerDiv, this.ux);
+        this.domUI = new DomUI(containerDiv, this.ux);
+        this.sceneSetup = new SceneSetup(this.domUI.domElement ? this.domUI.domElement : containerDiv, this.ux);
         this.sceneSetup.Init().then(this.Start.bind(this));
     }
 
@@ -88,16 +96,38 @@ class App extends Signaler{
 
         /** @type {import('./view/View').ViewParams} */
         let viewParams = { ux: this.ux };
-        this.view = new View(this.packer, this.sceneSetup, viewParams);
+        this.view = new View(this.packer, this.sceneSetup, this.domUI, viewParams);
         this.sceneSetup.Start();
 
         this.ux._Bind(this);
         this.cargoInput._Bind(this);
         this.packingSpaceInput._Bind(this);
 
+        let resetColor = function(){};
+        this.cargoInput.On(CargoInput.signals.show, 
+            /** @param {BoxEntry} boxEntry */
+            function(boxEntry){
+                let existingEntry = scope.cargoInput.GetEntry(boxEntry.uid);
+                if(existingEntry){
+                    resetColor();
+                    let previewColorBackup = boxEntry.Description('color');
+                    resetColor = function(){ boxEntry.Description('color', previewColorBackup); }
+                    boxEntry.Description('color', existingEntry.Description('color'));
+                }
+                scope.view.sceneSetup.hud.Preview(boxEntry);
+            });
+
+        function hideEntryPreview(){
+            resetColor();
+            scope.view.sceneSetup.hud.Preview(false);
+        }
+        this.cargoInput.On(CargoInput.signals.hide, hideEntryPreview);
+        this.cargoInput.On(CargoInput.signals.insert, hideEntryPreview);
+        this.cargoInput.On(CargoInput.signals.modify, hideEntryPreview);
+        this.cargoInput.On(CargoInput.signals.remove, hideEntryPreview);
+
         /** @param {Packer.PackingResult} packingResult */
         function onPackUpdate(packingResult){
-            Logger.Log('Packing result:', packingResult);
             packerInterface._Notify(PackerInterface.signals.solved, packingResult);
         }
         this.packer.On(Packer.signals.packUpdate, onPackUpdate);

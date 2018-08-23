@@ -115,15 +115,15 @@ class ContainerView {
      */
     static Request(container){
         var view = views.get(container);
-        if( ! view ){
-            let meshes = createContainerBoxes(container);
-            let view = new THREE.Object3D();
-            for(var [cv, mesh] of meshes){
-                mesh.position.add(cv.position);
-                view.add(mesh);
+        if( !view ){
+            let boxes = createContainerBoxes(container);
+            let object3d = new THREE.Object3D();
+            for(var [cv, box] of boxes){
+                box.mesh.position.add(cv.position);
+                object3d.add(box.mesh);
             }
 
-            view = new ContainerView(container, view);
+            view = new ContainerView(container, object3d);
             views.set(container, view);
             Logger.Warn('View not found for:', container);
         }

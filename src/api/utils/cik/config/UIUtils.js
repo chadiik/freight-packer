@@ -5,6 +5,7 @@ function stopPropagation(e){
 
 var stylesheet;
 
+/** @param {string|Array<string>} css */
 function createCSS(css){
     if(stylesheet === undefined){
         stylesheet = document.createElement('style');
@@ -14,7 +15,7 @@ function createCSS(css){
     if(css instanceof Array)
         css = css.join('\n');
     
-    stylesheet.innerHTML += css + '\n';
+    if(css.length > 1) stylesheet.innerHTML += css + '\n';
 }
 
 createCSS([

@@ -1,6 +1,7 @@
 import Volume from "./Volume";
 import Container from "./Container";
 
+const _weightCapacity = Symbol('weightCapacity');
 const type = 'ContainingVolume';
 
 class ContainingVolume extends Volume {
@@ -9,13 +10,13 @@ class ContainingVolume extends Volume {
         super();
         
         this.container = container;
+        this.weightCapacity = 0;
 
         this.SetUID();
     }
 
-    get weightCapacity(){
-        return this.dimensions.volume / 1000;
-    }
+    set weightCapacity(value){ this[_weightCapacity] = value; }
+    get weightCapacity(){ return this[_weightCapacity]; }
 
     /**
      * @param {string} [uid] - You'll rarely need to provide this
@@ -28,6 +29,7 @@ class ContainingVolume extends Volume {
     toJSON(){
         var json = super.toJSON();
         json.type = type;
+        json.weightCapacity = this.weightCapacity;
         return json;
     }
 
@@ -39,6 +41,7 @@ class ContainingVolume extends Volume {
         if(data.type !== type) console.warn('Data supplied is not: ' + type);
 
         var containingVolume = new ContainingVolume();
+        containingVolume.weightCapacity = data.weightCapacity;
         Volume.FromJSON(data, containingVolume);
 
         return containingVolume;
