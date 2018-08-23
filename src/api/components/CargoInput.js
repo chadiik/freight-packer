@@ -34,7 +34,6 @@ const signals = {
 function renewBoxEntry(boxEntry){
     boxEntry.SetUID();
     boxEntry.Description('color', CargoBoxView.GetNextColor().getHex());
-    console.log('renewed entry with color:', boxEntry.Description('color'));
 }
 
 /**

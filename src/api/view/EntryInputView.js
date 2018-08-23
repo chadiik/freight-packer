@@ -149,7 +149,6 @@ class EntryInputView{
             let boxView = this.previewTypes.get(entry.type);
             if(boxView){
                 boxView.entry = entry;
-                console.log('entry.dimensions:', entry.dimensions.vec3);
             }
             else{
                 boxView = new CargoBoxView(entry);

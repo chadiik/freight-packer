@@ -206,7 +206,6 @@ class ExampleUI extends FreightPacker.utils.Signaler {
                 let containerData = {
                     width: result.container.Dim1 * scale, length: result.container.Dim2 * scale, height: result.container.Dim3 * scale, weightCapacity: result.container.Weight
                 };
-                console.log(result, containerData);
                 scope.Dispatch(ExampleUI.signals.inputPSConfig, containerData);
 
                 testDataCargoAdd()
@@ -249,7 +248,6 @@ class ExampleUI extends FreightPacker.utils.Signaler {
 
         function pack(){
             let algorithm = 'cub';
-            console.log('controller:', controller);
             scope.Dispatch(signals.packRequest, algorithm, ExampleUI.getCUBParams());
         }
 

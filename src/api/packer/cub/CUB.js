@@ -1062,7 +1062,6 @@ const defaultParams = {
 async function pack(container, items, params){
 
     this.params = Utils.AssignUndefined(params, defaultParams);
-    console.log('CUBParams:', this.params);
 
     Debug.Viz.SetPackingSpaceVisibility(false);
 

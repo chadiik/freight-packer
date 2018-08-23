@@ -317,8 +317,6 @@ class Camera extends Signaler {
         let deltaFOV = fov - this.camera.fov;
         if(Math.abs(deltaFOV) < epsilon) return;
 
-        console.log('TransitionToFOV:', fov);
-
         this.fovAnimation.fov.duration = duration;
         this.fovAnimation.fov.startValue = this.camera.fov;
         this.fovAnimation.fov.delta = deltaFOV;

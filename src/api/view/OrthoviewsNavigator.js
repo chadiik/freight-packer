@@ -29,8 +29,6 @@ const _cargoListView = Symbol('cargoListView'),
 class OrthoviewsNavigator{
     /** @param {Camera} cameraController @param {OrthoviewsNavigatorParams} params */
     constructor(cameraController, params){
-
-        console.log('OrthoviewsNavigator', this);
         
         this.params = Utils.AssignUndefined(params, defaultParams);
         this.cameraController = cameraController;
