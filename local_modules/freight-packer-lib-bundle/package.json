@@ -1,0 +1,8 @@
+{
+  "name": "freight-packer-lib-bundle",
+  "version": "0.0.2",
+  "description": "Freight packing dependencies",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {}
+}

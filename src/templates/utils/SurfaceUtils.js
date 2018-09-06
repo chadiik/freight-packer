@@ -1,4 +1,6 @@
 
+require('../../min-dependencies/lib/three/utils/BufferGeometryUtils')
+
 const radToDeg = 180.0 / Math.PI;
 var vertexHash, pendingRecursive = 0;
 var result;

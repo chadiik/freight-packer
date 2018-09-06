@@ -32,6 +32,20 @@ class Signaler {
     }
 
     /** @param {string} event @param {SignalerCallback} callback */
+    Once(event, callback){
+        if(this.signals[event] === undefined){
+            this.signals[event] = [];
+        }
+        let eventCallbacks = this.signals[event];
+        let once;
+        once = function(...args){
+            eventCallbacks.splice(eventCallbacks.indexOf(once), 1);
+            callback(...args);
+        };
+        eventCallbacks.push(once);
+    }
+
+    /** @param {string} event @param {SignalerCallback} callback */
     Off(event, callback){
         var callbacks = this.signals[event];
         if(callbacks){

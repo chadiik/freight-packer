@@ -7,6 +7,7 @@ import PackingSpaceView from './PackingSpaceView';
 import Tween from '../utils/cik/Tween';
 import Packer from '../packer/Packer';
 import BoxEntry from '../components/box/BoxEntry';
+import Signaler from '../utils/cik/Signaler';
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -19,7 +20,9 @@ function sleep(ms) {
  */
 
  /** @type {PackResultViewParams} */
-const defaultParams = {};
+const defaultParams = {
+    animationDuration: 1
+};
 
 /**
  * @param {CargoView} cargoView
@@ -66,13 +69,23 @@ function getOrientationEuler(orientation){
 var tempBox = new THREE.Box3();
 var tempVec = new THREE.Vector3();
 
-class PackResultView{
+const signals = {
+    packVizStart: 'packVizStart',
+    packVizEnd: 'packVizEnd',
+    cargoVizCreate: 'cargoVizCreate',
+    cargoVizPack: 'cargoVizPack',
+    cargoVizUnpack: 'cargoVizUnpack'
+};
+
+class PackResultView extends Signaler{
     /**
      * @param {CargoListView} cargoListView
      * @param {PackingSpaceView} packingSpaceView
      * @param {PackResultViewParams} params 
      */
     constructor(cargoListView, packingSpaceView, params){
+
+        super();
 
         this.cargoListView = cargoListView;
         this.packingSpaceView = packingSpaceView;
@@ -86,6 +99,10 @@ class PackResultView{
 
         /** @type {Array<Tween>} */
         this.animatingViews = [];
+
+        if(typeof window.Pizzicato !== 'undefined'){
+            let musipack = new (require('./components/Musipack').default)(this);
+        }
     }
 
     /** 
@@ -93,6 +110,9 @@ class PackResultView{
      */
     async DisplayPackingResult(packingResult){
 
+        this.Dispatch(signals.packVizStart, packingResult);
+
+        let scope = this;
         let units = this.params.ux.params.units;
         
         let containingVolume = packingResult.packed[0].containingVolume;
@@ -107,7 +127,7 @@ class PackResultView{
 
         let animatingViews = this.animatingViews;
         let view = this.view;
-        let onTweenComplete = this.OnCargoFirstTweenComplete.bind(this);
+        //let onTweenComplete = this.OnCargoFirstTweenComplete.bind(this);
         let zEntry = containingVolume.dimensions.length;
         let numPackedItems = packingResult.packed.length;
         let delayPerItem = this.params.animationDuration * 1000 / numPackedItems;
@@ -138,6 +158,11 @@ class PackResultView{
                 y, 0,
                 zEntry, z - zEntry
             );
+
+            function onTweenComplete(tween){
+                scope.Dispatch(signals.cargoVizPack, item);
+                scope.OnCargoFirstTweenComplete(tween);
+            }
             
             posTweenCombo.extraData = packedCargoView;
             posTweenCombo.Hook(packedCargoView.position, 'x', 'y', 'z');
@@ -178,6 +203,11 @@ class PackResultView{
                     y, 0,
                     zEntry, z - zEntry
                 );
+
+                function onTweenComplete(tween){
+                    scope.Dispatch(signals.cargoVizUnpack, item);
+                    scope.OnCargoFirstTweenComplete(tween);
+                }
                 
                 posTweenCombo.extraData = packedCargoView;
                 posTweenCombo.Hook(packedCargoView.position, 'x', 'y', 'z');
@@ -300,6 +330,10 @@ class PackResultView{
         this.animatingViews.forEach(animatingView => {
             animatingView.Update();
         });
+    }
+
+    static get signals(){
+        return signals;
     }
 }
 

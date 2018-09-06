@@ -1,6 +1,8 @@
 import Tween from "../utils/cik/Tween";
 import Signaler from "../utils/cik/Signaler";
 
+require('../../min-dependencies/lib/three/controls/OrbitControls');
+
 const epsilon = Math.pow(2, -52);
 
 /**

@@ -104,9 +104,9 @@ const signals = {
 };
 
 /** @typedef PackerParams 
- * @property {Number} defaultStackingFactor default = 10, multiplier for stacking capacity (capacity = weight * defaultStackingFactor) if stackingProperty is not enabled */
+ * @property {Number} defaultStackingFactor default = 5, multiplier for stacking capacity (capacity = weight * defaultStackingFactor) if stackingProperty is not enabled */
 const defaultParams = {
-    defaultStackingFactor: 10
+    defaultStackingFactor: 5
 };
 
 /** @type {SolverParams} */

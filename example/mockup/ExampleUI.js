@@ -14,8 +14,6 @@ function loadFile(url){
     });
 }
 
-const namespace = FPEditor.namespace;
-
 const typeofString = 'string',
     typeofNumber = 'number',
     typeofObject = 'object';
@@ -79,7 +77,7 @@ class ExampleUI extends FreightPacker.utils.Signaler {
         }
 
         return new Promise((resolve, reject) => {
-            namespace.IO.GetFile(function(content){
+            IO.GetFile(function(content){
                 // label, width, length, height, weightCapacity
                 // format: label, width, length, height, weight, quantity
                 var data = csv(content);
@@ -196,6 +194,21 @@ class ExampleUI extends FreightPacker.utils.Signaler {
             .then(pack);
         }
 
+        function parseCSVContainer(result){
+            console.log('parseCSVContainer(result):', result);
+            if(result.container.ID === 'Flatdeck 48' || result.container.ID === 'Flatdeck48'){
+                return samplePackingSpace('../resources/config/flatdeck48.json');
+            }
+
+            return new Promise( (resolve, reject) => {
+                let containerData = {
+                    width: result.container.Dim1 * scale, length: result.container.Dim2 * scale, height: result.container.Dim3 * scale, weightCapacity: result.container.Weight
+                };
+                scope.Dispatch(ExampleUI.signals.inputPSConfig, containerData);
+                resolve();
+            });
+        }
+
         function loadCSVJob(){
             scope.ParseCSVJobFile()
             .then( (result) => {
@@ -203,12 +216,8 @@ class ExampleUI extends FreightPacker.utils.Signaler {
                 algorithm = 'cub';
                 algorithmArgs = ExampleUI.getCUBParams();
 
-                let containerData = {
-                    width: result.container.Dim1 * scale, length: result.container.Dim2 * scale, height: result.container.Dim3 * scale, weightCapacity: result.container.Weight
-                };
-                scope.Dispatch(ExampleUI.signals.inputPSConfig, containerData);
-
-                testDataCargoAdd()
+                parseCSVContainer(result)
+                .then(testDataCargoAdd)
                 .then(pack);
             });
         }
@@ -286,7 +295,7 @@ class ExampleUI extends FreightPacker.utils.Signaler {
         var scope = this;
 
         function loadConfig(){
-            namespace.IO.GetFile(function(file){
+            IO.GetFile(function(file){
                 var data = JSON.parse(file);
                 scope.Dispatch(ExampleUI.signals.loadPSConfig, data);
             }, false);

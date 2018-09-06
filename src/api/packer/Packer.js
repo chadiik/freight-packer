@@ -180,5 +180,7 @@ class Packer extends Signaler {
 }
 
 Packer.PackingResult = PackingResult;
+Packer.PackedCargo = PackedCargo;
+Packer.UnpackedCargo = UnpackedCargo;
 
 export default Packer;

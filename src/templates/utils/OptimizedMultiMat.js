@@ -1,4 +1,6 @@
 
+require('../../min-dependencies/lib/three/utils/BufferGeometryUtils');
+
 function extractBGGroup(geometry, group){
     var g = new THREE.BufferGeometry();
 

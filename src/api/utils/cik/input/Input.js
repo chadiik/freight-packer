@@ -1,6 +1,8 @@
 import UpdateComponent from "./UpdateComponent";
 import RaycastGroup from "./RaycastGroup";
 
+const keypress = require('../../../../min-dependencies/lib/keypress');
+
 /**
  * @typedef {Object} IScreen
  * @property {Number} x
@@ -136,7 +138,7 @@ class Input {
         /**
          * @type {keyboard}
          */
-        this.keyboard = new window.keypress.Listener();
+        this.keyboard = new keypress.Listener();
         this.keyboard.on = this.keyboard.simple_combo;
         this.keyboard.unregister = this.keyboard.unregister_combo;
         this.keys = {};

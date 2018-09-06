@@ -7,58 +7,12 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="UIDom.css">
+    <link rel="stylesheet" href="../example/styles.css">
     
     <title>Freight Packer API editor</title>
-    
-    <style>
-      /* Container div styling */
-      #fp-view {
-        position: relative;
-        width: calc(100% - 20px);
-        height: calc(100% - 20px);
-        margin: 10px;
-        /*line-height: 0px;*/
-      }
-
-      body { 
-        margin: 2px;
-        background-color: #ffffff;
-        height: 60%;
-        font-family: Monospace;
-        font-size: small;
-      }
-
-      body.noScroll {
-        overflow: hidden;
-      }
-
-      .columns {
-        height: 600px;
-        overflow: hidden;
-      }
-          
-      .left {
-          width: 260px;
-          float: left;
-          background: #aaa;
-          height: 100%;
-      }
-
-      .right {
-          float: none;
-          background: #ccc;
-          width: auto;
-          height: 100%;
-          overflow: hidden;
-      }
-
-      #fp-gui {
-        padding: 4px;
-      }
-    </style>
 
     <!-- API files, dependencies (3rd party code) and API -->
-    <script src="../build/FreightPackerDependencies.js" ></script>
+    <script src="../build/FreightPacker-dev-dependencies.js" ></script>
 
     <!-- Editor dependencies -->
     <script src="./lib/FBXLoader.js"></script>

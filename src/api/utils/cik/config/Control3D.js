@@ -1,4 +1,6 @@
 
+require('../../../../min-dependencies/lib/three/controls/TransformControls');
+
 const spaces = {
     world: 'world',
     local: 'local'

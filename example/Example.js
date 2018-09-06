@@ -82,7 +82,7 @@ class Example {
                 scaleRefFigure: FreightPacker.Constants.scaleRefFigure.man // human figure to show as scale reference
             },
             packerParams: {
-                defaultStackingFactor: 10 // multiplier for stacking capacity (capacity = weight * defaultStackingFactor) if stackingProperty is not enabled
+                defaultStackingFactor: 5 // multiplier for stacking capacity (capacity = weight * defaultStackingFactor) if stackingProperty is not enabled
             }
         };
 
@@ -139,7 +139,7 @@ class Example {
     }
 
     /**
-     * Load packing space
+     * Load packing space config file
      * @param {Object|string} jsonObject
      */
     SetPackingSpace(jsonObject){

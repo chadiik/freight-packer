@@ -1,6 +1,11 @@
+const path = require('path');
 const webpack = require('webpack');
 
-module.exports = {  
+module.exports = {
+
+    entry: [
+        './src/loader.js',
+    ],
 
     module: {
         rules: [
@@ -25,5 +30,10 @@ module.exports = {
             'NODE_ENV'
         ]),
     ],
+
+    output: {
+        path: path.resolve(__dirname, '../build'),
+        filename: 'FreightPacker-loader.js'
+    }
 
 };
