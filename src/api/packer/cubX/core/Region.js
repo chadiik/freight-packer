@@ -1,4 +1,4 @@
-import { rectanglesFromPoints, linesIntersect, rectangleContainsPoint, reduceRectangles } from "./Math2D";
+import { epsilon, smallValue, smallValueSqrt, rectanglesFromPoints, linesIntersect, rectangleContainsPoint, reduceRectangles } from "./Math2D";
 
 /** @typedef Rectangle @property {Vec2} p1 @property {Vec2} p2 @property {Vec2} p3 @property {Vec2} p4 
  * @property {Number} weight @property {Number} weightCapacity @property {Number} stackingCapacity 
@@ -25,8 +25,6 @@ function setRectangleWeights(rect, weight, weightCapacity, stackingCapacity){
     }
 }
 
-const smallValue = .000001;
-const smallValueSqrt = .001;
 const maxWeightValue = Number.MAX_SAFE_INTEGER;
 
 class Region{

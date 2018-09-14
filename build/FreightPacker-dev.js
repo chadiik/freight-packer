@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 53);
+/******/ 	return __webpack_require__(__webpack_require__.s = 54);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -339,6 +339,167 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var defaultGUIParams = { publish: true, key: '' };
+// dat.GUI console mirroring
+// Access with >> dat.list
+
+var dat = {
+    guis: [],
+
+    controllers: {
+        Controller: function Controller(target, key) {
+
+            this.label = key;
+
+            var onChangeCallback;
+            this.onChange = function (callback) {
+                onChangeCallback = callback;
+            };
+
+            var valueProp = {
+                get: function get() {
+                    return target[key];
+                },
+                set: function set(value) {
+                    target[key] = value;
+                    if (onChangeCallback) onChangeCallback();
+                }
+            };
+            Object.defineProperty(this, 'value', valueProp);
+
+            Object.defineProperties(this, {
+                list: {
+                    get: function () {
+                        var isFunction = typeof target[key] === 'function';
+                        if (isFunction) {
+                            return function () {
+                                return {
+                                    get: function get() {
+                                        target[key]();
+                                        return target[key];
+                                    }
+                                };
+                            };
+                        } else {
+                            return function () {
+                                return valueProp;
+                            };
+                        }
+                    }()
+                }
+            });
+
+            this.step = function () {
+                return this;
+            };
+            this.listen = function () {
+                return this;
+            };
+            this.updateDisplay = function () {
+                return this;
+            };
+        }
+    },
+
+    GUI: function GUI(params) {
+        this.i = 0;
+        this.data = {};
+        this.__controllers = [];
+        this.__folders = [];
+
+        params = _Utils2.default.AssignUndefined(params, defaultGUIParams);
+
+        this.label = params.label;
+
+        if (params.publish) dat.guis.push(this);
+
+        this.add = function (target, key) {
+            var controller = new dat.controllers.Controller(target, key);
+            this.__controllers.push(controller);
+            var isFunction = typeof target[key] === 'function';
+            this.data[(this.i++).toString() + ') ' + controller.label + (isFunction ? '()' : '')] = controller;
+            return controller;
+        };
+
+        this.addFolder = function (label) {
+            var folder = new dat.GUI({ publish: false, key: label });
+            this.__folders.push(folder);
+            this.data[(this.i++).toString() + ') >> ' + label] = folder;
+            return folder;
+        };
+
+        this.open = function () {
+            return this;
+        };
+
+        Object.defineProperties(this, {
+            domElement: {
+                get: function get() {
+                    return document.createElement('div');
+                }
+            },
+            list: {
+                get: function get() {
+                    var result = {};
+                    var keys = Object.keys(this.data);
+                    var data = this.data;
+
+                    var _loop = function _loop() {
+                        var key = keys[iKey];
+                        var listProp = data[key].list;
+                        Object.defineProperty(result, key, listProp.get ? listProp : {
+                            get: function get() {
+                                return listProp;
+                            }
+                        });
+                    };
+
+                    for (var iKey = 0; iKey < keys.length; iKey++) {
+                        _loop();
+                    }
+                    return result;
+                }
+            }
+        });
+
+        this.destroy = function () {
+            var index = dat.guis.indexOf(this);
+            if (index !== -1) dat.guis.splice(index, 1);
+        };
+    }
+};
+
+Object.defineProperties(dat, {
+    list: {
+        get: function get() {
+            var result = [];
+            for (var i = 0; i < this.guis.length; i++) {
+                result[i] = this.guis[i].list;
+            }
+            return result;
+        }
+    }
+});
+
+exports.default = dat;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _Utils = __webpack_require__(0);
@@ -535,167 +696,6 @@ Logger.active = true;
 exports.default = Logger;
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _Utils = __webpack_require__(0);
-
-var _Utils2 = _interopRequireDefault(_Utils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var defaultGUIParams = { publish: true, key: '' };
-// dat.GUI console mirroring
-// Access with >> dat.list
-
-var dat = {
-    guis: [],
-
-    controllers: {
-        Controller: function Controller(target, key) {
-
-            this.label = key;
-
-            var onChangeCallback;
-            this.onChange = function (callback) {
-                onChangeCallback = callback;
-            };
-
-            var valueProp = {
-                get: function get() {
-                    return target[key];
-                },
-                set: function set(value) {
-                    target[key] = value;
-                    if (onChangeCallback) onChangeCallback();
-                }
-            };
-            Object.defineProperty(this, 'value', valueProp);
-
-            Object.defineProperties(this, {
-                list: {
-                    get: function () {
-                        var isFunction = typeof target[key] === 'function';
-                        if (isFunction) {
-                            return function () {
-                                return {
-                                    get: function get() {
-                                        target[key]();
-                                        return target[key];
-                                    }
-                                };
-                            };
-                        } else {
-                            return function () {
-                                return valueProp;
-                            };
-                        }
-                    }()
-                }
-            });
-
-            this.step = function () {
-                return this;
-            };
-            this.listen = function () {
-                return this;
-            };
-            this.updateDisplay = function () {
-                return this;
-            };
-        }
-    },
-
-    GUI: function GUI(params) {
-        this.i = 0;
-        this.data = {};
-        this.__controllers = [];
-        this.__folders = [];
-
-        params = _Utils2.default.AssignUndefined(params, defaultGUIParams);
-
-        this.label = params.label;
-
-        if (params.publish) dat.guis.push(this);
-
-        this.add = function (target, key) {
-            var controller = new dat.controllers.Controller(target, key);
-            this.__controllers.push(controller);
-            var isFunction = typeof target[key] === 'function';
-            this.data[(this.i++).toString() + ') ' + controller.label + (isFunction ? '()' : '')] = controller;
-            return controller;
-        };
-
-        this.addFolder = function (label) {
-            var folder = new dat.GUI({ publish: false, key: label });
-            this.__folders.push(folder);
-            this.data[(this.i++).toString() + ') >> ' + label] = folder;
-            return folder;
-        };
-
-        this.open = function () {
-            return this;
-        };
-
-        Object.defineProperties(this, {
-            domElement: {
-                get: function get() {
-                    return document.createElement('div');
-                }
-            },
-            list: {
-                get: function get() {
-                    var result = {};
-                    var keys = Object.keys(this.data);
-                    var data = this.data;
-
-                    var _loop = function _loop() {
-                        var key = keys[iKey];
-                        var listProp = data[key].list;
-                        Object.defineProperty(result, key, listProp.get ? listProp : {
-                            get: function get() {
-                                return listProp;
-                            }
-                        });
-                    };
-
-                    for (var iKey = 0; iKey < keys.length; iKey++) {
-                        _loop();
-                    }
-                    return result;
-                }
-            }
-        });
-
-        this.destroy = function () {
-            var index = dat.guis.indexOf(this);
-            if (index !== -1) dat.guis.splice(index, 1);
-        };
-    }
-};
-
-Object.defineProperties(dat, {
-    list: {
-        get: function get() {
-            var result = [];
-            for (var i = 0; i < this.guis.length; i++) {
-                result[i] = this.guis[i].list;
-            }
-            return result;
-        }
-    }
-});
-
-exports.default = dat;
-
-/***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -708,7 +708,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _ColorTemplate = __webpack_require__(65);
+var _ColorTemplate = __webpack_require__(66);
 
 var _ColorTemplate2 = _interopRequireDefault(_ColorTemplate);
 
@@ -716,7 +716,7 @@ var _Signaler = __webpack_require__(1);
 
 var _Signaler2 = _interopRequireDefault(_Signaler);
 
-var _Resources = __webpack_require__(29);
+var _Resources = __webpack_require__(27);
 
 var _Resources2 = _interopRequireDefault(_Resources);
 
@@ -990,13 +990,13 @@ var _get = function get(object, property, receiver) { if (object === null) objec
 
 var _set = function set(object, property, value, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent !== null) { set(parent, property, value, receiver); } } else if ("value" in desc && desc.writable) { desc.value = value; } else { var setter = desc.set; if (setter !== undefined) { setter.call(receiver, value); } } return value; };
 
-var _PackingProperty = __webpack_require__(64);
+var _PackingProperty = __webpack_require__(65);
 
-var _Dimensions = __webpack_require__(28);
+var _Dimensions = __webpack_require__(25);
 
 var _Dimensions2 = _interopRequireDefault(_Dimensions);
 
-var _TextField = __webpack_require__(39);
+var _TextField = __webpack_require__(40);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
@@ -1221,11 +1221,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _TextField = __webpack_require__(39);
+var _TextField = __webpack_require__(40);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
-var _Logger = __webpack_require__(2);
+var _Logger = __webpack_require__(3);
 
 var _Logger2 = _interopRequireDefault(_Logger);
 
@@ -1331,227 +1331,438 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _ContainingVolume = __webpack_require__(14);
+
+var _ContainingVolume2 = _interopRequireDefault(_ContainingVolume);
+
+var _Logger = __webpack_require__(3);
+
+var _Logger2 = _interopRequireDefault(_Logger);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var type = 'Container';
+
+var combinedVolume = new _ContainingVolume2.default();
+
+var Container = function () {
+    function Container() {
+        _classCallCheck(this, Container);
+
+        /**
+         * Containing volumes array
+         * @type {Array<ContainingVolume>}
+         */
+        this.volumes = [];
+
+        _Logger2.default.WarnOnce('Container.constructor', 'label not implemented');
+    }
+
+    /** @param {ContainingVolume} volume */
+
+
+    _createClass(Container, [{
+        key: "Add",
+        value: function Add(volume) {
+            this.volumes.push(volume);
+        }
+
+        /**
+         * @param {string} [uid] - You'll rarely need to provide this
+         */
+
+    }, {
+        key: "SetUID",
+        value: function SetUID(uid) {
+            this.uid = uid || THREE.Math.generateUUID();
+            return this.uid;
+        }
+    }, {
+        key: "toJSON",
+        value: function toJSON() {
+            return {
+                type: type,
+                volumes: this.volumes
+            };
+        }
+    }, {
+        key: "ToString",
+        value: function ToString() {
+            var result = type + '[';
+            for (var i = 0, numVolumes = this.volumes.length; i < numVolumes; i++) {
+                result += this.volumes[i].ToString() + (i < numVolumes - 1 ? ', ' : ']');
+            }
+            return result;
+        }
+    }, {
+        key: "combinedVolume",
+        get: function get() {
+            var minX = Number.MAX_SAFE_INTEGER,
+                minY = Number.MAX_SAFE_INTEGER,
+                minZ = Number.MAX_SAFE_INTEGER;
+
+            var maxX = Number.MIN_SAFE_INTEGER,
+                maxY = Number.MIN_SAFE_INTEGER,
+                maxZ = Number.MIN_SAFE_INTEGER;
+
+            var combinedWeightCapacity = 0;
+
+            this.volumes.forEach(function (volume) {
+                var pos = volume.position;
+                var dim = volume.dimensions;
+                if (pos.x < minX) minX = pos.x;
+                if (pos.y < minY) minY = pos.y;
+                if (pos.z < minZ) minZ = pos.z;
+                if (pos.x + dim.width > maxX) maxX = pos.x + dim.width;
+                if (pos.y + dim.height > maxY) maxY = pos.y + dim.height;
+                if (pos.z + dim.length > maxZ) maxZ = pos.z + dim.length;
+
+                combinedWeightCapacity += volume.weightCapacity;
+            });
+
+            combinedVolume.container = this;
+            combinedVolume.dimensions.Set(maxX - minX, maxZ - minZ, maxY - minY);
+            combinedVolume.position.set((maxX + minX) / 2, (maxZ + minZ) / 2, (maxY + minY) / 2);
+            combinedVolume.weightCapacity = combinedWeightCapacity;
+
+            return combinedVolume;
+        }
+    }, {
+        key: "volume",
+        get: function get() {
+            var index = this.volumes.length - 1;
+            return this.volumes[index];
+        }
+    }], [{
+        key: "FromJSON",
+        value: function FromJSON(data) {
+            if (data.type !== type) console.warn('Data supplied is not: ' + type);
+
+            var container = new Container();
+            for (var i = 0, numVolumes = data.volumes.length; i < numVolumes; i++) {
+                var containingVolume = _ContainingVolume2.default.FromJSON(data.volumes[i]);
+                containingVolume.container = container;
+                container.Add(containingVolume);
+            }
+
+            return container;
+        }
+    }]);
+
+    return Container;
+}();
+
+exports.default = Container;
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+/** @typedef Vec2 @property {Number} x @property {Number} y */
+/** @typedef Rectangle @property {Vec2} p1 @property {Vec2} p2 @property {Vec2} p3 @property {Vec2} p4 */
+
+var epsilon = Math.pow(2, -52);
+var smallValue = .000001;
+var smallValueSqrt = .001;
+
+// line intercept math by Paul Bourke http://paulbourke.net/geometry/pointlineplane/
+// Determine the intersection point of two line segments
+// Return FALSE if the lines don't intersect
+function segmentIntersect(x1, y1, x2, y2, x3, y3, x4, y4) {
+
+    // Check if none of the lines are of length 0
+    if (x1 === x2 && y1 === y2 || x3 === x4 && y3 === y4) {
+        return false;
+    }
+
+    var denominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+
+    // Lines are parallel
+    if (Math.abs(denominator) < epsilon) {
+        return false;
+    }
+
+    var ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
+    var ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
+
+    // is the intersection along the segments
+    if (ua > 0 || ua < 1 || ub > 0 || ub < 1) return false;
+
+    // Return a object with the x and y coordinates of the intersection
+    var x = x1 + ua * (x2 - x1);
+    var y = y1 + ua * (y2 - y1);
+
+    return { x: x, y: y };
+}
+
+function linesIntersect(ax, ay, bx, by, cx, cy, dx, dy) {
+    // Line AB represented as a1x + b1y = c1
+    var a1 = by - ay,
+        b1 = ax - bx;
+    var c1 = a1 * ax + b1 * ay;
+
+    // Line CD represented as a2x + b2y = c2
+    var a2 = dy - cy,
+        b2 = cx - dx;
+    var c2 = a2 * cx + b2 * cy;
+
+    var determinant = a1 * b2 - a2 * b1;
+
+    // The lines are parallel
+    if (Math.abs(determinant) < smallValue) return false;
+
+    var x = (b2 * c1 - b1 * c2) / determinant;
+    var y = (a1 * c2 - a2 * c1) / determinant;
+    return { x: x, y: y };
+}
+
+function rectangleContainsPoint(offset, rx, ry, rw, rh, px, py) {
+    var x = rx - offset,
+        y = ry - offset,
+        w = rw + offset * 2,
+        h = rh + offset * 2;
+    return px > x && px < x + w && py > y && py < y + h;
+}
+
+/** @param {Number} offset offsets the region by this before checking * @param {Region} subRegion */
+function rectangleContainsRectangle(offset, rx, ry, rw, rh, ox, oy, ow, oh) {
+    var x = rx - offset,
+        y = ry - offset,
+        w = rw + offset * 2,
+        h = rh + offset * 2;
+    return ox > x && ox + ow < x + w && oy > y && oy + oh < y + h;
+}
+
+/**
+ * @param {Array<Vec2>} points
+ */
+function rectanglesFromPoints(points) {
+    // Separate points in lists of 'y' coordinate, grouped by 'x' coordinate
+    var toInt = Math.round(1 / smallValue);
+    var xs = {};
+    points.forEach(function (point) {
+        var xCat = Math.floor(point.x * toInt);
+        if (xs[xCat] === undefined) xs[xCat] = { x: point.x, ys: [] };
+        var ys = xs[xCat].ys;
+        var yCat = Math.floor(point.y * toInt);
+        var insert = true;
+        for (var iY = 0; iY < ys.length; iY++) {
+            if (ys[iY].yCat === yCat) insert = false;
+        }
+        if (insert) ys.push({ yCat: yCat, y: point.y });
+    });
+
+    //console.log('xs:', xs);
+
+    // Intersect lists
+    function sortYCat(a, b) {
+        if (a.yCat < b.yCat) return -1;
+        if (a.yCat > b.yCat) return 1;
+        return 0;
+    }
+    var xsKeys = Object.keys(xs);
+    for (var iX = 0; iX < xsKeys.length; iX++) {
+        var xCat = xs[xsKeys[iX]];
+        xCat.ys.sort(sortYCat);
+    }
+
+    /** @typedef IntersectedX @property {Number} x1 @property {Number} x2 @property {Array<Number>} ys */
+    /** @type {Array<IntersectedX>} */
+    var intersectedXs = [];
+    for (var _iX = 0; _iX < xsKeys.length; _iX++) {
+        var xCat1 = xs[xsKeys[_iX]];
+        var ys1 = xCat1.ys;
+        for (var iX2 = _iX + 1; iX2 < xsKeys.length; iX2++) {
+            var xCat2 = xs[xsKeys[iX2]];
+            var ys2 = xCat2.ys;
+
+            var yIntersect = [];
+            var xIntersect = { x1: xCat1.x, x2: xCat2.x, ys: yIntersect };
+            for (var iY1 = 0; iY1 < ys1.length; iY1++) {
+                for (var iY2 = 0; iY2 < ys2.length; iY2++) {
+                    if (ys1[iY1].yCat === ys2[iY2].yCat) {
+                        yIntersect.push(ys1[iY1].y);
+                        break;
+                    }
+                }
+            }
+
+            if (yIntersect.length > 1) intersectedXs.push(xIntersect);
+        }
+    }
+
+    //console.log(intersectedXs);
+
+    /** @type {Array<Rectangle>} */
+    var rectangles = [];
+    for (var iIX = 0; iIX < intersectedXs.length; iIX++) {
+        var intersectedX = intersectedXs[iIX];
+        var ys = intersectedX.ys;
+        var x1 = intersectedX.x1,
+            x2 = intersectedX.x2;
+        for (var _iY = 0; _iY < ys.length; _iY++) {
+            for (var _iY2 = _iY + 1; _iY2 < ys.length; _iY2++) {
+                var p1 = { x: x1, y: ys[_iY] },
+                    p2 = { x: x2, y: ys[_iY] },
+                    p3 = { x: x2, y: ys[_iY2] },
+                    p4 = { x: x1, y: ys[_iY2] };
+
+                var rectangle = { p1: p1, p2: p2, p3: p3, p4: p4 };
+                rectangles.push(rectangle);
+            }
+        }
+    }
+
+    return rectangles;
+}
+
+/**
+ * @param {Array<Rectangle>} rectangles 
+ * @returns {Array<Rectangle>} the array is edited in-place
+ */
+function reduceRectangles(rectangles) {
+    for (var iRect = 0; iRect < rectangles.length; iRect++) {
+        var ra = rectangles[iRect];
+        var ax = ra.p1.x,
+            ay = ra.p1.y;
+        var aw = ra.p3.x - ax,
+            ah = ra.p3.y - ay;
+        for (var jRect = 0; jRect < rectangles.length; jRect++) {
+            if (iRect !== jRect) {
+                var rb = rectangles[jRect];
+                var bx = rb.p1.x,
+                    by = rb.p1.y;
+                var bw = rb.p3.x - bx,
+                    bh = rb.p3.y - by;
+                if (rectangleContainsRectangle(smallValue, ax, ay, aw, ah, bx, by, bw, bh)) {
+                    rectangles.splice(jRect, 1);
+                    jRect--;
+                    iRect = Math.max(0, jRect - 1);
+                    break;
+                }
+            }
+        }
+    }
+    return rectangles;
+}
+
+/** @param {Number} ax @param {Number} ay @param {Number} bx @param {Number} by @param {Number} x @param {Number} y */
+function segmentContainsPoint(ax, ay, bx, by, x, y) {
+    var vx = bx - ax,
+        vy = by - ay,
+        vxa = x - ax,
+        vya = y - ay,
+        vxb = x - bx,
+        vyb = y - by;
+    var d = Math.sqrt(vx * vx + vy * vy),
+        da = Math.sqrt(vxa * vxa + vya * vya),
+        db = Math.sqrt(vxb * vxb + vyb * vyb);
+    return Math.abs(d - (da + db)) < smallValueSqrt;
+}
+
+exports.epsilon = epsilon;
+exports.smallValue = smallValue;
+exports.smallValueSqrt = smallValueSqrt;
+exports.linesIntersect = linesIntersect;
+exports.rectangleContainsPoint = rectangleContainsPoint;
+exports.rectangleContainsRectangle = rectangleContainsRectangle;
+exports.reduceRectangles = reduceRectangles;
+exports.rectanglesFromPoints = rectanglesFromPoints;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var typeofNumber = 'number';
+/** SignalerCallback 
+ * @callback SignalerCallback
+ * @param {Array<*>} args
+ */
 
-var _maxHeight = Symbol('maxHeight');
-var _validOrientations = Symbol('validOrientations');
+var _signals = Symbol('signals');
+var _dispatches = Symbol('dispatches');
 
-var orientations = ['xyz', 'zyx', 'yxz', 'yzx', 'zxy', 'xzy'];
-var dimensions = [0, 0, 0];
+var LightDispatcher = function () {
+    function LightDispatcher() {
+        _classCallCheck(this, LightDispatcher);
 
-var Item = function () {
-    /**
-     * @param {string} id 
-     * @param {Number} width 
-     * @param {Number} height 
-     * @param {Number} length 
-     * @param {Number} weight 
-     * @param {Number} quantity 
-     * @param {Array<Number|string>} validOrientations
-     * @param {Number} stackingCapacity 
-     * @param {Boolean} grounded 
-     */
-    function Item(id, width, height, length, weight, quantity, validOrientations, stackingCapacity, grounded) {
-        _classCallCheck(this, Item);
-
-        this.id = id;
-        this.width = width;
-        this.height = height;
-        this.length = length;
-        this.weight = weight;
-        /** @type {Number} */
-        this.volume = width * height * length;
-        this.quantity = quantity;
-
-        this.validOrientations = validOrientations;
-
-        this.stackingCapacity = stackingCapacity;
-        this.grounded = grounded;
+        this[_signals] = {};
+        this[_dispatches] = {};
     }
 
-    /** @returns {Array<Number>} */
+    /** @param {string} event @param {SignalerCallback} callback */
 
 
-    _createClass(Item, [{
-        key: 'GetOrientedDimensions',
-
-
-        /** @param {Number} orientation */
-        value: function GetOrientedDimensions(orientation) {
-            switch (orientation) {
-                case 0:
-                    return this.xyz;
-                case 1:
-                    return this.zyx;
-                case 2:
-                    return this.yxz;
-                case 3:
-                    return this.yzx;
-                case 4:
-                    return this.zxy;
-                case 5:
-                    return this.xzy;
+    _createClass(LightDispatcher, [{
+        key: 'On',
+        value: function On(event, callback) {
+            if (this[_signals][event] === undefined) {
+                this[_signals][event] = [];
             }
+            this[_signals][event].push(callback);
         }
 
-        /** @param {Number} orientation */
+        /** @param {string} event @param {SignalerCallback} callback */
 
     }, {
-        key: 'validOrientations',
-        get: function get() {
-            return this[_validOrientations];
-        },
-        set: function set(value) {
-            if (!value) value = orientations;
-
-            var validOrientations = [];
-            for (var i = 0; i < value.length; i++) {
-                var vo = value[i];
-                var orientation = (typeof vo === 'undefined' ? 'undefined' : _typeof(vo)) === typeofNumber ? vo : orientations.indexOf(vo.toLowerCase());
-                if (orientation !== -1) validOrientations.push(orientation);
-            }
-
-            if (validOrientations.length === 0) validOrientations[0] = 'xyz' || orientations[0];
-
-            this[_validOrientations] = validOrientations;
-            this[_maxHeight] = undefined;
-        }
-    }, {
-        key: 'xyz',
-        get: function get() {
-            dimensions[0] = this.width;dimensions[1] = this.height;dimensions[2] = this.length;return dimensions;
-        }
-    }, {
-        key: 'zyx',
-        get: function get() {
-            dimensions[0] = this.length;dimensions[1] = this.height;dimensions[2] = this.width;return dimensions;
-        }
-    }, {
-        key: 'yxz',
-        get: function get() {
-            dimensions[0] = this.height;dimensions[1] = this.width;dimensions[2] = this.length;return dimensions;
-        }
-    }, {
-        key: 'yzx',
-        get: function get() {
-            dimensions[0] = this.height;dimensions[1] = this.length;dimensions[2] = this.width;return dimensions;
-        }
-    }, {
-        key: 'zxy',
-        get: function get() {
-            dimensions[0] = this.length;dimensions[1] = this.width;dimensions[2] = this.height;return dimensions;
-        }
-    }, {
-        key: 'xzy',
-        get: function get() {
-            dimensions[0] = this.width;dimensions[1] = this.length;dimensions[2] = this.height;return dimensions;
-        }
-
-        /** @returns {Number} */
-
-    }, {
-        key: 'maxHeight',
-        get: function get() {
-            if (this[_maxHeight] === undefined) {
-                var maxHeight = 0;
-                for (var i = 0; i < this.validOrientations.length; i++) {
-                    var _dimensions = this.GetOrientedDimensions(this.validOrientations[i]);
-                    if (_dimensions[1] > maxHeight) maxHeight = _dimensions[1];
-                }
-                this[_maxHeight] = maxHeight;
-            }
-
-            return this[_maxHeight];
-        }
-    }], [{
-        key: 'ResolveOrientation',
-        value: function ResolveOrientation(orientation) {
-            return orientations[orientation];
-        }
-
-        /** @param {Array<Item>} items */
-
-    }, {
-        key: 'GetMinDimensions',
-        value: function GetMinDimensions(items) {
-            var minDimensions = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER];
-
-            for (var iItem = 0, numItems = items.length; iItem < numItems; iItem++) {
-                var item = items[iItem];
-                var validOrientations = item.validOrientations;
-                for (var iOrient = 0; iOrient < validOrientations.length; iOrient++) {
-                    var orientation = validOrientations[iOrient];
-                    var _dimensions2 = item.GetOrientedDimensions(orientation);
-                    if (_dimensions2[0] < minDimensions[0]) minDimensions[0] = _dimensions2[0];
-                    if (_dimensions2[1] < minDimensions[1]) minDimensions[1] = _dimensions2[1];
-                    if (_dimensions2[2] < minDimensions[2]) minDimensions[2] = _dimensions2[2];
+        key: 'Off',
+        value: function Off(event, callback) {
+            var callbacks = this[_signals][event];
+            if (callbacks) {
+                var index = callbacks.indexOf(callback);
+                if (index != -1) {
+                    callbacks.splice(index, 1);
                 }
             }
-
-            return minDimensions;
         }
 
-        /**
-         * @param {Item} a 
-         * @param {Item} b 
-         */
+        /** @param {string} event @param {Array<*>} [args] */
 
     }, {
-        key: 'VolumeSort',
-        value: function VolumeSort(a, b) {
-            if (a.volume < b.volume) return -1;
-            if (a.volume > b.volume) return 1;
-            return 0;
-        }
+        key: 'Dispatch',
+        value: function Dispatch(event) {
+            for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                args[_key - 1] = arguments[_key];
+            }
 
-        /**
-         * @param {Item} a 
-         * @param {Item} b 
-         */
-
-    }, {
-        key: 'HeightSort',
-        value: function HeightSort(a, b) {
-            if (a.maxHeight < b.maxHeight) return -1;
-            if (a.maxHeight > b.maxHeight) return 1;
-            if (a.volume < b.volume) return -1;
-            if (a.volume > b.volume) return 1;
-            return 0;
+            this[_dispatches][event] = args;
+            var callbacks = this[_signals][event];
+            if (callbacks) {
+                for (var i = 0, len = callbacks.length; i < len; i++) {
+                    callbacks[i].apply(callbacks, args);
+                }
+            }
         }
     }]);
 
-    return Item;
+    return LightDispatcher;
 }();
 
-var Container =
-/**
- * @param {string} id 
- * @param {Number} width 
- * @param {Number} height 
- * @param {Number} length 
- * @param {Number} weightCapacity 
- */
-function Container(id, width, height, length, weightCapacity) {
-    _classCallCheck(this, Container);
-
-    this.id = id;
-    this.width = width;
-    this.height = height;
-    this.length = length;
-    this.weightCapacity = weightCapacity;
-};
-
-exports.Item = Item;
-exports.Container = Container;
+exports.default = LightDispatcher;
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1700,7 +1911,7 @@ var Shortcut = function () {
             label = label.replace(new RegExp(' ', 'g'), '_');
             this.controller[label] = target;
             Config.shortcutsGUI.add(this.controller, label);
-            console.log('added ' + label + ' shortcut to ' + this.label);
+            //console.log('added ' + label + ' shortcut to ' + this.label);
         }
     }]);
 
@@ -1810,7 +2021,7 @@ var Config = function () {
             var target = this.target;
             if (gui === undefined) {
 
-                gui = new (window.dat || __webpack_require__(3).default).GUI({
+                gui = new (window.dat || __webpack_require__(2).default).GUI({
                     autoPlace: true
                 });
             } else if (label) {
@@ -1821,7 +2032,7 @@ var Config = function () {
                 this.editing = {};
 
                 this.Update = function () {
-                    __webpack_require__(42);
+                    __webpack_require__(43);
 
                     gui.updateAll();
                     guiChanged();
@@ -1836,7 +2047,7 @@ var Config = function () {
                 if (_this2.editing[keyInfo.id] !== true) {
                     var folder = gui;
                     if (keyInfo.folder) {
-                        __webpack_require__(42);
+                        __webpack_require__(43);
 
                         if (gui.find) folder = gui.find(keyInfo.folder);else console.warn('gui extensions not found!');
 
@@ -1972,7 +2183,7 @@ var Config = function () {
     }, {
         key: 'shortcutsGUI',
         get: function get() {
-            if (shortcutsGUI === undefined) shortcutsGUI = new (window.dat || __webpack_require__(3).default).GUI({
+            if (shortcutsGUI === undefined) shortcutsGUI = new (window.dat || __webpack_require__(2).default).GUI({
                 autoPlace: false
             });
             return shortcutsGUI;
@@ -1987,7 +2198,7 @@ Config.Controller = Controller;
 exports.default = Config;
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1999,145 +2210,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _ContainingVolume = __webpack_require__(14);
-
-var _ContainingVolume2 = _interopRequireDefault(_ContainingVolume);
-
-var _Logger = __webpack_require__(2);
-
-var _Logger2 = _interopRequireDefault(_Logger);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var type = 'Container';
-
-var combinedVolume = new _ContainingVolume2.default();
-
-var Container = function () {
-    function Container() {
-        _classCallCheck(this, Container);
-
-        /**
-         * Containing volumes array
-         * @type {Array<ContainingVolume>}
-         */
-        this.volumes = [];
-
-        _Logger2.default.WarnOnce('Container.constructor', 'label not implemented');
-    }
-
-    /** @param {ContainingVolume} volume */
-
-
-    _createClass(Container, [{
-        key: "Add",
-        value: function Add(volume) {
-            this.volumes.push(volume);
-        }
-
-        /**
-         * @param {string} [uid] - You'll rarely need to provide this
-         */
-
-    }, {
-        key: "SetUID",
-        value: function SetUID(uid) {
-            this.uid = uid || THREE.Math.generateUUID();
-            return this.uid;
-        }
-    }, {
-        key: "toJSON",
-        value: function toJSON() {
-            return {
-                type: type,
-                volumes: this.volumes
-            };
-        }
-    }, {
-        key: "ToString",
-        value: function ToString() {
-            var result = type + '[';
-            for (var i = 0, numVolumes = this.volumes.length; i < numVolumes; i++) {
-                result += this.volumes[i].ToString() + (i < numVolumes - 1 ? ', ' : ']');
-            }
-            return result;
-        }
-    }, {
-        key: "combinedVolume",
-        get: function get() {
-            var minX = Number.MAX_SAFE_INTEGER,
-                minY = Number.MAX_SAFE_INTEGER,
-                minZ = Number.MAX_SAFE_INTEGER;
-
-            var maxX = Number.MIN_SAFE_INTEGER,
-                maxY = Number.MIN_SAFE_INTEGER,
-                maxZ = Number.MIN_SAFE_INTEGER;
-
-            var combinedWeightCapacity = 0;
-
-            this.volumes.forEach(function (volume) {
-                var pos = volume.position;
-                var dim = volume.dimensions;
-                if (pos.x < minX) minX = pos.x;
-                if (pos.y < minY) minY = pos.y;
-                if (pos.z < minZ) minZ = pos.z;
-                if (pos.x + dim.width > maxX) maxX = pos.x + dim.width;
-                if (pos.y + dim.height > maxY) maxY = pos.y + dim.height;
-                if (pos.z + dim.length > maxZ) maxZ = pos.z + dim.length;
-
-                combinedWeightCapacity += volume.weightCapacity;
-            });
-
-            combinedVolume.container = this;
-            combinedVolume.dimensions.Set(maxX - minX, maxZ - minZ, maxY - minY);
-            combinedVolume.position.set((maxX + minX) / 2, (maxZ + minZ) / 2, (maxY + minY) / 2);
-            combinedVolume.weightCapacity = combinedWeightCapacity;
-
-            return combinedVolume;
-        }
-    }, {
-        key: "volume",
-        get: function get() {
-            var index = this.volumes.length - 1;
-            return this.volumes[index];
-        }
-    }], [{
-        key: "FromJSON",
-        value: function FromJSON(data) {
-            if (data.type !== type) throw 'Data supplied is not: ' + type;
-
-            var container = new Container();
-            for (var i = 0, numVolumes = data.volumes.length; i < numVolumes; i++) {
-                var containingVolume = _ContainingVolume2.default.FromJSON(data.volumes[i]);
-                containingVolume.container = container;
-                container.Add(containingVolume);
-            }
-
-            return container;
-        }
-    }]);
-
-    return Container;
-}();
-
-exports.default = Container;
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _Math2D = __webpack_require__(43);
+var _Math2D = __webpack_require__(8);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2165,8 +2238,6 @@ function setRectangleWeights(rect, weight, weightCapacity, stackingCapacity) {
     }
 }
 
-var smallValue = .000001;
-var smallValueSqrt = .001;
 var maxWeightValue = Number.MAX_SAFE_INTEGER;
 
 var Region = function () {
@@ -2332,7 +2403,7 @@ var Region = function () {
         value: function FitTest(offset, width, height, length, weight, grounded, result) {
             if (!result) result = tempRegion;
 
-            if (grounded && this.y > smallValue) return false;
+            if (grounded && this.y > _Math2D.smallValue) return false;
 
             // Check that all dimensions fit
             var fit = width < this.width + offset * 2 && height < this.height + offset * 2 && length < this.length + offset * 2;
@@ -2434,12 +2505,12 @@ var Region = function () {
                         nbx = ptsB[nextB],
                         nbz = ptsB[nextB + 2];
 
-                    if ((0, _Math2D.rectangleContainsPoint)(smallValue, ptsA[0], ptsA[2], ptsA[6] - ptsA[0], ptsA[8] - ptsA[2], bx, bz) || (0, _Math2D.rectangleContainsPoint)(smallValue, ptsB[0], ptsB[2], ptsB[6] - ptsB[0], ptsB[8] - ptsB[2], ax, az)) {
+                    if ((0, _Math2D.rectangleContainsPoint)(_Math2D.smallValue, ptsA[0], ptsA[2], ptsA[6] - ptsA[0], ptsA[8] - ptsA[2], bx, bz) || (0, _Math2D.rectangleContainsPoint)(_Math2D.smallValue, ptsB[0], ptsB[2], ptsB[6] - ptsB[0], ptsB[8] - ptsB[2], ax, az)) {
                         adjacent++;
                     }
 
                     var intersection = (0, _Math2D.linesIntersect)(ax, az, nax, naz, bx, bz, nbx, nbz);
-                    if (intersection && ((0, _Math2D.rectangleContainsPoint)(smallValue, ptsA[0], ptsA[2], ptsA[6] - ptsA[0], ptsA[8] - ptsA[2], intersection.x, intersection.y) || (0, _Math2D.rectangleContainsPoint)(smallValue, ptsB[0], ptsB[2], ptsB[6] - ptsB[0], ptsB[8] - ptsB[2], intersection.x, intersection.y))) {
+                    if (intersection && ((0, _Math2D.rectangleContainsPoint)(_Math2D.smallValue, ptsA[0], ptsA[2], ptsA[6] - ptsA[0], ptsA[8] - ptsA[2], intersection.x, intersection.y) || (0, _Math2D.rectangleContainsPoint)(_Math2D.smallValue, ptsB[0], ptsB[2], ptsB[6] - ptsB[0], ptsB[8] - ptsB[2], intersection.x, intersection.y))) {
                         intersections.push(intersection);
                     }
                 }
@@ -2505,87 +2576,6 @@ var tempPoints2 = [0];
 exports.default = Region;
 
 /***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/** SignalerCallback 
- * @callback SignalerCallback
- * @param {Array<*>} args
- */
-
-var _signals = Symbol('signals');
-var _dispatches = Symbol('dispatches');
-
-var LightDispatcher = function () {
-    function LightDispatcher() {
-        _classCallCheck(this, LightDispatcher);
-
-        this[_signals] = {};
-        this[_dispatches] = {};
-    }
-
-    /** @param {string} event @param {SignalerCallback} callback */
-
-
-    _createClass(LightDispatcher, [{
-        key: 'On',
-        value: function On(event, callback) {
-            if (this[_signals][event] === undefined) {
-                this[_signals][event] = [];
-            }
-            this[_signals][event].push(callback);
-        }
-
-        /** @param {string} event @param {SignalerCallback} callback */
-
-    }, {
-        key: 'Off',
-        value: function Off(event, callback) {
-            var callbacks = this[_signals][event];
-            if (callbacks) {
-                var index = callbacks.indexOf(callback);
-                if (index != -1) {
-                    callbacks.splice(index, 1);
-                }
-            }
-        }
-
-        /** @param {string} event @param {Array<*>} [args] */
-
-    }, {
-        key: 'Dispatch',
-        value: function Dispatch(event) {
-            for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-                args[_key - 1] = arguments[_key];
-            }
-
-            this[_dispatches][event] = args;
-            var callbacks = this[_signals][event];
-            if (callbacks) {
-                for (var i = 0, len = callbacks.length; i < len; i++) {
-                    callbacks[i].apply(callbacks, args);
-                }
-            }
-        }
-    }]);
-
-    return LightDispatcher;
-}();
-
-exports.default = LightDispatcher;
-
-/***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2610,11 +2600,11 @@ var _View = __webpack_require__(81);
 
 var _View2 = _interopRequireDefault(_View);
 
-var _CargoInput = __webpack_require__(50);
+var _CargoInput = __webpack_require__(51);
 
 var _CargoInput2 = _interopRequireDefault(_CargoInput);
 
-var _PackingSpaceInput = __webpack_require__(51);
+var _PackingSpaceInput = __webpack_require__(52);
 
 var _PackingSpaceInput2 = _interopRequireDefault(_PackingSpaceInput);
 
@@ -2622,7 +2612,7 @@ var _UX = __webpack_require__(22);
 
 var _UX2 = _interopRequireDefault(_UX);
 
-var _Logger = __webpack_require__(2);
+var _Logger = __webpack_require__(3);
 
 var _Logger2 = _interopRequireDefault(_Logger);
 
@@ -2630,7 +2620,7 @@ var _Signaler2 = __webpack_require__(1);
 
 var _Signaler3 = _interopRequireDefault(_Signaler2);
 
-var _PackerInterface = __webpack_require__(52);
+var _PackerInterface = __webpack_require__(53);
 
 var _PackerInterface2 = _interopRequireDefault(_PackerInterface);
 
@@ -2638,11 +2628,11 @@ var _BoxEntry = __webpack_require__(5);
 
 var _BoxEntry2 = _interopRequireDefault(_BoxEntry);
 
-var _Container = __webpack_require__(9);
+var _Container = __webpack_require__(7);
 
 var _Container2 = _interopRequireDefault(_Container);
 
-var _Resources = __webpack_require__(29);
+var _Resources = __webpack_require__(27);
 
 var _Resources2 = _interopRequireDefault(_Resources);
 
@@ -2650,7 +2640,7 @@ var _Asset = __webpack_require__(4);
 
 var _Asset2 = _interopRequireDefault(_Asset);
 
-var _DomUI = __webpack_require__(49);
+var _DomUI = __webpack_require__(50);
 
 var _DomUI2 = _interopRequireDefault(_DomUI);
 
@@ -2698,9 +2688,9 @@ var App = function (_Signaler) {
         _Asset2.default.resources = _this.resources;
 
         /** @type {PackerParams} */
-        var packerParams = { ux: _this.ux };
+        var packerParams = _this.packerInterface.params;
+        packerParams.ux = _this.ux;
         _this.packer = new _Packer2.default(packerParams);
-        _this.packer.extendedParams = _this.packerInterface.params;
 
         _this.cargoInput.On(_CargoInput2.default.signals.insert,
         /** @param {BoxEntry} boxEntry */
@@ -2833,11 +2823,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _CargoList = __webpack_require__(32);
+var _CargoList = __webpack_require__(31);
 
 var _CargoList2 = _interopRequireDefault(_CargoList);
 
-var _PackingSpace = __webpack_require__(33);
+var _PackingSpace = __webpack_require__(32);
 
 var _PackingSpace2 = _interopRequireDefault(_PackingSpace);
 
@@ -2853,10 +2843,6 @@ var _Signaler2 = __webpack_require__(1);
 
 var _Signaler3 = _interopRequireDefault(_Signaler2);
 
-var _Logger = __webpack_require__(2);
-
-var _Logger2 = _interopRequireDefault(_Logger);
-
 var _ContainingVolume = __webpack_require__(14);
 
 var _ContainingVolume2 = _interopRequireDefault(_ContainingVolume);
@@ -2871,13 +2857,36 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var CUB = __webpack_require__(75);
+
+/** @typedef CUBParams
+ * @property {Number} score_minLength [0, 1] influence position of cargo in length
+ * 
+ * (higher values means the algorithm will try to pack as tightly as possible in length)
+ * 
+ * @property {Number} score_minWastedSpace [0, 1] influence orientation of cargo 
+ * 
+ * (higher values means the algorithm will try to minimize orientation that results in 'unuseable' unpacked volumes)
+ */
+
+var typeofHeuristicParams = CUB.heuristics.HeuParametric1.Params;
+
+/** @param {CUBParams} cubParams @param {typeofHeuristicParams} heuristicParams */
+function extractHeuristicParams(cubParams, heuristicParams) {
+    if (heuristicParams === undefined) heuristicParams = new typeofHeuristicParams();
+
+    var scoringWeight = cubParams.score_minLength + cubParams.score_minWastedSpace;
+
+    heuristicParams.scoring.minZ = cubParams.score_minLength / scoringWeight;
+    heuristicParams.scoring.minWaste = cubParams.score_minWastedSpace / scoringWeight;
+    return heuristicParams;
+}
+
 /**
  * @typedef {Object} PackerParams
  * @property {import('../UX').default} ux
  * @property {Number} defaultStackingFactor
  */
-
-/** @typedef {import('../packer/cub/CUB').CUBParams} CUBParams */
 
 /** @typedef SolverParams
  * @property {CUBParams} algorithmParams
@@ -2948,9 +2957,10 @@ var Packer = function (_Signaler) {
     function Packer(params) {
         _classCallCheck(this, Packer);
 
+        /** Shared object with PackerInterface's params  */
         var _this = _possibleConstructorReturn(this, (Packer.__proto__ || Object.getPrototypeOf(Packer)).call(this));
 
-        _this.params = _Utils2.default.AssignUndefined(params, defaultParams);
+        _this.params = params;
 
         _this.packingSpace = new _PackingSpace2.default();
         _this.cargoList = new _CargoList2.default();
@@ -2959,14 +2969,11 @@ var Packer = function (_Signaler) {
         return _this;
     }
 
-    /** @param {PackerParams} extendedParams */
+    /** @param {SolverParams} params */
 
 
     _createClass(Packer, [{
         key: "Solve",
-
-
-        /** @param {SolverParams} params */
         value: function Solve(params) {
             params = params || this[_solverParams];
             this[_solverParams] = params;
@@ -2978,7 +2985,7 @@ var Packer = function (_Signaler) {
             if (algorithm === 'cub') this.SolveCUB(algorithmParams);
         }
 
-        /** @param {import('../packer/cub/CUB').CUBParams} params */
+        /** @param {CUBParams} params */
 
     }, {
         key: "SolveCUB",
@@ -2995,8 +3002,8 @@ var Packer = function (_Signaler) {
                     return;
                 }
 
-                var Container = __webpack_require__(7).Container;
-                var Item = __webpack_require__(7).Item;
+                var Container = CUB.Container;
+                var Item = CUB.Item;
 
                 var containingVolume = this.packingSpace.current.volume;
                 var d = containingVolume.dimensions;
@@ -3041,9 +3048,10 @@ var Packer = function (_Signaler) {
                     }
                 }
 
-                var CUB = __webpack_require__(74);
                 var startTime = performance.now();
-                var result = yield CUB.pack(container, items, params);
+                var heuristicParams = extractHeuristicParams(params);
+                var heuristic = new CUB.heuristics.HeuParametric1(heuristicParams);
+                var result = yield CUB.pack(container, items, heuristic);
                 var cubRuntime = performance.now() - startTime;
 
                 var cubRuntime2Dec = Math.round(cubRuntime / 1000 * 100) / 100;
@@ -3072,11 +3080,6 @@ var Packer = function (_Signaler) {
 
             return SolveCUB;
         }()
-    }, {
-        key: "extendedParams",
-        set: function set(extendedParams) {
-            this.params = _Utils2.default.AssignUndefined(this.params, extendedParams);
-        }
     }, {
         key: "solveAgain",
         get: function get() {
@@ -3113,11 +3116,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _Volume2 = __webpack_require__(73);
+var _Volume2 = __webpack_require__(74);
 
 var _Volume3 = _interopRequireDefault(_Volume2);
 
-var _Container = __webpack_require__(9);
+var _Container = __webpack_require__(7);
 
 var _Container2 = _interopRequireDefault(_Container);
 
@@ -3208,156 +3211,233 @@ exports.default = ContainingVolume;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.PackedContainer = exports.PackedItem = undefined;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Components = __webpack_require__(7);
-
-var _Region = __webpack_require__(10);
-
-var _Region2 = _interopRequireDefault(_Region);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var smallValue = .000001;
+var typeofNumber = 'number';
 
-var PackedItem = function () {
+var _maxHeight = Symbol('maxHeight');
+var _validOrientations = Symbol('validOrientations');
 
+var orientations = ['xyz', 'zyx', 'yxz', 'yzx', 'zxy', 'xzy'];
+var dimensions = [0, 0, 0];
+
+var Item = function () {
     /**
-     * @param {Item} ref 
-     * @param {Number} x
-     * @param {Number} y
-     * @param {Number} z
-     * @param {Number} packedWidth
-     * @param {Number} packedHeight
-     * @param {Number} packedLength
-     * @param {Number} orientation 
+     * @param {string} id 
+     * @param {Number} width 
+     * @param {Number} height 
+     * @param {Number} length 
+     * @param {Number} weight 
+     * @param {Number} quantity 
+     * @param {Array<Number|string>} validOrientations
+     * @param {Number} stackingCapacity 
+     * @param {Boolean} grounded 
      */
-    function PackedItem(ref, x, y, z, packedWidth, packedHeight, packedLength, orientation) {
-        _classCallCheck(this, PackedItem);
+    function Item(id, width, height, length, weight, quantity, validOrientations, stackingCapacity, grounded) {
+        _classCallCheck(this, Item);
 
-        this.ref = ref;
-        this.x = x;this.y = y;this.z = z;
-        this.packedWidth = packedWidth;this.packedHeight = packedHeight;this.packedLength = packedLength;
-        this.orientation = orientation;
+        this.id = id;
+        this.width = width;
+        this.height = height;
+        this.length = length;
+        this.weight = weight;
+        /** @type {Number} */
+        this.volume = width * height * length;
+        this.quantity = quantity;
+
+        this.validOrientations = validOrientations;
+
+        this.stackingCapacity = stackingCapacity;
+        this.grounded = grounded;
     }
 
-    /** @param {PackedItem} a * @param {PackedItem} b */
+    /** @returns {Array<Number>} */
 
 
-    _createClass(PackedItem, null, [{
-        key: "DepthSort",
-        value: function DepthSort(a, b) {
-            var az = a.z + a.packedLength,
-                bz = b.z + b.packedLength;
-            if (az + smallValue < bz) return -1;
-            if (az > bz + smallValue) return 1;
-            if (a.y < b.y) return -1;
-            if (a.y > b.y) return 1;
-            if (a.ref.volume > b.ref.volume + smallValue) return -1;
-            if (a.ref.volume + smallValue < b.ref.volume) return 1;
-            return 0;
-        }
+    _createClass(Item, [{
+        key: 'GetOrientedDimensions',
 
-        /** @param {PackedItem} a * @param {PackedItem} b */
 
-    }, {
-        key: "Sort",
-        value: function Sort(a, b) {
-            if (a.z + smallValue < b.z) {
-                if (a.z + a.packedLength > b.z && a.y > b.y) return 1;
-                return -1;
+        /** @param {Number} orientation */
+        value: function GetOrientedDimensions(orientation) {
+            switch (orientation) {
+                case 0:
+                    return this.xyz;
+                case 1:
+                    return this.zyx;
+                case 2:
+                    return this.yxz;
+                case 3:
+                    return this.yzx;
+                case 4:
+                    return this.zxy;
+                case 5:
+                    return this.xzy;
             }
-            if (b.z + smallValue < a.z) {
-                if (b.z + b.packedLength > a.z && b.y > a.y) return 1;
-                return 1;
+        }
+    }, {
+        key: 'ToString',
+        value: function ToString() {
+            var q = this.quantity,
+                d = this.width.toFixed(2) + 'x' + this.height.toFixed(2) + 'x' + this.length.toFixed(2),
+                id = this.id;
+            return q + 'x (' + d + ') - ' + id;
+        }
+
+        /** @param {Number} orientation */
+
+    }, {
+        key: 'validOrientations',
+        get: function get() {
+            return this[_validOrientations];
+        },
+        set: function set(value) {
+            if (!value) value = orientations;
+
+            var validOrientations = [];
+            for (var i = 0; i < value.length; i++) {
+                var vo = value[i];
+                var orientation = (typeof vo === 'undefined' ? 'undefined' : _typeof(vo)) === typeofNumber ? vo : orientations.indexOf(vo.toLowerCase());
+                if (orientation !== -1) validOrientations.push(orientation);
             }
-            if (a.y < b.y) return -1;
-            if (a.y > b.y) return 1;
-            if (a.ref.volume > b.ref.volume + smallValue) return -1;
-            if (a.ref.volume + smallValue < b.ref.volume) return 1;
-            return 0;
+
+            if (validOrientations.length === 0) validOrientations[0] = 'xyz' || orientations[0];
+
+            this[_validOrientations] = validOrientations;
+            this[_maxHeight] = undefined;
         }
-    }]);
-
-    return PackedItem;
-}();
-
-var PackedContainer = function () {
-    /**
-     * @param {Container} container 
-     */
-    function PackedContainer(container) {
-        _classCallCheck(this, PackedContainer);
-
-        this.container = container;
-
-        /** @type {Array<PackedItem>} */
-        this.packedItems = [];
-        /** @type {Array<Item>} */
-        this.unpackedItems = [];
-
-        this.cumulatedWeight = 0;
-    }
-
-    /** @param {PackedItem} item */
-
-
-    _createClass(PackedContainer, [{
-        key: "Pack",
-        value: function Pack(item) {
-            this.cumulatedWeight += item.ref.weight;
-            this.packedItems.push(item);
+    }, {
+        key: 'xyz',
+        get: function get() {
+            dimensions[0] = this.width;dimensions[1] = this.height;dimensions[2] = this.length;return dimensions;
+        }
+    }, {
+        key: 'zyx',
+        get: function get() {
+            dimensions[0] = this.length;dimensions[1] = this.height;dimensions[2] = this.width;return dimensions;
+        }
+    }, {
+        key: 'yxz',
+        get: function get() {
+            dimensions[0] = this.height;dimensions[1] = this.width;dimensions[2] = this.length;return dimensions;
+        }
+    }, {
+        key: 'yzx',
+        get: function get() {
+            dimensions[0] = this.height;dimensions[1] = this.length;dimensions[2] = this.width;return dimensions;
+        }
+    }, {
+        key: 'zxy',
+        get: function get() {
+            dimensions[0] = this.length;dimensions[1] = this.width;dimensions[2] = this.height;return dimensions;
+        }
+    }, {
+        key: 'xzy',
+        get: function get() {
+            dimensions[0] = this.width;dimensions[1] = this.length;dimensions[2] = this.height;return dimensions;
         }
 
-        /** @param {Item} item */
+        /** @returns {Number} */
 
     }, {
-        key: "Unpack",
-        value: function Unpack(item) {
-            this.unpackedItems.push(item);
+        key: 'maxHeight',
+        get: function get() {
+            if (this[_maxHeight] === undefined) {
+                var maxHeight = 0;
+                for (var i = 0; i < this.validOrientations.length; i++) {
+                    var _dimensions = this.GetOrientedDimensions(this.validOrientations[i]);
+                    if (_dimensions[1] > maxHeight) maxHeight = _dimensions[1];
+                }
+                this[_maxHeight] = maxHeight;
+            }
+
+            return this[_maxHeight];
+        }
+    }], [{
+        key: 'ResolveOrientation',
+        value: function ResolveOrientation(orientation) {
+            return orientations[orientation];
         }
 
-        /** @param {Number} weight */
+        /** @param {Array<Item>} items */
 
     }, {
-        key: "WeightPass",
-        value: function WeightPass(weight) {
-            return this.cumulatedWeight + weight <= this.container.weightCapacity;
-        }
+        key: 'GetMinDimensions',
+        value: function GetMinDimensions(items) {
+            var minDimensions = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER];
 
-        /** @param {Region} placement */
-
-    }, {
-        key: "FitPass",
-        value: function FitPass(placement) {
-            var numPackedItems = this.packedItems.length;
-
-            // Make sure that the new 'packed item to be' does not collide with a previous one
-            for (var iPacked = 0; iPacked < numPackedItems; iPacked++) {
-                var packedItem = this.packedItems[iPacked];
-                // Creates temporary region for following calculations
-                var packedRegion = tempRegion2.Set(packedItem.x, packedItem.y, packedItem.z, packedItem.packedWidth, packedItem.packedHeight, packedItem.packedLength, 0);
-                packedRegion.SetWeights(packedItem.ref.weight, 0, packedItem.ref.stackingCapacity);
-
-                var intersects = packedRegion.Intersects(-smallValue, placement);
-                if (intersects) {
-                    return false;
+            for (var iItem = 0, numItems = items.length; iItem < numItems; iItem++) {
+                var item = items[iItem];
+                var validOrientations = item.validOrientations;
+                for (var iOrient = 0; iOrient < validOrientations.length; iOrient++) {
+                    var orientation = validOrientations[iOrient];
+                    var _dimensions2 = item.GetOrientedDimensions(orientation);
+                    if (_dimensions2[0] < minDimensions[0]) minDimensions[0] = _dimensions2[0];
+                    if (_dimensions2[1] < minDimensions[1]) minDimensions[1] = _dimensions2[1];
+                    if (_dimensions2[2] < minDimensions[2]) minDimensions[2] = _dimensions2[2];
                 }
             }
 
-            return true;
+            return minDimensions;
+        }
+
+        /**
+         * @param {Item} a 
+         * @param {Item} b 
+         */
+
+    }, {
+        key: 'VolumeSort',
+        value: function VolumeSort(a, b) {
+            if (a.volume < b.volume) return -1;
+            if (a.volume > b.volume) return 1;
+            return 0;
+        }
+
+        /**
+         * @param {Item} a 
+         * @param {Item} b 
+         */
+
+    }, {
+        key: 'HeightSort',
+        value: function HeightSort(a, b) {
+            if (a.maxHeight < b.maxHeight) return -1;
+            if (a.maxHeight > b.maxHeight) return 1;
+            if (a.volume < b.volume) return -1;
+            if (a.volume > b.volume) return 1;
+            return 0;
         }
     }]);
 
-    return PackedContainer;
+    return Item;
 }();
 
-exports.PackedItem = PackedItem;
-exports.PackedContainer = PackedContainer;
+var Container =
+/**
+ * @param {string} id 
+ * @param {Number} width 
+ * @param {Number} height 
+ * @param {Number} length 
+ * @param {Number} weightCapacity 
+ */
+function Container(id, width, height, length, weightCapacity) {
+    _classCallCheck(this, Container);
+
+    this.id = id;
+    this.width = width;
+    this.height = height;
+    this.length = length;
+    this.weightCapacity = weightCapacity;
+};
+
+exports.Item = Item;
+exports.Container = Container;
 
 /***/ }),
 /* 16 */
@@ -3372,19 +3452,19 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Input = __webpack_require__(57);
+var _Input = __webpack_require__(58);
 
 var _Input2 = _interopRequireDefault(_Input);
 
-var _Quality = __webpack_require__(59);
+var _Quality = __webpack_require__(60);
 
 var _Quality2 = _interopRequireDefault(_Quality);
 
-var _Controller = __webpack_require__(37);
+var _Controller = __webpack_require__(38);
 
 var _Controller2 = _interopRequireDefault(_Controller);
 
-var _Renderer = __webpack_require__(60);
+var _Renderer = __webpack_require__(61);
 
 var _Renderer2 = _interopRequireDefault(_Renderer);
 
@@ -3392,7 +3472,7 @@ var _Camera = __webpack_require__(17);
 
 var _Camera2 = _interopRequireDefault(_Camera);
 
-var _HUDView = __webpack_require__(62);
+var _HUDView = __webpack_require__(63);
 
 var _HUDView2 = _interopRequireDefault(_HUDView);
 
@@ -3461,7 +3541,7 @@ var SceneSetup = function (_Signaler) {
             this.domElement.appendChild(this.sceneRenderer.renderer.domElement);
 
             /** @type {import('./Camera').CameraParams} */
-            var cameraParams = { fov: this.ux.params.fov, aspect: 1, near: 1 * units, far: 5000 * units };
+            var cameraParams = { fov: this.ux.params.fov, aspect: 1, near: 1 * units, far: 6000 * units };
             this.cameraController = new _Camera2.default(cameraParams);
             this.cameraController.OrbitControls(this.sceneRenderer.renderer.domElement);
 
@@ -3618,8 +3698,8 @@ var SceneSetup = function (_Signaler) {
                 };
 
                 var Smart = __webpack_require__(24).default;
-                var Config = __webpack_require__(8).default;
-                var Control3D = __webpack_require__(25).default;
+                var Config = __webpack_require__(10).default;
+                var Control3D = __webpack_require__(30).default;
 
                 var dl = directionalLight;
                 var _smart = new Smart(dl, 'Directional light');
@@ -3654,8 +3734,8 @@ var SceneSetup = function (_Signaler) {
         value: function Configure() {
 
             var Smart = __webpack_require__(24).default;
-            var Config = __webpack_require__(8).default;
-            var Control3D = __webpack_require__(25).default;
+            var Config = __webpack_require__(10).default;
+            var Control3D = __webpack_require__(30).default;
 
             var scope = this;
 
@@ -3720,7 +3800,7 @@ var SceneSetup = function (_Signaler) {
 }(_Signaler3.default);
 
 exports.default = SceneSetup;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(34)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(35)))
 
 /***/ }),
 /* 17 */
@@ -3751,7 +3831,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-__webpack_require__(61);
+__webpack_require__(62);
 
 var epsilon = Math.pow(2, -52);
 
@@ -4837,7 +4917,7 @@ var _Asset = __webpack_require__(4);
 
 var _Asset2 = _interopRequireDefault(_Asset);
 
-var _TextLabelView = __webpack_require__(40);
+var _TextLabelView = __webpack_require__(41);
 
 var _TextLabelView2 = _interopRequireDefault(_TextLabelView);
 
@@ -4966,11 +5046,11 @@ var _Utils = __webpack_require__(0);
 
 var _Utils2 = _interopRequireDefault(_Utils);
 
-var _Visualization = __webpack_require__(67);
+var _Visualization = __webpack_require__(68);
 
 var _Visualization2 = _interopRequireDefault(_Visualization);
 
-var _User = __webpack_require__(68);
+var _User = __webpack_require__(69);
 
 var _User2 = _interopRequireDefault(_User);
 
@@ -4978,7 +5058,7 @@ var _App = __webpack_require__(12);
 
 var _App2 = _interopRequireDefault(_App);
 
-var _Constants = __webpack_require__(41);
+var _Constants = __webpack_require__(42);
 
 var _Constants2 = _interopRequireDefault(_Constants);
 
@@ -5055,7 +5135,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Logger = __webpack_require__(2);
+var _Logger = __webpack_require__(3);
 
 var _Logger2 = _interopRequireDefault(_Logger);
 
@@ -5071,7 +5151,7 @@ var _Signaler2 = __webpack_require__(1);
 
 var _Signaler3 = _interopRequireDefault(_Signaler2);
 
-var _CargoGroup = __webpack_require__(30);
+var _CargoGroup = __webpack_require__(28);
 
 var _CargoGroup2 = _interopRequireDefault(_CargoGroup);
 
@@ -5083,7 +5163,7 @@ var _CargoEntry = __webpack_require__(6);
 
 var _CargoEntry2 = _interopRequireDefault(_CargoEntry);
 
-var _FloatingShelf = __webpack_require__(70);
+var _FloatingShelf = __webpack_require__(71);
 
 var _FloatingShelf2 = _interopRequireDefault(_FloatingShelf);
 
@@ -5095,15 +5175,15 @@ var _BoxEntry = __webpack_require__(5);
 
 var _BoxEntry2 = _interopRequireDefault(_BoxEntry);
 
-var _TextLabelView = __webpack_require__(40);
+var _TextLabelView = __webpack_require__(41);
 
 var _TextLabelView2 = _interopRequireDefault(_TextLabelView);
 
-var _RaycastGroup = __webpack_require__(36);
+var _RaycastGroup = __webpack_require__(37);
 
 var _RaycastGroup2 = _interopRequireDefault(_RaycastGroup);
 
-var _Outline = __webpack_require__(71);
+var _Outline = __webpack_require__(72);
 
 var _Outline2 = _interopRequireDefault(_Outline);
 
@@ -5558,9 +5638,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _UIUtils = __webpack_require__(31);
+var _UIUtils = __webpack_require__(29);
 
-var _Config2 = __webpack_require__(8);
+var _Config2 = __webpack_require__(10);
 
 var _Config3 = _interopRequireDefault(_Config2);
 
@@ -5589,7 +5669,7 @@ var Smart = function () {
 
         var scope = this;
 
-        this.gui = new (window.dat || __webpack_require__(3).default).GUI({ autoPlace: false });
+        this.gui = new (window.dat || __webpack_require__(2).default).GUI({ autoPlace: false });
         this.draggable = new _UIUtils.Draggable(this.label, 250);
         this.draggable.Add(this.gui.domElement);
         this.draggable.closeBtn.onclick = function () {
@@ -5752,518 +5832,15 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-__webpack_require__(72);
-
-var spaces = {
-    world: 'world',
-    local: 'local'
-};
-
-var modes = {
-    translate: 'translate',
-    rotate: 'rotate',
-    scale: 'scale'
-};
-
-/**
- * @type {Object<Control3D>}
- */
-var defaultControls = {};
-
-var Control3D = function () {
-
-    /**
-     * @param {THREE.Camera} camera 
-     * @param {HTMLElement} domElement 
-     */
-    function Control3D(camera, domElement) {
-        _classCallCheck(this, Control3D);
-
-        this.camera = camera;
-        this.control = new THREE.TransformControls(this.camera, domElement);
-        this.control.addEventListener('change', this.Update.bind(this));
-
-        this.control.traverse(function (child) {
-            child.renderOrder = 2;
-        });
-
-        this.visible = false;
-    }
-
-    _createClass(Control3D, [{
-        key: 'Attach',
-        value: function Attach(target) {
-            this.control.attach(target);
-        }
-    }, {
-        key: 'Detach',
-        value: function Detach() {
-            this.control.detach();
-        }
-    }, {
-        key: 'Toggle',
-        value: function Toggle(target) {
-            if (this.control.object) {
-                this.control.detach();
-            } else {
-                this.control.attach(target);
-            }
-        }
-    }, {
-        key: 'Update',
-        value: function Update() {
-            this.control.update();
-        }
-    }, {
-        key: 'visible',
-        get: function get() {
-            return this.control.visible;
-        },
-        set: function set(value) {
-            this.control.visible = value;
-            if (value === false) {
-                this.Detach();
-            }
-        }
-    }, {
-        key: 'space',
-        get: function get() {
-            return this.control.space;
-        },
-        set: function set(value) {
-            this.control.space = value;
-        }
-
-        // translate || rotate || scale
-
-    }, {
-        key: 'mode',
-        set: function set(value) {
-            this.control.setMode(value);
-        }
-    }], [{
-        key: 'Configure',
-
-
-        /**
-         * @param {string} id 
-         * @param {THREE.Camera} camera 
-         * @param {HTMLElement} domElement 
-         * @returns {Control3D}
-         */
-        value: function Configure(id, camera, domElement) {
-            var control = new Control3D(camera, domElement);
-            defaultControls[id] = control;
-            return control;
-        }
-
-        /**
-         * @returns {Control3D}
-         */
-
-    }, {
-        key: 'Request',
-        value: function Request(id) {
-            return defaultControls[id];
-        }
-    }, {
-        key: 'spaces',
-        get: function get() {
-            return spaces;
-        }
-    }, {
-        key: 'modes',
-        get: function get() {
-            return modes;
-        }
-    }]);
-
-    return Control3D;
-}();
-
-exports.default = Control3D;
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _Region = __webpack_require__(10);
-
-var _Region2 = _interopRequireDefault(_Region);
-
-var _Math2D = __webpack_require__(43);
-
-var _CUBDebug = __webpack_require__(44);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/** RegionFindCallback
- * @callback RegionFindCallback
- * @param {Region} region
- * @returns {Object | Boolean}
- */
-
-/** @typedef Vec2 @property {Number} x @property {Number} y */
-
-/** @typedef Rectangle @property {Vec2} p1 @property {Vec2} p2 @property {Vec2} p3 @property {Vec2} p4 
- * @property {Number} weight @property {Number} weightCapacity @property {Number} stackingCapacity 
- */
-
-var smallValue = .000001;
-var minRegionAxis = smallValue;
-
-var RegionsTree = function () {
-    /** @param {Region} root */
-    function RegionsTree(root) {
-        _classCallCheck(this, RegionsTree);
-
-        this.regions = [root];
-    }
-
-    /** @param {Number} index */
-
-
-    _createClass(RegionsTree, [{
-        key: "Get",
-        value: function Get(index) {
-            return this.regions[index];
-        }
-
-        /** @param {RegionFindCallback} callback @param {*} thisArg */
-
-    }, {
-        key: "Find",
-        value: function Find(callback, thisArg) {
-            var numRegions = this.regions.length;
-
-            for (var iRegion = 0; iRegion < numRegions; iRegion++) {
-                var region = this.regions[iRegion];
-                var search = callback.call(thisArg, region);
-                if (search) return search;
-            }
-
-            return false;
-        }
-
-        /** @param {Region} region * @param {Region} fit * @returns {Boolean} false if region has been deleted */
-
-    }, {
-        key: "Occupy",
-        value: function Occupy(region, fit) {
-            var _regions;
-
-            // Subtracts fit from region and calculates new bounding regions
-            var newRegions = region.Subtract(fit, minRegionAxis);
-
-            // Add new bounding regions if any
-            if (newRegions) (_regions = this.regions).push.apply(_regions, _toConsumableArray(newRegions));
-
-            // Check that region is still valid, otherwise remove it
-            if (region.length < minRegionAxis) {
-                var regionIndex = this.regions.indexOf(region);
-                this.regions.splice(regionIndex, 1);
-                return false;
-            }
-
-            var debugUIDs = [];
-            if (!newRegions) newRegions = [];
-            newRegions.push(region);
-            //console.group('Occupy');
-            newRegions.forEach(function (region) {
-                //console.log(region.ToString());
-                debugUIDs.push((0, _CUBDebug.debugRegion)(region, 0xffff0000, true, -1, true));
-            });
-            //console.groupEnd();
-
-            (0, _CUBDebug.debugClear)(debugUIDs);
-
-            return true;
-        }
-
-        /** @param {Number} width */
-
-    }, {
-        key: "ProcessRegionsPreferredX",
-        value: function ProcessRegionsPreferredX(width) {
-            var regions = this.regions,
-                numRegions = regions.length;
-            //let width = this.container.width;
-
-            for (var iRegion = 0; iRegion < numRegions; iRegion++) {
-                var region = regions[iRegion];
-
-                if (Math.abs(region.x) < smallValue) region.preferredX = 0;else if (Math.abs(region.x + region.width - width) < smallValue) region.preferredX = 1;
-            }
-        }
-
-        /** @param {Number} width @param {Number} height */
-
-    }, {
-        key: "ProcessRegionsMergeExpand",
-        value: function ProcessRegionsMergeExpand(width, height) {
-            var regions = this.regions,
-                numRegions = regions.length;
-
-            var toInt = 1 / smallValue;
-            function coordID(value) {
-                return Math.floor(value * toInt);
-            }
-
-            /** @typedef Level @property {Number} y @property {Array<Rectangle>} rectangles */
-            /** @type {Array<Level>} */
-            var levels = {};
-
-            var neighbours = [],
-                rectangles = [];
-            for (var iRegion = 0; iRegion < numRegions; iRegion++) {
-                var regionA = regions[iRegion];
-
-                if (regionA.weightCapacity > smallValue) {
-                    neighbours.length = 0;
-                    neighbours.push(iRegion);
-
-                    for (var jRegion = iRegion + 1; jRegion < numRegions; jRegion++) {
-                        var regionB = regions[jRegion];
-
-                        if (regionB.weightCapacity > smallValue && Math.abs(regionA.y - regionB.y) < smallValue) {
-                            var intersects = regionA.Intersects(smallValue, regionB);
-                            if (intersects) {
-                                neighbours.push(jRegion);
-                            }
-                        }
-                    }
-
-                    var numNeighbours = neighbours.length;
-                    if (numNeighbours > 1) {
-                        rectangles.length = 0;
-
-                        for (var iNeighbour = 0; iNeighbour < numNeighbours; iNeighbour++) {
-                            var neighbourA = regions[neighbours[iNeighbour]];
-
-                            for (var jNeighbour = iNeighbour + 1; jNeighbour < numNeighbours; jNeighbour++) {
-                                var neighbourB = regions[neighbours[jNeighbour]];
-
-                                var connectedNeighbours = neighbourA.ConnectFloorRects(neighbourB);
-                                rectangles.push.apply(rectangles, _toConsumableArray(connectedNeighbours));
-                            }
-                        }
-
-                        if (rectangles.length > 0) {
-                            var _levels$yCat$rectangl;
-
-                            var yCat = coordID(regionA.y);
-                            if (levels[yCat] === undefined) levels[yCat] = { y: regionA.y, rectangles: [] };
-                            (_levels$yCat$rectangl = levels[yCat].rectangles).push.apply(_levels$yCat$rectangl, rectangles);
-                        }
-                    }
-                }
-            }
-
-            var levelsYCats = Object.keys(levels);
-            for (var iYCat = 0, numYCats = levelsYCats.length; iYCat < numYCats; iYCat++) {
-                /** @type {Level} */
-                var level = levels[levelsYCats[iYCat]];
-                var _rectangles = level.rectangles;
-                var regionY = level.y;
-                var regionHeight = height - regionY;
-
-                (0, _Math2D.reduceRectangles)(_rectangles);
-                for (var iRect = 0, numRects = _rectangles.length; iRect < numRects; iRect++) {
-                    var rect = _rectangles[iRect];
-                    var rx = rect.p1.x,
-                        ry = rect.p1.y;
-                    var rw = rect.p3.x - rx,
-                        rh = rect.p3.y - ry;
-
-                    // Calculate preferred packing side based on center point relative to container
-                    var preferredX = rx.x + rw / 2 < width / 2 ? 0 : 1;
-                    var newRegion = new _Region2.default(rx, regionY, ry, rw, regionHeight, rh, 0);
-                    newRegion.SetWeights(rect.weight, rect.weightCapacity, rect.stackingCapacity);
-                    this.regions.push(newRegion);
-                }
-            }
-        }
-    }, {
-        key: "ProcessRegionsForZeroRegions",
-        value: function ProcessRegionsForZeroRegions() {
-            var regions = this.regions;
-            for (var iRegion = 0; iRegion < regions.length; iRegion++) {
-                var region = regions[iRegion];
-                if (region.width < minRegionAxis || region.height < minRegionAxis || region.length < minRegionAxis) {
-                    regions.splice(iRegion, 1);
-                    iRegion--;
-                }
-            }
-        }
-    }, {
-        key: "ProcessRegionsEnclosed",
-        value: function ProcessRegionsEnclosed() {
-            var regions = this.regions;
-
-            for (var iRegion = 0; iRegion < regions.length; iRegion++) {
-                var regionA = regions[iRegion];
-                var volumeA = regionA.volume;
-
-                for (var jRegion = iRegion + 1; jRegion < regions.length; jRegion++) {
-                    var regionB = regions[jRegion];
-                    var volumeB = regionB.volume;
-
-                    if (volumeA < volumeB) {
-                        // If a A is completely contained within B, remove the A
-                        if (regionB.ContainsRegion(smallValue, regionA)) {
-                            regions.splice(iRegion, 1);
-                            iRegion--;
-                            break;
-                        }
-                    } else {
-                        // If a B is completely contained within A, remove the B
-                        if (regionA.ContainsRegion(smallValue, regionB)) {
-                            regions.splice(jRegion, 1);
-                            jRegion--;
-                        }
-                    }
-                }
-            }
-        }
-
-        /** @param {Function} sortFunction */
-
-    }, {
-        key: "Sort",
-        value: function Sort(sortFunction) {
-            this.regions.sort(sortFunction);
-        }
-    }]);
-
-    return RegionsTree;
-}();
-
-exports.default = RegionsTree;
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _Utils = __webpack_require__(0);
-
-var _Utils2 = _interopRequireDefault(_Utils);
-
-var _Components = __webpack_require__(7);
-
-var _Region = __webpack_require__(10);
-
-var _Region2 = _interopRequireDefault(_Region);
-
-var _PackedComponents = __webpack_require__(15);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var HeuristicResult = function () {
-    /** @param {Region} containingRegion @param {Region} packedRegion @param {Number} orientation */
-    function HeuristicResult(containingRegion, packedRegion, orientation) {
-        _classCallCheck(this, HeuristicResult);
-
-        this.containingRegion = containingRegion;
-        this.packedRegion = packedRegion;
-        this.orientation = orientation;
-    }
-
-    /** @param {HeuristicResult} value */
-
-
-    _createClass(HeuristicResult, [{
-        key: "Copy",
-        value: function Copy(value) {
-            this.containingRegion = value.containingRegion;
-            this.packedRegion = value.packedRegion;
-            this.orientation = value.orientation;
-        }
-    }]);
-
-    return HeuristicResult;
-}();
-
-/** @typedef {import('./CUB').PackingAssistantParams HeuristicParams} */
-
-var _workingSet = Symbol('workingSet');
-
-var Heuristic = function () {
-    /** @param {HeuristicParams} params */
-    function Heuristic(params) {
-        _classCallCheck(this, Heuristic);
-
-        this.params = params;
-    }
-
-    _createClass(Heuristic, [{
-        key: "Init",
-        value: function Init() {}
-    }, {
-        key: "Fit",
-
-
-        /** @param {Item} item @returns {HeuristicResult} */
-        value: function Fit(item) {}
-    }, {
-        key: "workingSet",
-        set: function set(value) {
-            this[_workingSet] = value;
-            this.Init();
-        },
-        get: function get() {
-            return this[_workingSet];
-        }
-    }]);
-
-    return Heuristic;
-}();
-
-Heuristic.Result = HeuristicResult;
-
-exports.default = Heuristic;
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _RuntimeTester = __webpack_require__(26);
+
+var _RuntimeTester2 = _interopRequireDefault(_RuntimeTester);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -6272,6 +5849,8 @@ var _vec3 = Symbol('vec3');
 
 var epsilon = Math.pow(2, -52);
 var numberType = 'number';
+
+_RuntimeTester2.default.Notify('Dimensions.FromJSON', 3);
 
 var Dimensions = function () {
     /**
@@ -6376,7 +5955,7 @@ var Dimensions = function () {
         value: function FromJSON(data) {
             if (data.type !== type) console.warn('Data supplied is not: ' + type);
 
-            var dimensions = new Dimensions(data.width, data.length, data.height);
+            var dimensions = new Dimensions(data.width, data.length, data.height).Abs();
             return dimensions;
         }
     }, {
@@ -6392,7 +5971,266 @@ var Dimensions = function () {
 exports.default = Dimensions;
 
 /***/ }),
-/* 29 */
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var active = true;
+var RuntimeTester = {
+    Notify: function Notify() {},
+    Test: function Test() {},
+    Log: function Log() {
+        return 'RuntimeTester is not active';
+    }
+};
+
+if (active) {
+
+    /** @type {Map<string, Test>} */
+    var tests = new Map();
+
+    var TestLog = function () {
+        function TestLog() {
+            _classCallCheck(this, TestLog);
+
+            this.successes = [];
+            this.failures = [];
+        }
+
+        /** @param {Trial} trial */
+
+
+        _createClass(TestLog, [{
+            key: 'Succeeded',
+            value: function Succeeded(trial) {
+                this.successes.push(trial);
+            }
+
+            /** @param {Trial} trial */
+
+        }, {
+            key: 'Failed',
+            value: function Failed(trial) {
+                this.failures.push(trial);
+            }
+        }]);
+
+        return TestLog;
+    }();
+
+    var Test = function () {
+        function Test(title, maximumRuns) {
+            _classCallCheck(this, Test);
+
+            this.title = title;
+            this.maximumRuns = isNaN(maximumRuns) ? Number.MAX_SAFE_INTEGER : maximumRuns;
+
+            /** @type {Array<Trial>} */
+            this.trials = [];
+            this.runsCount = 0;
+
+            this.log = new TestLog();
+        }
+
+        _createClass(Test, [{
+            key: 'TryInstance',
+            value: function TryInstance(testFunction, expectedResult) {
+                if (this.runsCount < this.maximumRuns) {
+                    var trial = new Trial(testFunction, expectedResult).BindTo(this);
+                    this.trials.push(trial);
+                    trial.Execute();
+
+                    if (trial.success) this.log.Succeeded(trial);else this.log.Failed(trial);
+
+                    this.runsCount++;
+                }
+            }
+        }, {
+            key: 'Log',
+            value: function Log() {
+                var log = {
+                    succeeded: this.log.failures.length === 0,
+                    failures: null
+                };
+
+                if (this.log.failures.length > 0) {
+                    log.failures = this.log.failures;
+                }
+
+                return log;
+            }
+        }]);
+
+        return Test;
+    }();
+
+    var TrialLog = function TrialLog() {
+        _classCallCheck(this, TrialLog);
+
+        this.result = undefined;
+        this.error = undefined;
+    };
+
+    var Trial = function () {
+        /**
+         * @param {Function} testFunction 
+         * @param {*} expectedResult 
+         */
+        function Trial(testFunction, expectedResult) {
+            _classCallCheck(this, Trial);
+
+            this.testFunction = testFunction;
+            this.expectedResult = expectedResult;
+
+            this.log = new TrialLog();
+        }
+
+        /** @param {Test} test */
+
+
+        _createClass(Trial, [{
+            key: 'BindTo',
+            value: function BindTo(test) {
+                this.test = test;
+                return this;
+            }
+        }, {
+            key: 'Execute',
+            value: function Execute() {
+                var result = null;
+                try {
+                    result = this.testFunction();
+                } catch (error) {
+                    this.log.error = error;
+                    console.warn('RuntimeTester.error:', error);
+                }
+
+                this.log.result = result;
+            }
+        }, {
+            key: 'success',
+            get: function get() {
+                var success = this.log.result === this.expectedResult;
+                return success;
+            }
+        }]);
+
+        return Trial;
+    }();
+
+    RuntimeTester = function () {
+        function RuntimeTester() {
+            _classCallCheck(this, RuntimeTester);
+        }
+
+        _createClass(RuntimeTester, null, [{
+            key: 'Notify',
+
+
+            /**
+             * @param {string} title - also a unique id
+             * @param {Number} [maximumRuns] Number.MAX_SAFE_INTEGER
+             */
+            value: function Notify(title, maximumRuns) {
+                if (active === false) return false;
+
+                var test = new Test(title, maximumRuns);
+                tests.set(title, test);
+                return test;
+            }
+
+            /**
+             * @param {string} title - also a unique id
+             * @param {Function} testFunction 
+             * @param {*} expectedResult 
+             */
+
+        }, {
+            key: 'Test',
+            value: function Test(title, testFunction, expectedResult) {
+                if (active === false) return false;
+
+                var test = tests.get(title);
+                if (!test) {
+                    console.warn('RuntimeTester was not notified of :' + title);
+                    test = RuntimeTester.Notify(title, maximumRuns);
+                }
+
+                test.TryInstance(testFunction, expectedResult);
+                return test;
+            }
+        }, {
+            key: 'Log',
+            value: function Log() {
+                if (active === false) return 'RuntimeTester is not active';
+
+                var log = {
+                    pass: true,
+                    successful: [],
+                    failed: [],
+                    skipped: []
+                };
+
+                var testValues = tests.values();
+
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = testValues[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var test = _step.value;
+
+                        var testRuns = test.runsCount;
+                        if (testRuns === 0) {
+                            log.skipped.push(test);
+                        } else {
+                            var testSuccessful = test.log.failures.length === 0;
+                            if (testSuccessful) {
+                                log.successful.push(test);
+                            } else {
+                                log.pass = false;
+                                log.failed.push(test);
+                            }
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
+
+                return log;
+            }
+        }]);
+
+        return RuntimeTester;
+    }();
+}
+
+exports.default = RuntimeTester;
+
+/***/ }),
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6413,7 +6251,7 @@ var Resources = function Resources() {
 exports.default = Resources;
 
 /***/ }),
-/* 30 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6429,7 +6267,7 @@ var _CargoEntry = __webpack_require__(6);
 
 var _CargoEntry2 = _interopRequireDefault(_CargoEntry);
 
-var _Cargo = __webpack_require__(69);
+var _Cargo = __webpack_require__(70);
 
 var _Cargo2 = _interopRequireDefault(_Cargo);
 
@@ -6485,7 +6323,7 @@ var CargoGroup = function () {
 exports.default = CargoGroup;
 
 /***/ }),
-/* 31 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6799,7 +6637,153 @@ exports.Element = Element;
 exports.Draggable = Draggable;
 
 /***/ }),
-/* 32 */
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+__webpack_require__(73);
+
+var spaces = {
+    world: 'world',
+    local: 'local'
+};
+
+var modes = {
+    translate: 'translate',
+    rotate: 'rotate',
+    scale: 'scale'
+};
+
+/**
+ * @type {Object<Control3D>}
+ */
+var defaultControls = {};
+
+var Control3D = function () {
+
+    /**
+     * @param {THREE.Camera} camera 
+     * @param {HTMLElement} domElement 
+     */
+    function Control3D(camera, domElement) {
+        _classCallCheck(this, Control3D);
+
+        this.camera = camera;
+        this.control = new THREE.TransformControls(this.camera, domElement);
+        this.control.addEventListener('change', this.Update.bind(this));
+
+        this.control.traverse(function (child) {
+            child.renderOrder = 2;
+        });
+
+        this.visible = false;
+    }
+
+    _createClass(Control3D, [{
+        key: 'Attach',
+        value: function Attach(target) {
+            this.control.attach(target);
+        }
+    }, {
+        key: 'Detach',
+        value: function Detach() {
+            this.control.detach();
+        }
+    }, {
+        key: 'Toggle',
+        value: function Toggle(target) {
+            if (this.control.object) {
+                this.control.detach();
+            } else {
+                this.control.attach(target);
+            }
+        }
+    }, {
+        key: 'Update',
+        value: function Update() {
+            this.control.update();
+        }
+    }, {
+        key: 'visible',
+        get: function get() {
+            return this.control.visible;
+        },
+        set: function set(value) {
+            this.control.visible = value;
+            if (value === false) {
+                this.Detach();
+            }
+        }
+    }, {
+        key: 'space',
+        get: function get() {
+            return this.control.space;
+        },
+        set: function set(value) {
+            this.control.space = value;
+        }
+
+        // translate || rotate || scale
+
+    }, {
+        key: 'mode',
+        set: function set(value) {
+            this.control.setMode(value);
+        }
+    }], [{
+        key: 'Configure',
+
+
+        /**
+         * @param {string} id 
+         * @param {THREE.Camera} camera 
+         * @param {HTMLElement} domElement 
+         * @returns {Control3D}
+         */
+        value: function Configure(id, camera, domElement) {
+            var control = new Control3D(camera, domElement);
+            defaultControls[id] = control;
+            return control;
+        }
+
+        /**
+         * @returns {Control3D}
+         */
+
+    }, {
+        key: 'Request',
+        value: function Request(id) {
+            return defaultControls[id];
+        }
+    }, {
+        key: 'spaces',
+        get: function get() {
+            return spaces;
+        }
+    }, {
+        key: 'modes',
+        get: function get() {
+            return modes;
+        }
+    }]);
+
+    return Control3D;
+}();
+
+exports.default = Control3D;
+
+/***/ }),
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6819,7 +6803,7 @@ var _CargoEntry = __webpack_require__(6);
 
 var _CargoEntry2 = _interopRequireDefault(_CargoEntry);
 
-var _CargoGroup = __webpack_require__(30);
+var _CargoGroup = __webpack_require__(28);
 
 var _CargoGroup2 = _interopRequireDefault(_CargoGroup);
 
@@ -6920,7 +6904,7 @@ var CargoList = function (_Signaler) {
 exports.default = CargoList;
 
 /***/ }),
-/* 33 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6932,7 +6916,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Container = __webpack_require__(9);
+var _Container = __webpack_require__(7);
 
 var _Container2 = _interopRequireDefault(_Container);
 
@@ -7011,7 +6995,377 @@ var PackingSpace = function (_Signaler) {
 exports.default = PackingSpace;
 
 /***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.debugging = undefined;
+exports.sleep = sleep;
+exports.debugLog = debugLog;
+exports.keypress = keypress;
+exports.debugRegion = debugRegion;
+exports.debugClear = debugClear;
+exports.numberFormat = numberFormat;
+exports.format = format;
+
+var _Debug = __webpack_require__(45);
+
+var _Debug2 = _interopRequireDefault(_Debug);
+
+var _Region = __webpack_require__(11);
+
+var _Region2 = _interopRequireDefault(_Region);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var debugging = exports.debugging = false;
+
+if (debugging) {
+    _Debug2.default.app.sceneSetup.input.ListenKeys(['right', 'space']);
+}
+
+function sleep(ms, force) {
+    return new Promise(function (resolve) {
+        if (debugging || force) setTimeout(resolve, ms);else resolve();
+    });
+}
+
+function debugLog() {
+    var _console;
+
+    (_console = console).log.apply(_console, arguments);
+}
+
+function keypress(ms, force) {
+    return new Promise(function (resolve) {
+        if (debugging || force) {
+            var execute = function execute() {
+                if (tid !== undefined) clearTimeout(tid);
+                removeEventListener('keydown', execute);
+                resolve();
+            };
+
+            var tid = undefined;
+
+            if (ms && ms > 0) tid = setTimeout(execute, ms);
+            addEventListener('keydown', execute);
+        } else {
+            resolve();
+        }
+    });
+}
+
+/**
+ * @param {Region} region * @param {Number} color 
+ */
+function debugRegion(region, color, solid, duration, checkered) {
+    var x = region.x,
+        y = region.y,
+        z = region.z,
+        w = region.width,
+        h = region.height,
+        l = region.length;
+    var debugUID = _Debug2.default.Viz.DrawVolume(x + w / 2, y + h / 2, z + l / 2, w, h, l, color || 0xaaffff, duration || -1, !Boolean(solid), checkered);
+    return debugUID;
+}
+
+/** @param {Array<string>} */
+function debugClear(uids) {
+    if (uids) {
+        uids.forEach(function (uid) {
+            _Debug2.default.Viz.RemoveObjectByUID(uid);
+        });
+    } else {
+        _Debug2.default.Viz.ClearAll();
+    }
+}
+
+function numberFormatDefault(n) {
+    return n;
+}
+
+function numberFormat(n, d) {
+    if (n > Number.MAX_SAFE_INTEGER - 2) return 'MAX';
+    var nStr = Math.round(n) !== n ? n.toFixed(d) : n;
+    return nStr;
+}
+
+/** @typedef FormatParams @property {Function} nf number formatting function */
+/** @param {string} str @param {FormatParams} params @param {Array<*>} args */
+function format(str, params) {
+    if (params.nf === undefined) params.nf = numberFormatDefault;
+    var index = 0;
+
+    for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+        args[_key - 2] = arguments[_key];
+    }
+
+    while ((index = str.indexOf('@', index)) !== -1) {
+        if (str[index - 1] !== '\\') {
+            var a = args.shift();
+            if (typeof a === 'number') a = params.nf(a);
+            str = str.replace('@', a);
+        }
+        index += 1;
+    }
+    return str;
+}
+
+/***/ }),
 /* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Math2D = __webpack_require__(8);
+
+var _Components = __webpack_require__(15);
+
+var _PackedComponents = __webpack_require__(46);
+
+var _Region = __webpack_require__(11);
+
+var _Region2 = _interopRequireDefault(_Region);
+
+var _RegionsTree = __webpack_require__(44);
+
+var _RegionsTree2 = _interopRequireDefault(_RegionsTree);
+
+var _CUBDebug = __webpack_require__(33);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var HeuristicParams = function HeuristicParams() {
+    _classCallCheck(this, HeuristicParams);
+};
+
+var HeuristicResult =
+/** @param {Region} containingRegion @param {Region} packedRegion @param {Number} orientation */
+function HeuristicResult(containingRegion, packedRegion, orientation) {
+    _classCallCheck(this, HeuristicResult);
+
+    this.containingRegion = containingRegion;
+    this.packedRegion = packedRegion;
+    this.orientation = orientation;
+};
+
+var _items = Symbol('items');
+var _packedContainer = Symbol('packedContainer');
+var _regionsTree = Symbol('regionsTree');
+var _workingItem = Symbol('workingItem');
+
+var HeuristicWorkingSet = function () {
+    /** @param {HeuristicParams} params */
+    function HeuristicWorkingSet(params) {
+        _classCallCheck(this, HeuristicWorkingSet);
+
+        this.params = params;
+    }
+
+    /** @param {Array<Item>} items */
+
+
+    _createClass(HeuristicWorkingSet, [{
+        key: "SetItems",
+        value: function SetItems(items) {
+            this[_items] = items.slice();
+        }
+        /** @param {Array<Item>} value */
+
+    }, {
+        key: "SetPackedContainer",
+
+
+        /** @param {PackedContainer} packedContainer */
+        value: function SetPackedContainer(packedContainer) {
+            this[_packedContainer] = packedContainer;
+        }
+        /** @param {PackedContainer} value */
+
+    }, {
+        key: "SetRegionsTree",
+
+
+        /** @param {RegionsTree} regionsTree */
+        value: function SetRegionsTree(regionsTree) {
+            this[_regionsTree] = regionsTree;
+        }
+        /** @param {RegionsTree} value */
+
+    }, {
+        key: "Validate",
+
+
+        /** @param {Item} item @returns {Boolean} */
+        value: function Validate(item) {
+            return item.volume > _Math2D.epsilon && this.packedContainer.WeightPass(item.weight);
+        }
+
+        /** Validates the item and assign it
+         *  @param {Item} item @returns {Boolean} */
+
+    }, {
+        key: "SetWorkingItem",
+        value: function SetWorkingItem(item) {
+            if (this.Validate(item)) {
+                this[_workingItem] = item;
+                return true;
+            }
+
+            this[_workingItem] = undefined;
+            return false;
+        }
+
+        /** @param {Item} value */
+
+    }, {
+        key: "FitFunction",
+
+
+        /** @param {Region} region @returns {Heuristic.Result} */
+        value: function FitFunction(region) {}
+        // Override this with heuristic algorithm
+
+
+        /** @returns {Heuristic.Result} */
+
+    }, {
+        key: "Fit",
+        value: function Fit() {
+            var result = this.regionsTree.Find(this.FitFunction, this);
+            return result;
+        }
+
+        /** @returns {false | Item} */
+
+    }, {
+        key: "NextItem",
+        value: function () {
+            var _ref = _asyncToGenerator(function* () {
+                if (this.items === undefined || this.items.length === 0) return false;
+
+                var index = this.items.length - 1;
+                var item = this.items[index];
+                if (item.quantity === 0) {
+                    this.items.splice(index, 1);
+                    return this.NextItem();
+                }
+
+                return item;
+            });
+
+            function NextItem() {
+                return _ref.apply(this, arguments);
+            }
+
+            return NextItem;
+        }()
+
+        /** @param {Item} item */
+
+    }, {
+        key: "RemoveItem",
+        value: function RemoveItem(item) {
+            var index = this.items.indexOf(item);
+            if (index !== -1) this.items.splice(index, 1);
+        }
+    }, {
+        key: "items",
+        set: function set(value) {
+            throw Error('Use HeuristicWorkingSet.SetItems(items) instead.');
+        },
+        get: function get() {
+            return this[_items];
+        }
+    }, {
+        key: "packedContainer",
+        set: function set(value) {
+            throw Error('Use HeuristicWorkingSet.SetPackedContainer(packedContainer) instead.');
+        },
+        get: function get() {
+            return this[_packedContainer];
+        }
+    }, {
+        key: "regionsTree",
+        set: function set(value) {
+            throw Error('Use HeuristicWorkingSet.SetRegionsTree(regionsTree) instead.');
+        },
+        get: function get() {
+            return this[_regionsTree];
+        }
+    }, {
+        key: "workingItem",
+        set: function set(value) {
+            throw Error('Use HeuristicWorkingSet.SetWorkingItem(item) instead.');
+        },
+        get: function get() {
+            return this[_workingItem];
+        }
+    }]);
+
+    return HeuristicWorkingSet;
+}();
+
+var Heuristic = function () {
+    /** @param {HeuristicParams} params @param {typeof HeuristicWorkingSet} workingSetType */
+    function Heuristic(params, workingSetType) {
+        _classCallCheck(this, Heuristic);
+
+        this.params = params;
+
+        this.workingSet = new workingSetType(this.params);
+    }
+
+    _createClass(Heuristic, [{
+        key: "NextItem",
+        value: function NextItem() {
+            return this.workingSet.NextItem();
+        }
+
+        /** @param {Item} item */
+
+    }, {
+        key: "Unpack",
+        value: function Unpack(item) {
+            this.workingSet.RemoveItem(item);
+        }
+
+        /** @param {Item} item @returns {HeuristicResult} */
+
+    }, {
+        key: "Fit",
+        value: function Fit(item) {
+            return false;
+        }
+    }]);
+
+    return Heuristic;
+}();
+
+Heuristic.Params = HeuristicParams;
+Heuristic.WorkingSet = HeuristicWorkingSet;
+Heuristic.Result = HeuristicResult;
+
+exports.default = Heuristic;
+
+/***/ }),
+/* 35 */
 /***/ (function(module, exports) {
 
 var g;
@@ -7038,7 +7392,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7096,7 +7450,7 @@ var UpdateComponent = function () {
 exports.default = UpdateComponent;
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7235,7 +7589,7 @@ var RaycastGroup = function () {
 exports.default = RaycastGroup;
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7306,7 +7660,7 @@ var Controller = function () {
 exports.default = Controller;
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7338,7 +7692,7 @@ var _Utils = __webpack_require__(0);
 
 var _Utils2 = _interopRequireDefault(_Utils);
 
-var _Transition = __webpack_require__(66);
+var _Transition = __webpack_require__(67);
 
 var _Asset = __webpack_require__(4);
 
@@ -7563,7 +7917,7 @@ var EntryInputView = function () {
 exports.default = EntryInputView;
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7625,7 +7979,7 @@ var TextField = function () {
 exports.default = TextField;
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7823,7 +8177,7 @@ TextLabelView.Label = TextLabel;
 exports.default = TextLabelView;
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7835,7 +8189,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _EntryInputView = __webpack_require__(38);
+var _EntryInputView = __webpack_require__(39);
 
 var _EntryInputView2 = _interopRequireDefault(_EntryInputView);
 
@@ -7861,13 +8215,13 @@ var Constants = function () {
 exports.default = Constants;
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _UIUtils = __webpack_require__(31);
+var _UIUtils = __webpack_require__(29);
 
 if (window.dat && !window.dat.guiExtensions) {
 
@@ -7884,7 +8238,7 @@ if (window.dat && !window.dat.guiExtensions) {
         datDisabled: 'color: #606060 !important; cursor: not-allowed !important;'
     };
 
-    Object.defineProperty((window.dat || __webpack_require__(3).default).GUI.prototype, 'onGUIEvent', {
+    Object.defineProperty((window.dat || __webpack_require__(2).default).GUI.prototype, 'onGUIEvent', {
         get: function get() {
             if (!this._onGUIEvent) this._onGUIEvent = [];
             return this._onGUIEvent;
@@ -7893,7 +8247,7 @@ if (window.dat && !window.dat.guiExtensions) {
 
     // update all
 
-    (window.dat || __webpack_require__(3).default).GUI.prototype.updateAll = function () {
+    (window.dat || __webpack_require__(2).default).GUI.prototype.updateAll = function () {
         var gui = this;
         for (var i in gui.__controllers) {
             var controller = gui.__controllers[i];
@@ -7908,7 +8262,7 @@ if (window.dat && !window.dat.guiExtensions) {
 
     // find
 
-    (window.dat || __webpack_require__(3).default).GUI.prototype.find = function (object, property) {
+    (window.dat || __webpack_require__(2).default).GUI.prototype.find = function (object, property) {
         var gui = this,
             controller,
             i;
@@ -7940,7 +8294,7 @@ if (window.dat && !window.dat.guiExtensions) {
 
     // On open event
     //if(_this.opening !== undefined) _this.opening = _this.closed; // chadiik
-    Object.defineProperty((window.dat || __webpack_require__(3).default).GUI.prototype, 'opening', {
+    Object.defineProperty((window.dat || __webpack_require__(2).default).GUI.prototype, 'opening', {
         get: function get() {
             return !this.closed;
         },
@@ -7952,7 +8306,7 @@ if (window.dat && !window.dat.guiExtensions) {
         }
     });
 
-    Object.defineProperty((window.dat || __webpack_require__(3).default).controllers.Controller.prototype, "disabled", {
+    Object.defineProperty((window.dat || __webpack_require__(2).default).controllers.Controller.prototype, "disabled", {
         get: function get() {
             return this.domElement.hasAttribute("disabled");
         },
@@ -7972,14 +8326,14 @@ if (window.dat && !window.dat.guiExtensions) {
         enumerable: true
     });
 
-    (window.dat || __webpack_require__(3).default).GUI.prototype.enable = function (object, property, value) {
+    (window.dat || __webpack_require__(2).default).GUI.prototype.enable = function (object, property, value) {
         var controller = this.find(object, property);
         controller.disabled = !value;
     };
 
     // Tooltip
 
-    Object.defineProperty((window.dat || __webpack_require__(3).default).controllers.Controller.prototype, "tooltip", {
+    Object.defineProperty((window.dat || __webpack_require__(2).default).controllers.Controller.prototype, "tooltip", {
         get: function get() {
             return this._tooltip.innerHTML;
         },
@@ -8003,230 +8357,11 @@ if (window.dat && !window.dat.guiExtensions) {
         enumerable: true
     });
 
-    (window.dat || __webpack_require__(3).default).GUI.prototype.setTooltip = function (object, property, value) {
+    (window.dat || __webpack_require__(2).default).GUI.prototype.setTooltip = function (object, property, value) {
         var controller = this.find(object, property);
         controller.tooltip = value;
     };
 }
-
-/***/ }),
-/* 43 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-/** @typedef Vec2 @property {Number} x @property {Number} y */
-/** @typedef Rectangle @property {Vec2} p1 @property {Vec2} p2 @property {Vec2} p3 @property {Vec2} p4 */
-
-var epsilon = Math.pow(2, -52);
-var smallValue = .000001;
-var smallValueSqrt = .001;
-
-// line intercept math by Paul Bourke http://paulbourke.net/geometry/pointlineplane/
-// Determine the intersection point of two line segments
-// Return FALSE if the lines don't intersect
-function segmentIntersect(x1, y1, x2, y2, x3, y3, x4, y4) {
-
-    // Check if none of the lines are of length 0
-    if (x1 === x2 && y1 === y2 || x3 === x4 && y3 === y4) {
-        return false;
-    }
-
-    var denominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
-
-    // Lines are parallel
-    if (Math.abs(denominator) < epsilon) {
-        return false;
-    }
-
-    var ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
-    var ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
-
-    // is the intersection along the segments
-    if (ua > 0 || ua < 1 || ub > 0 || ub < 1) return false;
-
-    // Return a object with the x and y coordinates of the intersection
-    var x = x1 + ua * (x2 - x1);
-    var y = y1 + ua * (y2 - y1);
-
-    return { x: x, y: y };
-}
-
-function linesIntersect(ax, ay, bx, by, cx, cy, dx, dy) {
-    // Line AB represented as a1x + b1y = c1
-    var a1 = by - ay,
-        b1 = ax - bx;
-    var c1 = a1 * ax + b1 * ay;
-
-    // Line CD represented as a2x + b2y = c2
-    var a2 = dy - cy,
-        b2 = cx - dx;
-    var c2 = a2 * cx + b2 * cy;
-
-    var determinant = a1 * b2 - a2 * b1;
-
-    // The lines are parallel
-    if (Math.abs(determinant) < smallValue) return false;
-
-    var x = (b2 * c1 - b1 * c2) / determinant;
-    var y = (a1 * c2 - a2 * c1) / determinant;
-    return { x: x, y: y };
-}
-
-function rectangleContainsPoint(offset, rx, ry, rw, rh, px, py) {
-    var x = rx - offset,
-        y = ry - offset,
-        w = rw + offset * 2,
-        h = rh + offset * 2;
-    return px > x && px < x + w && py > y && py < y + h;
-}
-
-/** @param {Number} offset offsets the region by this before checking * @param {Region} subRegion */
-function rectangleContainsRectangle(offset, rx, ry, rw, rh, ox, oy, ow, oh) {
-    var x = rx - offset,
-        y = ry - offset,
-        w = rw + offset * 2,
-        h = rh + offset * 2;
-    return ox > x && ox + ow < x + w && oy > y && oy + oh < y + h;
-}
-
-/**
- * @param {Array<Vec2>} points
- */
-function rectanglesFromPoints(points) {
-    // Separate points in lists of 'y' coordinate, grouped by 'x' coordinate
-    var toInt = Math.round(1 / smallValue);
-    var xs = {};
-    points.forEach(function (point) {
-        var xCat = Math.floor(point.x * toInt);
-        if (xs[xCat] === undefined) xs[xCat] = { x: point.x, ys: [] };
-        var ys = xs[xCat].ys;
-        var yCat = Math.floor(point.y * toInt);
-        var insert = true;
-        for (var iY = 0; iY < ys.length; iY++) {
-            if (ys[iY].yCat === yCat) insert = false;
-        }
-        if (insert) ys.push({ yCat: yCat, y: point.y });
-    });
-
-    //console.log('xs:', xs);
-
-    // Intersect lists
-    function sortYCat(a, b) {
-        if (a.yCat < b.yCat) return -1;
-        if (a.yCat > b.yCat) return 1;
-        return 0;
-    }
-    var xsKeys = Object.keys(xs);
-    for (var iX = 0; iX < xsKeys.length; iX++) {
-        var xCat = xs[xsKeys[iX]];
-        xCat.ys.sort(sortYCat);
-    }
-
-    /** @typedef IntersectedX @property {Number} x1 @property {Number} x2 @property {Array<Number>} ys */
-    /** @type {Array<IntersectedX>} */
-    var intersectedXs = [];
-    for (var _iX = 0; _iX < xsKeys.length; _iX++) {
-        var xCat1 = xs[xsKeys[_iX]];
-        var ys1 = xCat1.ys;
-        for (var iX2 = _iX + 1; iX2 < xsKeys.length; iX2++) {
-            var xCat2 = xs[xsKeys[iX2]];
-            var ys2 = xCat2.ys;
-
-            var yIntersect = [];
-            var xIntersect = { x1: xCat1.x, x2: xCat2.x, ys: yIntersect };
-            for (var iY1 = 0; iY1 < ys1.length; iY1++) {
-                for (var iY2 = 0; iY2 < ys2.length; iY2++) {
-                    if (ys1[iY1].yCat === ys2[iY2].yCat) {
-                        yIntersect.push(ys1[iY1].y);
-                        break;
-                    }
-                }
-            }
-
-            if (yIntersect.length > 1) intersectedXs.push(xIntersect);
-        }
-    }
-
-    //console.log(intersectedXs);
-
-    /** @type {Array<Rectangle>} */
-    var rectangles = [];
-    for (var iIX = 0; iIX < intersectedXs.length; iIX++) {
-        var intersectedX = intersectedXs[iIX];
-        var ys = intersectedX.ys;
-        var x1 = intersectedX.x1,
-            x2 = intersectedX.x2;
-        for (var _iY = 0; _iY < ys.length; _iY++) {
-            for (var _iY2 = _iY + 1; _iY2 < ys.length; _iY2++) {
-                var p1 = { x: x1, y: ys[_iY] },
-                    p2 = { x: x2, y: ys[_iY] },
-                    p3 = { x: x2, y: ys[_iY2] },
-                    p4 = { x: x1, y: ys[_iY2] };
-
-                var rectangle = { p1: p1, p2: p2, p3: p3, p4: p4 };
-                rectangles.push(rectangle);
-            }
-        }
-    }
-
-    return rectangles;
-}
-
-/**
- * @param {Array<Rectangle>} rectangles 
- * @returns {Array<Rectangle>} the array is edited in-place
- */
-function reduceRectangles(rectangles) {
-    for (var iRect = 0; iRect < rectangles.length; iRect++) {
-        var ra = rectangles[iRect];
-        var ax = ra.p1.x,
-            ay = ra.p1.y;
-        var aw = ra.p3.x - ax,
-            ah = ra.p3.y - ay;
-        for (var jRect = 0; jRect < rectangles.length; jRect++) {
-            if (iRect !== jRect) {
-                var rb = rectangles[jRect];
-                var bx = rb.p1.x,
-                    by = rb.p1.y;
-                var bw = rb.p3.x - bx,
-                    bh = rb.p3.y - by;
-                if (rectangleContainsRectangle(smallValue, ax, ay, aw, ah, bx, by, bw, bh)) {
-                    rectangles.splice(jRect, 1);
-                    jRect--;
-                    iRect = Math.max(0, jRect - 1);
-                    break;
-                }
-            }
-        }
-    }
-    return rectangles;
-}
-
-/** @param {Number} ax @param {Number} ay @param {Number} bx @param {Number} by @param {Number} x @param {Number} y */
-function segmentContainsPoint(ax, ay, bx, by, x, y) {
-    var vx = bx - ax,
-        vy = by - ay,
-        vxa = x - ax,
-        vya = y - ay,
-        vxb = x - bx,
-        vyb = y - by;
-    var d = Math.sqrt(vx * vx + vy * vy),
-        da = Math.sqrt(vxa * vxa + vya * vya),
-        db = Math.sqrt(vxb * vxb + vyb * vyb);
-    return Math.abs(d - (da + db)) < smallValueSqrt;
-}
-
-exports.linesIntersect = linesIntersect;
-exports.rectangleContainsPoint = rectangleContainsPoint;
-exports.rectangleContainsRectangle = rectangleContainsRectangle;
-exports.reduceRectangles = reduceRectangles;
-exports.rectanglesFromPoints = rectanglesFromPoints;
 
 /***/ }),
 /* 44 */
@@ -8238,117 +8373,264 @@ exports.rectanglesFromPoints = rectanglesFromPoints;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.debugging = undefined;
-exports.sleep = sleep;
-exports.debugLog = debugLog;
-exports.keypress = keypress;
-exports.debugRegion = debugRegion;
-exports.debugClear = debugClear;
-exports.numberFormat = numberFormat;
-exports.format = format;
 
-var _Debug = __webpack_require__(45);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Debug2 = _interopRequireDefault(_Debug);
+var _Math2D = __webpack_require__(8);
 
-var _Region = __webpack_require__(10);
+var _Region = __webpack_require__(11);
 
 var _Region2 = _interopRequireDefault(_Region);
 
+var _CUBDebug = __webpack_require__(33);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var debugging = exports.debugging = false;
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-if (debugging) {
-    _Debug2.default.app.sceneSetup.input.ListenKeys(['right', 'space']);
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function sleep(ms, force) {
-    return new Promise(function (resolve) {
-        if (debugging || force) setTimeout(resolve, ms);else resolve();
-    });
-}
-
-function debugLog() {
-    var _console;
-
-    (_console = console).log.apply(_console, arguments);
-}
-
-function keypress(ms, force) {
-    return new Promise(function (resolve) {
-        if (debugging || force) {
-            var execute = function execute() {
-                if (tid !== undefined) clearTimeout(tid);
-                removeEventListener('keydown', execute);
-                resolve();
-            };
-
-            var tid = undefined;
-
-            if (ms && ms > 0) tid = setTimeout(execute, ms);
-            addEventListener('keydown', execute);
-        } else {
-            resolve();
-        }
-    });
-}
-
-/**
- * @param {Region} region * @param {Number} color 
+/** RegionFindCallback
+ * @callback RegionFindCallback
+ * @param {Region} region
+ * @returns {Object | Boolean}
  */
-function debugRegion(region, color, solid, duration, checkered) {
-    var x = region.x,
-        y = region.y,
-        z = region.z,
-        w = region.width,
-        h = region.height,
-        l = region.length;
-    var debugUID = _Debug2.default.Viz.DrawVolume(x + w / 2, y + h / 2, z + l / 2, w, h, l, color || 0xaaffff, duration || -1, !Boolean(solid), checkered);
-    return debugUID;
-}
 
-/** @param {Array<string>} */
-function debugClear(uids) {
-    if (uids) {
-        uids.forEach(function (uid) {
-            _Debug2.default.Viz.RemoveObjectByUID(uid);
-        });
-    } else {
-        _Debug2.default.Viz.ClearAll();
-    }
-}
+/** @typedef Vec2 @property {Number} x @property {Number} y */
 
-function numberFormatDefault(n) {
-    return n;
-}
+/** @typedef Rectangle @property {Vec2} p1 @property {Vec2} p2 @property {Vec2} p3 @property {Vec2} p4 
+ * @property {Number} weight @property {Number} weightCapacity @property {Number} stackingCapacity 
+ */
 
-function numberFormat(n, d) {
-    if (n > Number.MAX_SAFE_INTEGER - 2) return 'MAX';
-    var nStr = Math.round(n) !== n ? n.toFixed(d) : n;
-    return nStr;
-}
+var minRegionAxis = _Math2D.smallValue;
 
-/** @typedef FormatParams @property {Function} nf number formatting function */
-/** @param {string} str @param {FormatParams} params @param {Array<*>} args */
-function format(str, params) {
-    if (params.nf === undefined) params.nf = numberFormatDefault;
-    var index = 0;
+var RegionsTree = function () {
+    /** @param {Region} root */
+    function RegionsTree(root) {
+        _classCallCheck(this, RegionsTree);
 
-    for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-        args[_key - 2] = arguments[_key];
+        this.regions = [root];
     }
 
-    while ((index = str.indexOf('@', index)) !== -1) {
-        if (str[index - 1] !== '\\') {
-            var a = args.shift();
-            if (typeof a === 'number') a = params.nf(a);
-            str = str.replace('@', a);
+    /** @param {Number} index */
+
+
+    _createClass(RegionsTree, [{
+        key: "Get",
+        value: function Get(index) {
+            return this.regions[index];
         }
-        index += 1;
-    }
-    return str;
-}
+
+        /** @param {RegionFindCallback} callback @param {*} thisArg */
+
+    }, {
+        key: "Find",
+        value: function Find(callback, thisArg) {
+            var numRegions = this.regions.length;
+
+            for (var iRegion = 0; iRegion < numRegions; iRegion++) {
+                var region = this.regions[iRegion];
+                var search = callback.call(thisArg, region);
+                if (search) return search;
+            }
+
+            return false;
+        }
+
+        /** @param {Region} region * @param {Region} fit * @returns {Boolean} false if region has been deleted */
+
+    }, {
+        key: "Occupy",
+        value: function Occupy(region, fit) {
+            var _regions;
+
+            // Subtracts fit from region and calculates new bounding regions
+            var newRegions = region.Subtract(fit, minRegionAxis);
+
+            // Add new bounding regions if any
+            if (newRegions) (_regions = this.regions).push.apply(_regions, _toConsumableArray(newRegions));
+
+            // Check that region is still valid, otherwise remove it
+            if (region.length < minRegionAxis) {
+                var regionIndex = this.regions.indexOf(region);
+                this.regions.splice(regionIndex, 1);
+                return false;
+            }
+
+            var debugUIDs = [];
+            if (!newRegions) newRegions = [];
+            newRegions.push(region);
+            //console.group('Occupy');
+            newRegions.forEach(function (region) {
+                //console.log(region.ToString());
+                debugUIDs.push((0, _CUBDebug.debugRegion)(region, 0xffff0000, true, -1, true));
+            });
+            //console.groupEnd();
+
+            (0, _CUBDebug.debugClear)(debugUIDs);
+
+            return true;
+        }
+
+        /** @param {Number} width */
+
+    }, {
+        key: "ProcessRegionsPreferredX",
+        value: function ProcessRegionsPreferredX(width) {
+            var regions = this.regions,
+                numRegions = regions.length;
+            //let width = this.container.width;
+
+            for (var iRegion = 0; iRegion < numRegions; iRegion++) {
+                var region = regions[iRegion];
+
+                if (Math.abs(region.x) < _Math2D.smallValue) region.preferredX = 0;else if (Math.abs(region.x + region.width - width) < _Math2D.smallValue) region.preferredX = 1;
+            }
+        }
+
+        /** @param {Number} width @param {Number} height */
+
+    }, {
+        key: "ProcessRegionsMergeExpand",
+        value: function ProcessRegionsMergeExpand(width, height) {
+            var regions = this.regions,
+                numRegions = regions.length;
+
+            var toInt = 1 / _Math2D.smallValue;
+            function coordID(value) {
+                return Math.floor(value * toInt);
+            }
+
+            /** @typedef Level @property {Number} y @property {Array<Rectangle>} rectangles */
+            /** @type {Array<Level>} */
+            var levels = {};
+
+            var neighbours = [],
+                rectangles = [];
+            for (var iRegion = 0; iRegion < numRegions; iRegion++) {
+                var regionA = regions[iRegion];
+
+                if (regionA.weightCapacity > _Math2D.smallValue) {
+                    neighbours.length = 0;
+                    neighbours.push(iRegion);
+
+                    for (var jRegion = iRegion + 1; jRegion < numRegions; jRegion++) {
+                        var regionB = regions[jRegion];
+
+                        if (regionB.weightCapacity > _Math2D.smallValue && Math.abs(regionA.y - regionB.y) < _Math2D.smallValue) {
+                            var intersects = regionA.Intersects(_Math2D.smallValue, regionB);
+                            if (intersects) {
+                                neighbours.push(jRegion);
+                            }
+                        }
+                    }
+
+                    var numNeighbours = neighbours.length;
+                    if (numNeighbours > 1) {
+                        rectangles.length = 0;
+
+                        for (var iNeighbour = 0; iNeighbour < numNeighbours; iNeighbour++) {
+                            var neighbourA = regions[neighbours[iNeighbour]];
+
+                            for (var jNeighbour = iNeighbour + 1; jNeighbour < numNeighbours; jNeighbour++) {
+                                var neighbourB = regions[neighbours[jNeighbour]];
+
+                                var connectedNeighbours = neighbourA.ConnectFloorRects(neighbourB);
+                                rectangles.push.apply(rectangles, _toConsumableArray(connectedNeighbours));
+                            }
+                        }
+
+                        if (rectangles.length > 0) {
+                            var _levels$yCat$rectangl;
+
+                            var yCat = coordID(regionA.y);
+                            if (levels[yCat] === undefined) levels[yCat] = { y: regionA.y, rectangles: [] };
+                            (_levels$yCat$rectangl = levels[yCat].rectangles).push.apply(_levels$yCat$rectangl, rectangles);
+                        }
+                    }
+                }
+            }
+
+            var levelsYCats = Object.keys(levels);
+            for (var iYCat = 0, numYCats = levelsYCats.length; iYCat < numYCats; iYCat++) {
+                /** @type {Level} */
+                var level = levels[levelsYCats[iYCat]];
+                var _rectangles = level.rectangles;
+                var regionY = level.y;
+                var regionHeight = height - regionY;
+
+                (0, _Math2D.reduceRectangles)(_rectangles);
+                for (var iRect = 0, numRects = _rectangles.length; iRect < numRects; iRect++) {
+                    var rect = _rectangles[iRect];
+                    var rx = rect.p1.x,
+                        ry = rect.p1.y;
+                    var rw = rect.p3.x - rx,
+                        rh = rect.p3.y - ry;
+
+                    // Calculate preferred packing side based on center point relative to container
+                    var preferredX = rx.x + rw / 2 < width / 2 ? 0 : 1;
+                    var newRegion = new _Region2.default(rx, regionY, ry, rw, regionHeight, rh, 0);
+                    newRegion.SetWeights(rect.weight, rect.weightCapacity, rect.stackingCapacity);
+                    this.regions.push(newRegion);
+                }
+            }
+        }
+    }, {
+        key: "ProcessRegionsForZeroRegions",
+        value: function ProcessRegionsForZeroRegions() {
+            var regions = this.regions;
+            for (var iRegion = 0; iRegion < regions.length; iRegion++) {
+                var region = regions[iRegion];
+                if (region.width < minRegionAxis || region.height < minRegionAxis || region.length < minRegionAxis) {
+                    regions.splice(iRegion, 1);
+                    iRegion--;
+                }
+            }
+        }
+    }, {
+        key: "ProcessRegionsEnclosed",
+        value: function ProcessRegionsEnclosed() {
+            var regions = this.regions;
+
+            for (var iRegion = 0; iRegion < regions.length; iRegion++) {
+                var regionA = regions[iRegion];
+                var volumeA = regionA.volume;
+
+                for (var jRegion = iRegion + 1; jRegion < regions.length; jRegion++) {
+                    var regionB = regions[jRegion];
+                    var volumeB = regionB.volume;
+
+                    if (volumeA < volumeB) {
+                        // If a A is completely contained within B, remove the A
+                        if (regionB.ContainsRegion(_Math2D.smallValue, regionA)) {
+                            regions.splice(iRegion, 1);
+                            iRegion--;
+                            break;
+                        }
+                    } else {
+                        // If a B is completely contained within A, remove the B
+                        if (regionA.ContainsRegion(_Math2D.smallValue, regionB)) {
+                            regions.splice(jRegion, 1);
+                            jRegion--;
+                        }
+                    }
+                }
+            }
+        }
+
+        /** @param {Function} sortFunction */
+
+    }, {
+        key: "Sort",
+        value: function Sort(sortFunction) {
+            this.regions.sort(sortFunction);
+        }
+    }]);
+
+    return RegionsTree;
+}();
+
+exports.default = RegionsTree;
 
 /***/ }),
 /* 45 */
@@ -8363,13 +8645,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _AFitTest = __webpack_require__(75);
+var _AFitTest = __webpack_require__(76);
 
 var _AFitTest2 = _interopRequireDefault(_AFitTest);
 
 var _Asset = __webpack_require__(4);
 
 var _Asset2 = _interopRequireDefault(_Asset);
+
+var _RuntimeTester = __webpack_require__(26);
+
+var _RuntimeTester2 = _interopRequireDefault(_RuntimeTester);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8462,7 +8748,6 @@ var DebugViz = function () {
         value: function SetViewParent(parent) {
             view = new THREE.Object3D();
             view.name = 'DebugViz view';
-            console.log(view.name + ' created...');
             view.renderOrder = Number.MAX_SAFE_INTEGER - 10;
             parent.add(view);
         }
@@ -8596,6 +8881,11 @@ var Debug = function () {
             });
         }
     }, {
+        key: "Runtime",
+        get: function get() {
+            return _RuntimeTester2.default;
+        }
+    }, {
         key: "AFitTest",
         get: function get() {
             return _AFitTest2.default;
@@ -8625,20 +8915,152 @@ exports.default = Debug;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.PackedContainer = exports.PackedItem = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Math2D = __webpack_require__(8);
+
+var _Components = __webpack_require__(15);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var PackedItem = function () {
+
+    /**
+     * @param {Item} ref 
+     * @param {Number} x
+     * @param {Number} y
+     * @param {Number} z
+     * @param {Number} packedWidth
+     * @param {Number} packedHeight
+     * @param {Number} packedLength
+     * @param {Number} orientation 
+     */
+    function PackedItem(ref, x, y, z, packedWidth, packedHeight, packedLength, orientation) {
+        _classCallCheck(this, PackedItem);
+
+        this.ref = ref;
+        this.x = x;this.y = y;this.z = z;
+        this.packedWidth = packedWidth;this.packedHeight = packedHeight;this.packedLength = packedLength;
+        this.orientation = orientation;
+    }
+
+    /** @param {PackedItem} a * @param {PackedItem} b */
+
+
+    _createClass(PackedItem, null, [{
+        key: "DepthSort",
+        value: function DepthSort(a, b) {
+            var az = a.z + a.packedLength,
+                bz = b.z + b.packedLength;
+            if (az + _Math2D.smallValue < bz) return -1;
+            if (az > bz + _Math2D.smallValue) return 1;
+            if (a.y < b.y) return -1;
+            if (a.y > b.y) return 1;
+            if (a.ref.volume > b.ref.volume + _Math2D.smallValue) return -1;
+            if (a.ref.volume + _Math2D.smallValue < b.ref.volume) return 1;
+            return 0;
+        }
+
+        /** @param {PackedItem} a * @param {PackedItem} b */
+
+    }, {
+        key: "Sort",
+        value: function Sort(a, b) {
+            if (a.z + _Math2D.smallValue < b.z) {
+                if (a.z + a.packedLength > b.z && a.y > b.y) return 1;
+                return -1;
+            }
+            if (b.z + _Math2D.smallValue < a.z) {
+                if (b.z + b.packedLength > a.z && b.y > a.y) return 1;
+                return 1;
+            }
+            if (a.y < b.y) return -1;
+            if (a.y > b.y) return 1;
+            if (a.ref.volume > b.ref.volume + _Math2D.smallValue) return -1;
+            if (a.ref.volume + _Math2D.smallValue < b.ref.volume) return 1;
+            return 0;
+        }
+    }]);
+
+    return PackedItem;
+}();
+
+var PackedContainer = function () {
+    /**
+     * @param {Container} container 
+     */
+    function PackedContainer(container) {
+        _classCallCheck(this, PackedContainer);
+
+        this.container = container;
+
+        /** @type {Array<PackedItem>} */
+        this.packedItems = [];
+        /** @type {Array<Item>} */
+        this.unpackedItems = [];
+
+        this.cumulatedWeight = 0;
+    }
+
+    /** @param {PackedItem} item */
+
+
+    _createClass(PackedContainer, [{
+        key: "Pack",
+        value: function Pack(item) {
+            this.cumulatedWeight += item.ref.weight;
+            this.packedItems.push(item);
+        }
+
+        /** @param {Item} item */
+
+    }, {
+        key: "Unpack",
+        value: function Unpack(item) {
+            this.unpackedItems.push(item);
+        }
+
+        /** @param {Number} weight */
+
+    }, {
+        key: "WeightPass",
+        value: function WeightPass(weight) {
+            return this.cumulatedWeight + weight <= this.container.weightCapacity;
+        }
+    }]);
+
+    return PackedContainer;
+}();
+
+exports.PackedItem = PackedItem;
+exports.PackedContainer = PackedContainer;
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Container = __webpack_require__(9);
+var _Container = __webpack_require__(7);
 
 var _Container2 = _interopRequireDefault(_Container);
 
-var _ContainerView = __webpack_require__(47);
+var _ContainerView = __webpack_require__(48);
 
 var _ContainerView2 = _interopRequireDefault(_ContainerView);
 
-var _Logger = __webpack_require__(2);
+var _Logger = __webpack_require__(3);
 
 var _Logger2 = _interopRequireDefault(_Logger);
 
@@ -8727,7 +9149,7 @@ var PackingSpaceView = function () {
 exports.default = PackingSpaceView;
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8741,7 +9163,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Container = __webpack_require__(9);
+var _Container = __webpack_require__(7);
 
 var _Container2 = _interopRequireDefault(_Container);
 
@@ -8749,7 +9171,7 @@ var _Asset = __webpack_require__(4);
 
 var _Asset2 = _interopRequireDefault(_Asset);
 
-var _Logger = __webpack_require__(2);
+var _Logger = __webpack_require__(3);
 
 var _Logger2 = _interopRequireDefault(_Logger);
 
@@ -8951,7 +9373,7 @@ var ContainerView = function () {
 exports.default = ContainerView;
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8983,7 +9405,7 @@ var _PackedCargoBoxView = __webpack_require__(82);
 
 var _PackedCargoBoxView2 = _interopRequireDefault(_PackedCargoBoxView);
 
-var _PackingSpaceView = __webpack_require__(46);
+var _PackingSpaceView = __webpack_require__(47);
 
 var _PackingSpaceView2 = _interopRequireDefault(_PackingSpaceView);
 
@@ -9133,6 +9555,8 @@ var PackResultView = function (_Signaler) {
                 var _this2 = this;
 
                 this.Dispatch(signals.packVizStart, packingResult);
+
+                if (packingResult.packed.length < 1) return;
 
                 var scope = this;
                 var units = this.params.ux.params.units;
@@ -9389,7 +9813,7 @@ var PackResultView = function (_Signaler) {
 exports.default = PackResultView;
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9403,7 +9827,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _UIUtils = __webpack_require__(31);
+var _UIUtils = __webpack_require__(29);
 
 var _Signaler2 = __webpack_require__(1);
 
@@ -9696,7 +10120,7 @@ var DomUI = function (_Signaler) {
 exports.default = DomUI;
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9708,7 +10132,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Logger = __webpack_require__(2);
+var _Logger = __webpack_require__(3);
 
 var _Logger2 = _interopRequireDefault(_Logger);
 
@@ -9716,11 +10140,11 @@ var _BoxEntry = __webpack_require__(5);
 
 var _BoxEntry2 = _interopRequireDefault(_BoxEntry);
 
-var _Dimensions = __webpack_require__(28);
+var _Dimensions = __webpack_require__(25);
 
 var _Dimensions2 = _interopRequireDefault(_Dimensions);
 
-var _LightDispatcher2 = __webpack_require__(11);
+var _LightDispatcher2 = __webpack_require__(9);
 
 var _LightDispatcher3 = _interopRequireDefault(_LightDispatcher2);
 
@@ -9728,7 +10152,7 @@ var _App = __webpack_require__(12);
 
 var _App2 = _interopRequireDefault(_App);
 
-var _CargoList = __webpack_require__(32);
+var _CargoList = __webpack_require__(31);
 
 var _CargoList2 = _interopRequireDefault(_CargoList);
 
@@ -10012,7 +10436,7 @@ CargoInput.BoxEntry = _BoxEntry2.default;
 exports.default = CargoInput;
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10024,15 +10448,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Container = __webpack_require__(9);
+var _Container = __webpack_require__(7);
 
 var _Container2 = _interopRequireDefault(_Container);
 
-var _PackingSpace = __webpack_require__(33);
+var _PackingSpace = __webpack_require__(32);
 
 var _PackingSpace2 = _interopRequireDefault(_PackingSpace);
 
-var _ContainerView = __webpack_require__(47);
+var _ContainerView = __webpack_require__(48);
 
 var _ContainerView2 = _interopRequireDefault(_ContainerView);
 
@@ -10040,11 +10464,11 @@ var _Asset = __webpack_require__(4);
 
 var _Asset2 = _interopRequireDefault(_Asset);
 
-var _LightDispatcher2 = __webpack_require__(11);
+var _LightDispatcher2 = __webpack_require__(9);
 
 var _LightDispatcher3 = _interopRequireDefault(_LightDispatcher2);
 
-var _Logger = __webpack_require__(2);
+var _Logger = __webpack_require__(3);
 
 var _Logger2 = _interopRequireDefault(_Logger);
 
@@ -10215,7 +10639,7 @@ var PackingSpaceInput = function (_LightDispatcher) {
 exports.default = PackingSpaceInput;
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10227,7 +10651,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _LightDispatcher2 = __webpack_require__(11);
+var _LightDispatcher2 = __webpack_require__(9);
 
 var _LightDispatcher3 = _interopRequireDefault(_LightDispatcher2);
 
@@ -10249,7 +10673,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 /** @typedef {import('../packer/Packer').SolverParams} SolverParams */
 
-/** @typedef {import('../packer/cub/CUB').CUBParams} CUBParams */
+/** @typedef {import('../packer/Packer').CUBParams} CUBParams */
 
 var ResultSpace =
 /** @param {string} uid */
@@ -10421,24 +10845,24 @@ var PackerInterface = function (_LightDispatcher) {
 exports.default = PackerInterface;
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(54);
+module.exports = __webpack_require__(55);
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var api = __webpack_require__(55).default;
+var api = __webpack_require__(56).default;
 window.FreightPacker = api;
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10450,7 +10874,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Capabilities = __webpack_require__(56);
+var _Capabilities = __webpack_require__(57);
 
 var _Capabilities2 = _interopRequireDefault(_Capabilities);
 
@@ -10458,11 +10882,11 @@ var _App = __webpack_require__(12);
 
 var _App2 = _interopRequireDefault(_App);
 
-var _CargoInput = __webpack_require__(50);
+var _CargoInput = __webpack_require__(51);
 
 var _CargoInput2 = _interopRequireDefault(_CargoInput);
 
-var _Logger = __webpack_require__(2);
+var _Logger = __webpack_require__(3);
 
 var _Logger2 = _interopRequireDefault(_Logger);
 
@@ -10470,7 +10894,7 @@ var _Utils = __webpack_require__(0);
 
 var _Utils2 = _interopRequireDefault(_Utils);
 
-var _PackingSpaceInput = __webpack_require__(51);
+var _PackingSpaceInput = __webpack_require__(52);
 
 var _PackingSpaceInput2 = _interopRequireDefault(_PackingSpaceInput);
 
@@ -10478,19 +10902,19 @@ var _UX = __webpack_require__(22);
 
 var _UX2 = _interopRequireDefault(_UX);
 
-var _PackerInterface = __webpack_require__(52);
+var _PackerInterface = __webpack_require__(53);
 
 var _PackerInterface2 = _interopRequireDefault(_PackerInterface);
 
-var _LightDispatcher2 = __webpack_require__(11);
+var _LightDispatcher2 = __webpack_require__(9);
 
 var _LightDispatcher3 = _interopRequireDefault(_LightDispatcher2);
 
-var _Constants = __webpack_require__(41);
+var _Constants = __webpack_require__(42);
 
 var _Constants2 = _interopRequireDefault(_Constants);
 
-var _Resources = __webpack_require__(29);
+var _Resources = __webpack_require__(27);
 
 var _Resources2 = _interopRequireDefault(_Resources);
 
@@ -10505,11 +10929,11 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 //#region dev
 var utils = {
 	THREE: THREE,
-	dat: window.dat || __webpack_require__(3).default,
+	dat: window.dat || __webpack_require__(2).default,
 	Signaler: __webpack_require__(1).default,
 	Utils: __webpack_require__(0).default,
 	Debug: __webpack_require__(45).default,
-	Config: __webpack_require__(8).default
+	Config: __webpack_require__(10).default
 };
 
 /** @param {FreightPacker|App} domain */
@@ -10662,10 +11086,10 @@ FreightPacker.Packer = _PackerInterface2.default;
 FreightPacker.Constants = _Constants2.default;
 
 exports.default = FreightPacker;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(34)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(35)))
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10699,7 +11123,7 @@ var Capabilities = function () {
 exports.default = Capabilities;
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10711,11 +11135,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _UpdateComponent = __webpack_require__(35);
+var _UpdateComponent = __webpack_require__(36);
 
 var _UpdateComponent2 = _interopRequireDefault(_UpdateComponent);
 
-var _RaycastGroup = __webpack_require__(36);
+var _RaycastGroup = __webpack_require__(37);
 
 var _RaycastGroup2 = _interopRequireDefault(_RaycastGroup);
 
@@ -10723,7 +11147,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var keypress = __webpack_require__(58);
+var keypress = __webpack_require__(59);
 
 /**
  * @typedef {Object} IScreen
@@ -11238,7 +11662,7 @@ var Input = function () {
 exports.default = Input;
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12410,7 +12834,7 @@ Combo options available and their defaults:
 }).call(undefined);
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12469,7 +12893,7 @@ var Quality = function () {
 exports.default = Quality;
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12614,7 +13038,7 @@ var Renderer = function () {
 exports.default = Renderer;
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13626,7 +14050,7 @@ THREE.ScreenSpacePanning = 0;
 THREE.HorizontalPanning = 1;
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13638,7 +14062,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Controller2 = __webpack_require__(37);
+var _Controller2 = __webpack_require__(38);
 
 var _Controller3 = _interopRequireDefault(_Controller2);
 
@@ -13646,7 +14070,7 @@ var _Camera = __webpack_require__(17);
 
 var _Camera2 = _interopRequireDefault(_Camera);
 
-var _Transform = __webpack_require__(63);
+var _Transform = __webpack_require__(64);
 
 var _Transform2 = _interopRequireDefault(_Transform);
 
@@ -13654,7 +14078,7 @@ var _Utils = __webpack_require__(0);
 
 var _Utils2 = _interopRequireDefault(_Utils);
 
-var _EntryInputView = __webpack_require__(38);
+var _EntryInputView = __webpack_require__(39);
 
 var _EntryInputView2 = _interopRequireDefault(_EntryInputView);
 
@@ -13764,7 +14188,7 @@ var HUDView = function (_Controller) {
 exports.default = HUDView;
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13846,7 +14270,7 @@ var Transform = function () {
 exports.default = Transform;
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13861,7 +14285,7 @@ var _get = function get(object, property, receiver) { if (object === null) objec
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Logger = __webpack_require__(2);
+var _Logger = __webpack_require__(3);
 
 var _Logger2 = _interopRequireDefault(_Logger);
 
@@ -14133,7 +14557,7 @@ exports.RotationConstraint = RotationConstraint;
 exports.TranslationConstraint = TranslationConstraint;
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14233,7 +14657,7 @@ var ColorTemplate = function () {
 exports.default = ColorTemplate;
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14397,7 +14821,7 @@ exports.Transition = Transition;
 exports.Slide = Slide;
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14415,11 +14839,11 @@ var _App = __webpack_require__(12);
 
 var _App2 = _interopRequireDefault(_App);
 
-var _LightDispatcher2 = __webpack_require__(11);
+var _LightDispatcher2 = __webpack_require__(9);
 
 var _LightDispatcher3 = _interopRequireDefault(_LightDispatcher2);
 
-var _Logger = __webpack_require__(2);
+var _Logger = __webpack_require__(3);
 
 var _Logger2 = _interopRequireDefault(_Logger);
 
@@ -14539,7 +14963,7 @@ var Visualization = function (_LightDispatcher) {
 exports.default = Visualization;
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14551,7 +14975,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _LightDispatcher2 = __webpack_require__(11);
+var _LightDispatcher2 = __webpack_require__(9);
 
 var _LightDispatcher3 = _interopRequireDefault(_LightDispatcher2);
 
@@ -14618,7 +15042,7 @@ var User = function (_LightDispatcher) {
 exports.default = User;
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14630,7 +15054,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _CargoGroup = __webpack_require__(30);
+var _CargoGroup = __webpack_require__(28);
 
 var _CargoGroup2 = _interopRequireDefault(_CargoGroup);
 
@@ -14722,7 +15146,7 @@ var Cargo = function (_PackingItem) {
 exports.default = Cargo;
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14800,7 +15224,7 @@ var FloatingShelf = function () {
 exports.default = FloatingShelf;
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14949,7 +15373,7 @@ var Outline = function () {
 exports.default = Outline;
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15942,7 +16366,7 @@ exports.default = Outline;
 })();
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15954,9 +16378,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Dimensions = __webpack_require__(28);
+var _Dimensions = __webpack_require__(25);
 
 var _Dimensions2 = _interopRequireDefault(_Dimensions);
+
+var _RuntimeTester = __webpack_require__(26);
+
+var _RuntimeTester2 = _interopRequireDefault(_RuntimeTester);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -15986,7 +16414,7 @@ var Volume = function () {
 
 
     _createClass(Volume, [{
-        key: 'toJSON',
+        key: "toJSON",
         value: function toJSON() {
             return {
                 type: type,
@@ -15995,12 +16423,12 @@ var Volume = function () {
             };
         }
     }, {
-        key: 'ToString',
+        key: "ToString",
         value: function ToString() {
             return this.dimensions.ToString();
         }
     }, {
-        key: 'box3',
+        key: "box3",
         get: function get() {
             /** @type {THREE.Box3} */
             var b = this[_box3];
@@ -16008,7 +16436,7 @@ var Volume = function () {
             return b;
         }
     }], [{
-        key: 'FromJSON',
+        key: "FromJSON",
         value: function FromJSON(data, volume) {
             if (!volume) {
                 if (data.type !== type) console.warn('Data supplied is not: ' + type);
@@ -16018,6 +16446,10 @@ var Volume = function () {
 
             volume.position = new THREE.Vector3(data.position.x, data.position.y, data.position.z);
             volume.dimensions = _Dimensions2.default.FromJSON(data.dimensions);
+
+            _RuntimeTester2.default.Test('Dimensions.FromJSON', function () {
+                return _Dimensions2.default.Assert(volume.dimensions);
+            }, true);
 
             return volume;
         }
@@ -16029,7 +16461,7 @@ var Volume = function () {
 exports.default = Volume;
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16038,68 +16470,58 @@ exports.default = Volume;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.pack = undefined;
+exports.heuristics = exports.pack = exports.Container = exports.Item = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /** @author chadiik <http://chadiik.com/> */
 
 /**
  * 
  * @param {Container} container 
- * @param {Array<Item>} items // this array (and content) will be changed/emptied
- * @param {CUBParams} params 
+ * @param {Array<Item>} items
+ * @param {Heuristic} heuristic
  */
 var pack = function () {
-    var _ref2 = _asyncToGenerator(function* (container, items, params) {
+    var _ref4 = _asyncToGenerator(function* (container, items, heuristic) {
+        var cub = new CUB(container);
 
-        params = _Utils2.default.AssignUndefined(params, defaultParams);
+        heuristic.workingSet.SetItems(items);
+        heuristic.workingSet.SetPackedContainer(cub.packedContainer);
+        heuristic.workingSet.SetRegionsTree(cub.regionsTree);
 
-        var packingAssistant = new PackingAssistant(container, params);
+        var fallback = new _HeuRegular2.default();
+        fallback.workingSet.SetItems(items);
+        fallback.workingSet.SetPackedContainer(cub.packedContainer);
+        fallback.workingSet.SetRegionsTree(cub.regionsTree);
 
-        function heuLessWaste() {
-            return new _HeuLessWaste2.default(Object.assign({}, packingAssistant.params));
-        }
-
-        function heuParametric1() {
-            var heuParams = new _HeuParametric2.default.Params(params);
-            return new _HeuParametric2.default(heuParams);
-        }
-
-        var heuristics = heuLessWaste();
-        var result = yield packingAssistant.Solve(items, heuristics);
+        var result = yield cub.Solve(heuristic, fallback);
 
         return result;
     });
 
-    return function pack(_x3, _x4, _x5) {
-        return _ref2.apply(this, arguments);
+    return function pack(_x7, _x8, _x9) {
+        return _ref4.apply(this, arguments);
     };
 }();
 
-var _Components = __webpack_require__(7);
+var _Math2D = __webpack_require__(8);
 
-var _Utils = __webpack_require__(0);
-
-var _Utils2 = _interopRequireDefault(_Utils);
-
-var _Region = __webpack_require__(10);
+var _Region = __webpack_require__(11);
 
 var _Region2 = _interopRequireDefault(_Region);
 
-var _RegionsTree = __webpack_require__(26);
+var _RegionsTree = __webpack_require__(44);
 
 var _RegionsTree2 = _interopRequireDefault(_RegionsTree);
 
-var _PackedComponents = __webpack_require__(15);
+var _Components = __webpack_require__(15);
 
-var _CUBDebug = __webpack_require__(44);
+var _PackedComponents = __webpack_require__(46);
 
-var _HeuLessWaste = __webpack_require__(78);
-
-var _HeuLessWaste2 = _interopRequireDefault(_HeuLessWaste);
-
-var _Heuristic = __webpack_require__(27);
+var _Heuristic = __webpack_require__(34);
 
 var _Heuristic2 = _interopRequireDefault(_Heuristic);
+
+var _CUBDebug = __webpack_require__(33);
 
 var _HeuRegular = __webpack_require__(79);
 
@@ -16115,66 +16537,32 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-//#region typedefs
-/** @typedef Vec2 @property {Number} x @property {Number} y */
-
-/**
- * @typedef CUBParams
- * @property {Number} minZ_weight score for tightly packing in length (Z)
- * @property {Number} minWaste_weight score for minimizing wasted space
- */
-
-/**
- * @typedef PackingAssistantParams extends CUBParams
- * @property {Array<Number>} minDimensionsNoWasteFactor
- * @property {Number} minZ_weight score for tightly packing in length (Z)
- * @property {Number} minWaste_weight score for minimizing wasted space
- */
-
-//#endregion 
-
-/** @type {CUBParams} */
-var defaultParams = {
-    minZ_weight: .9,
-    minWaste_weight: .1
+var heuristics = {
+    HeuRegular: _HeuRegular2.default,
+    HeuParametric1: _HeuParametric2.default
 };
-
-/** @type {PackingAssistantParams} */
-var defaultPackingAssitantParams = {
-    minDimensionsNoWasteFactor: [1, 1, 1]
-};
-
-var epsilon = Math.pow(2, -52);
-var smallValue = .000001;
 
 var tempRegion = new _Region2.default();
-var tempRegion2 = new _Region2.default();
 
-var PackingAssistant = function () {
+var CUB = function () {
     /**
-     * 
      * @param {Container} container 
-     * @param {PackingAssistantParams} params 
      */
-    function PackingAssistant(container, params) {
-        _classCallCheck(this, PackingAssistant);
+    function CUB(container) {
+        _classCallCheck(this, CUB);
 
-        this.params = _Utils2.default.AssignUndefined(Object.assign({}, params), defaultPackingAssitantParams);
         this.container = container;
         this.packedContainer = new _PackedComponents.PackedContainer(container);
 
         var firstRegion = new _Region2.default(0, 0, 0, container.width, container.height, container.length, 0);
         firstRegion.SetWeights(0, container.weightCapacity, 0);
         this.regionsTree = new _RegionsTree2.default(firstRegion);
-
-        /** @type {Item} */
-        this.workingItem;
     }
 
     /** @param {PackedItem} packedItem @param {Boolean} [harsh] default = false */
 
 
-    _createClass(PackingAssistant, [{
+    _createClass(CUB, [{
         key: "ProcessRegionsPerPackedItem",
         value: function ProcessRegionsPerPackedItem(packedItem, harsh) {
             var regions = this.regionsTree.regions;
@@ -16187,14 +16575,14 @@ var PackingAssistant = function () {
             for (var iRegion = 0; iRegion < regions.length; iRegion++) {
                 var region = regions[iRegion];
 
-                if (itemVolume > region.volume && packedRegion.ContainsRegion(smallValue, region)) {
+                if (itemVolume > region.volume && packedRegion.ContainsRegion(_Math2D.smallValue, region)) {
                     regions.splice(iRegion, 1);
                     iRegion--;
                     console.log('Contained region' + iRegion + ' deleted');
                     continue;
                 }
 
-                if (packedRegion.Intersects(-smallValue, region)) {
+                if (packedRegion.Intersects(-_Math2D.smallValue, region)) {
 
                     if (harsh) {
                         console.log('\tIntersecting region' + iRegion + ' deleted (!)');
@@ -16248,15 +16636,13 @@ var PackingAssistant = function () {
             this.regionsTree.Sort(_Region2.default.SortDeepestSmallest);
         }
 
-        /** @param {Item} item @param {Heuristic} heuristics */
+        /** @param {Item} item @param {Heuristic} heuristic */
 
     }, {
         key: "FitUsingHeuristic",
-        value: function FitUsingHeuristic(item, heuristics) {
-            // General weight check
-            if (this.packedContainer.WeightPass(item.weight) === false) return false;
+        value: function FitUsingHeuristic(item, heuristic) {
 
-            var result = heuristics.Fit(item);
+            var result = heuristic.Fit(item);
 
             if (result) {
                 var placement = result.packedRegion;
@@ -16274,70 +16660,72 @@ var PackingAssistant = function () {
             return false;
         }
 
-        /** @param {Array<Item>} items @param {Heuristic} heuristics */
+        /** @param {Heuristic} heuristic @param {Heuristic} fallback */
 
     }, {
         key: "Solve",
         value: function () {
-            var _ref = _asyncToGenerator(function* (items, heuristics) {
+            var _ref = _asyncToGenerator(function* (heuristic, fallback) {
+
+                /** @param {Heuristic} workingHeuristic @param {Boolean} final */
+                var fitWith = function () {
+                    var _ref2 = _asyncToGenerator(function* (workingHeuristic, final) {
+                        while (nextItem = yield workingHeuristic.NextItem()) {
+
+                            scope.ProcessRegions();
+                            packedContainer.packedItems.sort(_PackedComponents.PackedItem.Sort);
+
+                            // Try to pack item
+                            var packedItem = scope.FitUsingHeuristic(nextItem, workingHeuristic);
+
+                            if (packedItem === false) {
+                                unpackItem(nextItem, workingHeuristic, final);
+                            } else {
+                                packItem(packedItem, workingHeuristic);
+                            }
+
+                            /**/yield (0, _CUBDebug.sleep)(30);
+                        }
+                    });
+
+                    return function fitWith(_x3, _x4) {
+                        return _ref2.apply(this, arguments);
+                    };
+                }();
+
+                var scope = this;
                 var packedContainer = this.packedContainer;
-                var iItem = items.length - 1;
+
+                var log = { successful: 0, failed: 0, heuristic: 0, fallback: 0 };
 
                 // Helper function
-                function unpackItem(index) {
-                    var item = items[index];
-                    packedContainer.Unpack(item);
-                    items.splice(index, 1);
-                    iItem--;
+                /** @param {Item} item @param {Heuristic} workingHeuristic @param {Boolean} final */
+                function unpackItem(item, workingHeuristic, final) {
+                    if (final) packedContainer.Unpack(item);
+                    workingHeuristic.Unpack(item);
+
+                    if (final) log.failed++;
                 }
 
                 // Helper function
-                /** @param {Number} index * @param {PackedItem} item */
-                function packItem(index, item) {
-                    packedContainer.Pack(item);
+                /** @param {PackedItem} packedItem @param {Heuristic} workingHeuristic */
+                function packItem(packedItem, workingHeuristic) {
+                    packedContainer.Pack(packedItem);
+                    packedItem.ref.quantity--;
 
-                    item.ref.quantity--;
-                    if (item.ref.quantity === 0) {
-                        items.splice(index, 1);
-                        iItem--;
-                    }
+                    if (workingHeuristic === heuristic) log.heuristic++;else log.fallback++;
+
+                    log.successful++;
                 }
 
-                var workingSet = {
-                    items: items,
-                    packedContainer: packedContainer,
-                    regionsTree: this.regionsTree
-                };
+                var nextItem = void 0;
 
-                heuristics.workingSet = workingSet;
-
-                var heuRegular = new _HeuRegular2.default(Object.assign({}, this.params));
-                heuRegular.workingSet = workingSet;
-
-                while (items.length > 0) {
-                    var item = items[iItem];
-
-                    this.ProcessRegions();
-                    packedContainer.packedItems.sort(_PackedComponents.PackedItem.Sort);
-
-                    // Try to pack item
-                    var packedItem = this.FitUsingHeuristic(item, heuristics);
-                    if (packedItem === false) {
-                        // Fallback to regular fitting if failed
-                        packedItem = this.FitUsingHeuristic(item, heuRegular);
-                    }
-
-                    if (packedItem === false) {
-
-                        /**/(0, _CUBDebug.debugLog)('item fitting failed.');
-                        unpackItem(iItem);
-                    } else {
-
-                        packItem(iItem, packedItem);
-                    }
-
-                    /**/yield (0, _CUBDebug.sleep)(16);
+                yield fitWith(heuristic, false);
+                if (fallback) {
+                    yield fitWith(fallback, true);
                 }
+
+                console.log('Solved:', log);
 
                 return packedContainer;
             });
@@ -16348,15 +16736,87 @@ var PackingAssistant = function () {
 
             return Solve;
         }()
+
+        /** @param {Heuristic} heuristic @param {Heuristic} fallback */
+
+    }, {
+        key: "Solve1",
+        value: function () {
+            var _ref3 = _asyncToGenerator(function* (heuristic, fallback) {
+                var packedContainer = this.packedContainer;
+
+                // Helper function
+                /** @param {Item} item */
+                function unpackItem(item) {
+                    packedContainer.Unpack(item);
+                    heuristic.Unpack(item);
+
+                    if (fallback) fallback.Unpack(item);
+                }
+
+                // Helper function
+                /** @param {PackedItem} packedItem */
+                function packItem(packedItem) {
+                    packedContainer.Pack(packedItem);
+                    packedItem.ref.quantity--;
+                }
+
+                var log = { successful: 0, failed: 0, heuristic: 0, fallback: 0 };
+
+                var nextItem = void 0;
+                while (nextItem = yield heuristic.NextItem()) {
+
+                    this.ProcessRegions();
+                    packedContainer.packedItems.sort(_PackedComponents.PackedItem.Sort);
+
+                    // Try to pack item
+                    var packedItem = this.FitUsingHeuristic(nextItem, heuristic);
+                    if (packedItem) {
+                        log.heuristic++;
+                    } else if (fallback) {
+                        // Fallback if failed
+                        // nextItem = await fallback.NextItem();
+                        packedItem = this.FitUsingHeuristic(nextItem, fallback);
+
+                        log.fallback++;
+                    }
+
+                    if (packedItem === false) {
+
+                        unpackItem(nextItem);
+                        log.failed++;
+                    } else {
+
+                        packItem(packedItem);
+                        log.successful++;
+                    }
+
+                    /**/yield (0, _CUBDebug.sleep)(200);
+                }
+
+                console.log('Solved:', log);
+
+                return packedContainer;
+            });
+
+            function Solve1(_x5, _x6) {
+                return _ref3.apply(this, arguments);
+            }
+
+            return Solve1;
+        }()
     }]);
 
-    return PackingAssistant;
+    return CUB;
 }();
 
+exports.Item = _Components.Item;
+exports.Container = _Components.Container;
 exports.pack = pack;
+exports.heuristics = heuristics;
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16368,11 +16828,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Item = __webpack_require__(76);
+var _Item = __webpack_require__(77);
 
 var _Item2 = _interopRequireDefault(_Item);
 
-var _Container = __webpack_require__(77);
+var _Container = __webpack_require__(78);
 
 var _Container2 = _interopRequireDefault(_Container);
 
@@ -16465,7 +16925,7 @@ var AFitTest = function () {
 exports.default = AFitTest;
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16561,7 +17021,7 @@ var Item = function () {
 exports.default = Item;
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16593,279 +17053,6 @@ function Container(id, width, length, height) {
 exports.default = Container;
 
 /***/ }),
-/* 78 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-var _Heuristic2 = __webpack_require__(27);
-
-var _Heuristic3 = _interopRequireDefault(_Heuristic2);
-
-var _Utils = __webpack_require__(0);
-
-var _Utils2 = _interopRequireDefault(_Utils);
-
-var _Components = __webpack_require__(7);
-
-var _Region = __webpack_require__(10);
-
-var _Region2 = _interopRequireDefault(_Region);
-
-var _PackedComponents = __webpack_require__(15);
-
-var _RegionsTree = __webpack_require__(26);
-
-var _RegionsTree2 = _interopRequireDefault(_RegionsTree);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-/** @typedef {import('./Heuristic').HeuristicParams HeuLessWasteParams} */
-/** @typedef HeuLessWasteSet @property {HeuLessWasteParams} params @property {Array<Item>} items @property {PackedContainer} packedContainer @property {RegionsTree} regionsTree */
-
-var smallValue = .000001;
-var minRegionAxis = smallValue;
-
-var tempRegion = new _Region2.default();
-var tempRegion2 = new _Region2.default();
-
-function sortByN(a, b) {
-    if (isNaN(a.n) || isNaN(b.n)) return 0;
-
-    if (a.n < b.n) return -1;
-    if (a.n > b.n) return 1;
-    return 0;
-}
-
-/**
- * @param {Region} fit 
- * @param {Array<Region>} newRegions 
- */
-function rateFit(fit, newRegions) {
-
-    /** @type {HeuLessWasteSet} */
-    var w = this;
-
-    // Try out a recursive deep rate fit
-    var containerLength = w.packedContainer.container.length;
-    var minDimensions = w.minDimensions;
-    var minDimensionsNoWasteFactor = w.minDimensionsNoWasteFactor;
-    var minZScore = 1 - (fit.z + fit.length) / containerLength; // 0-1
-    // new regions usability score
-    var minWasteScore = 1; // have completely filled the region if newRegions.length === 0
-    if (newRegions.length > 0) {
-        minWasteScore = 0;
-        for (var iRegion = 0; iRegion < newRegions.length; iRegion++) {
-            var region = newRegions[iRegion];
-
-            var scoreW = 0,
-                scoreH = 0,
-                scoreL = 0;
-            if (region.width >= minDimensions[0] && region.width - minDimensions[0] < minDimensions[0] * minDimensionsNoWasteFactor[0]) scoreW += 1;
-            if (region.height >= minDimensions[1] && region.width - minDimensions[1] < minDimensions[1] * minDimensionsNoWasteFactor[1]) scoreH += 1;
-            if (region.length >= minDimensions[2] && region.width - minDimensions[2] < minDimensions[2] * minDimensionsNoWasteFactor[2]) scoreL += 1;
-
-            minWasteScore += scoreW * .5 + scoreH * .3 + scoreL * .2;
-        }
-        minWasteScore /= newRegions.length;
-    }
-    var minZ_weight = w.params.minZ_weight;
-    var minWaste_weight = w.params.minWaste_weight;
-    var score = minZScore * minZ_weight + minWasteScore * minWaste_weight;
-    return score;
-}
-
-/** @param {Region} region */
-function highestScoreFunction(region) {
-    /** @type {Item} */
-    var item = this.workingItem;
-
-    /** @typedef PlacementScore @property {Region} region region @property {Number} orientation orientation index @property {Number} n score */
-    /** @type {Array<PlacementScore>} */
-    var regionScoreTable = this.regionScoreTable;
-
-    var orientationScoreTable = this.orientationScoreTable;
-
-    var volumeItem = item.volume,
-        validOrientations = item.validOrientations;
-
-    if (region.volume > volumeItem) {
-        var dummyRegion = tempRegion2.Copy(region);
-
-        orientationScoreTable.length = 0;
-        for (var iOrient = 0; iOrient < validOrientations.length; iOrient++) {
-            var orientation = validOrientations[iOrient];
-
-            var dimensions = item.GetOrientedDimensions(orientation);
-            var regionFitTest = region.FitTest(smallValue, dimensions[0], dimensions[1], dimensions[2], item.weight, item.grounded);
-
-            if (regionFitTest !== false) {
-
-                // Subtracts fit from region and calculates new bounding regions
-                var newRegions = dummyRegion.Subtract(regionFitTest, minRegionAxis);
-                if (newRegions === undefined) newRegions = [];
-                if (dummyRegion.length > minRegionAxis) newRegions.push(dummyRegion);
-
-                var orientationScore = {
-                    region: region,
-                    orientation: orientation,
-                    n: rateFit.call(this, regionFitTest, newRegions)
-                };
-                orientationScoreTable.push(orientationScore);
-            }
-        }
-
-        if (orientationScoreTable.length > 0) {
-            orientationScoreTable.sort(sortByN);
-            var regionScore = orientationScoreTable.pop();
-            regionScoreTable.push(regionScore);
-        }
-    }
-
-    return false;
-}
-
-var HeuLessWaste = function (_Heuristic) {
-    _inherits(HeuLessWaste, _Heuristic);
-
-    /** @param {HeuLessWasteParams} params */
-    function HeuLessWaste(params) {
-        _classCallCheck(this, HeuLessWaste);
-
-        /** @type {HeuLessWasteSet} */
-        var _this = _possibleConstructorReturn(this, (HeuLessWaste.__proto__ || Object.getPrototypeOf(HeuLessWaste)).call(this, params));
-
-        _this.workingSet;
-        return _this;
-    }
-
-    /** @param {Array<Item>} items */
-
-
-    _createClass(HeuLessWaste, [{
-        key: "GetMinDimensionsOverall",
-        value: function GetMinDimensionsOverall(items) {
-            var minDimensions = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER];
-
-            for (var iItem = 0, numItems = items.length; iItem < numItems; iItem++) {
-                var item = items[iItem];
-                var validOrientations = item.validOrientations;
-                for (var iOrient = 0; iOrient < validOrientations.length; iOrient++) {
-                    var orientation = validOrientations[iOrient];
-                    var dimensions = item.GetOrientedDimensions(orientation);
-                    if (dimensions[0] < minDimensions[0]) minDimensions[0] = dimensions[0];
-                    if (dimensions[1] < minDimensions[1]) minDimensions[1] = dimensions[1];
-                    if (dimensions[2] < minDimensions[2]) minDimensions[2] = dimensions[2];
-                }
-            }
-
-            return minDimensions;
-        }
-    }, {
-        key: "Init",
-        value: function Init() {
-            _get(HeuLessWaste.prototype.__proto__ || Object.getPrototypeOf(HeuLessWaste.prototype), "Init", this).call(this);
-
-            var minDimensionsNoWasteFactor = [1, 1, 1];
-
-            var w = this.workingSet;
-            var workingItems = w.items.slice();
-            workingItems.sort(_Components.Item.VolumeSort);
-            var minDimensions = this.GetMinDimensionsOverall(workingItems);
-
-            w.params = this.params;
-            w.minDimensions = minDimensions;
-            w.minDimensionsNoWasteFactor = minDimensionsNoWasteFactor;
-        }
-
-        /** @param {Item} item */
-
-    }, {
-        key: "GetPlacementWithHighestScore",
-        value: function GetPlacementWithHighestScore(item) {
-
-            /** @typedef PlacementScore @property {Number} region region index @property {Number} orientation orientation index @property {Number} n score */
-            /** @type {Array<PlacementScore>} */
-            var regionScoreTable = [],
-                orientationScoreTable = [];
-            var testSuccessfulRegions = 4;
-
-            var w = this.workingSet;
-            w.workingItem = item;
-            w.regionScoreTable = regionScoreTable;
-            w.orientationScoreTable = orientationScoreTable;
-            w.testSuccessfulRegions = testSuccessfulRegions;
-
-            // Try to fit in sorted regions
-            w.regionsTree.Find(highestScoreFunction, w);
-
-            if (regionScoreTable.length === 0) {
-                return false;
-            }
-
-            regionScoreTable.sort(sortByN);
-            var highestScore = regionScoreTable.pop();
-            var containingRegion = highestScore.region,
-                orientation = item.validOrientations[highestScore.orientation];
-
-            var dimensions = item.GetOrientedDimensions(orientation);
-
-            // Fit test (success: Region, failure: false)
-            var regionFitTest = containingRegion.FitTest(smallValue, dimensions[0], dimensions[1], dimensions[2], item.weight, item.grounded, tempRegion);
-            if (regionFitTest !== false) {
-
-                // Stacking & weight test 
-
-                var result = new _Heuristic3.default.Result(containingRegion, regionFitTest, orientation);
-                return result;
-            }
-
-            return false;
-        }
-
-        /** @param {Item} item */
-
-    }, {
-        key: "Fit",
-        value: function Fit(item) {
-            var result = _get(HeuLessWaste.prototype.__proto__ || Object.getPrototypeOf(HeuLessWaste.prototype), "Fit", this).call(this, item);
-
-            var w = this.workingSet;
-
-            // General weight check
-            if (w.packedContainer.WeightPass(item.weight) === false) return false;
-
-            var highestScored = this.GetPlacementWithHighestScore(item);
-
-            if (highestScored) {
-                if (result === undefined) result = new _Heuristic3.default.Result(highestScored.containingRegion, highestScored.packedRegion, highestScored.orientation);else result.Copy(highestScored);
-            }
-
-            return result || false;
-        }
-    }]);
-
-    return HeuLessWaste;
-}(_Heuristic3.default);
-
-exports.default = HeuLessWaste;
-
-/***/ }),
 /* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16880,25 +17067,17 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _Heuristic2 = __webpack_require__(27);
+var _Math2D = __webpack_require__(8);
+
+var _Heuristic2 = __webpack_require__(34);
 
 var _Heuristic3 = _interopRequireDefault(_Heuristic2);
 
-var _Utils = __webpack_require__(0);
+var _Components = __webpack_require__(15);
 
-var _Utils2 = _interopRequireDefault(_Utils);
-
-var _Components = __webpack_require__(7);
-
-var _Region = __webpack_require__(10);
+var _Region = __webpack_require__(11);
 
 var _Region2 = _interopRequireDefault(_Region);
-
-var _PackedComponents = __webpack_require__(15);
-
-var _RegionsTree = __webpack_require__(26);
-
-var _RegionsTree2 = _interopRequireDefault(_RegionsTree);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16908,49 +17087,87 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-/** @typedef {import('./Heuristic').HeuristicParams HeuRegularParams} */
-/** @typedef HeuRegularSet @property {Array<Item>} items @property {PackedContainer} packedContainer @property {RegionsTree} regionsTree */
+var HeuRegularParams = function (_Heuristic$Params) {
+    _inherits(HeuRegularParams, _Heuristic$Params);
 
-var epsilon = Math.pow(2, -52);
-var smallValue = .000001;
+    function HeuRegularParams() {
+        _classCallCheck(this, HeuRegularParams);
+
+        return _possibleConstructorReturn(this, (HeuRegularParams.__proto__ || Object.getPrototypeOf(HeuRegularParams)).call(this));
+    }
+
+    return HeuRegularParams;
+}(_Heuristic3.default.Params);
 
 var tempRegion = new _Region2.default();
 
-/** @param {Region} region */
-function firstFitFunction(region) {
-    var item = this.workingItem;
-    var validOrientations = item.validOrientations;
-    for (var iOrient = 0; iOrient < validOrientations.length; iOrient++) {
-        var orientation = validOrientations[iOrient];
+var HeuRegularSet = function (_Heuristic$WorkingSet) {
+    _inherits(HeuRegularSet, _Heuristic$WorkingSet);
 
-        var dimensions = item.GetOrientedDimensions(orientation);
+    function HeuRegularSet() {
+        var _ref;
 
-        // Fit test (success: Region, failure: false)
-        var regionFitTest = region.FitTest(smallValue, dimensions[0], dimensions[1], dimensions[2], item.weight, item.grounded, tempRegion);
-        if (regionFitTest !== false) {
+        _classCallCheck(this, HeuRegularSet);
 
-            // Stacking & weight test 
-
-            var result = new _Heuristic3.default.Result(region, regionFitTest, orientation);
-            return result;
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
         }
+
+        return _possibleConstructorReturn(this, (_ref = HeuRegularSet.__proto__ || Object.getPrototypeOf(HeuRegularSet)).call.apply(_ref, [this].concat(args)));
     }
 
-    return false;
-}
+    /** @param {Array<Item>} items */
+
+
+    _createClass(HeuRegularSet, [{
+        key: "SetItems",
+        value: function SetItems(items) {
+            _get(HeuRegularSet.prototype.__proto__ || Object.getPrototypeOf(HeuRegularSet.prototype), "SetItems", this).call(this, items);
+
+            this.items.sort(_Components.Item.VolumeSort);
+        }
+
+        /** @param {Region} region */
+
+    }, {
+        key: "FitFunction",
+        value: function FitFunction(region) {
+            var item = this.workingItem;
+            var validOrientations = item.validOrientations;
+            for (var iOrient = 0; iOrient < validOrientations.length; iOrient++) {
+                var orientation = validOrientations[iOrient];
+
+                var dimensions = item.GetOrientedDimensions(orientation);
+
+                // Fit test (success: Region, failure: false)
+                var regionFitTest = region.FitTest(_Math2D.smallValue, dimensions[0], dimensions[1], dimensions[2], item.weight, item.grounded, tempRegion);
+                if (regionFitTest !== false) {
+
+                    var result = new _Heuristic3.default.Result(region, regionFitTest, orientation);
+                    return result;
+                }
+            }
+
+            return false;
+        }
+    }]);
+
+    return HeuRegularSet;
+}(_Heuristic3.default.WorkingSet);
 
 var HeuRegular = function (_Heuristic) {
     _inherits(HeuRegular, _Heuristic);
 
-    /** @param {HeuRegularParams} params */
-    function HeuRegular(params) {
+    function HeuRegular() {
         _classCallCheck(this, HeuRegular);
 
-        /** @type {HeuRegularSet} */
-        var _this = _possibleConstructorReturn(this, (HeuRegular.__proto__ || Object.getPrototypeOf(HeuRegular)).call(this, params));
+        var params = undefined;
 
-        _this.workingSet;
-        return _this;
+        /** @type {HeuRegularSet} */
+        var _this3 = _possibleConstructorReturn(this, (HeuRegular.__proto__ || Object.getPrototypeOf(HeuRegular)).call(this, params, HeuRegularSet));
+
+        _this3.workingSet;
+        return _this3;
     }
 
     /** @param {Item} item */
@@ -16959,26 +17176,22 @@ var HeuRegular = function (_Heuristic) {
     _createClass(HeuRegular, [{
         key: "Fit",
         value: function Fit(item) {
-            var result = _get(HeuRegular.prototype.__proto__ || Object.getPrototypeOf(HeuRegular.prototype), "Fit", this).call(this, item);
+            var result = false;
+            var validItem = this.workingSet.SetWorkingItem(item);
 
-            var w = this.workingSet;
-
-            // General weight check
-            if (w.packedContainer.WeightPass(item.weight) === false) return false;
-
-            w.workingItem = item;
-            /** @type {Heuristic.Result} */
-            var firstFit = w.regionsTree.Find(firstFitFunction, w);
-            if (firstFit) {
-                if (result === undefined) result = new _Heuristic3.default.Result(firstFit.containingRegion, firstFit.packedRegion, firstFit.orientation);else result.Copy(firstFit);
+            if (validItem) {
+                result = this.workingSet.Fit();
             }
 
-            return result || false;
+            return result;
         }
     }]);
 
     return HeuRegular;
 }(_Heuristic3.default);
+
+HeuRegular.Params = HeuRegularParams;
+HeuRegular.WorkingSet = HeuRegularSet;
 
 exports.default = HeuRegular;
 
@@ -16997,21 +17210,17 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _Heuristic2 = __webpack_require__(27);
+var _Math2D = __webpack_require__(8);
+
+var _Heuristic2 = __webpack_require__(34);
 
 var _Heuristic3 = _interopRequireDefault(_Heuristic2);
 
-var _Utils = __webpack_require__(0);
+var _Components = __webpack_require__(15);
 
-var _Utils2 = _interopRequireDefault(_Utils);
+var _Region = __webpack_require__(11);
 
-var _Components = __webpack_require__(7);
-
-var _PackedComponents = __webpack_require__(15);
-
-var _RegionsTree = __webpack_require__(26);
-
-var _RegionsTree2 = _interopRequireDefault(_RegionsTree);
+var _Region2 = _interopRequireDefault(_Region);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17021,30 +17230,211 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/** @typedef {import('./CUB').CUBParams} CUBParams */
-
-var HeuParametric1Params =
-/** @param {CUBParams} cubParams */
-function HeuParametric1Params(cubParams) {
-    _classCallCheck(this, HeuParametric1Params);
-
-    this.cub = cubParams;
-};
-
-var HeuParametric1Set =
-/**
- * 
- * @param {Array<Item>} items 
- * @param {PackedContainer} packedContainer 
- * @param {RegionsTree} regionsTree 
+var ScoringParams =
+/** Scoring weights
+ * @param {Number} minZ score for tightly packing in length (Z)
+ * @param {Number} minWaste score for minimizing wasted space
  */
-function HeuParametric1Set(items, packedContainer, regionsTree) {
-    _classCallCheck(this, HeuParametric1Set);
+function ScoringParams(minZ, minWaste) {
+    _classCallCheck(this, ScoringParams);
 
-    this.items = items;
-    this.packedContainer = packedContainer;
-    this.regionsTree = regionsTree;
+    this.minZ = minZ;
+    this.minWaste = minWaste;
 };
+
+var HeuParametric1Params = function (_Heuristic$Params) {
+    _inherits(HeuParametric1Params, _Heuristic$Params);
+
+    function HeuParametric1Params() {
+        _classCallCheck(this, HeuParametric1Params);
+
+        /** Defaults minZ = .9, minWaste = .1 
+         * @type {ScoringParams} */
+        var _this = _possibleConstructorReturn(this, (HeuParametric1Params.__proto__ || Object.getPrototypeOf(HeuParametric1Params)).call(this));
+
+        _this.scoring = new ScoringParams(.9, .1);
+        return _this;
+    }
+
+    return HeuParametric1Params;
+}(_Heuristic3.default.Params);
+
+/** @typedef Score @property {Region} region region index @property {Number} orientation orientation index @property {Number} n score */
+/** @param {Region} region region index @param {Number} orientation orientation index @param {Number} n score */
+
+
+function scoreConstructor(region, orientation, n) {
+    return { region: region, orientation: orientation, n: n };
+}
+
+function sortByN(a, b) {
+    if (isNaN(a.n) || isNaN(b.n)) return 0;
+
+    if (a.n < b.n) return -1;
+    if (a.n > b.n) return 1;
+    return 0;
+}
+
+var minRegionAxis = _Math2D.smallValue;
+
+var tempRegion = new _Region2.default();
+
+/** @type {Array<Score>} */
+var orientationScoreTable = [];
+
+var HeuParametric1Set = function (_Heuristic$WorkingSet) {
+    _inherits(HeuParametric1Set, _Heuristic$WorkingSet);
+
+    function HeuParametric1Set() {
+        var _ref;
+
+        _classCallCheck(this, HeuParametric1Set);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
+
+        /** @type {HeuParametric1Params} */
+        var _this2 = _possibleConstructorReturn(this, (_ref = HeuParametric1Set.__proto__ || Object.getPrototypeOf(HeuParametric1Set)).call.apply(_ref, [this].concat(args)));
+
+        _this2.params;
+        return _this2;
+    }
+
+    /** @param {Array<Item>} items */
+
+
+    _createClass(HeuParametric1Set, [{
+        key: "SetItems",
+        value: function SetItems(items) {
+            _get(HeuParametric1Set.prototype.__proto__ || Object.getPrototypeOf(HeuParametric1Set.prototype), "SetItems", this).call(this, items);
+
+            this.items.sort(_Components.Item.VolumeSort);
+
+            this.minDimensions = _Components.Item.GetMinDimensions(this.items);
+            this.minDimensionsNoWasteFactor = [1, 1, 1];
+
+            /** @type {Array<Score>} */
+            this.regionScoreTable = [];
+        }
+
+        /**
+         * @param {Region} fit 
+         * @param {Array<Region>} newRegions 
+         */
+
+    }, {
+        key: "RateFit",
+        value: function RateFit(fit, newRegions) {
+
+            // Try out a recursive deep rate fit
+            var containerLength = this.packedContainer.container.length;
+            var minDimensions = this.minDimensions;
+            var minDimensionsNoWasteFactor = this.minDimensionsNoWasteFactor;
+            var minZScore = 1 - (fit.z + fit.length) / containerLength; // 0-1
+
+            // new regions usability score
+            var minWasteScore = 1; // have completely filled the region if newRegions.length === 0
+            if (newRegions.length > 0) {
+                minWasteScore = 0;
+                for (var iRegion = 0; iRegion < newRegions.length; iRegion++) {
+                    var region = newRegions[iRegion];
+
+                    var scoreW = 0,
+                        scoreH = 0,
+                        scoreL = 0;
+                    if (region.width >= minDimensions[0] && region.width - minDimensions[0] < minDimensions[0] * minDimensionsNoWasteFactor[0]) scoreW += 1;
+                    if (region.height >= minDimensions[1] && region.width - minDimensions[1] < minDimensions[1] * minDimensionsNoWasteFactor[1]) scoreH += 1;
+                    if (region.length >= minDimensions[2] && region.width - minDimensions[2] < minDimensions[2] * minDimensionsNoWasteFactor[2]) scoreL += 1;
+
+                    minWasteScore += scoreW * .5 + scoreH * .3 + scoreL * .2;
+                }
+                minWasteScore /= newRegions.length;
+            }
+
+            var minZWeight = this.params.scoring.minZ;
+            var minWasteWeight = this.params.scoring.minWaste;
+            var score = minZScore * minZWeight + minWasteScore * minWasteWeight;
+            return score;
+        }
+
+        /** @param {Region} region */
+
+    }, {
+        key: "FitFunction",
+        value: function FitFunction(region) {
+
+            var regionScoreTable = this.regionScoreTable;
+
+            var item = this.workingItem;
+            var validOrientations = item.validOrientations;
+
+            if (region.volume > item.volume) {
+                var dummyRegion = tempRegion.Copy(region);
+
+                orientationScoreTable.length = 0;
+                for (var iOrient = 0; iOrient < validOrientations.length; iOrient++) {
+                    var orientation = validOrientations[iOrient];
+
+                    var dimensions = item.GetOrientedDimensions(orientation);
+                    var regionFitTest = region.FitTest(_Math2D.smallValue, dimensions[0], dimensions[1], dimensions[2], item.weight, item.grounded);
+
+                    if (regionFitTest !== false) {
+
+                        // Subtracts fit from region and calculates new bounding regions
+                        var newRegions = dummyRegion.Subtract(regionFitTest, minRegionAxis);
+                        if (newRegions === undefined) newRegions = [];
+                        if (dummyRegion.length > minRegionAxis) newRegions.push(dummyRegion);
+
+                        var score = this.RateFit(regionFitTest, newRegions);
+                        var orientationScore = scoreConstructor(region, orientation, score);
+                        orientationScoreTable.push(orientationScore);
+                    }
+                }
+
+                if (orientationScoreTable.length > 0) {
+                    orientationScoreTable.sort(sortByN);
+                    var regionScore = orientationScoreTable.pop();
+                    regionScoreTable.push(regionScore);
+                }
+            }
+
+            return false;
+        }
+
+        /** @returns {Heuristic.Result} */
+
+    }, {
+        key: "Fit",
+        value: function Fit() {
+
+            this.regionsTree.Find(this.FitFunction, this);
+
+            if (this.regionScoreTable.length > 0) {
+
+                this.regionScoreTable.sort(sortByN);
+                var highestScore = this.regionScoreTable.pop();
+
+                var containingRegion = highestScore.region,
+                    orientation = this.workingItem.validOrientations[highestScore.orientation];
+                var dimensions = this.workingItem.GetOrientedDimensions(orientation);
+
+                // Fit test (success: Region, failure: false)
+                var regionFitTest = containingRegion.FitTest(_Math2D.smallValue, dimensions[0], dimensions[1], dimensions[2], this.workingItem.weight, this.workingItem.grounded);
+
+                if (regionFitTest !== false) {
+
+                    var result = new _Heuristic3.default.Result(containingRegion, regionFitTest, orientation);
+                    return result;
+                }
+            }
+
+            return false;
+        }
+    }]);
+
+    return HeuParametric1Set;
+}(_Heuristic3.default.WorkingSet);
 
 var HeuParametric1 = function (_Heuristic) {
     _inherits(HeuParametric1, _Heuristic);
@@ -17053,53 +17443,27 @@ var HeuParametric1 = function (_Heuristic) {
     function HeuParametric1(params) {
         _classCallCheck(this, HeuParametric1);
 
-        /** @type {HeuParametric1Params} */
-        var _this = _possibleConstructorReturn(this, (HeuParametric1.__proto__ || Object.getPrototypeOf(HeuParametric1)).call(this, params));
-
-        _this.params;
         /** @type {HeuParametric1Set} */
-        _this.workingSet;
-        return _this;
+        var _this3 = _possibleConstructorReturn(this, (HeuParametric1.__proto__ || Object.getPrototypeOf(HeuParametric1)).call(this, params || new HeuParametric1Params(), HeuParametric1Set));
+
+        _this3.workingSet;
+        return _this3;
     }
 
+    /** @param {Item} item */
+
+
     _createClass(HeuParametric1, [{
-        key: "Init",
-        value: function Init() {
-            if (this.workingSet instanceof HeuParametric1Set === false) {
-                _get(HeuParametric1.prototype.__proto__ || Object.getPrototypeOf(HeuParametric1.prototype), "Init", this).call(this);
-
-                this.workingSet = new HeuParametric1Set(this.workingSet.items, this.workingSet.packedContainer, this.workingSet.regionsTree);
-            }
-        }
-
-        /** @param {Item} item */
-
-    }, {
-        key: "GetBestFit",
-        value: function GetBestFit(item) {
-            if (false) return new _Heuristic3.default.Result();
-            return false;
-        }
-
-        /** @param {Item} item */
-
-    }, {
         key: "Fit",
         value: function Fit(item) {
-            var result = _get(HeuParametric1.prototype.__proto__ || Object.getPrototypeOf(HeuParametric1.prototype), "Fit", this).call(this, item);
+            var result = false;
+            var validItem = this.workingSet.SetWorkingItem(item);
 
-            var w = this.workingSet;
-
-            // General weight check
-            if (w.packedContainer.WeightPass(item.weight) === false) return false;
-
-            var bestFit = this.GetBestFit(item);
-
-            if (bestFit) {
-                if (result === undefined) result = new _Heuristic3.default.Result(bestFit.containingRegion, bestFit.packedRegion, bestFit.orientation);else result.Copy(bestFit);
+            if (validItem) {
+                result = this.workingSet.Fit();
             }
 
-            return result || false;
+            return result;
         }
     }]);
 
@@ -17107,7 +17471,7 @@ var HeuParametric1 = function (_Heuristic) {
 }(_Heuristic3.default);
 
 HeuParametric1.Params = HeuParametric1Params;
-HeuParametric1.Set = HeuParametric1Set;
+HeuParametric1.WorkingSet = HeuParametric1Set;
 
 exports.default = HeuParametric1;
 
@@ -17132,15 +17496,15 @@ var _Packer = __webpack_require__(13);
 
 var _Packer2 = _interopRequireDefault(_Packer);
 
-var _CargoList = __webpack_require__(32);
+var _CargoList = __webpack_require__(31);
 
 var _CargoList2 = _interopRequireDefault(_CargoList);
 
-var _PackingSpaceView = __webpack_require__(46);
+var _PackingSpaceView = __webpack_require__(47);
 
 var _PackingSpaceView2 = _interopRequireDefault(_PackingSpaceView);
 
-var _PackingSpace = __webpack_require__(33);
+var _PackingSpace = __webpack_require__(32);
 
 var _PackingSpace2 = _interopRequireDefault(_PackingSpace);
 
@@ -17152,15 +17516,15 @@ var _Utils = __webpack_require__(0);
 
 var _Utils2 = _interopRequireDefault(_Utils);
 
-var _PackResultView = __webpack_require__(48);
+var _PackResultView = __webpack_require__(49);
 
 var _PackResultView2 = _interopRequireDefault(_PackResultView);
 
-var _UpdateComponent = __webpack_require__(35);
+var _UpdateComponent = __webpack_require__(36);
 
 var _UpdateComponent2 = _interopRequireDefault(_UpdateComponent);
 
-var _Container = __webpack_require__(9);
+var _Container = __webpack_require__(7);
 
 var _Container2 = _interopRequireDefault(_Container);
 
@@ -17168,7 +17532,7 @@ var _BoxEntry = __webpack_require__(5);
 
 var _BoxEntry2 = _interopRequireDefault(_BoxEntry);
 
-var _DomUI = __webpack_require__(49);
+var _DomUI = __webpack_require__(50);
 
 var _DomUI2 = _interopRequireDefault(_DomUI);
 
@@ -17259,7 +17623,7 @@ var View = function () {
                 return light instanceof THREE.DirectionalLight;
             })[0];
             var dlData = { "color": "0xfceeee", "intensity": 1, "castShadow": true, "shadow.bias": 0.00001, "shadow.radius": 4, "shadow.mapSize.x": 4096, "shadow.mapSize.y": 4096, "shadow.camera.left": -400, "shadow.camera.top": 300, "shadow.camera.right": 400, "shadow.camera.bottom": -300, "shadow.camera.near": 20, "shadow.camera.far": 800 };
-            var Config = __webpack_require__(8).default;
+            var Config = __webpack_require__(10).default;
             Config.Load(dl, dlData);
 
             if (this.sceneSetup.ux.params.hud) {
@@ -17280,14 +17644,14 @@ var View = function () {
         this.sceneSetup.sceneController.AddDefault(this.packingSpaceView.view);
         /** @param {Container} container */
         function onContainerAdded(container) {
-            /** @type {THREE.Box3} */
-            var box3 = container.combinedVolume.box3;
-            scope.sceneSetup.cameraController.TransitionToFrame(1, box3, scope.params.transitionDuration);
-
             scope.packingSpaceView.Add(container);
 
             tempBox3.setFromObject(scope.packingSpaceView.view);
             tempBox3.getSize(tempVec);
+
+            /** @type {THREE.Box3} */
+            var box3 = container.combinedVolume.box3;
+            scope.sceneSetup.cameraController.TransitionToFrame(scope.params.transitionDuration, tempBox3);
 
             var containerSize = Math.max(tempVec.x, tempVec.y, tempVec.z);
             scope.cargoListView.view.position.z = containerSize / 2 + scope.params.cargoListView.paddingZ * units;
@@ -17312,7 +17676,7 @@ var View = function () {
 
             /** @type {THREE.Box3} */
             var box3 = tempBox3;
-            scope.sceneSetup.cameraController.TransitionToFrame(1, box3, scope.params.transitionDuration);
+            scope.sceneSetup.cameraController.TransitionToFrame(scope.params.transitionDuration, box3, .7);
 
             tempBox3.setFromObject(scope.packingSpaceView.view);
             tempBox3.getCenter(tempVec);
@@ -17401,8 +17765,8 @@ var View = function () {
         value: function Configure() {
 
             var Smart = __webpack_require__(24).default;
-            var Config = __webpack_require__(8).default;
-            var Control3D = __webpack_require__(25).default;
+            var Config = __webpack_require__(10).default;
+            var Control3D = __webpack_require__(30).default;
 
             var scope = this;
             var input = this.sceneSetup.input;
@@ -17477,7 +17841,7 @@ var PackedCargoBoxView = function (_CargoBoxView) {
 
         var meshMaterial = _this.mesh.material;
         meshMaterial.polygonOffset = true;
-        meshMaterial.polygonOffsetFactor = 1;
+        meshMaterial.polygonOffsetFactor = 2;
         meshMaterial.polygonOffsetUnits = 1;
         meshMaterial.transparent = true;
         meshMaterial.opacity = .5;
@@ -17588,7 +17952,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _PackResultView = __webpack_require__(48);
+var _PackResultView = __webpack_require__(49);
 
 var _PackResultView2 = _interopRequireDefault(_PackResultView);
 
@@ -17911,6 +18275,10 @@ var _CargoListView = __webpack_require__(23);
 
 var _CargoListView2 = _interopRequireDefault(_CargoListView);
 
+var _NaNRecovery = __webpack_require__(85);
+
+var _NaNRecovery2 = _interopRequireDefault(_NaNRecovery);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -17936,7 +18304,8 @@ var tempBox3 = new THREE.Box3(),
 var tempCoords = { position: new THREE.Vector3(), center: new THREE.Vector3() };
 
 var _cargoListView = Symbol('cargoListView'),
-    _boundingView = Symbol('boundingView');
+    _boundingView = Symbol('boundingView'),
+    _recovery = Symbol('recovery');
 
 var OrthoviewsNavigator = function () {
     /** @param {Camera} cameraController @param {OrthoviewsNavigatorParams} params */
@@ -17946,9 +18315,9 @@ var OrthoviewsNavigator = function () {
         this.params = _Utils2.default.AssignUndefined(params, defaultParams);
         this.cameraController = cameraController;
 
+        this.nanRecovery = new _NaNRecovery2.default(this.cameraController, 'position.x', 'position.y', 'position.z', 'rotation.x', 'rotation.y', 'rotation.z', 'camera.fov');
+
         var Smart = __webpack_require__(24).default;
-        var Config = __webpack_require__(8).default;
-        var Control3D = __webpack_require__(25).default;
 
         var scope = this;
         var smart = new Smart(this.cameraController.camera, 'FOV');
@@ -17966,13 +18335,17 @@ var OrthoviewsNavigator = function () {
         key: "Navigate",
 
 
-        /** @param {orthoviews} viewType @param {Boolean} changeFOV */
+        /** @param {orthoviews} viewType @param {Boolean} [changeFOV] true by default */
         value: function Navigate(viewType, changeFOV) {
+
+            var neededRecovery = this.nanRecovery.AssertUpdateRecover();
+            console.log('Navigating to: ' + viewType + (neededRecovery ? ', recovered from NaN.' : '.'));
 
             var duration = 1;
 
             var distanceMultiplier = .3;
-            var fov = changeFOV === undefined || changeFOV === true ? 8 : this.params.ux.params.fov;
+            if (changeFOV === undefined) changeFOV = true;
+            var fov = changeFOV ? 8 : this.params.ux.params.fov;
             var slideDown = true;
 
             tempBox3.setFromObject(this.boundingView);
@@ -18040,6 +18413,139 @@ var OrthoviewsNavigator = function () {
 }();
 
 exports.default = OrthoviewsNavigator;
+
+/***/ }),
+/* 85 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/** @param {*} obj @param {string} key */
+function getKey(obj, key) {
+    return key.split('.').reduce(function (a, b) {
+        return a && a[b];
+    }, obj);
+}
+
+/** @param {*} obj @param {string} key */
+function setKey(obj, key, val) {
+    key = key.split('.');
+    while (key.length > 1) {
+        obj = obj[key.shift()];
+    }var endKey = key.shift();
+    obj[endKey] = val;
+    return obj[endKey];
+}
+
+var typeofNumber = 'number';
+
+var NaNRecovery = function () {
+    /**
+     * Properties that needs to be considered
+     * @param {*} root
+     * @param  {...string} keys 
+     */
+    function NaNRecovery(root) {
+        _classCallCheck(this, NaNRecovery);
+
+        this.root = root;
+        /** @type {Map<string, Number>} */
+        this.properties = new Map();
+
+        for (var _len = arguments.length, keys = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+            keys[_key - 1] = arguments[_key];
+        }
+
+        this.Watch.apply(this, keys);
+    }
+
+    /**
+     * Properties that needs to be considered
+     * @param  {...string} keys 
+     */
+
+
+    _createClass(NaNRecovery, [{
+        key: 'Watch',
+        value: function Watch() {
+            var _this = this;
+
+            for (var _len2 = arguments.length, keys = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+                keys[_key2] = arguments[_key2];
+            }
+
+            if (keys !== undefined && keys.length > 0) {
+                keys.forEach(function (key) {
+                    var value = getKey(_this.root, key);
+                    _this.properties.set(key, value);
+                });
+            }
+        }
+
+        /**
+         * Checks the current values, recover any NaN (or typeof != number), otherwise update the stored number
+         */
+
+    }, {
+        key: 'AssertUpdateRecover',
+        value: function AssertUpdateRecover() {
+            var neededRecovery = false;
+            var keys = this.properties.keys();
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = keys[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var key = _step.value;
+
+                    // get the current value
+                    var value = getKey(this.root, key);
+                    // recover if not a number
+                    if (isNaN(value) || (typeof value === 'undefined' ? 'undefined' : _typeof(value)) !== typeofNumber) {
+                        neededRecovery = true;
+                        value = this.properties.get(key);
+                    }
+                    // update
+                    this.properties.set(key, value);
+                    setKey(this.root, key, value);
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            ;
+
+            return neededRecovery;
+        }
+    }]);
+
+    return NaNRecovery;
+}();
+
+exports.default = NaNRecovery;
 
 /***/ })
 /******/ ]);

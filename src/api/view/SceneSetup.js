@@ -45,7 +45,7 @@ class SceneSetup extends Signaler {
         this.domElement.appendChild(this.sceneRenderer.renderer.domElement);
 
         /** @type {import('./Camera').CameraParams} */
-        var cameraParams = {fov: this.ux.params.fov, aspect: 1, near: 1 * units, far: 5000 * units};
+        var cameraParams = {fov: this.ux.params.fov, aspect: 1, near: 1 * units, far: 6000 * units};
         this.cameraController = new Camera(cameraParams);
         this.cameraController.OrbitControls(this.sceneRenderer.renderer.domElement);
 

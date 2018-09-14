@@ -48,9 +48,9 @@ class App extends Signaler{
         Asset.resources = this.resources;
 
         /** @type {PackerParams} */
-        let packerParams = {ux: this.ux};
+        let packerParams = this.packerInterface.params;
+        packerParams.ux = this.ux;
         this.packer = new Packer(packerParams);
-        this.packer.extendedParams = this.packerInterface.params;
         
         this.cargoInput.On(CargoInput.signals.insert, 
             /** @param {BoxEntry} boxEntry */

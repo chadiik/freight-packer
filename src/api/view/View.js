@@ -89,14 +89,14 @@ class View {
         this.sceneSetup.sceneController.AddDefault(this.packingSpaceView.view);
         /** @param {Container} container */
         function onContainerAdded(container){
-            /** @type {THREE.Box3} */
-            let box3 = container.combinedVolume.box3;
-            scope.sceneSetup.cameraController.TransitionToFrame(1, box3, scope.params.transitionDuration);
-
             scope.packingSpaceView.Add(container);
 
             tempBox3.setFromObject(scope.packingSpaceView.view);
             tempBox3.getSize(tempVec);
+
+            /** @type {THREE.Box3} */
+            let box3 = container.combinedVolume.box3;
+            scope.sceneSetup.cameraController.TransitionToFrame(scope.params.transitionDuration, tempBox3);
 
             let containerSize = Math.max(tempVec.x, tempVec.y, tempVec.z);
             scope.cargoListView.view.position.z = containerSize / 2 + scope.params.cargoListView.paddingZ * units;
@@ -121,7 +121,7 @@ class View {
 
             /** @type {THREE.Box3} */
             let box3 = tempBox3;
-            scope.sceneSetup.cameraController.TransitionToFrame(1, box3, scope.params.transitionDuration);
+            scope.sceneSetup.cameraController.TransitionToFrame(scope.params.transitionDuration, box3, .7);
 
             tempBox3.setFromObject(scope.packingSpaceView.view);
             tempBox3.getCenter(tempVec);

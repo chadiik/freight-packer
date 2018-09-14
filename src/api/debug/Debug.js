@@ -1,5 +1,6 @@
 import AFitTest from "../packer/afit/AFitTest";
 import Asset from "../components/assets/Asset";
+import RuntimeTester from "./RuntimeTester";
 
 function delay(time, callback){
     setTimeout(callback, time);
@@ -71,7 +72,6 @@ class DebugViz {
     static SetViewParent(parent){
         view = new THREE.Object3D();
         view.name = 'DebugViz view';
-        console.log(view.name + ' created...');
         view.renderOrder = Number.MAX_SAFE_INTEGER - 10;
         parent.add(view);
     }
@@ -155,6 +155,10 @@ class DebugViz {
  */
 
 class Debug {
+
+    static get Runtime(){
+        return RuntimeTester;
+    }
 
     static MaterialEdit(callback){
         let objects = Debug.app.view.packResultView.cargoViews;

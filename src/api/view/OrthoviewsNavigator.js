@@ -2,6 +2,7 @@ import UX from "../UX";
 import Camera from "../scene/Camera";
 import Utils from "../utils/cik/Utils";
 import CargoListView from "./CargoListView";
+import NaNRecovery from "../utils/cik/NaNRecovery";
 
 /** @typedef OrthoviewsNavigatorParams @property {UX} ux @property {Number} transitionDuration */
 /** @type {OrthoviewsNavigatorParams} */
@@ -24,7 +25,8 @@ var tempBox3 = new THREE.Box3(),
 var tempCoords = {position: new THREE.Vector3(), center: new THREE.Vector3()};
 
 const _cargoListView = Symbol('cargoListView'),
-    _boundingView = Symbol('boundingView');
+    _boundingView = Symbol('boundingView'),
+    _recovery = Symbol('recovery');
 
 class OrthoviewsNavigator{
     /** @param {Camera} cameraController @param {OrthoviewsNavigatorParams} params */
@@ -33,9 +35,9 @@ class OrthoviewsNavigator{
         this.params = Utils.AssignUndefined(params, defaultParams);
         this.cameraController = cameraController;
 
+        this.nanRecovery = new NaNRecovery(this.cameraController, 'position.x', 'position.y', 'position.z', 'rotation.x', 'rotation.y', 'rotation.z', 'camera.fov');
+
         const Smart = require('../utils/cik/config/Smart').default;
-        const Config = require('../utils/cik/config/Config').default;
-        const Control3D = require('../utils/cik/config/Control3D').default;
 
         let scope = this;
         let smart = new Smart(this.cameraController.camera, 'FOV');
@@ -62,13 +64,17 @@ class OrthoviewsNavigator{
 
     get cargoListView(){ return this[_cargoListView]; }
 
-    /** @param {orthoviews} viewType @param {Boolean} changeFOV */
+    /** @param {orthoviews} viewType @param {Boolean} [changeFOV] true by default */
     Navigate(viewType, changeFOV){
+
+        let neededRecovery = this.nanRecovery.AssertUpdateRecover();
+        console.log('Navigating to: ' + viewType + (neededRecovery ? ', recovered from NaN.' : '.'));
 
         const duration = 1;
 
         var distanceMultiplier = .3;
-        var fov = changeFOV === undefined || changeFOV === true ? 8 : this.params.ux.params.fov;
+        if(changeFOV === undefined) changeFOV = true;
+        var fov = changeFOV ? 8 : this.params.ux.params.fov;
         var slideDown = true;
 
         tempBox3.setFromObject(this.boundingView);

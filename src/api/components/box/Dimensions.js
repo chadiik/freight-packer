@@ -1,9 +1,12 @@
+import RuntimeTester from "../../debug/RuntimeTester";
 
 const type = 'Dimensions';
 const _vec3 = Symbol('vec3');
 
 const epsilon = Math.pow(2, -52);
 const numberType = 'number';
+
+RuntimeTester.Notify('Dimensions.FromJSON', 3);
 
 class Dimensions {
     /**
@@ -94,7 +97,7 @@ class Dimensions {
     static FromJSON(data){
         if(data.type !== type) console.warn('Data supplied is not: ' + type);
 
-        var dimensions = new Dimensions(data.width, data.length, data.height);
+        var dimensions = new Dimensions(data.width, data.length, data.height).Abs();
         return dimensions;
     }
 

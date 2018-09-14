@@ -190,6 +190,9 @@ function segmentContainsPoint(ax, ay, bx, by, x, y){
 }
 
 export {
+    epsilon,
+    smallValue,
+    smallValueSqrt,
     linesIntersect,
     rectangleContainsPoint,
     rectangleContainsRectangle,

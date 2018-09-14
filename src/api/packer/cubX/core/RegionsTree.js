@@ -1,7 +1,7 @@
+import { epsilon, smallValue, smallValueSqrt, reduceRectangles } from "./Math2D";
 import Region from "./Region";
-import { reduceRectangles } from "./Math2D";
 
-import { debugging, debugClear, debugLog, debugRegion, sleep, format } from './CUBDebug';
+import { debugClear, debugLog, debugRegion, sleep, format } from '../CUBDebug';
 
 /** RegionFindCallback
  * @callback RegionFindCallback
@@ -15,7 +15,6 @@ import { debugging, debugClear, debugLog, debugRegion, sleep, format } from './C
  * @property {Number} weight @property {Number} weightCapacity @property {Number} stackingCapacity 
  */
 
-const smallValue = .000001;
 const minRegionAxis = smallValue;
 
 class RegionsTree{

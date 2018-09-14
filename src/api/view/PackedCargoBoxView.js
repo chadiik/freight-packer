@@ -16,7 +16,7 @@ class PackedCargoBoxView extends CargoBoxView {
 
         var meshMaterial = this.mesh.material;
         meshMaterial.polygonOffset = true;
-        meshMaterial.polygonOffsetFactor = 1;
+        meshMaterial.polygonOffsetFactor = 2;
         meshMaterial.polygonOffsetUnits = 1;
         meshMaterial.transparent = true;
         meshMaterial.opacity = .5;

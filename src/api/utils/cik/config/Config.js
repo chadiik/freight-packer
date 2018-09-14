@@ -117,7 +117,7 @@ class Shortcut{
         label = label.replace(new RegExp(' ', 'g'), '_');
         this.controller[label] = target;
         Config.shortcutsGUI.add(this.controller, label);
-        console.log('added ' + label + ' shortcut to ' + this.label);
+        //console.log('added ' + label + ' shortcut to ' + this.label);
     }
 }
 

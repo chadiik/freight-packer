@@ -1,7 +1,5 @@
+import { epsilon, smallValue, smallValueSqrt } from "./Math2D";
 import { Item, Container } from "./Components";
-import Region from "./Region";
-
-const smallValue = .000001;
 
 class PackedItem{
 
@@ -82,26 +80,6 @@ class PackedContainer{
     /** @param {Number} weight */
     WeightPass(weight){
         return this.cumulatedWeight + weight <= this.container.weightCapacity;
-    }
-
-    /** @param {Region} placement */
-    FitPass(placement){
-        let numPackedItems = this.packedItems.length;
-
-        // Make sure that the new 'packed item to be' does not collide with a previous one
-        for(let iPacked = 0; iPacked < numPackedItems; iPacked++){
-            let packedItem = this.packedItems[iPacked];
-            // Creates temporary region for following calculations
-            let packedRegion = tempRegion2.Set(packedItem.x, packedItem.y, packedItem.z, packedItem.packedWidth, packedItem.packedHeight, packedItem.packedLength, 0);
-            packedRegion.SetWeights(packedItem.ref.weight, 0, packedItem.ref.stackingCapacity);
-            
-            let intersects = packedRegion.Intersects(-smallValue, placement);
-            if(intersects){
-                return false;
-            }
-        }
-
-        return true;
     }
 }
 

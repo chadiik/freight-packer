@@ -14,7 +14,7 @@ class Signaler {
 
     /** @param {string} event @param {SignalerCallback} callback */
     OnIncludingPrior(event, callback){
-        var args = this.dispatches[event];
+        let args = this.dispatches[event];
         if(args){
             callback(...args);
         }
@@ -47,9 +47,9 @@ class Signaler {
 
     /** @param {string} event @param {SignalerCallback} callback */
     Off(event, callback){
-        var callbacks = this.signals[event];
+        let callbacks = this.signals[event];
         if(callbacks){
-            var index = callbacks.indexOf(callback);
+            let index = callbacks.indexOf(callback);
             if(index != -1){
                 callbacks.splice(index, 1);
             }
@@ -59,9 +59,9 @@ class Signaler {
     /** @param {string} event @param {Array<*>} [args] */
     Dispatch(event, ...args){
         this.dispatches[event] = args;
-        var callbacks = this.signals[event];
+        let callbacks = this.signals[event];
         if(callbacks){
-            for(var i = 0, len = callbacks.length; i < len; i++){
+            for(let i = 0, len = callbacks.length; i < len; i++){
                 callbacks[i](...args);
             }
         }

@@ -1,5 +1,5 @@
 import Debug from "../../debug/Debug";
-import Region from "./Region";
+import Region from "./core/Region";
 
 export const debugging = false;
 

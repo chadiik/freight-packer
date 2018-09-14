@@ -3,16 +3,38 @@ import PackingSpace from "./PackingSpace";
 import BoxEntry from "../components/box/BoxEntry";
 import Utils from "../utils/cik/Utils";
 import Signaler from "../utils/cik/Signaler";
-import Logger from "../utils/cik/Logger";
 import ContainingVolume from "./container/ContainingVolume";
+
+const CUB = require('./cubX/CUB');
+
+/** @typedef CUBParams
+ * @property {Number} score_minLength [0, 1] influence position of cargo in length
+ * 
+ * (higher values means the algorithm will try to pack as tightly as possible in length)
+ * 
+ * @property {Number} score_minWastedSpace [0, 1] influence orientation of cargo 
+ * 
+ * (higher values means the algorithm will try to minimize orientation that results in 'unuseable' unpacked volumes)
+ */
+
+const typeofHeuristicParams = CUB.heuristics.HeuParametric1.Params;
+
+/** @param {CUBParams} cubParams @param {typeofHeuristicParams} heuristicParams */
+function extractHeuristicParams(cubParams, heuristicParams){
+    if(heuristicParams === undefined) heuristicParams = new typeofHeuristicParams();
+
+    let scoringWeight = cubParams.score_minLength + cubParams.score_minWastedSpace;
+
+    heuristicParams.scoring.minZ = cubParams.score_minLength / scoringWeight;
+    heuristicParams.scoring.minWaste = cubParams.score_minWastedSpace / scoringWeight;
+    return heuristicParams;
+}
 
 /**
  * @typedef {Object} PackerParams
  * @property {import('../UX').default} ux
  * @property {Number} defaultStackingFactor
- */
-
-/** @typedef {import('../packer/cub/CUB').CUBParams} CUBParams */
+ */ 
 
 /** @typedef SolverParams
  * @property {CUBParams} algorithmParams
@@ -76,17 +98,13 @@ class Packer extends Signaler {
     constructor(params){
         super();
 
-        this.params = Utils.AssignUndefined(params, defaultParams);
+        /** Shared object with PackerInterface's params  */
+        this.params = params;
 
         this.packingSpace = new PackingSpace();
         this.cargoList = new CargoList();
 
         this.solverExecutionsCount = 0;
-    }
-
-    /** @param {PackerParams} extendedParams */
-    set extendedParams(extendedParams){
-        this.params = Utils.AssignUndefined(this.params, extendedParams);
     }
 
     /** @param {SolverParams} params */
@@ -102,7 +120,7 @@ class Packer extends Signaler {
             this.SolveCUB(algorithmParams);
     }
 
-    /** @param {import('../packer/cub/CUB').CUBParams} params */
+    /** @param {CUBParams} params */
     async SolveCUB(params){
 
         if(this.packingSpace.ready === false){
@@ -115,8 +133,8 @@ class Packer extends Signaler {
             return;
         }
 
-        const Container = require('./cub/Components').Container;
-        const Item = require('./cub/Components').Item;
+        const Container = CUB.Container;
+        const Item = CUB.Item;
 
         var containingVolume = this.packingSpace.current.volume;
         var d = containingVolume.dimensions;
@@ -140,9 +158,10 @@ class Packer extends Signaler {
             numTotalItems += entry.quantity;
         }
 
-        const CUB = require('./cub/CUB');
         var startTime = performance.now();
-        var result = await CUB.pack(container, items, params);
+        let heuristicParams = extractHeuristicParams(params);
+        let heuristic = new CUB.heuristics.HeuParametric1(heuristicParams);
+        var result = await CUB.pack(container, items, heuristic);
         var cubRuntime = performance.now() - startTime;
 
         var cubRuntime2Dec = Math.round(cubRuntime / 1000 * 100) / 100;

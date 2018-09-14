@@ -77,7 +77,7 @@ class Container {
     }
 
     static FromJSON(data){
-        if(data.type !== type) throw('Data supplied is not: ' + type);
+        if(data.type !== type) console.warn('Data supplied is not: ' + type);
 
         var container = new Container();
         for(var i = 0, numVolumes = data.volumes.length; i < numVolumes; i++){

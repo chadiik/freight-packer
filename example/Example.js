@@ -62,7 +62,7 @@ class Example {
     }
 
     Feedback(...args){
-        console.log('UI >> ', ...args);
+        //console.log('UI >> ', ...args);
         ExampleUI.LogToPane(...args);
     }
 

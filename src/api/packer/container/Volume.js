@@ -1,4 +1,5 @@
 import Dimensions from "../../components/box/Dimensions";
+import RuntimeTester from "../../debug/RuntimeTester";
 
 const type = 'Volume';
 const _box3 = Symbol('box3');
@@ -47,6 +48,10 @@ class Volume {
 
         volume.position = new THREE.Vector3(data.position.x, data.position.y, data.position.z);
         volume.dimensions = Dimensions.FromJSON(data.dimensions);
+
+        RuntimeTester.Test('Dimensions.FromJSON', () => {
+            return Dimensions.Assert(volume.dimensions);
+        }, true);
 
         return volume;
     }

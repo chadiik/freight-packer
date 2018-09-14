@@ -278,7 +278,7 @@ class ExampleUI extends FreightPacker.utils.Signaler {
         });
 
         function getCUBParams(){
-            return {minZ_weight: controller.minZToWasteRatio, minWaste_weight: (1 - controller.minZToWasteRatio)};
+            return {score_minLength: controller.minZToWasteRatio, score_minWastedSpace: (1 - controller.minZToWasteRatio)};
         }
 
         ExampleUI.getCUBParams = getCUBParams;
@@ -508,7 +508,8 @@ function argsToString(args){
                 let jsonObject = JSON.parse(jsonString);
                 jsonObjects.push(jsonObject);
 
-                result += '<a class="collapse-toggle" data-collapse href="#json-view-' + i + '" style="color: #b5d5ff; cursor: pointer;">' + arg + '</a>';
+                let label = 'object...';
+                result += '<a class="collapse-toggle" data-collapse href="#json-view-' + i + '" style="color: #b5d5ff; cursor: pointer;">' + label + '</a>';
                 result += '<div class="collapse" id="json-view-' + i + '"></div>'; 
             }
             catch(err){

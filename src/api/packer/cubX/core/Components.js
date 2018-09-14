@@ -86,6 +86,13 @@ class Item{
         }
     }
 
+    ToString(){
+        let q = this.quantity, 
+            d = this.width.toFixed(2) + 'x' + this.height.toFixed(2) + 'x' + this.length.toFixed(2),
+            id = this.id;
+        return q + 'x (' + d + ') - ' + id;
+    }
+
     /** @param {Number} orientation */
     static ResolveOrientation(orientation){
         return orientations[orientation];

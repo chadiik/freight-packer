@@ -4,7 +4,7 @@ import Utils from "../utils/cik/Utils";
 
 /** @typedef {import('../packer/Packer').SolverParams} SolverParams */
 
-/** @typedef {import('../packer/cub/CUB').CUBParams} CUBParams */
+/** @typedef {import('../packer/Packer').CUBParams} CUBParams */
 
 class ResultSpace{
     /** @param {string} uid */

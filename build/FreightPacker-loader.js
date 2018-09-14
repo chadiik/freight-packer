@@ -77,10 +77,15 @@ module.exports = __webpack_require__(1);
 "use strict";
 
 
-var api = __webpack_require__(2).default;
+var _FreightPacker = __webpack_require__(2);
 
-window.FreightPacker = api;
-console.log('FreightPacker:', FreightPacker.prototype);
+var _FreightPacker2 = _interopRequireDefault(_FreightPacker);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+window.FreightPacker = _FreightPacker2.default; //const api = require('../build/FreightPacker').default;
+
+console.log('FreightPacker:', _FreightPacker2.default.prototype);
 
 var Loader = {
     OnDocumentReady: function OnDocumentReady(fn) {

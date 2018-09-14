@@ -5,14 +5,13 @@
   "main": "src/FreightPacker.js",
   "scripts": {
     "compile": "webpack",
-
     "lib": "SET NODE_ENV=development && webpack --config webpack/lib.config.js",
-
     "editor": "SET NODE_ENV=development && webpack --config webpack/editor.config.js",
     "example": "SET NODE_ENV=development && webpack --config webpack/dev.config.js",
-    
     "build": "SET NODE_ENV=production && webpack --config webpack/prod.config.js",
-    "loader": "SET NODE_ENV=development && webpack --config webpack/loader.config.js"
+    "loader": "SET NODE_ENV=development && webpack --config webpack/loader.config.js",
+    "test": "jest",
+    "watch": "jest --watch"
   },
   "keywords": [
     "threejs",
@@ -37,6 +36,11 @@
   },
   "devDependencies": {
     "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "jest": "^23.6.0",
     "raw-loader": "^0.5.1"
+  },
+  "jest": {
+    "verbose": true,
+    "setupFiles": ["./test/setup-jest.js"]
   }
 }

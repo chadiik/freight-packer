@@ -112,6 +112,8 @@ class PackResultView extends Signaler{
 
         this.Dispatch(signals.packVizStart, packingResult);
 
+        if(packingResult.packed.length < 1) return;
+
         let scope = this;
         let units = this.params.ux.params.units;
         
