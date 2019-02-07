@@ -41,6 +41,8 @@
   },
   "jest": {
     "verbose": true,
-    "setupFiles": ["./test/setup-jest.js"]
+    "setupFiles": [
+      "./test/setup-jest.js"
+    ]
   }
 }
